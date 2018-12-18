@@ -1,0 +1,5 @@
+.trash/
+.ipynb_checkpoints/1
+stream_graph.egg-info/
+build/
+dist
