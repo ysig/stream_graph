@@ -26,9 +26,13 @@ class NodeSet(abc.ABC):
     @abc.abstractmethod
     def __iter__(self):
         pass
+
+    @abc.abstractmethod
+    def issuperset(self):
+        pass
     
     def copy(self, deep=True):
         if deep:
-            copy.deepcopy(self)
+            return copy.deepcopy(self)
         else:
-            copy.copy(self)
+            return copy.copy(self)

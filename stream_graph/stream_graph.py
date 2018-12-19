@@ -1,46 +1,66 @@
+import stream_graph as sgl
 from stream_graph import API
-from stream_graph.exceptions import UnrecognizedNodeSet
-from stream_graph.exceptions import UnrecognizedTimeSet
-from stream_graph.exceptions import UnrecognizedNodeStream
-from stream_graph.exceptions import UnrecognizedLinkStream
-
+from stream_graph.exceptions import UnrecognizedStreamGraph
 
 class StreamGraph(object):
-    def __init__(self, nodeset, timeset, nodestream, linkstream):
+    def __init__(self, nodeset=None, timeset=None, nodestream=None, linkstream=None):
         if not isinstance(nodeset, API.NodeSet):
-            raise UnrecognizedNodeSet('nodeset')
-        if not isinstance(nodeset, API.TimeSet):
-            raise UnrecognizedNodeSet('timeset')
+            self.nodeset_ = sgl.NodeSetS(nodeset)
+        else:
+            self.nodeset_ = nodeset
+        if not isinstance(timeset, API.TimeSet):
+            self.timeset_ = sgl.TimeSetDF(timeset)
+        else:
+            self.timeset_ = timeset
         if not isinstance(nodestream, API.NodeStream):
-            raise UnrecognizedNodeSet('nodestream')
+            self.nodestream_ = sgl.NodeStreamDF(nodestream)
+        else:
+            self.nodestream_ = nodestream
         if not isinstance(linkstream, API.LinkStream):
-            raise UnrecognizedNodeSet('linkstream')
-        self.nst_, self.tst_, self.nsm_, self.lsm_ = nodeset, timeset, nodestream, linkstream
+            self.linkstream_ = sgl.LinkStreamDF(linkstream)
+        else:
+            self.linkstream_ = linkstream
 
     def __bool__(self):
-        return ((hasattr(self, 'nst_') and bool(self.nst_)) and
-                (hasattr(self, 'tst_') and bool(self.tst_)) and
-                (hasattr(self, 'nsm_') and bool(self.nsm_)) and
-                (hasattr(self, 'lsm_') and bool(self.lsm_)))
+        return ((hasattr(self, 'nodeset_') and bool(self.nodeset_)) and
+                (hasattr(self, 'timeset_') and bool(self.timeset_)) and
+                (hasattr(self, 'nodestream_') and bool(self.nodestream_)) and
+                (hasattr(self, 'linkstream_') and bool(self.linkstream_)))
+
+    @property
+    def nodeset(self):
+        return self.nodeset_.copy()
+
+    @property
+    def timeset(self):
+        return self.timeset_.copy()
+
+    @property
+    def nodestream(self):
+        return self.nodestream_.copy()
+
+    @property
+    def linkstream(self):
+        return self.linkstream_.copy()
 
     @property
     def empty(self):
         return not bool(self)
 
     def graph_at(t):
-        return Graph(self.nsm_.nodes_at(t), self.lsm_.links_at(t))
+        return Graph(self.nodestream_.nodes_at(t), self.linkstream_.links_at(t))
 
     @property
-    def lsm_coverage(self):
-        denom = float(self.nst_.size * self.nsm.total_common_time)
+    def linkstream_coverage(self):
+        denom = float(self.nodeset_.size * self.nodestream_.total_common_time)
         if denom > .0:
             return self.lsm.size / denom
         else:
             return .0
 
     @property
-    def nsm_coverage(self):
-        denom = float(self.nst_.size * self.nsm.total_common_time)
+    def nodestream_coverage(self):
+        denom = float(self.nodeset_.size * self.nodestream_.total_common_time)
         if denom > .0:
             return self.lsm.size / denom
         else:
@@ -51,112 +71,112 @@ class StreamGraph(object):
         if denom == .0:
             return .0
         elif v is None:
-            return self.nsm_.times_of(u).size / denom
+            return self.nodestream_.times_of(u).size / denom
         else:
-            return self.lsm_.times_of(u, v, direction).size / denom
+            return self.linkstream_.times_of(u, v, direction).size / denom
 
     def node_coverage(self, t):
-        denom = float(self.nst_.size )
+        denom = float(self.nodeset_.size )
         if denom > .0:
-            return self.nsm_.number_of_nodes_at(t) / denom
+            return self.nodestream_.number_of_nodes_at(t) / denom
         else:
             return .0
 
     def link_coverage(self, t):
-        denom = float(self.nsm_.nodes_at(t).size ** 2)
+        denom = float(self.nodestream_.nodes_at(t).size ** 2)
         if denom > .0:
-            return self.lsm_.links_at(t).size / denom
+            return self.linkstream_.links_at(t).size / denom
         else:
             return .0
 
     def neighbor_coverage(self, u, direction='out'):
-        denom = float(self.nst_.size * self.tst_.size)
+        denom = float(self.nodeset_.size * self.timeset_.size)
         if denom > .0:
-            return self.lsm_.neighbors(u, direction).size / denom
+            return self.linkstream_.neighbors(u, direction).size / denom
         else:
             return .0
 
     def neighbor_coverage_at(self, u, t, direction='out'):
-        denom = float(self.nst_.size)
+        denom = float(self.nodeset_.size)
         if denom > .0:
-            return self.lsm_.neighbors_at(u, t, direction) / denom
+            return self.linkstream_.neighbors_at(u, t, direction) / denom
         else:
             return .0
 
     @property
     def total_density(self):
-        denom = float(self.nsm_.total_common_time)
+        denom = float(self.nodestream_.total_common_time)
         if denom > .0:
-            return self.lsm_.size / denom
+            return self.linkstream_.size / denom
         else:
             return .0
 
     def density(self, u, v=None, direction='out'):
-        denom = float(self.nsm_.common_time(u, v))
+        denom = float(self.nodestream_.common_time(u, v))
         if denom == .0:
             return .0
         elif v is None:
-            return self.lsm_.neighbors(u, direction).size / denom
+            return self.linkstream_.neighbors(u, direction).size / denom
         else:
-            return self.lsm_.times_of(u, v, direction).size / denom
+            return self.linkstream_.times_of(u, v, direction).size / denom
 
     def density_at(self, t):
-        denom = float(self.nsm_.number_of_nodes_at(t))
+        denom = float(self.nodestream_.number_of_nodes_at(t))
         if denom > .0:
-            return self.lsm_.linkstream_at(t).size / denom
+            return self.linkstream_.linkstream_at(t).size / denom
         else:
             return .0
 
     def __and__(self, sg):
         if isinstance(sg, StreamGraph):
-            return StreamGraph(self.nst_ & sg.nst_,
-                               self.tst_ & sg.tst_,
-                               self.nsm_ & sg.nsm_,
-                               self.lsm_ & sg.lsm_)
+            return StreamGraph(self.nodeset_ & sg.nodeset_,
+                               self.timeset_ & sg.timeset_,
+                               self.nodestream_ & sg.nodestream_,
+                               self.linkstream_ & sg.linkstream_)
         else:
-            raise ValueError('Right Operand should must be a StreamGraph')
+            raise UnrecognizedStreamGraph('right operand')
 
     def __or__(self, sg):
         if isinstance(sg, StreamGraph):
-            return StreamGraph(self.nst_ | sg.nst_,
-                               self.tst_ | sg.tst_,
-                               self.nsm_ | sg.nsm_,
-                               self.lsm_ | sg.lsm_)
+            return StreamGraph(self.nodeset_ | sg.nodeset_,
+                               self.timeset_ | sg.timeset_,
+                               self.nodestream_ | sg.nodestream_,
+                               self.linkstream_ | sg.linkstream_)
         else:
-            raise ValueError('Right Operand should must be a StreamGraph')
+            raise UnrecognizedStreamGraph('right operand')
 
     def __sub__(self, sg):
         if isinstance(sg, StreamGraph):
-            return StreamGraph(self.nst_ - sg.nst_,
-                               self.tst_ - sg.tst_,
-                               self.nsm_ - sg.nsm_,
-                               self.lsm_ - sg.lsm_)
+            nsm = self.nodestream_ - sg.nodestream_
+            return StreamGraph((self.nodeset_ - sg.nodeset_) | nsm.nodeset,
+                               self.timeset_ - sg.timeset_, nsm,
+                               self.linkstream_ - sg.linkstream_)
         else:
-            raise ValueError('Right Operand should must be a StreamGraph')
+            raise UnrecognizedStreamGraph('right operand')
 
     def issuperset(self, sg):
         if isinstance(sg, StreamGraph):
-            return (self.nst_.issuperset(sg.nst_) and
-                    self.tst_.issuperset(sg.tst_) and
-                    self.nsm_.issuperset(sg.nsm_) and
-                    self.lsm_.issuperset(sg.lsm_))
+            return (self.nodeset_.issuperset(sg.nodeset_) and
+                    self.timeset_.issuperset(sg.timeset_) and
+                    self.nodestream_.issuperset(sg.nodestream_) and
+                    self.linkstream_.issuperset(sg.linkstream_))
         else:
-            raise ValueError('ns must be an object that implements NodeStream')
+            raise UnrecognizedStreamGraph('right operand')
         return False
 
     @property
     def n(self):
-        denom = float(self.tst_.size)
+        denom = float(self.timeset_.size)
         if denom > .0:
-            return self.nsm_.size/denom
+            return self.nodestream_.size/denom
         else:
             return .0
 
     @property
     def m(self):
-        denom = float(self.tst_.size)
+        denom = float(self.timeset_.size)
         if denom > .0:
-            return self.lsm_.size/denom
+            return self.linkstream_.size/denom
         else:
             return .0
 
@@ -166,5 +186,5 @@ class StreamGraph(object):
     def induced_substream(self, ns):
         assert isinstance(ns, NodeStream)
         ns_is = self.ns_ & ns
-        ls_ind = self.lsm_.induced_substream(ns_is)
-        return StreamGraph(self.nst_.copy(), self.tst_.copy(), ns_is, ls_ind)
+        ls_ind = self.linkstream_.induced_substream(ns_is)
+        return StreamGraph(self.nodeset_.copy(), self.timeset_.copy(), ns_is, ls_ind)

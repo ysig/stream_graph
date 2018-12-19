@@ -34,22 +34,8 @@ class NodeStream(abc.ABC):
     def __contains__(self, u):
         pass
 
-
-    @abc.abstractmethod
-    def node_duration(self, u):
-        pass
-
-    @abc.abstractmethod
-    def contribution(self, u):
-        pass
-
-    @abc.abstractmethod
     def node_duration(self, u):
         return self.times_of(u).size
-
-    @abc.abstractmethod
-    def node_coverage(self, t):
-        pass
 
     @abc.abstractmethod
     def common_time(self, u, v=None):
@@ -63,7 +49,6 @@ class NodeStream(abc.ABC):
     def times_of(self, u):
         pass
 
-    @abc.abstractmethod
     def n_at(self, t):
         return self.nodes_at(t).size
 
@@ -93,6 +78,6 @@ class NodeStream(abc.ABC):
 
     def copy(self, deep=True):
         if deep:
-            copy.deepcopy(self)
+            return copy.deepcopy(self)
         else:
-            copy.copy(self)
+            return copy.copy(self)

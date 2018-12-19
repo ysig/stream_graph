@@ -21,11 +21,30 @@ class NodeSetS(API.NodeSet):
         return 0
 
     def __contains__(self, n):
-        return n in self.nodes_
+        if bool(self):
+            return n in self.nodes_
+        return False
 
     @property
     def nodes(self):
-        return set(self.nodes_)
+        if bool(self):
+            return set(self.nodes_)
+        else:
+            return set()
+
+    def issuperset(self, ns):
+        if isinstance(ns, API.NodeSet):
+            if bool(self):
+                if not isinstance(ns, NodeSetS):
+                    try:
+                        return ns.issubset(self)
+                    except (AttributeError, NotImplementedError):
+                        ns = NodeSetS(ns)
+                return NodeSetS(self.nodes & ns.nodes)
+        else:
+            raise UnrecognizedNodeSet('right operand')
+        return NodeSetS()
+        
 
     def __and__(self, ns):
         if isinstance(ns, API.NodeSet):
@@ -66,5 +85,9 @@ class NodeSetS(API.NodeSet):
             raise UnrecognizedNodeSet('right operand')
         return self.copy()
 
+
     def __iter__(self):
-        return iter(self.nodes_)
+        if bool(self):
+            return iter(self.nodes_)
+        else:
+            return iter({})

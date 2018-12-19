@@ -30,6 +30,6 @@ class TimeSet(abc.ABC):
 
     def copy(self, deep=True):
         if deep:
-            copy.deepcopy(self)
+            return copy.deepcopy(self)
         else:
-            copy.copy(self)
+            return copy.copy(self)

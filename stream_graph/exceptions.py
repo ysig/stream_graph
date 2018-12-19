@@ -25,6 +25,10 @@ class UnrecognizedLinkStream(ValueError):
     def __init__(self, variable_name, extra_message=""):
         ValueError.__init__(self, variable_name + " should be an NodeStream instance\n" + extra_message)
 
+class UnrecognizedStreamGraph(ValueError):
+    def __init__(self, variable_name, extra_message=""):
+        ValueError.__init__(self, variable_name + " should be a StreamGraph\n" + extra_message)
+
 
 class UnrecognizedDirection(ValueError):
     def __init__(self):

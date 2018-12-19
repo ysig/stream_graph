@@ -1,3 +1,5 @@
+from numbers import Real
+
 import pandas as pd
 
 from stream_graph import API
@@ -43,11 +45,13 @@ class TimeSetDF(API.TimeSet):
 
     def __contains__(self, t):
         if bool(self):
-            if isinstance(t, tuple) and len(t) == 2:
+            if isinstance(t, tuple) and len(t) == 2 and isinstance(t[0], Real) and isinstance(t[1], Real) and t[0]<=t[1]:
                 ts, tf = t
                 return utils.df_index_at_interval(self.df_, ts, tf).any()
-            else:
+            elif isinstance(t, Real):
                 return utils.df_index_at(self.df_, t).any()
+            else:
+                raise ValueError('Input can either be a real number or an ascending interval of two real numbers')
         else:
             return False
 

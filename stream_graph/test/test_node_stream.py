@@ -1,14 +1,17 @@
 """Test file for time set."""
+from itertools import product
 from pandas import DataFrame
+from stream_graph import NodeSetS
 from stream_graph import TimeSetDF
 from stream_graph import NodeStreamB
 from stream_graph import NodeStreamDF
 from stream_graph.exceptions import UnrecognizedTimeSet
+from stream_graph.exceptions import UnrecognizedNodeStream
 
 
 def test_node_stream_b():
-    nodeset = nodeset({1, 2, 3, 5})
-    timeset = timeset([(1, 2), (3, 5), (6, 7)])
+    nodeset = NodeSetS({1, 2, 3, 5})
+    timeset = TimeSetDF([(1, 2), (3, 5), (6, 7)])
     nsa = NodeStreamB(nodeset, timeset)
 
     assert bool(nsa)
@@ -16,6 +19,9 @@ def test_node_stream_b():
     assert not bool(NodeStreamB([], [(1, 2)]))
     assert not bool(NodeStreamB([1], []))
     assert not bool(NodeStreamB())
+
+    assert set(nsa.nodeset) == set(nodeset)
+    assert set(nsa.timeset) == set(timeset)
 
     assert set(nsa) == {(n, ts, tf) for n in nodeset for ts, tf in timeset}
 
@@ -27,17 +33,17 @@ def test_node_stream_b():
     assert NodeStreamB([], [(1, 2)]).size == 0
     assert NodeStreamB([1], []).size == 0
 
-    assert 2, None in tsa
-    assert None, 3.4 in tsa
-    assert None, None not in tsa
-    assert 2, 3.4 not in tsa
-    assert 2, (3.4, 4) not in tsa
+    assert (2, None) in nsa
+    assert (None, 3.4) in nsa
+    assert (None, None) not in nsa
+    assert (2, 3.4) in nsa
+    assert (2, (3.4, 4)) in nsa
 
     assert nsa.node_duration(4) == 0
     assert nsa.node_duration(1) == 4
 
-    assert nsa.common_time(1) == 4
-    assert nsa.common_time(2, 3) == 3
+    assert nsa.common_time(1) == 12
+    assert nsa.common_time(2, 3) == 4
     assert nsa.common_time(7) == .0
     assert nsa.common_time(2, 8) == .0
 
@@ -48,26 +54,29 @@ def test_node_stream_b():
     assert set(nsa.times_of(1)) == {(1, 2), (3, 5), (6, 7)}
     assert set(nsa.times_of(10)) == set()
 
-    assert nsa.n_at(6) == 1
+    assert nsa.n_at(6) == 4
     assert nsa.n_at(10) == 0
 
 
-    nodeset = nodeset({2, 3, 4})
-    timeset = timeset([(1, 3), (4, 8)])
+    nodeset = NodeSetS({2, 3, 4})
+    timeset = TimeSetDF([(1, 3), (4, 8)])
     nsb = NodeStreamB(nodeset, timeset)
     assert set(nsb & nsa) == set(nsa & nsb)
-    assert (nsb & nsa).size == 4
     assert isinstance(nsa & nsb, NodeStreamB)
-    assert set(nsa & nsb) == {(n, ts, tf) for n in {2, 3} for ts, tf in [(1, 2), (3, 3), (6, 7)]}
+    assert set(nsa & nsb) == {(n, ts, tf) for n in {2, 3} for ts, tf in [(1, 2), (3, 3), (4, 5), (6, 7)]}    
+    assert (nsb & nsa).size == 6
 
     assert set(nsb | nsa) == set(nsa | nsb)
-    assert (nsb | nsa).size == 4*8
-    assert list((nsb | nsa)) == {(n, ts, tf) for n in {1, 2, 3, 5} for ts, tf in [(1, 8)]}
+    assert isinstance(nsa | nsb, NodeStreamB)
+    assert set((nsb | nsa)) == {(n, 1, 8) for n in {1, 2, 3, 4, 5}}
+    assert (nsb | nsa).size == 35
 
-    assert list(nsb - nsa) == {(n, ts, tf) for n in {4} for ts, tf in [(1, 2), (7, 8)]}
-    assert (nsb - nsa).size == 1
-    assert list(nsa - nsb) == {(n, ts, tf) for n in {1, 5} for ts, tf in [(3, 4)]}
-    assert (nsa - nsb).size == 2
+    diff_ba = set((n, ts, tf) for e in [([4], [(1, 3), (4, 8)]), ([2, 3], [(1, 1), (2, 3), (5, 6), (7, 8)])] for n in e[0] for ts, tf in e[1])
+    assert set(nsb - nsa) == diff_ba
+    assert (nsb - nsa).size == 12
+    diff_ab = set((n, ts, tf) for e in [([1, 5], [(1, 2), (3, 5), (6, 7)]), ([2, 3], [(1, 1), (3, 4)])] for n in e[0] for ts, tf in e[1])
+    assert set(nsa - nsb) == diff_ab
+    assert (nsa - nsb).size == 10
 
     assert nsa.issuperset(nsa & nsb)
     assert nsb.issuperset(nsa & nsb)
@@ -82,7 +91,7 @@ def test_node_stream_b():
 
     try:
         nsa & 1
-    except UnrecognizedTimeStream:
+    except UnrecognizedNodeStream:
         pass
 
     try:
@@ -103,20 +112,18 @@ def test_node_stream_df():
 
     assert nsa.n == 2
     assert nsa.size == 7
-    assert nsa.total_time == 6
+    assert nsa.total_time == 7
     assert NodeStreamDF().size == 0
-    assert NodeStreamDF([], []).size == 0
-    assert NodeStreamDF([], [(1, 2)]).size == 0
-    assert NodeStreamDF([1], []).size == 0
+    assert NodeStreamDF([]).size == 0
 
-    assert 2, None in nsa
-    assert None, 3.4 in nsa
-    assert None, None not in nsa
-    assert 2, 3.4 not in nsa
-    assert 2, (3.4, 4) not in nsa
+    assert (2, None) in nsa
+    assert (None, 3.4) in nsa
+    assert (None, None) not in nsa
+    assert (2, 3.4) not in nsa
+    assert (2, (3.4, 4)) not in nsa
 
-    assert nsa.node_duration(4) == 0
     assert nsa.node_duration(1) == 5
+    assert nsa.node_duration(4) == 0
 
     assert nsa.common_time(1) == 1
     assert nsa.common_time(1, 2) == 1
@@ -124,9 +131,9 @@ def test_node_stream_df():
     assert nsa.common_time(7) == .0
     assert nsa.common_time(2, 8) == .0
 
-    assert set(nsa.nodes_at(1)) == {1, 2, 3, 5}
-    assert set(nsa.nodes_at((1, 1.5))) == {1, 2, 3, 5}
-    assert set(nsa.nodes_at(2.5)) == set()
+    assert set(nsa.nodes_at(1)) == {2}
+    assert set(nsa.nodes_at((2, 2.5))) == {1, 2}
+    assert set(nsa.nodes_at(10)) == set()
 
     assert set(nsa.times_of(1)) == {(2, 5), (6, 8)}
     assert set(nsa.times_of(10)) == set()
@@ -137,21 +144,21 @@ def test_node_stream_df():
     df = [(1, 1, 4), (1, 6, 7), (2, 2.5, 2.6)]
     nsb = NodeStreamDF(df)
     assert set(nsb & nsa) == set(nsa & nsb)
-    assert (nsb & nsa).size == 4.1
     assert isinstance(nsa & nsb, NodeStreamDF)
     assert set(nsa & nsb) == {(1, 2, 4), (1, 6, 7), (2, 2.5, 2.6)}
+    assert (nsa & nsb).size == 3.1
 
     assert set(nsb | nsa) == set(nsa | nsb)
-    assert (nsb | nsa).size == 8
     assert isinstance(nsa | nsb, NodeStreamDF)
-    assert list((nsb | nsa)) == {(1, 1, 5), (1, 6, 8), (2, 1, 3)}
+    assert set((nsb | nsa)) == {(1, 1, 5), (1, 6, 8), (2, 1, 3)}
+    assert (nsb | nsa).size == 8
 
-    assert set(nsb - nsa) == {(1, 1, 2)}
+    assert set(nsb - nsa) == {(1, 1, 2), (1, 6, 6)}
     assert (nsb - nsa).size == 1
     assert isinstance(nsb - nsa, NodeStreamDF)
-    assert set(nsa - nsb) == {(1, 4, 5), (1, 7, 8), (2, 1, 2.4), (2, 2.5, 3)}
+    assert set(nsa - nsb) == {(1, 6.0, 6.0), (1, 4, 5), (1, 7, 8), (2, 1, 2.5), (2, 2.6, 3)}
     assert isinstance(nsa - nsb, NodeStreamDF)
-    assert (nsa - nsb).size == 4.9
+    assert (nsa - nsb).size == 3.9
 
     assert nsa.issuperset(nsa & nsb)
     assert nsb.issuperset(nsa & nsb)
@@ -166,7 +173,7 @@ def test_node_stream_df():
 
     try:
         nsa & 1
-    except UnrecognizedTimeStream:
+    except UnrecognizedNodeStream:
         pass
 
     try:
@@ -175,26 +182,25 @@ def test_node_stream_df():
         pass
 
 def test_node_stream_op_b_df():
-    nsa = NodeStreamB(nodeset({1, 2}), timeset([(1, 2), (4, 7)]))
+    nsa = NodeStreamB({1, 2}, [(1, 2), (4, 7)])
     nsb = NodeStreamDF([(1, 2, 5), (1, 6, 8), (2, 1, 3)])
     assert set(nsb & nsa) == set(nsa & nsb)
-    assert isinstance(nsb & nsa, nsa & nsb)
-    assert (nsb & nsa).size == 4.1
+    assert type(nsb & nsa) is type(nsa & nsb)
     assert isinstance(nsa & nsb, NodeStreamDF)
     assert set(nsa & nsb) == {(1, 2, 2), (1, 4, 5), (1, 6, 7), (2, 1, 2)}
+    assert (nsb & nsa).size == 3
 
     assert set(nsb | nsa) == set(nsa | nsb)
-    assert (nsb | nsa).size == 8
-    assert isinstance(nsb & nsa, nsa & nsb)
-    assert isinstance(nsa & nsb, NodeStreamDF)
-    assert set((nsb | nsa)) == {(1, 1, 5), (1, 6, 8), (2, 1, 3)}
+    assert type(nsb | nsa) is type(nsa | nsb)
+    assert isinstance(nsa | nsb, NodeStreamDF)
+    assert set((nsb | nsa)) == {(1, 1, 8), (2, 1, 3), (2, 4, 7)}
+    assert (nsb | nsa).size == 12
 
-    assert set(nsb - nsa) == {(1, 2, 4), (1, 7, 8), (2, 2, 3)}
+    assert set(nsb - nsa) == {(2, 1, 1), (1, 2, 4), (1, 7, 8), (2, 2, 3)}
     assert (nsb - nsa).size == 4
-    assert isinstance(nsb - nsa, NodeStreamDF) and isinstance(nsb - nsa, nsa - nsb)
-    assert set(nsa - nsb) == {(1, 5, 6), (2, 2, 3)}
-    assert (nsa - nsb).size == 2
-    assert isinstance(nsb & nsa, nsa & nsb)
+    assert isinstance(nsb - nsa, NodeStreamDF) and type(nsb - nsa) is type(nsa - nsb)
+    assert set(nsa - nsb) == {(1, 1, 2), (1, 5, 6), (2, 1, 1), (2, 4, 7)}
+    assert (nsa - nsb).size == 5
 
     assert nsa.issuperset(nsa & nsb)
     assert nsb.issuperset(nsa & nsb)

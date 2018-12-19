@@ -5,7 +5,6 @@ import numpy as np
 from stream_graph import API
 from stream_graph.df.node_stream_df import NodeStreamDF
 from stream_graph.df.time_set_df import TimeSetDF
-from stream_graph.range.node_stream_r import NodeStreamR
 
 
 def intersect_intervals(df):
@@ -26,7 +25,7 @@ def intersect_intervals_b(df, dfb):
     # Assumes that intervals with common elements come from different dataframes
     if df.empty:
         return pd.DataFrame(columns=['ts', 'tf'])
-    return intersect_intervals(df.append(dfb, ignore_index=True))
+    return intersect_intervals(df.append(dfb, ignore_index=True,  sort=False))
 
 
 def intersect_intervals_df(df, on_column="u"):
@@ -41,7 +40,9 @@ def intersect_intervals_with_df(df, dfb, on_column="u"):
 
 def merge_intervals_b(df, bdf):
     if not df.empty:
-        return merge_intervals(df.append(df[['ts', 'tf']], bdf[['ts', 'tf']], ignore_index=True))
+        return merge_intervals(df[['ts', 'tf']].append(bdf[['ts', 'tf']], ignore_index=True, sort=False))
+    else:
+        return df
 
 
 def merge_intervals_with_df(df, bdf, on_column="u"):
@@ -78,12 +79,12 @@ def interval_intersection_size(a, b=None):
     dt = np.concatenate((tsa, tsb, tfa, tfb))
     tap = np.concatenate((np.full((la,), -2), np.full((lb,), -1), np.full((la,), 1), np.full((lb,), 2)))
     tbp = np.concatenate((np.full((la,), -1), np.full((lb,), 0), np.full((la,), 0), np.full((lb,), 1)))
-    index = np.lexsort((dt, tap))
+    index = np.lexsort((tap, dt))
     tap[:la] = 0
     tap[-lb:] = 0
     cnt_a, cnt_b = np.cumsum(tap[index]), np.cumsum(tbp[index])
     d = np.diff(dt[index])
-    return np.sum(d * cnt_a[1:] * cnt_b[1:])
+    return -np.sum(d * cnt_a[1:] * cnt_b[1:])
 
 
 def measure_time(df):
@@ -93,6 +94,8 @@ def measure_time(df):
 def df_at(df, t):
     return df[df_index_at(df, t)]
 
+def df_at_interval(df, ts, tf):
+    return df[df_index_at_interval(df, ts, tf)]
 
 def df_count_at(df, t):
     return df_index_at(df, t).sum()
@@ -166,7 +169,7 @@ def issuper_b(tr, tb):
 def issuper(df):
     #import ipdb; ipdb.set_trace()
     tr, tb = df[df.r], df[~df.r]
-    return issuper(tr, tb)
+    return issuper_b(tr, tb)
 
 
 def issuper_with_df(dfr, dft, on_column='u'):
@@ -189,8 +192,9 @@ def cartesian_intersect(df, base):
 
 def difference(df):
     tr, tb = df[df.r], df[~df.r]
+    if tr.empty or tb.empty:
+        return tr
     return difference_b(tr, tb)
-
 
 def difference_b(tr, tb):
     #import pdb; pdb.set_trace()
@@ -217,7 +221,7 @@ def difference_df(dfr, dfb, on_column='u'):
     if dfr.empty or dfb.empty:
         return dfr
     nr, nb = dfr.shape[0], dfb.shape[0]
-    mdf = dfr.append(dfb, ignore_index=True, sort=True)
+    mdf = dfr.append(dfb, ignore_index=True, sort=False)
     mdf['r'] = np.concatenate((np.full((nr,), True), np.full((nb,), False)))
     return gby_format(mdf.groupby(on_column).apply(difference))
 
@@ -257,6 +261,14 @@ def ns_to_df(ns):
     else:
         return pd.DataFrame(list(), columns=["u", "ts", "tf"])
 
+def ts_to_df(ts):
+    if bool(ns):
+        if isinstance(ns, TimeSetDF):
+            return ts.df
+        else:
+            return pd.DataFrame(list(ts), columns=["u", "ts", "tf"])
+    else:
+        return pd.DataFrame(list(), columns=["u", "ts", "tf"])
 
 def nsr_disjoint_union(nodes, min_time, max_time, ba, bb):
     return NodeStreamDF().set_df(pd.DataFrame(iter((n, mn, mx)
