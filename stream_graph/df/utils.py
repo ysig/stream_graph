@@ -183,9 +183,8 @@ def cartesian_intersect(df, base):
     dfu = base.loc[u, ['ts', 'tf']]
     dfv = base.loc[v, ['ts', 'tf']]
     dft = df[['ts', 'tf']]
-    i1 = intersect_intervals(dft.append(dfu, ignore_index=True, sort=True))
-    i2 = intersect_intervals(dft.append(dfv, ignore_index=True, sort=True))
-    df = merge_intervals(i1.append(i2, ignore_index=True, sort=True))
+    dfi = intersect_intervals(dft.append(dfu, ignore_index=True, sort=True))
+    df = intersect_intervals(dfi.append(dfv, ignore_index=True, sort=True))
     if not df.empty:
         return df
 
@@ -262,8 +261,8 @@ def ns_to_df(ns):
         return pd.DataFrame(list(), columns=["u", "ts", "tf"])
 
 def ts_to_df(ts):
-    if bool(ns):
-        if isinstance(ns, TimeSetDF):
+    if bool(ts):
+        if isinstance(ts, TimeSetDF):
             return ts.df
         else:
             return pd.DataFrame(list(ts), columns=["u", "ts", "tf"])

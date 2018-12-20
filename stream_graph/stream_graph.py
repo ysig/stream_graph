@@ -54,7 +54,7 @@ class StreamGraph(object):
     def linkstream_coverage(self):
         denom = float(self.nodeset_.size * self.nodestream_.total_common_time)
         if denom > .0:
-            return self.lsm.size / denom
+            return self.linkstream_.size / denom
         else:
             return .0
 
@@ -62,12 +62,12 @@ class StreamGraph(object):
     def nodestream_coverage(self):
         denom = float(self.nodeset_.size * self.nodestream_.total_common_time)
         if denom > .0:
-            return self.lsm.size / denom
+            return self.linkstream_.size / denom
         else:
             return .0
 
     def time_coverage(self, u, v=None, direction='out'):
-        denom = float(self.ts.size)
+        denom = float(self.timeset_.size)
         if denom == .0:
             return .0
         elif v is None:
@@ -78,7 +78,7 @@ class StreamGraph(object):
     def node_coverage(self, t):
         denom = float(self.nodeset_.size )
         if denom > .0:
-            return self.nodestream_.number_of_nodes_at(t) / denom
+            return self.nodestream_.n_at(t) / denom
         else:
             return .0
 
@@ -99,7 +99,7 @@ class StreamGraph(object):
     def neighbor_coverage_at(self, u, t, direction='out'):
         denom = float(self.nodeset_.size)
         if denom > .0:
-            return self.linkstream_.neighbors_at(u, t, direction) / denom
+            return self.linkstream_.neighbors_at(u, t, direction).size / denom
         else:
             return .0
 
@@ -121,7 +121,7 @@ class StreamGraph(object):
             return self.linkstream_.times_of(u, v, direction).size / denom
 
     def density_at(self, t):
-        denom = float(self.nodestream_.number_of_nodes_at(t))
+        denom = float(self.nodestream_.n_at(t))
         if denom > .0:
             return self.linkstream_.linkstream_at(t).size / denom
         else:
@@ -181,7 +181,14 @@ class StreamGraph(object):
             return .0
 
     def contribution(self, u, v=None, direction='out'):
-        return self.link_duration(u, v=None, direction=direction)/float(self.ns_.total_time)
+        denom = float(self.timeset_.size)
+        if denom > .0:
+            if v is None:
+                return self.nodestream_.node_duration(u) / denom
+            else:
+                return self.linkstream_.link_duration(u, v, direction=direction) / denom
+        else:
+            return .0
 
     def induced_substream(self, ns):
         assert isinstance(ns, NodeStream)

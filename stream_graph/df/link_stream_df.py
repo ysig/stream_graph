@@ -162,55 +162,45 @@ class LinkStreamDF(API.LinkStream):
     def times_of(self, u, v, direction='out'):
         if not bool(self):
             return TimeSetDF()
+        di = True
         if direction == 'out':
             df = self.df[(self.df.u == u) & (self.df.v == v)]
         elif direction == 'in':
             df = self.df[(self.df.v == u) & (self.df.u == v)]
         elif direction == 'both':
             df = self.df[self.df.u.isin({u, v}) & self.df.v.isin({u, v})]
+            di = False
         else:
             raise UnrecognizedDirection()
-        return TimeSetDF(df.drop(columns=['u', 'v']), disjoint_intervals=True)
-
-    def link_duration(self, u, v, direction='out'):
-        if not bool(self):
-            return 0
-        if direction == 'out':
-            return utils.measure_time(self.df[(self.df.u == u) & (self.df.v == v)])
-        elif direction == 'in':
-            return utils.measure_time(self.df[(self.df.v == u) & (self.df.u == v)])
-        elif direction == 'both':
-            return utils.measure_time(self.df[self.df.u.isin({u, v}) & self.df.v.isin({u, v})])
-        else:
-            raise UnrecognizedDirection()
+        return TimeSetDF(df.drop(columns=['u', 'v']), disjoint_intervals=di)
 
     def neighbors_at(self, u, t, direction='out'):
         if not bool(self):
             return NodeSetS()
         if direction == 'out':
-            df = self.df[self.df.u == u].drop(columns=['u']).rename(columns={'u': 'v'})
+            df = self.df[self.df.u == u].drop(columns=['u']).rename(columns={'v': 'u'})
         elif direction == 'in':
             df = self.df[self.df.v == u].drop(columns=['v'])
         elif direction == 'both':
-            df = self.df[self.df.u == u].drop(columns=['u']).rename(columns={'u': 'v'})
+            df = self.df[self.df.u == u].drop(columns=['u']).rename(columns={'v': 'u'})
             df = df.append(self.df[self.df.v == u].drop(columns=['v']), ignore_index=True)
         else:
             raise UnrecognizedDirection()
-        return NodeSetS(self.df[utils.df_index_at(df, t)].drop(columns=['v', 'ts', 'tf']).values.flat)
+        return NodeSetS(df[utils.df_index_at(df, t)].u.values.flat)
 
     def neighbors(self, u, direction='out'):
         if not bool(self):
             return NodeStreamDF()
         if direction == 'out':
-            df = self.df[self.df.u == u].drop(columns=['u']).rename(columns={'u': 'v'})
+            df = self.df[self.df.u == u].drop(columns=['u']).rename(columns={'v': 'u'})
         elif direction == 'in':
             df = self.df[self.df.v == u].drop(columns=['v'])
         elif direction=='both':
-            df = self.df[self.df.u == u].drop(columns=['u']).rename(columns={'u': 'v'})
+            df = self.df[self.df.u == u].drop(columns=['u']).rename(columns={'v': 'u'})
             df = df.append(self.df[self.df.v == u].drop(columns=['v']), ignore_index=True)
         else:
             raise UnrecognizedDirection()
-        return utils.df_to_ns(df, merged=False)
+        return NodeStreamDF(df, disjoint_intervals=False)
 
     def substream(self, nsu, nsv, ts):
         if not isinstance(nsu, API.NodeSet):
@@ -220,7 +210,7 @@ class LinkStreamDF(API.LinkStream):
         if not isinstance(ts, API.TimeSet):
             raise UnrecognizedTimeSet('ts')
         if bool(self) and bool(nsu) and bool(nsv) and bool(ts):
-            return LinkStreamDF(utils.merge_intervals_with_df(
+            return LinkStreamDF(utils.intersect_intervals_with_df(
                 self.df[self.df.u.isin(nsu) & self.df.v.isin(nsv)],
                 utils.ts_to_df(ts), on_column=['u', 'v']))
         else:
@@ -330,7 +320,7 @@ class LinkStreamDF(API.LinkStream):
                 derror = True
         if derror:
             raise UnrecognizedDirection()
-        return utils.df_to_ns(df, merged=False)
+        return NodeStreamDF(df, disjoint_intervals=False)
 
     def induced_substream(self, ns):
         if isinstance(ns, API.NodeStream):

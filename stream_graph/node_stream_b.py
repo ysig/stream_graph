@@ -65,7 +65,7 @@ class NodeStreamB(API.NodeStream):
     @property
     def total_common_time(self):
         n = self.n
-        return n*(n-1)*self.timeset_.total_time
+        return n*(n-1)*self.timeset_.size
 
 
     def __contains__(self, u):

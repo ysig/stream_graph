@@ -14,33 +14,39 @@ def test_stream_graph():
     assert not bool(StreamGraph())
 
     assert sga.n == 2.0
-    print(sga.m)
+    assert sga.m == 1.0
 
-    print(sga.nodestream_coverage)
-    print(sga.linkstream_coverage)
+    assert sga.nodestream_coverage == 0.25
+    assert sga.linkstream_coverage == 0.25
 
-    print(sga.time_coverage(1))
-    print(sga.time_coverage(1, 2))
-    print(sga.time_coverage(1, 2, 'in'))
-    print(sga.time_coverage(1, 2, 'both'))
-    print(sga.node_coverage(2.5))
-    print(sga.node_coverage(10))
-    print(sga.node_coverage(2.5))
-    print(sga.node_coverage(10))
-    print(sga.neighbor_coverage(1))
-    print(sga.neighbor_coverage(1, 'in'))
-    print(sga.neighbor_coverage(1, 'both'))
-    print(sga.neighbor_coverage_at(1, 2.5))
-    print(sga.neighbor_coverage_at(1, 2.5, 'in'))
-    print(sga.neighbor_coverage_at(1, 2.5, 'both'))
-    print(sga.total_density)
-    print(sga.density(1))
-    print(sga.density(1, 2))
-    print(sga.density(1, 2, 'in'))
-    print(sga.density(1, 2, 'both'))
-    print(sga.density(2.5))
+    assert sga.time_coverage(1) == 1.0
+    assert sga.time_coverage(1, 2) == 0.42857142857142855
+    assert sga.time_coverage(1, 2, 'in') == 0.5714285714285714
+    assert sga.time_coverage(1, 2, 'both') == 1.0
 
-    print(contribution)
+    assert sga.node_coverage(2.5) == 1.0
+    assert sga.node_coverage(10) == 0.
+    assert sga.node_coverage(2.5) == 1.0
+
+    assert sga.neighbor_coverage(1) == 0.21428571428571427
+    assert sga.neighbor_coverage(1, 'in') == 0.2857142857142857
+    assert sga.neighbor_coverage(1, 'both') == 0.42857142857142855
+
+    assert sga.neighbor_coverage_at(1, 2.5) == 0.5
+    assert sga.neighbor_coverage_at(1, 2.5, 'in') == 0.5
+    assert sga.neighbor_coverage_at(1, 2.5, 'both') == 0.5
+
+    assert sga.total_density == 0.5
+    assert sga.density(1) == 1.5
+    assert sga.density(1, 2) == 1.5
+    assert sga.density(1, 2, 'in') == 2.0
+    assert sga.density(1, 2, 'both') == 3.5
+    assert sga.density(2.5) == 0.
+
+    assert sga.contribution(1) == 0.2857142857142857
+    assert sga.contribution(1, 2) == 0.42857142857142855
+    assert sga.contribution(1, 2, 'in') == 0.5714285714285714
+    assert sga.contribution(1, 2, 'both') == 1.0
 
 if __name__ == "__main__":
     test_stream_graph()

@@ -1,1 +1,1 @@
-# Prototype Implementation of a Library for Stream Graphs
+# Prototype Implementation of *Stream Graphs*

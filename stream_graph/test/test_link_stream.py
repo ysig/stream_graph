@@ -69,16 +69,20 @@ def test_link_stream_df():
     assert (lsa | lsb).issuperset(lsb)
     assert lsa.issuperset(lsa - lsb)
 
-    print(lsa.neighbors(1))
-    print(lsa.neighbors(1, 'in'))
-    print(lsa.neighbors(1, 'both'))
+    assert set(lsa.neighbors(1)) == {(2, 2, 5)}
+    assert set(lsa.neighbors(1, 'in')) == {(2, 6, 8), (2, 1, 3)}
+    assert set(lsa.neighbors(1, 'both')) == {(2, 6, 8), (2, 1, 5)}
 
-    nsa = NodeSet({1})
-    nsb = NodeSet({2})
+    nsa = NodeSetS({1})
+    nsb = NodeSetS({2})
     ts = TimeSetDF([(1, 4)])
+    assert set(lsa.substream(nsa, nsb, ts)) == {(1, 2, 2, 4)}
+    
     nsma = NodeStreamDF([(1, 1, 4)])
-    print(lsa.substream(nsa, nsa, ts))
-    print(lsa.induced_substream(nsma))
+    assert set(lsa.neighborhood(nsma, direction='out')) == {(2, 2, 4)}
+
+    nsmb = NodeStreamDF([(1, 1, 4), (2, 1, 2)])
+    assert set(lsa.induced_substream(nsmb)) == {(1, 2, 2, 2), (2, 1, 1, 2)}
 
 
     try:
