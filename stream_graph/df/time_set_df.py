@@ -2,9 +2,9 @@ from numbers import Real
 
 import pandas as pd
 
+#from . import utils
 from stream_graph import API
-from stream_graph.df import utils
-from stream_graph.exceptions import UnrecognizedTimeSet
+#from stream_graph.exceptions import UnrecognizedTimeSet
 
 
 class TimeSetDF(API.TimeSet):

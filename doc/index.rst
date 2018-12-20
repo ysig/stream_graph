@@ -5,8 +5,25 @@
 Overview
 ========
 
-A *prototype* implementation of `stream graphs <https://hal.archives-ouvertes.fr/hal-01665084>`.
+A *prototype* implementation of `stream graphs <https://hal.archives-ouvertes.fr/hal-01665084>`_.
 
+
+==========
+API
+==========
+.. toctree::
+  :maxdepth: 1
+
+  api
+  
+
+===========
+Examples
+===========
+.. toctree::
+  :maxdepth: 1
+
+  auto_examples/index
 
 ==================
 Indices and tables

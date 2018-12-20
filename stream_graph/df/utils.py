@@ -3,8 +3,8 @@ import pandas as pd
 import numpy as np
 
 from stream_graph import API
-from stream_graph.df.node_stream_df import NodeStreamDF
-from stream_graph.df.time_set_df import TimeSetDF
+from . import NodeStreamDF
+from . import TimeSetDF
 
 
 def intersect_intervals(df):
@@ -211,7 +211,8 @@ def difference_b(tr, tb):
         idxn = np.where(((cr[1:] == -2) & tbps[1:]) |
                         ((cr[1:] == 0) & ~tbps[1:]))[0] #(trps[:-1] == trps[1:])
         if idxn.size:
-            return pd.DataFrame({'ts': dts[idxn], 'tf': dts[idxn+1]})
+            df = pd.DataFrame({'ts': dts[idxn], 'tf': dts[idxn+1]})
+            return df[df.ts != df.tf]
     else:
         return pd.DataFrame(columns=['ts', 'tf'])
 

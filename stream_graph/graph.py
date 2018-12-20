@@ -1,7 +1,7 @@
 import copy
-from stream_graph import API
-from stream_graph import NodeSetS
-from stream_graph import LinkSetDF
+import API
+from .set.node_set_s import NodeSetS
+from .df.link_set_df import LinkSetDF
 
 class Graph(object):
     def __init__(self, nodeset=None, linkset=None):

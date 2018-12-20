@@ -1,7 +1,10 @@
 import abc
 import copy
 
-class NodeStream(abc.ABC):
+# 2/3 Cross Compatibility
+ABC = abc.ABCMeta('ABC', (object,), {'__slots__': ()}) 
+
+class NodeStream(ABC):
     @property
     @abc.abstractmethod
     def nodeset(self):

@@ -1,6 +1,6 @@
 import stream_graph as sgl
-from stream_graph import API
-from stream_graph.exceptions import UnrecognizedStreamGraph
+#from . import API
+from .exceptions import UnrecognizedStreamGraph
 
 class StreamGraph(object):
     def __init__(self, nodeset=None, timeset=None, nodestream=None, linkstream=None):

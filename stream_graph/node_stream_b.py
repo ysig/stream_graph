@@ -1,12 +1,12 @@
 from itertools import chain
 
-from stream_graph import API
-from stream_graph.set.node_set_s import NodeSetS
-from stream_graph.df.time_set_df import TimeSetDF
-from stream_graph.df.node_stream_df import NodeStreamDF
-from stream_graph.exceptions import UnrecognizedNodeSet
-from stream_graph.exceptions import UnrecognizedTimeSet
-from stream_graph.exceptions import UnrecognizedNodeStream
+from . import API
+from .set.node_set_s import NodeSetS
+from .df.time_set_df import TimeSetDF
+from .df.node_stream_df import NodeStreamDF
+from .exceptions import UnrecognizedNodeSet
+from .exceptions import UnrecognizedTimeSet
+from .exceptions import UnrecognizedNodeStream
 
 
 class NodeStreamB(API.NodeStream):

@@ -1,10 +1,15 @@
 import copy
 import abc
 
-class LinkSet(abc.ABC):
+# 2/3 Cross Compatibility
+ABC = abc.ABCMeta('ABC', (object,), {'__slots__': ()}) 
+
+class LinkSet(ABC):
     @property
     @abc.abstractmethod
     def size(self):
+        """
+        """
         pass
 
     @abc.abstractmethod

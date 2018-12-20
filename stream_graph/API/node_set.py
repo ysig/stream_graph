@@ -1,7 +1,10 @@
 import copy
 import abc
 
-class NodeSet(abc.ABC):
+# 2/3 Cross Compatibility
+ABC = abc.ABCMeta('ABC', (object,), {'__slots__': ()}) 
+
+class NodeSet(ABC):
     @property
     @abc.abstractmethod
     def size(self):

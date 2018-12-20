@@ -4,11 +4,11 @@ from numbers import Real
 
 import pandas as pd
 
+from . import utils
 from stream_graph import API
-from stream_graph.df import utils
-from stream_graph.df.node_stream_df import NodeStreamDF
-from stream_graph.df.link_set_df import LinkSetDF
-from stream_graph.df.time_set_df import TimeSetDF
+from .node_stream_df import NodeStreamDF
+from .link_set_df import LinkSetDF
+from .time_set_df import TimeSetDF
 from stream_graph.set.node_set_s import NodeSetS
 from stream_graph.node_stream_b import NodeStreamB
 from stream_graph.exceptions import UnrecognizedLinkStream

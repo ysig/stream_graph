@@ -1,8 +1,10 @@
-
 import copy
 import abc
 
-class TimeSet(abc.ABC):
+# 2/3 Cross Compatibility
+ABC = abc.ABCMeta('ABC', (object,), {'__slots__': ()}) 
+
+class TimeSet(ABC):
     @property
     @abc.abstractmethod
     def size(self):

@@ -4,16 +4,23 @@
 API Reference
 =============
 
-.. currentmodule:: stream_graph
+.. currentmodule:: stream_graph.API
 
 .. autosummary::
    :toctree: generated/
-   :template: class.rst
+   :template: api.rst
 
    NodeSet
    LinkSet
    TimeSet
    NodeStream
    LinkStream
-   Graph
-   StreamGraph
+
+.. currentmodule:: stream_graph
+
+.. autosummary::
+   :toctree: generated/
+   :template: class.rst
+
+   NodeSetS
+

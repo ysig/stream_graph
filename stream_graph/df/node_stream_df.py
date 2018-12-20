@@ -3,10 +3,10 @@ from numbers import Real
 import pandas as pd
 
 import stream_graph as sg
+#from stream_graph.df import utils
 from stream_graph import API
-from stream_graph.df import utils
-from stream_graph.df.time_set_df import TimeSetDF
-from stream_graph.set.node_set_s import NodeSetS
+from .time_set_df import TimeSetDF
+from stream_graph.set import NodeSetS
 from stream_graph.exceptions import UnrecognizedNodeStream
 
 

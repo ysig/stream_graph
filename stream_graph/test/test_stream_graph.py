@@ -7,7 +7,7 @@ from stream_graph.exceptions import UnrecognizedDirection
 
 def test_stream_graph():
     df = [(1, 2, 2, 3), (1, 2, 3, 5), (2, 1, 6, 8), (2, 1, 1, 3)]
-    sga = LinkStreamDF(df, disjoint_intervals=False).as_stream_graph_minimal
+    sga = LinkStreamDF(df, disjoint_intervals=False).as_stream_graph_basic
 
     assert isinstance(sga, StreamGraph)
     assert bool(sga)
