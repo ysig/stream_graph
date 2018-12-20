@@ -1,6 +1,5 @@
 import copy
 import abc
-from stream_graph.stream_graph import StreamGraph
 
 # 2/3 Cross Compatibility
 ABC = abc.ABCMeta('ABC', (object,), {'__slots__': ()}) 
@@ -436,6 +435,7 @@ class LinkStream(ABC):
             Generates a StreamGraph containing the basic nodestream and time range that contain this LinkStream
 
         """
+        from stream_graph.stream_graph import StreamGraph
         nsm = self.basic_nodestream
         return StreamGraph(self.nodeset, nsm.timeset, nsm, self)
 
@@ -453,4 +453,5 @@ class LinkStream(ABC):
             Generate the StreamGraph containing the minimal nodestream and the minimal timeset.
 
         """
+        from stream_graph.stream_graph import StreamGraph
         return StreamGraph(self.nodeset, self.timeset, self.minimal_nodestream, self)

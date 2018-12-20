@@ -71,10 +71,10 @@ def test_node_stream_b():
     assert set((nsb | nsa)) == {(n, 1, 8) for n in {1, 2, 3, 4, 5}}
     assert (nsb | nsa).size == 35
 
-    diff_ba = set((n, ts, tf) for e in [([4], [(1, 3), (4, 8)]), ([2, 3], [(1, 1), (2, 3), (5, 6), (7, 8)])] for n in e[0] for ts, tf in e[1])
+    diff_ba = set((n, ts, tf) for e in [([4], [(1, 3), (4, 8)]), ([2, 3], [(2, 3), (5, 6), (7, 8)])] for n in e[0] for ts, tf in e[1])
     assert set(nsb - nsa) == diff_ba
     assert (nsb - nsa).size == 12
-    diff_ab = set((n, ts, tf) for e in [([1, 5], [(1, 2), (3, 5), (6, 7)]), ([2, 3], [(1, 1), (3, 4)])] for n in e[0] for ts, tf in e[1])
+    diff_ab = set((n, ts, tf) for e in [([1, 5], [(1, 2), (3, 5), (6, 7)]), ([2, 3], [(3, 4)])] for n in e[0] for ts, tf in e[1])
     assert set(nsa - nsb) == diff_ab
     assert (nsa - nsb).size == 10
 
@@ -153,10 +153,10 @@ def test_node_stream_df():
     assert set((nsb | nsa)) == {(1, 1, 5), (1, 6, 8), (2, 1, 3)}
     assert (nsb | nsa).size == 8
 
-    assert set(nsb - nsa) == {(1, 1, 2), (1, 6, 6)}
+    assert set(nsb - nsa) == {(1, 1, 2)}
     assert (nsb - nsa).size == 1
     assert isinstance(nsb - nsa, NodeStreamDF)
-    assert set(nsa - nsb) == {(1, 6.0, 6.0), (1, 4, 5), (1, 7, 8), (2, 1, 2.5), (2, 2.6, 3)}
+    assert set(nsa - nsb) == {(1, 4, 5), (1, 7, 8), (2, 1, 2.5), (2, 2.6, 3)}
     assert isinstance(nsa - nsb, NodeStreamDF)
     assert (nsa - nsb).size == 3.9
 
@@ -187,7 +187,7 @@ def test_node_stream_op_b_df():
     assert set(nsb & nsa) == set(nsa & nsb)
     assert type(nsb & nsa) is type(nsa & nsb)
     assert isinstance(nsa & nsb, NodeStreamDF)
-    assert set(nsa & nsb) == {(1, 2, 2), (1, 4, 5), (1, 6, 7), (2, 1, 2)}
+    assert set(nsa & nsb) == {(1, 2, 2), (1, 6, 7), (2, 1, 2), (1, 4, 5)}
     assert (nsb & nsa).size == 3
 
     assert set(nsb | nsa) == set(nsa | nsb)
@@ -196,10 +196,10 @@ def test_node_stream_op_b_df():
     assert set((nsb | nsa)) == {(1, 1, 8), (2, 1, 3), (2, 4, 7)}
     assert (nsb | nsa).size == 12
 
-    assert set(nsb - nsa) == {(2, 1, 1), (1, 2, 4), (1, 7, 8), (2, 2, 3)}
+    assert set(nsb - nsa) == { (1, 2, 4), (1, 7, 8), (2, 2, 3)}
     assert (nsb - nsa).size == 4
     assert isinstance(nsb - nsa, NodeStreamDF) and type(nsb - nsa) is type(nsa - nsb)
-    assert set(nsa - nsb) == {(1, 1, 2), (1, 5, 6), (2, 1, 1), (2, 4, 7)}
+    assert set(nsa - nsb) == {(1, 1, 2), (1, 5, 6), (2, 4, 7)}
     assert (nsa - nsb).size == 5
 
     assert nsa.issuperset(nsa & nsb)

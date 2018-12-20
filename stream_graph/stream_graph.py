@@ -1,5 +1,5 @@
 import stream_graph as sgl
-#from . import API
+from . import API
 from .exceptions import UnrecognizedStreamGraph
 
 class StreamGraph(object):

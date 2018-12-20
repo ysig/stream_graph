@@ -3,7 +3,7 @@ from numbers import Real
 import pandas as pd
 
 import stream_graph as sg
-#from stream_graph.df import utils
+from . import utils
 from stream_graph import API
 from .time_set_df import TimeSetDF
 from stream_graph.set import NodeSetS

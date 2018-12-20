@@ -1,5 +1,5 @@
 import copy
-import API
+from . import API
 from .set.node_set_s import NodeSetS
 from .df.link_set_df import LinkSetDF
 

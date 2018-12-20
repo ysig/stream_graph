@@ -3,9 +3,6 @@ import pandas as pd
 import numpy as np
 
 from stream_graph import API
-from . import NodeStreamDF
-from . import TimeSetDF
-
 
 def intersect_intervals(df):
     # Assumes that intervals with common elements come from different dataframes
@@ -253,6 +250,7 @@ def map_intersect_df(df, base_df):
 
 
 def ns_to_df(ns):
+    from .node_stream_df import NodeStreamDF
     if ns:
         if isinstance(ns, NodeStreamDF):
             return ns.df
@@ -262,6 +260,7 @@ def ns_to_df(ns):
         return pd.DataFrame(list(), columns=["u", "ts", "tf"])
 
 def ts_to_df(ts):
+    from .time_set_df import TimeSetDF
     if bool(ts):
         if isinstance(ts, TimeSetDF):
             return ts.df
