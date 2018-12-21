@@ -5,11 +5,16 @@ import abc
 ABC = abc.ABCMeta('ABC', (object,), {'__slots__': ()}) 
 
 class LinkStream(ABC):
-    """LinkStream Object API Specification"""
+    """LinkStream Object API Specification.
+    
+    A LinkStream can be abstractly be defined as a set of links :code:`(u, v)` associated with a set of intervals :code:`(ts, tf)`.
+
+    """
+
     @property
     @abc.abstractmethod
     def size(self):
-        """Prints the size of the link stream
+        """Returns the size of the LinkStream.
         
         Parameters
         ----------
@@ -26,21 +31,21 @@ class LinkStream(ABC):
 
     @abc.abstractmethod
     def __contains__(self, l):
-        """Contains definition for LinkStream corresponding to :code:`in` operator.
+        """Implementation of the :code:`in` operator for LinkStream.
         
         Parameters
         ----------
         l : tuple, len(l) == 3
-            l[0] : u
-            l[1] : v
-            l[2] : t or (ts, tf)
+            l[0] : :code:`u`
+            l[1] : :code:`v`
+            l[2] : :code:`t` or :code:`(ts, tf)`
 
         Returns
         -------
         contains : Bool
-            Returns true if the link (u, v) exists at or through **all** (ts, tf).
+            Returns true if the link :code:`(u, v)` exists at :code:`t` or through **all** :code:`(ts, tf)`.
         
-        """    
+        """
         pass
 
     @abc.abstractmethod
@@ -138,7 +143,7 @@ class LinkStream(ABC):
         
         Returns
         -------
-        timeset : TimeSet
+        nodeset : NodeSet
             Returns all the nodes that appear in links.
 
         """
@@ -197,7 +202,7 @@ class LinkStream(ABC):
         
         Returns
         -------
-        timeset : TimeSet
+        nodestream : NodeStream
             Return the ('in', 'out' or 'both') nodestream of neighbors at a certain time(s).
 
         """
@@ -225,7 +230,7 @@ class LinkStream(ABC):
 
     @abc.abstractmethod
     def __bool__(self):
-        """Implementation of the :code:`bool` casting of a LinkStream object
+        """Implementation of the :code:`bool` casting of a LinkStream object.
         
         Parameters
         ----------
@@ -241,7 +246,7 @@ class LinkStream(ABC):
 
     @abc.abstractmethod
     def __and__(self, ls):
-        """Implementation of the :code:`&` operator of a LinkStream object
+        """Implementation of the :code:`&` operator of a LinkStream object.
         
         Parameters
         ----------
@@ -250,14 +255,14 @@ class LinkStream(ABC):
         Returns
         -------
         out : LinkStream
-            Returns the **intersection** of Links and Intervals.
+            Returns the **intersection** of Links at Intervals.
 
         """
         pass
 
     @abc.abstractmethod
     def __or__(self, ls):
-        """Implementation of the :code:`|` operator of a LinkStream object
+        """Implementation of the :code:`|` operator for a LinkStream object.
         
         Parameters
         ----------
@@ -266,14 +271,14 @@ class LinkStream(ABC):
         Returns
         -------
         out : LinkStream
-            Returns the **union** of Links and Intervals.
+            Returns the **union** of Links at Intervals.
 
         """
         pass
 
     @abc.abstractmethod
     def __sub__(self, ls):
-        """Implementation of the :code:`-` operator of a LinkStream object
+        """Implementation of the :code:`-` operator for a LinkStream object.
         
         Parameters
         ----------
@@ -282,14 +287,14 @@ class LinkStream(ABC):
         Returns
         -------
         out : LinkStream
-            Returns the difference of Links and Intervals.
+            Returns the **difference** of Links at Intervals.
 
         """
         pass
 
     @abc.abstractmethod
     def __iter__(self):
-        """Implementation of the :code:`iter` function of a LinkStream object
+        """Implementation of the :code:`iter` function for a LinkStream object.
         
         Parameters
         ----------
@@ -305,7 +310,7 @@ class LinkStream(ABC):
 
     @abc.abstractmethod
     def issuperset(self, ls):
-        """Check if a linkstream contains another linkstream
+        """Check if a LinkStream contains another LinkStream.
         
         Parameters
         ----------
@@ -314,14 +319,14 @@ class LinkStream(ABC):
         Returns
         -------
         issuperset_f : Bool
-            True if all links of ls appear in same or lesser intervalls
+            True if all links of ls appear in same or lesser intervals.
 
         """
         pass
 
     @abc.abstractmethod
     def induced_substream(self, ns):
-        """Returns the induced substream from a nodestream
+        """Returns the induced substream from a NodeStream.
         
         Parameters
         ----------
@@ -337,7 +342,7 @@ class LinkStream(ABC):
 
     @abc.abstractmethod
     def neighborhood(self, ns, direction='out'):
-        """Returns the neighborhood of a nodestream
+        """Returns the neighborhood of a NodeStream.
         
         Parameters
         ----------
@@ -355,7 +360,7 @@ class LinkStream(ABC):
 
     @property
     def m(self):
-        """Returns number of links of the LinkStream
+        """Returns number of links of the LinkStream.
         
         Parameters
         ----------
@@ -364,13 +369,13 @@ class LinkStream(ABC):
         Returns
         -------
         m : Int
-            Returns the number of links in the LinkStream
+            Returns the number of links in the LinkStream.
 
-        """    
+        """
         return self.linkset.size
 
     def copy(self, deep=True):
-        """Returns a deep or shallow copy of the current LinkStream 
+        """Returns a deep or shallow copy of the current LinkStream. 
         
         Parameters
         ----------
@@ -379,7 +384,7 @@ class LinkStream(ABC):
         Returns
         -------
         linkstream_copy : LinkStream
-            Returns a deep or shallow copy of the current LinkStream
+            Returns a deep or shallow copy of the current LinkStream.
 
         """
         if deep:
@@ -388,7 +393,7 @@ class LinkStream(ABC):
             return copy.copy(self)
 
     def m_at(self, t):
-        """Returns the number of links appearing at a certain time
+        """Returns the number of links appearing at a certain time.
         
         Parameters
         ----------
@@ -423,7 +428,7 @@ class LinkStream(ABC):
 
     @property
     def as_stream_graph_basic(self):
-        """Generate the basic stream graph containing this linkstream
+        """Generate the basic stream graph containing this LinkStream.
         
         Parameters
         ----------
@@ -432,7 +437,7 @@ class LinkStream(ABC):
         Returns
         -------
         stream_graph : StreamGraph
-            Generates a StreamGraph containing the basic nodestream and time range that contain this LinkStream
+            Generates a StreamGraph containing the basic nodestream and time range that contain this LinkStream.
 
         """
         from stream_graph.stream_graph import StreamGraph
@@ -441,7 +446,7 @@ class LinkStream(ABC):
 
     @property
     def as_stream_graph_minimal(self):
-        """Generate the minimal stream graph containing this nodestream
+        """Generate the minimal stream graph containing this NodeStream.
         
         Parameters
         ----------
@@ -450,7 +455,7 @@ class LinkStream(ABC):
         Returns
         -------
         stream_graph : StreamGraph
-            Generate the StreamGraph containing the minimal nodestream and the minimal timeset.
+            Generate the StreamGraph containing the minimal NodeStream and the minimal TimeSet.
 
         """
         from stream_graph.stream_graph import StreamGraph
