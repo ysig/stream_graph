@@ -264,6 +264,10 @@ class NodeStream(ABC):
         """
         pass
 
+    # Python2 cross-compatibility
+    def __nonzero__(self):
+        return self.__bool__()
+
     @abc.abstractmethod
     def __and__(self, ns):
         """Implementation of the :code:`&` operator for a NodeStream object.

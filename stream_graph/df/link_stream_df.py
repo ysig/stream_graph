@@ -61,16 +61,22 @@ class LinkStreamDF(API.LinkStream):
         return self
 
     @property
+    def reindex_(self):
+        # Important for python 2 compatibility
+        self.df_ = self.df_.reindex(columns=['u', 'v', 'ts', 'tf'])
+        return self
+
+    @property
     def df(self):
         if bool(self):
-            return self.merge_.sort_.df_
+            return self.merge_.sort_.reindex_.df_
         else:
             return pd.DataFrame(columns=['u', 'v', 'ts', 'tf'])
 
     @property
     def dfm(self):
         if bool(self):
-            return self.merge_.df_
+            return self.merge_.reindex_.df_
         else:
             return pd.DataFrame(columns=['u', 'v', 'ts', 'tf'])
 

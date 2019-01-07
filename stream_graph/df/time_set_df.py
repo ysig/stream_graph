@@ -24,12 +24,18 @@ class TimeSetDF(API.TimeSet):
         return hasattr(self, 'merged_') and self.merged_
 
     @property
+    def reindex_(self):
+        # Important for python 2 compatibility
+        self.df_ = self.df_.reindex(columns=['ts', 'tf'])
+        return self
+
+    @property
     def df(self):
         if bool(self):
             if not self.is_merged_:
                 self.df_ = utils.merge_intervals(self.df_)
                 self.merged_ = True
-            return self.df_
+            return self.reindex_.df_
         else:
             return pd.DataFrame(columns=['ts', 'tf'])
 

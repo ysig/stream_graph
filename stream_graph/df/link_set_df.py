@@ -35,6 +35,12 @@ class LinkSetDF(API.LinkSet):
         else:
             return None
 
+    @property
+    def reindex_(self):
+        # Important for python 2 compatibility
+        self.df_ = self.df_.reindex(columns=['u', 'v'])
+        return self
+
     @sort_by.setter
     def sort_by(self, val):
         if not (hasattr(self, 'sort_by_') and self.sort_by_ == val):
@@ -63,11 +69,11 @@ class LinkSetDF(API.LinkSet):
 
     @property
     def df(self):
-        return self.merge_df_.sort_df_.df_
+        return self.merge_df_.sort_df_.reindex_.df_
 
     @property
     def mdf(self):
-        return self.merge_df_.df_
+        return self.merge_df_.reindex_.df_
 
     def neighbors(self, u, direction='out'):
         if direction == 'out':

@@ -126,6 +126,10 @@ class TimeSet(ABC):
         """
         pass
 
+    # Python2 cross-compatibility
+    def __nonzero__(self):
+        return self.__bool__()
+
     def copy(self, deep=True):
         """Returns a deep or shallow copy of the current TimeSet.
         

@@ -34,6 +34,12 @@ class NodeStreamDF(API.NodeStream):
             self.sort_by_ = value
 
     @property
+    def reindex_(self):
+        # Important for python 2 compatibility
+        self.df_ = self.df_.reindex(columns=['u', 'ts', 'tf'])
+        return self
+
+    @property
     def is_merged_(self):
         return hasattr(self, 'merged_') and self.merged_
 
@@ -57,14 +63,14 @@ class NodeStreamDF(API.NodeStream):
     @property
     def df(self):
         if bool(self):
-            return self.sort_df_.merge_df_.df_
+            return self.sort_df_.merge_df_.reindex_.df_
         else:
             return pd.DataFrame(columns=['u', 'ts', 'tf'])
 
     @property
     def dfm(self):
         if bool(self):
-            return self.merge_df_.df
+            return self.merge_df_.reindex_.df
         else:
             return pd.DataFrame(columns=['u', 'ts', 'tf'])
 

@@ -1,23 +1,26 @@
-import stream_graph as sgl
 from . import API
 from .exceptions import UnrecognizedStreamGraph
 
 class StreamGraph(object):
     def __init__(self, nodeset=None, timeset=None, nodestream=None, linkstream=None):
         if not isinstance(nodeset, API.NodeSet):
-            self.nodeset_ = sgl.NodeSetS(nodeset)
+            from . import NodeSetS
+            self.nodeset_ = NodeSetS(nodeset)
         else:
             self.nodeset_ = nodeset
         if not isinstance(timeset, API.TimeSet):
-            self.timeset_ = sgl.TimeSetDF(timeset)
+            from . import TimeSetDF
+            self.timeset_ = TimeSetDF(timeset)
         else:
             self.timeset_ = timeset
         if not isinstance(nodestream, API.NodeStream):
-            self.nodestream_ = sgl.NodeStreamDF(nodestream)
+            from . import NodeStreamDF
+            self.nodestream_ = NodeStreamDF(nodestream)
         else:
             self.nodestream_ = nodestream
         if not isinstance(linkstream, API.LinkStream):
-            self.linkstream_ = sgl.LinkStreamDF(linkstream)
+            from . import LinkStreamDF
+            self.linkstream_ = LinkStreamDF(linkstream)
         else:
             self.linkstream_ = linkstream
 
@@ -26,6 +29,9 @@ class StreamGraph(object):
                 (hasattr(self, 'timeset_') and bool(self.timeset_)) and
                 (hasattr(self, 'nodestream_') and bool(self.nodestream_)) and
                 (hasattr(self, 'linkstream_') and bool(self.linkstream_)))
+
+    # Python2 cross-compatibility
+    __nonzero__ = __bool__
 
     @property
     def nodeset(self):

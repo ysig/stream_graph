@@ -18,6 +18,9 @@ class Graph(object):
     def __bool__(self):
         return hasattr(self, 'nodeset_') and hasattr(self, 'linkset_') and bool(self.nodeset_) and bool(self.linkset_)
 
+    # Python2 cross-compatibility
+    __nonzero__ = __bool__
+
     @property
     def nodeset(self):
         if hasattr(self, 'nodeset_'):

@@ -45,6 +45,10 @@ class LinkSet(ABC):
         """
         pass
 
+    # Python2 cross-compatibility
+    def __nonzero__(self):
+        return self.__bool__()
+
     @abc.abstractmethod
     def neighbors(self, u, direction='out'):
         """Return the nodeset of a neighbors of a node.

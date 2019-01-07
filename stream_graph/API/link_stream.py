@@ -460,3 +460,7 @@ class LinkStream(ABC):
         """
         from stream_graph.stream_graph import StreamGraph
         return StreamGraph(self.nodeset, self.timeset, self.minimal_nodestream, self)
+    
+    # Python2 cross-compatibility
+    def __nonzero__(self):
+        return self.__bool__()
