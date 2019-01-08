@@ -100,5 +100,16 @@ def test_link_stream_df():
     except UnrecognizedLinkStream:
         pass
 
+    df = [(1, 2, 2, 10), (2, 3, 4, 16), (1, 3, 6, 12), (3, 4, 8, 16), (2, 4, 13, 17)]
+    assert LinkStreamDF(df).get_maximal_cliques() == {(frozenset({2, 4}), (13, 17)),
+                                                      (frozenset({3, 4}), (8, 16)),
+                                                      (frozenset({2, 3, 4}), (13, 16)),
+                                                      (frozenset({2, 3}), (4, 16)),
+                                                      (frozenset({1, 2, 3}), (6, 10)),
+                                                      (frozenset({1, 3}), (6, 12)),
+                                                      (frozenset({1, 2}), (2, 10))}
+
+    
+
 if __name__ == "__main__":
     test_link_stream_df()

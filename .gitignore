@@ -1,3 +1,4 @@
+*.pyc 
 .trash/
 .ipynb_checkpoints/1
 stream_graph.egg-info/

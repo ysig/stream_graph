@@ -1,6 +1,7 @@
 import operator
 from functools import reduce
 from numbers import Real
+from collections import deque
 
 import pandas as pd
 
@@ -349,3 +350,72 @@ class LinkStreamDF(API.LinkStream):
             return self.df_[['u', 'v']].drop_duplicates().shape[0]
         else:
             return 0
+
+    def get_maximal_cliques(self, direction='both'):
+        if not bool(self):
+            return set()
+
+        S, S_set, R, times, nodes = deque(), set(), set(), dict(), dict()
+
+        if self.sort_by == ['ts', 'tf']:
+            df = self.df
+        else:
+            df = self.dfm.sort_values(by=['ts', 'tf'])
+
+        def add_clique(c):
+            if c[0:2] not in S_set:
+                S.appendleft(c)
+                S_set.add(c[0:2])
+
+        lsdf = df[['u', 'v']].drop_duplicates()
+        if direction == 'out':
+            def neighbor(sdf, node):
+                return set(sdf[sdf.u == node].v.values)
+            def neighbors(can):
+                return lsdf[lsdf.u.isin(can)].v.values
+        elif direction == 'in':
+            def neighbor(sdf, node):
+                return set(sdf[sdf.v == node].u.values)            
+            def neighbors(can):
+                return lsdf[lsdf.v.isin(can)].u.values
+        elif direction == 'both':
+            def neighbor(sdf, node):
+                return set(sdf[sdf.u == node].v.append(sdf[sdf.v == node].u, ignore_index=True).drop_duplicates().values)
+            def neighbors(can):
+                return lsdf[lsdf.u.isin(can)].v.append(lsdf[lsdf.v.isin(can)].u, ignore_index=True).drop_duplicates().values
+        else:
+            raise UnrecognizedDirection()
+
+
+        for u, v, ts in df[['u', 'v', 'ts']].itertuples(index=False, name=None):
+            # This a new instance
+            add_clique((frozenset([u, v]), (ts, ts), set([])))
+
+        while len(S) != 0:
+            cnds, (ts, tf), can = S.pop()
+            is_max = True
+
+            # Grow time on the right side
+            sdf = df[(df.ts <= ts) & (df.tf >= tf)]
+            td = sdf[sdf.u.isin(cnds) & sdf.v.isin(cnds)].tf.min()
+            if td != tf:
+                # nodes, (ts, tf), candidates
+                add_clique((cnds, (ts, td), can))
+                is_max = False
+
+            # Grow node set
+            if tf == ts:
+                can = set(neighbors(cnds))
+            can = can.difference(cnds)
+
+            for node in can:
+                if neighbor(sdf, node) == cnds:
+                    # Is clique!
+                    Xnew = set(cnds) | set([node])
+                    add_clique((frozenset(Xnew), (ts, tf), can))
+                    is_max = False
+
+            if is_max:
+                R.add((cnds, (ts, tf)))
+
+        return R

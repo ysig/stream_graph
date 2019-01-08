@@ -426,6 +426,21 @@ class LinkStream(ABC):
         """
         return self.times_of(u, v, direction=direction).size
 
+    @abc.abstractmethod
+    def get_maximal_cliques(self, direction='both'):
+        """Returns the maximal cliques of the linkstream.
+        
+        Parameters
+        ----------
+        direction : string={'in', 'out', 'both'}, default='both'
+        
+        Returns
+        -------
+        maximal_cliques : set
+            Returns a set of tuples containing a frozenset of clique nodes and a tuple of the interval this nodes are active.
+        """
+        pass
+
     @property
     def as_stream_graph_basic(self):
         """Generate the basic stream graph containing this LinkStream.
