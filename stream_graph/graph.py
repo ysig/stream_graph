@@ -1,16 +1,16 @@
 import copy
-from . import API
+from . import ABC
 from .set.node_set_s import NodeSetS
 from .df.link_set_df import LinkSetDF
 
 class Graph(object):
     def __init__(self, nodeset=None, linkset=None):
         if nodeset is not None and linkset is not None:
-            if isinstance(nodeset, API.NodeSet):
+            if isinstance(nodeset, ABC.NodeSet):
                 self.nodeset_ = nodeset
             else:
                 self.nodeset_ = NodeSetS(nodeset)
-            if isinstance(linkset, API.LinkSet):
+            if isinstance(linkset, ABC.LinkSet):
                 self.linkset_ = linkset
             else:
                 self.linkset_ = LinkSetDF(linkset)

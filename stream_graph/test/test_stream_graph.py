@@ -22,7 +22,7 @@ def test_stream_graph():
     assert sga.time_coverage(1) == 1.0
     assert sga.time_coverage(1, 2) == 0.42857142857142855
     assert sga.time_coverage(1, 2, 'in') == 0.5714285714285714
-    assert sga.time_coverage(1, 2, 'both') == 1.0
+    assert sga.time_coverage(1, 2, 'both') == 0.8571428571428571
 
     assert sga.node_coverage(2.5) == 1.0
     assert sga.node_coverage(10) == 0.
@@ -40,13 +40,13 @@ def test_stream_graph():
     assert sga.density(1) == 1.5
     assert sga.density(1, 2) == 1.5
     assert sga.density(1, 2, 'in') == 2.0
-    assert sga.density(1, 2, 'both') == 3.5
+    assert sga.density(1, 2, 'both') == 3.0
     assert sga.density(2.5) == 0.
 
     assert sga.contribution(1) == 0.2857142857142857
     assert sga.contribution(1, 2) == 0.42857142857142855
     assert sga.contribution(1, 2, 'in') == 0.5714285714285714
-    assert sga.contribution(1, 2, 'both') == 1.0
+    assert sga.contribution(1, 2, 'both') == 0.8571428571428571
 
 if __name__ == "__main__":
     test_stream_graph()

@@ -1,24 +1,24 @@
-from . import API
+from . import ABC
 from .exceptions import UnrecognizedStreamGraph
 
 class StreamGraph(object):
     def __init__(self, nodeset=None, timeset=None, nodestream=None, linkstream=None):
-        if not isinstance(nodeset, API.NodeSet):
+        if not isinstance(nodeset, ABC.NodeSet):
             from . import NodeSetS
             self.nodeset_ = NodeSetS(nodeset)
         else:
             self.nodeset_ = nodeset
-        if not isinstance(timeset, API.TimeSet):
+        if not isinstance(timeset, ABC.TimeSet):
             from . import TimeSetDF
             self.timeset_ = TimeSetDF(timeset)
         else:
             self.timeset_ = timeset
-        if not isinstance(nodestream, API.NodeStream):
+        if not isinstance(nodestream, ABC.NodeStream):
             from . import NodeStreamDF
             self.nodestream_ = NodeStreamDF(nodestream)
         else:
             self.nodestream_ = nodestream
-        if not isinstance(linkstream, API.LinkStream):
+        if not isinstance(linkstream, ABC.LinkStream):
             from . import LinkStreamDF
             self.linkstream_ = LinkStreamDF(linkstream)
         else:

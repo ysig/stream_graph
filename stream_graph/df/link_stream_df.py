@@ -6,10 +6,11 @@ from collections import deque
 import pandas as pd
 
 from . import utils
-from stream_graph import API
+from stream_graph import ABC
 from .node_stream_df import NodeStreamDF
 from .link_set_df import LinkSetDF
 from .time_set_df import TimeSetDF
+from .interval_df import IntervalDF
 from stream_graph.set.node_set_s import NodeSetS
 from stream_graph.node_stream_b import NodeStreamB
 from stream_graph.exceptions import UnrecognizedLinkStream
@@ -18,11 +19,15 @@ from stream_graph.exceptions import UnrecognizedNodeSet
 from stream_graph.exceptions import UnrecognizedTimeSet
 from stream_graph.exceptions import UnrecognizedDirection
 
-class LinkStreamDF(API.LinkStream):
+
+class LinkStreamDF(ABC.LinkStream):
     def __init__(self, df=None, disjoint_intervals=True, sort_by=['u', 'v', 'ts', 'tf']):
         if df is not None:
-            if not isinstance(df, pd.DataFrame):
-                df = pd.DataFrame(list(iter(df)), columns=['u', 'v', 'ts', 'tf'])
+            if not isinstance(df, IntervalDF):
+                if not isinstance(df, pd.DataFrame):
+                    df = IntervalDF(list(iter(df)), columns=['u', 'v', 'ts', 'tf'])
+                else:
+                    df = IntervalDF(df)
             self.df_ = df
             self.sort_by = sort_by
             self.merged_ = disjoint_intervals
@@ -51,40 +56,34 @@ class LinkStreamDF(API.LinkStream):
     @property
     def sort_(self):
         if not self.is_sorted_:
-            self.df_ = self.df_.sort_values(by=self.sort_by)
+            self.df_.sort_values(by=self.sort_by, inplace=True)
         return self
 
     @property
     def merge_(self):
         if not self.is_merged_:
-            self.df_ = utils.merge_intervals_df(self.df_, on_column=['u', 'v'])
+            self.df_.union(inplace=True)
             self.merged_ = True
-        return self
-
-    @property
-    def reindex_(self):
-        # Important for python 2 compatibility
-        self.df_ = self.df_.reindex(columns=['u', 'v', 'ts', 'tf'])
         return self
 
     @property
     def df(self):
         if bool(self):
-            return self.merge_.sort_.reindex_.df_
+            return self.merge_.sort_.df_
         else:
-            return pd.DataFrame(columns=['u', 'v', 'ts', 'tf'])
+            return IntervalDF(columns=['u', 'v', 'ts', 'tf'])
 
     @property
     def dfm(self):
         if bool(self):
-            return self.merge_.reindex_.df_
+            return self.merge_.df_
         else:
-            return pd.DataFrame(columns=['u', 'v', 'ts', 'tf'])
+            return IntervalDF(columns=['u', 'v', 'ts', 'tf'])
 
     @property
     def size(self):
         if bool(self):
-            return utils.measure_time(self.df)
+            return self.dfm.measure_time()
         else:
             return 0
 
@@ -145,9 +144,9 @@ class LinkStreamDF(API.LinkStream):
         if v[2] is not None:
             t = v[2]
             if isinstance(t, tuple) and len(t) == 2 and isinstance(t[0], Real) and isinstance(t[1], Real) and t[0]<=t[1]:
-                lpd.append(utils.df_index_at_interval(self.df_, t[0], t[1]))
+                lpd.append(self.df_.index_at_interval(t[0], t[1]))
             elif isinstance(t, Real):
-                lpd.append(utils.df_index_at(self.df_, t))
+                lpd.append(self.df_.index_at(t))
             else:
                 raise ValueError('Input can either be a real number or an ascending interval of two real numbers')
         return reduce(operator.__and__, lpd).any()
@@ -162,9 +161,9 @@ class LinkStreamDF(API.LinkStream):
         if not bool(self):
             return LinkSetDF()
         if isinstance(t, tuple) and len(t) == 2 and isinstance(t[0], Real) and isinstance(t[1], Real) and t[0]<=t[1]:
-            return LinkSetDF(utils.df_at_interval(self.df, t[0], t[1]).drop(columns=['ts', 'tf']), no_duplicates=False)
+            return LinkSetDF(self.df.df_at_interval(t[0], t[1]).drop(columns=['ts', 'tf']), no_duplicates=False)
         else:
-            return LinkSetDF(utils.df_at(self.df, t).drop(columns=['ts', 'tf']), no_duplicates=False)
+            return LinkSetDF(self.df.df_at(t).drop(columns=['ts', 'tf']), no_duplicates=False)
 
     def times_of(self, u, v, direction='out'):
         if not bool(self):
@@ -175,8 +174,7 @@ class LinkStreamDF(API.LinkStream):
         elif direction == 'in':
             df = self.df[(self.df.v == u) & (self.df.u == v)]
         elif direction == 'both':
-            df = self.df[self.df.u.isin({u, v}) & self.df.v.isin({u, v})]
-            di = False
+            df, di = self.df[self.df.u.isin({u, v}) & self.df.v.isin({u, v})], False
         else:
             raise UnrecognizedDirection()
         return TimeSetDF(df.drop(columns=['u', 'v']), disjoint_intervals=di)
@@ -193,7 +191,7 @@ class LinkStreamDF(API.LinkStream):
             df = df.append(self.df[self.df.v == u].drop(columns=['v']), ignore_index=True)
         else:
             raise UnrecognizedDirection()
-        return NodeSetS(df[utils.df_index_at(df, t)].u.values.flat)
+        return NodeSetS(df[df.index_at(t)].u.values.flat)
 
     def neighbors(self, u, direction='out'):
         if not bool(self):
@@ -210,35 +208,32 @@ class LinkStreamDF(API.LinkStream):
         return NodeStreamDF(df, disjoint_intervals=False)
 
     def substream(self, nsu, nsv, ts):
-        if not isinstance(nsu, API.NodeSet):
+        if not isinstance(nsu, ABC.NodeSet):
             raise UnrecognizedNodeSet('nsu')
-        if not isinstance(nsv, API.NodeSet):
+        if not isinstance(nsv, ABC.NodeSet):
             raise UnrecognizedNodeSet('nsv')
-        if not isinstance(ts, API.TimeSet):
+        if not isinstance(ts, ABC.TimeSet):
             raise UnrecognizedTimeSet('ts')
         if bool(self) and bool(nsu) and bool(nsv) and bool(ts):
-            return LinkStreamDF(utils.intersect_intervals_with_df(
-                self.df[self.df.u.isin(nsu) & self.df.v.isin(nsv)],
-                utils.ts_to_df(ts), on_column=['u', 'v']))
+            return LinkStreamDF(self.df[self.df.u.isin(nsu) & self.df.v.isin(nsv)].intersect(utils.ts_to_df(ts), by_key=False, on_column=['u', 'v']))
         else:
             return LinkStreamDF()
 
     def __and__(self, ls):
-        if isinstance(ls, API.LinkStream):
+        if isinstance(ls, ABC.LinkStream):
             if bool(ls) and bool(self):
                 if not isinstance(ls, LinkStreamDF):
                     try:
                         return ls & self
                     except NotImplementedError:
                         ls = LinkStreamDF(ls)
-                return LinkStreamDF(utils.intersect_intervals_df(self.df.append(ls.df, ignore_index=True, sort=False),
-                                                                 on_column=['u', 'v']))
+                return LinkStreamDF(self.df.intersect(ls.df))
         else:
             raise UnrecognizedLinkStream('right operand')
         return LinkStreamDF()
 
     def __or__(self, ls):
-        if isinstance(ls, API.LinkStream):
+        if isinstance(ls, ABC.LinkStream):
             if not bool(self):
                 return ls.copy()
             elif bool(ls):
@@ -247,35 +242,34 @@ class LinkStreamDF(API.LinkStream):
                         return ls | self
                     except NotImplementedError:
                         ls = LinkStreamDF(ls)
-                return LinkStreamDF(utils.merge_intervals_df(self.df.append(ls.df, ignore_index=True, sort=False),
-                                                             on_column=['u', 'v']))
+                return LinkStreamDF(self.df.union(ls.df))
             else:
                 return self.copy()
         else:
             raise UnrecognizedLinkStream('right operand')
 
     def __sub__(self, ls):
-        if isinstance(ls, API.LinkStream):
+        if isinstance(ls, ABC.LinkStream):
             if bool(self) and bool(ls):
                 if isinstance(ls, LinkSetDF):
                     try:
                         return ls.__rsub__(self)
                     except (AttributeError, NotImplementedError):
                         ls = LinkSetDF(ls)
-                return LinkStreamDF(utils.difference_df(self.df, ls.df, on_column=['u', 'v']))
+                return LinkStreamDF(self.df.difference(ls.df))
         else:
             raise UnrecognizedLinkStream('right operand')
         return self.copy()
 
     def issuperset(self, ls):
-        if isinstance(ls, API.LinkStream):
+        if isinstance(ls, ABC.LinkStream):
             if bool(self) and bool(ls):
                 if not isinstance(ls, LinkStreamDF):
                     try:
                         return ls.__issubset__(self)
                     except NotImplementedError or NotImplemented:
                         df = LinkStreamDF(ls)
-                    return utils.issuper_df(self.df, ls.df, on_column=['u', 'v'])
+                    return self.df.issuper(ls.df)
                 else:
                     return self.copy()
             else:
@@ -286,19 +280,19 @@ class LinkStreamDF(API.LinkStream):
 
     def number_of_links_at(self, t):
         if bool(self):
-            return utils.df_count_at(self.dfm, t)
+            return self.dfm.df_count_at(t)
         return 0
 
     def linkstream_at(self, t):
         if bool(self):
-            return LinkStreamDF(utils.df_at(self.dfm, t), sort_by=self.sort_by)
+            return LinkStreamDF(self.dfm.df_at(t), sort_by=self.sort_by)
         return LinkStreamDF()
 
     def neighborhood(self, ns, direction='out'):
-        # if df join on u / combine (intersect) and the merge intervals (for union)
+        # if df join on u / combine (intersect) and the union intervals (for union)
         # if range
         derror = False
-        if not isinstance(ns, API.NodeStream):
+        if not isinstance(ns, ABC.NodeStream):
             raise UnrecognizedNodeStream('ns')
         if isinstance(ns, NodeStreamB):
             if direction == 'out':
@@ -317,12 +311,12 @@ class LinkStreamDF(API.LinkStream):
         else:
             base_df = utils.ns_to_df(ns)
             if direction == 'out':
-                df = utils.map_intersect_df(self.df, base_df)
+                df = self.df.map_intersect(base_df)
             elif direction == 'in':
-                df = utils.map_intersect_df(self.df.rename(columns={'u': 'v', 'v': 'u'}), base_df)
+                df = self.df_.rename(columns={'u': 'v', 'v': 'u'}).map_intersect_df(base_df)
             elif direction == 'both':
-                df = utils.map_intersect_df(self.df, base_df)
-                df = df.append(utils.map_intersect_df(self.df_.rename(columns={'u': 'v', 'v': 'u'}), base_df), ignore_index=True)
+                df = self.df.map_intersect(base_df)
+                df = df.append(self.df_.rename(columns={'u': 'v', 'v': 'u'}).map_intersect_df(base_df), ignore_index=True)
             else:
                 derror = True
         if derror:
@@ -330,16 +324,16 @@ class LinkStreamDF(API.LinkStream):
         return NodeStreamDF(df, disjoint_intervals=False)
 
     def induced_substream(self, ns):
-        if isinstance(ns, API.NodeStream):
+        if isinstance(ns, ABC.NodeStream):
             if bool(self) and bool(ns):
                 if isinstance(ns, NodeStreamB):
                     tdf = self.df_[self.df_['v'].isin(ns.nodeset_) & self.df_['u'].isin(ns.nodeset_)]
-                    tdf = utils.intersect_intervals_with_df(tdf, utils.ts_to_df(ns.timeset_), on_columns=['u', 'v'])
+                    tdf = tdf.intersect_intervals(utils.ts_to_df(ns.timeset_), on_columns=['u', 'v'], by_key=False)
                     if not tdf.empty:
                         return LinkStreamDF(tdf)
                 else:
                     base_df = utils.ns_to_df(ns)
-                    return LinkStreamDF(utils.cartesian_intersect_df(self.df_, base_df))
+                    return LinkStreamDF(self.df_.cartesian_intersect(base_df))
         else:
             raise UnrecognizedNodeStream('ns')
         return LinkStreamDF()

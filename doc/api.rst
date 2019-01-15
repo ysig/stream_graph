@@ -1,10 +1,10 @@
 .. _api_ref:
 
 =============
-API Reference
+ABC Reference
 =============
 
-.. currentmodule:: stream_graph.API
+.. currentmodule:: stream_graph.ABC
 
 .. autosummary::
    :toctree: generated/

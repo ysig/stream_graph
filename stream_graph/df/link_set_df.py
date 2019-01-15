@@ -1,13 +1,13 @@
 import pandas as pd
 import itertools
 
-from stream_graph import API
+from stream_graph import ABC
 from stream_graph.exceptions import UnrecognizedLinkSet
 from stream_graph.exceptions import UnrecognizedDirection
 from stream_graph.set.node_set_s import NodeSetS
 
 
-class LinkSetDF(API.LinkSet):
+class LinkSetDF(ABC.LinkSet):
     def __init__(self, df=None, no_duplicates=False, sort_by=['u', 'v']):
         # Add a check for dataframe style
         if df is not None:
@@ -102,7 +102,7 @@ class LinkSetDF(API.LinkSet):
         return ((self.df.u == l[0]) & (self.df.v == l[1])).any()
 
     def __and__(self, ls):
-        if isinstance(ls, API.LinkSet):
+        if isinstance(ls, ABC.LinkSet):
             if bool(ls) and bool(self):
                 if not isinstance(ls, LinkSetDF):
                     try:
@@ -115,7 +115,7 @@ class LinkSetDF(API.LinkSet):
         return NodeSetS()
 
     def __or__(self, ls):
-        if isinstance(ls, API.LinkSet):
+        if isinstance(ls, ABC.LinkSet):
             if not bool(self):
                 return ls.copy()
             elif bool(ls):
@@ -131,7 +131,7 @@ class LinkSetDF(API.LinkSet):
             raise UnrecognizedLinkSet('ls')
 
     def __sub__(self, ls):
-        if isinstance(ls, API.LinkSet):
+        if isinstance(ls, ABC.LinkSet):
             if bool(self):
                 if bool(ls):
                     if not isinstance(ls, LinkSetDF):
@@ -153,6 +153,6 @@ class LinkSetDF(API.LinkSet):
         return self.df.itertuples(index=False, name=None)
 
     def issuperset(self, ls):
-        if not isinstance(ls, API.LinkSet):
+        if not isinstance(ls, ABC.LinkSet):
             raise UnrecognizedLinkSet('ls')
         return self.size >= ls.size and (self & ls).size == ls.size

@@ -31,7 +31,7 @@ def test_link_stream_df():
     assert lsa.link_duration(1, 2) == 3
     assert lsa.link_duration(2, 1) == 4
     assert lsa.link_duration(2, 1) == lsa.link_duration(1, 2, 'in')
-    assert lsa.link_duration(1, 2, direction='both') == 7
+    assert lsa.link_duration(1, 2, direction='both') == 6
     assert lsa.link_duration(5, 1) == 0
 
     assert set(lsa.links_at(1)) == {(2, 1)}

@@ -1,6 +1,6 @@
 from itertools import chain
 
-from . import API
+from . import ABC
 from .set.node_set_s import NodeSetS
 from .df.time_set_df import TimeSetDF
 from .df.node_stream_df import NodeStreamDF
@@ -9,16 +9,16 @@ from .exceptions import UnrecognizedTimeSet
 from .exceptions import UnrecognizedNodeStream
 
 
-class NodeStreamB(API.NodeStream):
+class NodeStreamB(ABC.NodeStream):
     def __init__(self, nodeset=None, timeset=None):
         is_none = [a is not None for a in [timeset, nodeset]]
         if all(is_none):
-            if isinstance(nodeset, API.NodeSet):
+            if isinstance(nodeset, ABC.NodeSet):
                 self.nodeset_ = nodeset
             else:
                 self.nodeset_ = NodeSetS(nodeset)
 
-            if isinstance(timeset, API.TimeSet):
+            if isinstance(timeset, ABC.TimeSet):
                 self.timeset_ = timeset
             else:
                 self.timeset_ = TimeSetDF(timeset)
@@ -90,7 +90,7 @@ class NodeStreamB(API.NodeStream):
         return 0.
 
     def issuperset(self, ns):
-        if isinstance(ns, API.NodeStream):
+        if isinstance(ns, ABC.NodeStream):
             if bool(self) or bool(ns):
                 if isinstance(ns, NodeStreamB):
                     return (self.timeset_.issuperset(ns.timeset_) and self.nodeset_.issuperset(ns.nodeset_))
@@ -129,7 +129,7 @@ class NodeStreamB(API.NodeStream):
         return hasattr(self, 'nodeset_') and hasattr(self, 'timeset_') and bool(self.nodeset_) and bool(self.timeset_)
 
     def __and__(self, ns):
-        if isinstance(ns, API.NodeStream):
+        if isinstance(ns, ABC.NodeStream):
             if isinstance(ns, NodeStreamB):
                 if ns and bool(self):
                     return NodeStreamB(timeset=self.timeset_ & ns.timeset_, nodeset=self.nodeset_ & ns.nodeset_)
@@ -140,7 +140,7 @@ class NodeStreamB(API.NodeStream):
         return NodeStreamB()
 
     def __or__(self, ns):
-        if isinstance(ns, API.NodeStream):
+        if isinstance(ns, ABC.NodeStream):
             if not bool(self):
                 return ns.copy()
             if isinstance(ns, NodeStreamB):
@@ -155,7 +155,7 @@ class NodeStreamB(API.NodeStream):
         return NodeStreamB()
 
     def __sub__(self, ns):
-        if isinstance(ns, API.NodeStream):
+        if isinstance(ns, ABC.NodeStream):
             if bool(self):
                 if bool(ns):
                     if isinstance(ns, NodeStreamB):
@@ -163,13 +163,14 @@ class NodeStreamB(API.NodeStream):
                         if bool(ns_in):
                             ts_diff = self.timeset_ - ns.timeset_
                             if bool(ts_diff):
-                                return NodeStreamDF(chain(
+                                nsa = NodeStreamDF(chain(
                                     iter(NodeStreamB(
                                         nodeset=self.nodeset_ - ns.nodeset_,
                                         timeset=self.timeset_)),
                                     iter(NodeStreamB(
                                         nodeset=ns_in,
                                         timeset=ts_diff))))
+                                return nsa 
                         ns_diff = self.nodeset_ - ns.nodeset_
                         if bool(ns_diff):
                             return NodeStreamB(nodeset=ns_diff, timeset=self.timeset_)

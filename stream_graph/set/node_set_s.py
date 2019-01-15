@@ -1,8 +1,8 @@
-from stream_graph import API
+from stream_graph import ABC
 from stream_graph.exceptions import UnrecognizedNodeSet
 
 
-class NodeSetS(API.NodeSet):
+class NodeSetS(ABC.NodeSet):
     def __init__(self, nodes=None):
         if nodes is not None:
             if isinstance(nodes, set):
@@ -33,7 +33,7 @@ class NodeSetS(API.NodeSet):
             return set()
 
     def issuperset(self, ns):
-        if isinstance(ns, API.NodeSet):
+        if isinstance(ns, ABC.NodeSet):
             if bool(self):
                 if not isinstance(ns, NodeSetS):
                     try:
@@ -47,7 +47,7 @@ class NodeSetS(API.NodeSet):
         
 
     def __and__(self, ns):
-        if isinstance(ns, API.NodeSet):
+        if isinstance(ns, ABC.NodeSet):
             if bool(self):
                 if not isinstance(ns, NodeSetS):
                     try:
@@ -60,7 +60,7 @@ class NodeSetS(API.NodeSet):
         return NodeSetS()
 
     def __or__(self, ns):
-        if isinstance(ns, API.NodeSet):
+        if isinstance(ns, ABC.NodeSet):
             if bool(self):
                 if not isinstance(ns, NodeSetS):
                     try:
@@ -73,7 +73,7 @@ class NodeSetS(API.NodeSet):
         return ns.copy()
 
     def __sub__(self, ns):
-        if isinstance(ns, API.NodeSet):
+        if isinstance(ns, ABC.NodeSet):
             if bool(self):
                 if not isinstance(ns, NodeSetS):
                     try:

@@ -112,7 +112,7 @@ def test_node_stream_df():
 
     assert nsa.n == 2
     assert nsa.size == 7
-    assert nsa.total_time == 7
+    assert nsa.total_time == 6
     assert NodeStreamDF().size == 0
     assert NodeStreamDF([]).size == 0
 
