@@ -1,4 +1,4 @@
-"""Test file for link set."""
+"""Test file for stream graph."""
 from pandas import DataFrame
 from stream_graph import LinkStreamDF
 from stream_graph import StreamGraph
