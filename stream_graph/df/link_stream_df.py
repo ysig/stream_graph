@@ -380,11 +380,14 @@ class LinkStreamDF(ABC.LinkStream):
         else:
             raise UnrecognizedDirection()
 
-
+        import datetime; import sys
+        t = datetime.datetime.now()
         for u, v, ts in df[['u', 'v', 'ts']].itertuples(index=False, name=None):
             # This a new instance
             add_clique((frozenset([u, v]), (ts, ts), set([])))
 
+        sys.stderr.write("Processed " + str(df.shape[0]) + " in " + str(datetime.datetime.now() - t) + " \n")
+        t = datetime.datetime.now()
         while len(S) != 0:
             cnds, (ts, tf), can = S.pop()
             is_max = True
@@ -412,4 +415,5 @@ class LinkStreamDF(ABC.LinkStream):
             if is_max:
                 R.add((cnds, (ts, tf)))
 
+        print("Took:", datetime.datetime.now() - t)
         return R

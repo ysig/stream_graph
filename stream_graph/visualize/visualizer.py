@@ -1,14 +1,14 @@
 from stream_graph import ABC
 from stream_graph import StreamGraph
-from .stream_fig import Drawing
-
 from six import iteritems
 
 class Visualizer(object):
-    _data = dict(link_streams=[], node_set=None, time_set=None, node_stream=None)
-    _color_cnt = 0
-    _ext = 'fig'
-    def __init__(self, items=None, filename=None):
+    def __init__(self, items=None, filename=None, image_type='fig'):
+        self._data = dict(link_streams=[], node_set=None, time_set=None, node_stream=None)
+        if image_type not in ['fig', 'svg']:
+            raise ValueError('image_types supported is \'fig\' and \'svg\'')
+        else:
+            self._ext = image_type
         if items is not None:
             self.__iadd__(items)
         if filename is not None:
@@ -81,18 +81,27 @@ class Visualizer(object):
         else:
             self._add(item)
 
-    @property
-    def _pick_color(self):
-        return self._color_cnt
-        self._color_cnt += 1
+    def _make_pallete(self, n):
+        max_value = 16581375 #255**3
+        interval = int(max_value / n)
+        colors = ['#' + hex(I)[2:].zfill(6) for I in range(0, max_value, interval)]
+        if self._ext == 'fig':
+            clabels = ['c_' + str(i) for i in range(len(colors))]
+            for clabel, color in zip(clabels, colors):
+                self.dwg.addColor(clabel, color)
+            return clabels
+        else:
+            return colors
 
-    def _plot_linkstream(self, dwg):
-        for ls in self._data['link_streams']:
-            color = self._pick_color
-            for (u, v, ts, tf) in iter(ls):
-                dwg.addLink(u, v, ts, tf, color = color)
+    def _plot_linkstream(self):
+        data = self._data['link_streams']
+        pallete = self._make_pallete(len(data))
+        if len(data):
+            for ls, color in zip(data, pallete):
+                for (u, v, ts, tf) in iter(ls):
+                    self.dwg.addLink(u, v, ts, tf, color=color)
 
-    def _plot_nodes(self, dwg, min_time, max_time):
+    def _plot_nodes(self, min_time, max_time):
         nodes = dict()
         for n in self._data['node_set']:
             nodes[n] = []
@@ -102,15 +111,19 @@ class Visualizer(object):
         def takez(a):
             return a[0]
         for (u, times) in iteritems(nodes):
-            dwg.addNode(u, sorted(times, key=takez))
+            self.dwg.addNode(u, sorted(times, key=takez))
 
     def _plot(self, filename):
         min_time = min(i for (i, _) in self._data['time_set'])
         max_time = max(i for (_, i) in self._data['time_set'])
-        dwg = Drawing(filename, alpha=min_time, omega=max_time)
-        self._plot_nodes(dwg, min_time, max_time)
-        self._plot_linkstream(dwg)
-        dwg.addTimeLine()
+        if self._ext == 'fig':
+            from .stream_fig import Drawing
+        else:
+            from .stream_svg import Drawing
+        self.dwg = Drawing(filename, alpha=min_time, omega=max_time)
+        self._plot_nodes(min_time, max_time)
+        self._plot_linkstream()
+        self.dwg.addTimeLine()
 
     def produce(self, filename=None):
         if filename is None:
