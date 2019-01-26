@@ -2,6 +2,7 @@ import operator
 from functools import reduce
 from numbers import Real
 from collections import deque
+from collections import defaultdict
 
 import pandas as pd
 
@@ -361,52 +362,117 @@ class LinkStreamDF(ABC.LinkStream):
                 S.appendleft(c)
                 S_set.add(c[0:2])
 
-        lsdf = df[['u', 'v']].drop_duplicates()
         if direction == 'out':
-            def neighbor(sdf, node):
-                return set(sdf[sdf.u == node].v.values)
-            def neighbors(can):
-                return lsdf[lsdf.u.isin(can)].v.values
+            def as_link(u, v):
+                return (u, v)
+            def add_nodes(u, v):
+                nodes[u].add(v)
         elif direction == 'in':
-            def neighbor(sdf, node):
-                return set(sdf[sdf.v == node].u.values)            
-            def neighbors(can):
-                return lsdf[lsdf.v.isin(can)].u.values
+            def as_link(u, v):
+                return (v, u)
+            def add_nodes(u, v):
+                nodes[v].add(u)
         elif direction == 'both':
-            def neighbor(sdf, node):
-                return set(sdf[sdf.u == node].v.append(sdf[sdf.v == node].u, ignore_index=True).drop_duplicates().values)
-            def neighbors(can):
-                return lsdf[lsdf.u.isin(can)].v.append(lsdf[lsdf.v.isin(can)].u, ignore_index=True).drop_duplicates().values
+            def as_link(u, v):
+                return frozenset([u, v])
+            def add_nodes(u, v):
+                nodes[v].add(u)
+                nodes[u].add(v)
         else:
             raise UnrecognizedDirection()
 
-        import datetime; import sys
-        t = datetime.datetime.now()
-        for u, v, ts in df[['u', 'v', 'ts']].itertuples(index=False, name=None):
+        times, nodes = defaultdict(list), defaultdict(set)
+        for u, v, ts, tf, in df.itertuples(index=False, name=None):
             # This a new instance
+            times[as_link(u, v)].append((ts, tf))
+            add_nodes(u, v)
             add_clique((frozenset([u, v]), (ts, ts), set([])))
 
-        sys.stderr.write("Processed " + str(df.shape[0]) + " in " + str(datetime.datetime.now() - t) + " \n")
-        t = datetime.datetime.now()
+        def getTd(can, tb, te):
+            td = 0
+            min_t = None
+            for u in can:
+                for v in can:
+                    link = as_link(u, v)
+                    if link in times:
+                        # Find min time x > te s.t. (b,x,u,v) exists in stream
+                        tlist = times[link]
+
+                        first, last = 0, len(tlist)-1
+                        middle = (first+last)//2
+                        while first <= last:
+                            if tlist[middle][0] > tb:
+                                last = middle - 1
+                            elif tlist[middle][1] < tb:
+                                first = middle + 1
+                            else:
+                                # found a link that contains b
+                                assert tlist[middle][0] <= tb and tlist[middle][1] >= tb
+                                assert tlist[middle][1] >= te
+                                if min_t != None:
+                                    min_t = min(min_t, tlist[middle][1])
+                                else:
+                                    min_t = tlist[middle][1]
+                                break
+                            middle = (first + last ) // 2
+
+                        # We should not be here except for a break in the while loop above
+                        assert first <= last
+                                
+            return min_t
+
+        def isClique(cnds, node, te, tb):
+            """ returns True if X(c) union node is a clique over tb;te, False otherwise"""
+            for i in cnds:
+                if as_link(i, node) not in times:
+                    # Check that (i, node) exists in stream.
+                    return False
+                else:
+                    link = as_link(i, node)
+                    # Check there is a link (b, e, i, node) s.t. b <= tb and e >= te, otherwise not a clique.
+                    #tlist is a list of non-overlapping couples (b,e)
+                    tlist = times[link]
+                    # start binary search for b in tlist
+                    first, last = 0, len(tlist)-1
+                    middle = (first+last)//2
+                    while first <= last:
+                        if tlist[middle][0] > tb:
+                            last = middle - 1
+                        elif tlist[middle][1] < tb:
+                            first = middle + 1
+                        else:
+                            # found a link that contains b
+                            assert tlist[middle][0] <= tb and tlist[middle][1] >= tb
+                            if tlist[middle][1] < te:
+                                return False
+                            break
+                        middle = (first + last ) // 2
+                    # if we are here without having found a link that contains self._tb
+                    if first > last:
+                        return False            
+            return True
+
         while len(S) != 0:
             cnds, (ts, tf), can = S.pop()
             is_max = True
 
             # Grow time on the right side
-            sdf = df[(df.ts <= ts) & (df.tf >= tf)]
-            td = sdf[sdf.u.isin(cnds) & sdf.v.isin(cnds)].tf.min()
+            td = getTd(cnds, ts, tf)
             if td != tf:
                 # nodes, (ts, tf), candidates
                 add_clique((cnds, (ts, td), can))
                 is_max = False
 
             # Grow node set
-            if tf == ts:
-                can = set(neighbors(cnds))
-            can = can.difference(cnds)
+            if ts == tf:
+                for u in cnds:
+                    neighbors = nodes[u]
+                    for n in neighbors:
+                        can.add(n)    
+            can -= cnds
 
             for node in can:
-                if neighbor(sdf, node) == cnds:
+                if isClique(cnds, node, ts, tf):
                     # Is clique!
                     Xnew = set(cnds) | set([node])
                     add_clique((frozenset(Xnew), (ts, tf), can))
@@ -414,6 +480,4 @@ class LinkStreamDF(ABC.LinkStream):
 
             if is_max:
                 R.add((cnds, (ts, tf)))
-
-        print("Took:", datetime.datetime.now() - t)
         return R
