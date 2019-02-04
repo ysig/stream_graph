@@ -2,7 +2,7 @@ from numbers import Real
 
 import pandas as pd
 
-from .interval_df import IntervalDF
+from .time_df import IntervalDF
 from stream_graph import ABC
 from stream_graph.exceptions import UnrecognizedTimeSet
 
@@ -11,7 +11,9 @@ class TimeSetDF(ABC.TimeSet):
     def __init__(self, df=None, disjoint_intervals=True):
         # Add a check for dataframe style
         if df is not None:
-            if isinstance(df, IntervalDF):
+            if isinstance(df, ABC.ITimeSet):
+                self.df_ = IntervalDF(list((ts, ts) for ts in df), columns=['ts', 'tf'])
+            elif isinstance(df, IntervalDF):
                 self.df_ = df
             elif isinstance(df, pd.DataFrame):
                 self.df_ = IntervalDF(df, columns=['ts', 'tf'])

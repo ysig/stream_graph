@@ -5,7 +5,9 @@ from collections import Iterable
 class IntervalDF(pd.DataFrame):
     def __init__(self, *args, **kargs):
         super(IntervalDF, self).__init__(*args, **kargs)
-        assert 'ts' in self.columns and 'tf' in self.columns
+        assert 'ts' in self.columns
+        if 'tf' not in self.columns:
+            df['tf'] = df['ts']
 
     def copy(self, *args, **kargs):
         return IntervalDF(super(IntervalDF, self).copy(*args, **kargs))
@@ -13,8 +15,11 @@ class IntervalDF(pd.DataFrame):
     def drop(self, *args, **kargs):
         out = super(IntervalDF, self).drop(*args, **kargs)
         if isinstance(out, pd.DataFrame):
-            if 'ts' in out.columns and 'tf' in out.columns:
-                out = IntervalDF(out)
+            if 'ts' in out.columns:
+                if 'tf' in out.columns:
+                    out = IntervalDF(out)
+                else:
+                    out = InstantaneousDF(out)
         return out
 
     def itertuples(self, index=False, name=None):
@@ -140,7 +145,7 @@ class IntervalDF(pd.DataFrame):
             df = mdf.groupby(on_column).apply(trans).gby_format()
         else:        
             if dfb.empty:
-                df = None
+                df = self
             else:            
                 df = self.groupby(on_column).apply(difference_base, dfb).gby_format() 
 
@@ -187,7 +192,7 @@ class IntervalDF(pd.DataFrame):
         else:
             def append_nei(dfa, dfb):
                 return not dfa.empty and nonempty_intersection_base(dfa[['ts', 'tf']].append(dfb, ignore_index=True, sort=False))
-            return self.groupby(on_column).apply(nonempty_intersection_base, dft).all()
+            return self.groupby(on_column).apply(nonempty_intersection_base, bdf).all()
 
     def cartesian_intersect(self, base_df):
         base_df = base_df.set_index('u')
@@ -304,4 +309,175 @@ def cartesian_intersect_base(df, base):
     df = intersect_intervals_base(dfi.append(dfv, ignore_index=True, sort=True))
     if not df.empty:
         return df
+
+
+class InstantaneousDF(pd.DataFrame):
+    def __init__(self, *args, **kargs):
+        super(InstantaneousDF, self).__init__(*args, **kargs)
+        assert 'ts' in self.columns
+
+    def copy(self, *args, **kargs):
+        return InstantaneousDF(super(InstantaneousDF, self).copy(*args, **kargs))
+
+    def drop(self, *args, **kargs):
+        out = super(InstantaneousDF, self).drop(*args, **kargs)
+        if isinstance(out, pd.DataFrame):
+            if 'ts' in out.columns and 'tf' in out.columns:
+                out = InstantaneousDF(out)
+        return out
+
+    def itertuples(self, index=False, name=None):
+        columns = sorted(list(set(self.columns) - {'ts'})) + ['ts']
+        return super(InstantaneousDF, self).reindex(columns=columns).itertuples(index=index, name=name)
+
+    def __getitem__(self, index):
+        out = super(InstantaneousDF, self).__getitem__(index)
+        if isinstance(out, pd.DataFrame):
+            if 'ts' in out.columns:
+                out = InstantaneousDF(out)
+        return out
+
+    def get_ni_columns(self, on_column):
+        if on_column is None:
+            ret = list(set(self.columns) - {'ts'})
+            if len(ret):
+                return ret
+            return None
+        elif isinstance(on_column, Iterable):
+            assert all(c in self.columns for c in on_column)
+            return on_column
+        else:
+            assert c in self.columns
+            return on_column
+
+    def df_at(self, t):
+        return self[self.index_at(t)]
+
+    def df_count_at(df, t):
+        return self.index_at(t).sum()
+
+    def index_at(self, t):
+        return (self.ts == t)
+
+    def _save_or_return(self, df, inplace):
+        if df is None:
+            df = InstantaneousDF(columns=self.columns)
+
+        if inplace:
+            return self._update_inplace(df._data)
+        else:
+            return df        
+
+    def union(self, df=None, on_column=None, by_key=True, inplace=False):
+        assert not (not by_key and df is None)
+        
+        on_column = self.get_ni_columns(on_column)
+        if on_column is None or by_key:
+            if df is None:
+                return self.drop_duplicates(inplace=inplace)
+            else:
+                return self.append(df, ignore_index=True, sort=False).drop_duplicates(inplace=inplace)
+        else:
+            if df.empty:
+                df = self
+            else:
+                def append_dd(dfa, dfb):
+                    return dfa[['ts']].append(dfb, ignore_index=True, sort=False).drop_duplicates()
+                df = InstantaneousDF(self.groupby(on_column).apply(append_dd, df)).gby_format()
+
+        return self._save_or_return(df, inplace)
+
+    def intersect(self, df=None, on_column=None, by_key=True, inplace=False):
+        assert not (not by_key and df is None)
+
+        on_column = self.get_ni_columns(on_column)
+        if on_column is None or by_key:
+            if df is None:
+                df = self
+            else:
+                df = self.append(df, ignore_index=True, sort=False)
+            df = df[df.duplicated(keep='first')]
+        else:
+            if df.empty:
+                df = InstantaneousDF(columns=self.columns)
+            else:
+                def append_kd(dfa, dfb):
+                    dfa = dfa[['ts']]
+                    dfc = dfa.append(dfb, ignore_index=True, sort=False)
+                    return dfc[dfc.duplicated(keep='first')]
+                df = InstantaneousDF(self.groupby(on_column).apply(append_kd, df)).gby_format()
+
+        return self._save_or_return(df, inplace)
+
+    def difference(self, dfb, on_column=None, by_key=True, inplace=False):
+        if self.empty or dfb.empty:
+            return self.copy()
+        on_column = self.get_ni_columns(on_column)
+        if on_column is None or by_key:
+            df = self[~self.append(dfb, ignore_index=False, sort=False).duplicated(keep=False)[:self.shape[0]]]
+        else:        
+            if dfb.empty:
+                df = self
+            else:
+                def append_rd(dfa, dfb):
+                    dfa = dfa[['ts']]
+                    return dfa[~dfa.append(dfb, ignore_index=False, sort=False).duplicated(keep=False)[:dfa.shape[0]]]
+                df = InstantaneousDF(self.groupby(on_column).apply(append_rd, dfb)).gby_format() 
+
+        return self._save_or_return(df, inplace)
+
+    def gby_format(self):
+        ndf = self.reset_index()
+        return ndf[[col for col in ndf.columns if not (len(col) > 6 and col[:5]=='level')]]
+
+    def issuper(self, dfb, on_column=None, by_key=True):
+        on_column = self.get_ni_columns(on_column)
+        if on_column is None or by_key:
+            return dfb.append(self, ignore_index=True, sort=False).duplicated(keep=False)[:dfb.shape[0]].all()
+        else:
+            def append_dup(dfa, dfb):
+                return dfb.append(dfa, ignore_index=True, sort=False).duplicated(keep=False)[:dfb.shape[0]].all()
+            return self.groupby(on_column).apply(append_dup, dfb).all()
+
+    def nonempty_intersection(self, bdf, on_column="u", by_key=True):
+        on_column = self.get_ni_columns(on_column)
+        if on_column is None or by_key:
+            return self.append(bdf, ignore_index=True, sort=False).duplicated(keep='first').any()
+        else:
+            def append_ad(dfa, dfb):
+                return not dfa.empty and dfa.append(dfb, ignore_index=True, sort=False).duplicated(keep='first').any()
+            return self.groupby(on_column).apply(append_ad, bdf).all()
+
+    def cartesian_intersect(self, base_df):
+        base_df = base_df.set_index('u')
+        df = self[self.u.isin(base_df.index) & self.v.isin(base_df.index)]
+        def cartesian_kd(df, base):
+            u, v = df.name
+            dfu = base.loc[u, ['ts']]
+            dfv = base.loc[v, ['ts']]
+            dft = df[['ts']]
+            dfi = dft.append(dfu, ignore_index=True, sort=True)
+            df = dfi[dfi.duplicated(keep='first')].append(dfv, ignore_index=True, sort=True)
+            df = df[df.duplicated(keep='first')]
+            if not df.empty:
+                return df
+        return InstantaneousDF(df.groupby(['u', 'v']).apply(cartesian_kd, base_df)).gby_format()
+
+    def map_intersect(self, base_df):
+        base_df = base_df.set_index('u')
+        df = self[self.u.isin(base_df.index)]
+        def map_kd(df, base):
+            u, _ = df.name
+            dfu = base.loc[u, ['ts']]
+            df = df[['ts']]
+            df = df.append(dfu, ignore_index=True, sort=True)
+            df = df[df.duplicated(keep='first')]
+            if not df.empty:
+                return df
+        return InstantaneousDF(df.groupby(['u', 'v']).apply(map_kd, base_df)).gby_format().drop(columns=['u']).rename(columns={'v': 'u'})
+
+    def interval_intersection_size(self, b=None):
+        #Instantaneous links have no size
+        return 0
+
 

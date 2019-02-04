@@ -147,3 +147,8 @@ class TimeSet(ABC):
             return copy.deepcopy(self)
         else:
             return copy.copy(self)
+
+class ITimeSet(TimeSet):
+    @property
+    def size(self):
+        return 0

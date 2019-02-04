@@ -5,6 +5,7 @@ from stream_graph import NodeSetS
 from stream_graph import TimeSetDF
 from stream_graph import NodeStreamB
 from stream_graph import NodeStreamDF
+from stream_graph import INodeStreamDF
 from stream_graph.exceptions import UnrecognizedTimeSet
 from stream_graph.exceptions import UnrecognizedNodeStream
 
@@ -181,6 +182,83 @@ def test_node_stream_df():
     except UnrecognizedNodeStream:
         pass
 
+def test_inode_stream_df():
+    df = [(1, 2), (1, 3), (1, 6), (2, 3), (2, 3)]
+    nsa = INodeStreamDF(df, disjoint_intervals=False)
+
+    assert bool(nsa)
+    assert not bool(INodeStreamDF([]))
+    assert not bool(INodeStreamDF())
+
+    assert set(nsa) == {(1, 2), (1, 3), (1, 6), (2, 3)}
+
+    assert nsa.n == 2
+    assert nsa.size == 0
+    assert nsa.total_time == 0
+    assert INodeStreamDF().size == 0
+    assert INodeStreamDF([]).size == 0
+
+    assert (2, None) in nsa
+    assert (None, 5) not in nsa
+    assert (None, 2) in nsa
+    assert (2, 3) in nsa
+    assert (1, 7) not in nsa
+
+    assert nsa.node_duration(1) == 0
+    assert nsa.node_duration(4) == 0
+
+    assert nsa.common_time(1) == 0
+    assert nsa.common_time(1, 2) == 0
+    assert nsa.common_time(2, 8) == 0
+
+    assert set(nsa.nodes_at(2)) == {1}
+    assert set(nsa.nodes_at(3)) == {1, 2}
+    assert set(nsa.nodes_at(5)) == set()
+
+    assert set(nsa.times_of(1)) == {2, 3, 6}
+    assert set(nsa.times_of(10)) == set()
+
+    assert nsa.n_at(2) == 1
+    assert nsa.n_at(10) == 0
+
+    df = [(1, 2), (1, 3), (2, 4)]
+    nsb = INodeStreamDF(df)
+    assert set(nsb & nsa) == set(nsa & nsb)
+    assert isinstance(nsa & nsb, INodeStreamDF)
+    assert set(nsa & nsb) == {(1, 2), (1, 3)}
+    assert (nsa & nsb).size == 0
+
+    assert set(nsb | nsa) == set(nsa | nsb)
+    assert isinstance(nsa | nsb, INodeStreamDF)
+    assert set((nsb | nsa)) == {(1, 2), (1, 3), (1, 6), (2, 3), (2, 4)}
+
+    assert set(nsb - nsa) == {(2, 4)}
+    assert isinstance(nsb - nsa, INodeStreamDF)
+    assert set(nsa - nsb) == {(1, 6), (2, 3)}
+    assert isinstance(nsa - nsb, INodeStreamDF)
+
+    assert nsa.issuperset(nsa & nsb)
+    assert nsb.issuperset(nsa & nsb)
+    assert (nsa | nsb).issuperset(nsa)
+    assert (nsa | nsb).issuperset(nsb)
+    assert nsa.issuperset(nsa - nsb)
+
+    try:
+        nsa | 1
+    except UnrecognizedNodeStream:
+        pass
+
+    try:
+        nsa & 1
+    except UnrecognizedNodeStream:
+        pass
+
+    try:
+        nsa - 1
+    except UnrecognizedNodeStream:
+        pass
+    
+
 def test_node_stream_op_b_df():
     nsa = NodeStreamB({1, 2}, [(1, 2), (4, 7)])
     nsb = NodeStreamDF([(1, 2, 5), (1, 6, 8), (2, 1, 3)])
@@ -211,5 +289,5 @@ def test_node_stream_op_b_df():
 
 if __name__ == "__main__":
     test_node_stream_b()
-    test_node_stream_df()
+    test_inode_stream_df()
     test_node_stream_op_b_df()

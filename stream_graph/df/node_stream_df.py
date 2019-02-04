@@ -6,8 +6,10 @@ import stream_graph as sg
 from . import utils
 from stream_graph import ABC
 from .time_set_df import TimeSetDF
-from .interval_df import IntervalDF
+from .time_df import IntervalDF
+from .time_df import InstantaneousDF
 from stream_graph.set import NodeSetS
+from stream_graph.set import ITimeSetS
 from stream_graph.exceptions import UnrecognizedNodeStream
 
 
@@ -144,7 +146,10 @@ class NodeStreamDF(ABC.NodeStream):
                             pass
                     df = utils.ns_to_df(ns).intersect(self.df)
                 if not df.empty:
-                    return NodeStreamDF(df)
+                    if isinstance(ns, ABC.INodeStream):
+                        return INodeStreamDF(df.drop(columns=['tf']))
+                    else:
+                        return NodeStreamDF(df)
         else:
             raise UnrecognizedNodeStream('second operand')
         return NodeStreamDF()
@@ -229,13 +234,13 @@ class NodeStreamDF(ABC.NodeStream):
             else:
                 raise ValueError('Input can either be a real number or an ascending interval of two real numbers')
         else:
-            return 0
+            return NodeSetS()
 
     def times_of(self, u):
         if bool(self):
             return TimeSetDF(self.df[self.df.u == u].drop(columns=['u']), disjoint_intervals=False)
         else:
-            return 0
+            return TimeSetDF()
 
     def issuperset(self, ns):
         if isinstance(ns, ABC.NodeStream):
@@ -251,3 +256,145 @@ class NodeStreamDF(ABC.NodeStream):
         else:
             raise UnrecognizedNodeStream('ns')
         return False
+
+class INodeStreamDF(ABC.INodeStream, NodeStreamDF):
+    def __init__(self, df=None, disjoint_intervals=True, sort_by=['u', 'ts']):
+        if df is not None:
+            if not isinstance(df, InstantaneousDF):
+                if not isinstance(df, pd.DataFrame):
+                    df = InstantaneousDF(list(iter(df)), columns=['u', 'ts'])
+                else:
+                    df = InstantaneousDF(df)
+            self.df_ = df
+            self.sort_by = sort_by
+            self.merged_ = disjoint_intervals
+            self.sorted_ = False
+
+    @property
+    def df(self):
+        if bool(self):
+            return self.sort_df_.merge_df_.df_
+        else:
+            return InstantaneousDF(columns=['u', 'ts'])
+
+    @property
+    def dfm(self):
+        if bool(self):
+            return self.merge_df_.df
+        else:
+            return InstantaneousDF(columns=['u', 'ts'])
+
+    @property
+    def timeset(self):
+        if not bool(self):
+            return ITimeSetS()
+        return ITimeSetS(self.df_[['ts']].values.flat)
+
+    def __iter__(self):
+        if bool(self):
+            return self.df.itertuples(index=False, name=None)
+        else:
+            return iter([])
+
+    def __bool__(self):
+        return hasattr(self, 'df_') and not self.df_.empty
+
+    def __contains__(self, u):
+        assert type(u) is tuple and len(u) is 2
+        if (not bool(self)) or (u[0] is None and u[1] is None):
+            return False
+        if u[0] is None:
+            df = self.df
+        elif u[1] is None:
+            return (self.df.u == u[0]).any()
+        else:
+            df = self.df[self.df.u == u[0]]
+
+        return df.index_at(u[1]).any()
+
+    def __and__(self, ns):
+        if isinstance(ns, ABC.NodeStream):
+            if isinstance(ns, ABC.INodeStream):
+                if ns and bool(self):
+                    if not isinstance(ns, INodeStreamDF):
+                        try:
+                            return ns & self
+                        except NotImplementedError:
+                            pass
+                    df = utils.ins_to_idf(ns).intersect(self.df)
+                    if not df.empty:
+                        return INodeStreamDF(df)
+            else:
+                return ns & self
+        else:
+            raise UnrecognizedNodeStream('second operand')
+        return INodeStreamDF()
+
+    def __or__(self, ns):
+        if isinstance(ns, ABC.NodeStream):
+            if not bool(self):
+                return ns.copy()
+            if bool(ns):
+                if isinstance(ns, ABC.INodeStream):
+                    if not isinstance(ns, INodeStreamDF):
+                        try:
+                            return ns | self
+                        except NotImplementedError:
+                            pass
+                    return INodeStreamDF(self.df.union(utils.ins_to_idf(ns)))
+                else:
+                    return ns | self
+            else:
+                return self.copy()
+        else:
+            raise UnrecognizedNodeStream('second operand')
+        return INodeStreamDF()
+
+    def __sub__(self, ns):
+        if isinstance(ns, ABC.NodeStream):
+            if bool(self):
+                if ns:
+                    if isinstance(ns, ABC.INodeStream):
+                        return INodeStreamDF(self.df.difference(utils.ins_to_idf(ns)))
+                    else:
+                        df = self.df
+                        df['tf'] = df['ts']
+                        return INodeStreamDF((NodeStreamDF(df) - ns).df.drop(columns=['tf']))
+                else:
+                    return self.copy()
+        else:
+            raise UnrecognizedNodeStream('second operand')
+        return INodeStreamDF()
+
+    def nodes_at(self, t):
+        if bool(self):
+            if isinstance(t, Real):
+                return NodeSetS(self.df.df_at(t).u.values.flat)
+            else:
+                raise ValueError('Input can either be a real number or an ascending interval of two real numbers')
+        else:
+            return NodeSetS()
+
+    def times_of(self, u):
+        if bool(self):
+            return ITimeSetS(self.df[self.df.u == u]['ts'].values.flat)
+        else:
+            return ITimeSetS()
+
+    def issuperset(self, ns):
+        if isinstance(ns, ABC.NodeStream):
+            if not bool(self):
+                return False
+            elif bool(ns):
+                if isinstance(ns, ABC.INodeStream):
+                    return self.df.issuper(utils.ins_to_idf(ns))
+                else:
+                    df = self.df
+                    df['tf'] = df['ts']
+                    return NodeStreamDF(df).issuper(ns)
+            else:
+                return True
+        else:
+            raise UnrecognizedNodeStream('ns')
+        return False
+

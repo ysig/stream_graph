@@ -334,3 +334,18 @@ class NodeStream(ABC):
             return copy.deepcopy(self)
         else:
             return copy.copy(self)
+
+class INodeStream(NodeStream):
+    @property
+    def total_common_time(self):
+        return 0
+
+    @property
+    def size(self):
+        return 0
+    
+    def node_duration(self, u):
+        return 0
+
+    def common_time(self, u, v=None):
+        return 0.

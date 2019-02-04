@@ -2,10 +2,13 @@
 from itertools import product
 from pandas import DataFrame
 from stream_graph import NodeSetS
+from stream_graph import ITimeSetS
 from stream_graph import TimeSetDF
 from stream_graph import NodeStreamB
 from stream_graph import NodeStreamDF
+from stream_graph import INodeStreamDF
 from stream_graph import LinkStreamDF
+from stream_graph import ILinkStreamDF
 from stream_graph.exceptions import UnrecognizedLinkStream
 
 def test_link_stream_df():
@@ -109,7 +112,105 @@ def test_link_stream_df():
                                                       (frozenset({1, 3}), (6, 12)),
                                                       (frozenset({1, 2}), (2, 10))}
 
+  
+def test_ilink_stream_df():
+    df = [(1, 2, 2), (1, 2, 3), (2, 1, 6), (2, 1, 3)]
+    lsa = ILinkStreamDF(df, disjoint_intervals=False)
+
+    assert bool(lsa)
+    assert not bool(ILinkStreamDF([]))
+    assert not bool(ILinkStreamDF())
+    assert set(lsa) == {(1, 2, 2), (1, 2, 3), (2, 1, 6), (2, 1, 3)}
+
+    assert lsa.m == 2
+    assert lsa.size == 0
+    assert ILinkStreamDF().size == 0
+    assert ILinkStreamDF([]).size == 0
+
+    assert (1, 2, None) in lsa
+    assert (1, None, 2) in lsa
+    assert (5, None, None) not in lsa
+    assert (1, 3, 1) not in lsa
+    assert (1, 2, 2) in lsa
+
+    assert lsa.link_duration(1, 2) == 0
+    assert lsa.link_duration(5, 1) == 0
+
+    assert set(lsa.links_at(6)) == {(2, 1)}
+    assert set(lsa.links_at(3)) == {(1, 2), (2, 1)}
+    assert set(lsa.links_at(10)) == set()
+
+    assert set(lsa.times_of(1, 2)) == {2, 3}
+    assert set(lsa.times_of(10, 3)) == set()
+
+    assert lsa.m_at(3) == 2
+    assert lsa.m_at(10) == 0
+
+    df = [(1, 2, 2), (1, 2, 4), (2, 1, 7), (2, 1, 3)]
+    lsb = ILinkStreamDF(df)
+    assert set(lsb & lsa) == set(lsa & lsb)
+    assert isinstance(lsa & lsb, ILinkStreamDF)
+    assert set(lsa & lsb) == {(1, 2, 2), (2, 1, 3)}
+
+    assert isinstance(lsa | lsb, ILinkStreamDF)
+    assert set(lsb | lsa) == set(lsa | lsb)
+    assert set((lsb | lsa)) == {(2, 1, 3), (2, 1, 7), (2, 1, 6), (1, 2, 2), (1, 2, 3), (1, 2, 4)}
+
+    assert set(lsb - lsa) == {(1, 2, 4), (2, 1, 7)}
+    assert isinstance(lsb - lsa, ILinkStreamDF)
+    assert set(lsa - lsb) == {(1, 2, 3), (2, 1, 6)}
+    assert isinstance(lsa - lsb, ILinkStreamDF)
+
+    assert lsa.issuperset(lsa & lsb)
+    assert lsb.issuperset(lsa & lsb)
+    assert (lsa | lsb).issuperset(lsa)
+    assert (lsa | lsb).issuperset(lsb)
+    assert lsa.issuperset(lsa - lsb)
+
+    assert set(lsa.neighbors(1)) == {(2, 2), (2, 3)}
+    assert isinstance(lsa.neighbors(1), INodeStreamDF)
+    assert set(lsa.neighbors(1, 'in')) == {(2, 6), (2, 3)}
+    assert set(lsa.neighbors(1, 'both')) == {(2, 2), (2, 3), (2, 6)}
+
+    nsa = NodeSetS({1})
+    nsb = NodeSetS({2})
+    ts = ITimeSetS([(2)])
+    assert set(lsa.substream(nsa, nsb, ts)) == {(1, 2, 2)}
     
+    nsma = INodeStreamDF([(1, 2), (1, 3)])
+    assert set(lsa.neighborhood(nsma, direction='out')) == {(2, 2), (2, 3)}
+
+    nsmb = INodeStreamDF([(1, 3), (2, 3)])
+    assert set(lsa.induced_substream(nsmb)) == {(1, 2, 3), (2, 1, 3)}
+
+    try:
+        lsa | 1
+    except UnrecognizedLinkStream:
+        pass
+
+    try:
+        lsa & 1
+    except UnrecognizedLinkStream:
+        pass
+
+    try:
+        lsa - 1
+    except UnrecognizedLinkStream:
+        pass
+
+    df = [(1, 2, 4), (1, 2, 8), (2, 3, 4), (1, 3, 6), (3, 4, 2), (2, 4, 3)]
+    assert ILinkStreamDF(df).get_maximal_cliques(delta=3) == {(frozenset({3, 4}), (3.5, 6.5)),
+                                                               (frozenset({1, 2, 3}), (7.5, 8.5)), 
+                                                               (frozenset({1, 2}), (5.5, 8.5)),
+                                                               (frozenset({2, 4}), (4.5, 7.5)),
+                                                               (frozenset({1, 2}), (9.5, 12.5)),
+                                                               (frozenset({2, 3, 4}), (5.5, 6.5)),
+                                                               (frozenset({2, 3}), (5.5, 8.5)),
+                                                               (frozenset({1, 3}), (7.5, 10.5))}
+    
+    df = [(1, 2, 2), (1, 2, 3), (2, 3, 2), (1, 3, 4), (3, 4, 3), (2, 4, 5)]    
+    assert ILinkStreamDF(df).centrality(3, direction='both') == [(2, 0.0), (3, 1.0)]
 
 if __name__ == "__main__":
     test_link_stream_df()
+    test_ilink_stream_df()

@@ -1,6 +1,7 @@
 """Test file for time set."""
 from pandas import DataFrame
 from stream_graph import TimeSetDF
+from stream_graph import ITimeSetS
 from stream_graph.exceptions import UnrecognizedTimeSet
 
 
@@ -62,6 +63,56 @@ def test_time_set_df():
     except UnrecognizedTimeSet:
         pass
 
+def test_itime_set_s():
+    times_a = [(1), (5), (6)]
+    tsa = ITimeSetS(times_a)
+
+    assert bool(times_a)
+    assert not bool(ITimeSetS({}))
+    assert not bool(ITimeSetS())
+
+    assert list(tsa) == [1, 5, 6]
+
+    assert tsa.size == 0
+    assert ITimeSetS().size == 0
+
+    assert 5 in tsa
+    assert 6 in tsa
+    assert 3 not in tsa
+
+    times_b = [(2), (6)]
+    tsb = ITimeSetS(times_b)
+    assert set(tsb & tsa) == set(tsa & tsb)
+    assert set(tsb & tsa) == {6}
+
+    assert set(tsb | tsa) == set(tsa | tsb)
+    assert set(tsb | tsa) == {1, 2, 5, 6}
+
+    assert set(tsb - tsa) == {2}
+    assert set(tsa - tsb) == {1, 5}
+
+    assert tsa.issuperset(tsa & tsb)
+    assert tsb.issuperset(tsa & tsb)
+    assert (tsa | tsb).issuperset(tsa)
+    assert (tsa | tsb).issuperset(tsb)
+    assert tsa.issuperset(tsa - tsb)
+
+    try:
+        tsa | 1
+    except UnrecognizedTimeSet:
+        pass
+
+    try:
+        tsa & 1
+    except UnrecognizedTimeSet:
+        pass
+
+    try:
+        tsa - 1
+    except UnrecognizedTimeSet:
+        pass
+
 
 if __name__ == "__main__":
     test_time_set_df()
+    test_itime_set_s()

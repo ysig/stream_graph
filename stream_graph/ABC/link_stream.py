@@ -479,3 +479,8 @@ class LinkStream(ABC):
     # Python2 cross-compatibility
     def __nonzero__(self):
         return self.__bool__()
+        
+class ILinkStream(LinkStream):
+    @property
+    def size(self):
+        return 0

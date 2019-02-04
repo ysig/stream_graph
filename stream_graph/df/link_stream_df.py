@@ -9,10 +9,13 @@ import pandas as pd
 from . import utils
 from stream_graph import ABC
 from .node_stream_df import NodeStreamDF
+from .node_stream_df import INodeStreamDF
 from .link_set_df import LinkSetDF
 from .time_set_df import TimeSetDF
-from .interval_df import IntervalDF
+from .time_df import IntervalDF
+from .time_df import InstantaneousDF
 from stream_graph.set.node_set_s import NodeSetS
+from stream_graph.set.time_set_s import ITimeSetS
 from stream_graph.node_stream_b import NodeStreamB
 from stream_graph.exceptions import UnrecognizedLinkStream
 from stream_graph.exceptions import UnrecognizedNodeStream
@@ -24,7 +27,12 @@ from stream_graph.exceptions import UnrecognizedDirection
 class LinkStreamDF(ABC.LinkStream):
     def __init__(self, df=None, disjoint_intervals=True, sort_by=['u', 'v', 'ts', 'tf']):
         if df is not None:
-            if not isinstance(df, IntervalDF):
+            if isinstance(df, ABC.ILinkStream):
+                if isinstance(df, ILinkStreamDF):
+                    df = IntervalDF(df.df)
+                else:
+                    df = IntervalDF(list(iter(df)), columns=['u', 'v', 'ts'])
+            elif not isinstance(df, IntervalDF):
                 if not isinstance(df, pd.DataFrame):
                     df = IntervalDF(list(iter(df)), columns=['u', 'v', 'ts', 'tf'])
                 else:
@@ -268,11 +276,9 @@ class LinkStreamDF(ABC.LinkStream):
                 if not isinstance(ls, LinkStreamDF):
                     try:
                         return ls.__issubset__(self)
-                    except NotImplementedError or NotImplemented:
-                        df = LinkStreamDF(ls)
-                    return self.df.issuper(ls.df)
-                else:
-                    return self.copy()
+                    except (AttributeError, NotImplementedError):
+                        ls  = LinkStreamDF(ls)
+                return self.df.issuper(ls.df)
             else:
                 return not bool(ls)
         else:
@@ -308,16 +314,16 @@ class LinkStreamDF(ABC.LinkStream):
             else:
                 derror = True
             if not derror:
-                df = utils.intersect_intervals_with_df(df, utils.ts_to_df(ns.timeset_), on_columns=['u', 'v'])
+                df = df.intersect(utils.ts_to_df(ns.timeset_), on_columns=['u', 'v'], by_key=False)
         else:
             base_df = utils.ns_to_df(ns)
             if direction == 'out':
                 df = self.df.map_intersect(base_df)
             elif direction == 'in':
-                df = self.df_.rename(columns={'u': 'v', 'v': 'u'}).map_intersect_df(base_df)
+                df = self.df_.rename(columns={'u': 'v', 'v': 'u'}).map_intersect(base_df)
             elif direction == 'both':
                 df = self.df.map_intersect(base_df)
-                df = df.append(self.df_.rename(columns={'u': 'v', 'v': 'u'}).map_intersect_df(base_df), ignore_index=True)
+                df = df.append(self.df_.rename(columns={'u': 'v', 'v': 'u'}).map_intersect(base_df), ignore_index=True)
             else:
                 derror = True
         if derror:
@@ -329,7 +335,7 @@ class LinkStreamDF(ABC.LinkStream):
             if bool(self) and bool(ns):
                 if isinstance(ns, NodeStreamB):
                     tdf = self.df_[self.df_['v'].isin(ns.nodeset_) & self.df_['u'].isin(ns.nodeset_)]
-                    tdf = tdf.intersect_intervals(utils.ts_to_df(ns.timeset_), on_columns=['u', 'v'], by_key=False)
+                    tdf = tdf.intersect(utils.ts_to_df(ns.timeset_), on_columns=['u', 'v'], by_key=False)
                     if not tdf.empty:
                         return LinkStreamDF(tdf)
                 else:
@@ -382,7 +388,7 @@ class LinkStreamDF(ABC.LinkStream):
             raise UnrecognizedDirection()
 
         times, nodes = defaultdict(list), defaultdict(set)
-        for u, v, ts, tf, in df.itertuples(index=False, name=None):
+        for u, v, ts, tf, in df[['u', 'v', 'ts', 'tf']].itertuples(index=False, name=None):
             # This a new instance
             times[as_link(u, v)].append((ts, tf))
             add_nodes(u, v)
@@ -397,9 +403,9 @@ class LinkStreamDF(ABC.LinkStream):
                     if link in times:
                         # Find min time x > te s.t. (b,x,u,v) exists in stream
                         tlist = times[link]
-
                         first, last = 0, len(tlist)-1
-                        middle = (first+last)//2
+                        middle = int((first+last)/2.0)
+                        
                         while first <= last:
                             if tlist[middle][0] > tb:
                                 last = middle - 1
@@ -451,7 +457,7 @@ class LinkStreamDF(ABC.LinkStream):
                     if first > last:
                         return False            
             return True
-
+        
         while len(S) != 0:
             cnds, (ts, tf), can = S.pop()
             is_max = True
@@ -464,6 +470,7 @@ class LinkStreamDF(ABC.LinkStream):
                 is_max = False
 
             # Grow node set
+            can = set(can)
             if ts == tf:
                 for u in cnds:
                     neighbors = nodes[u]
@@ -481,3 +488,381 @@ class LinkStreamDF(ABC.LinkStream):
             if is_max:
                 R.add((cnds, (ts, tf)))
         return R
+
+class ILinkStreamDF(ABC.ILinkStream, LinkStreamDF):
+    def __init__(self, df=None, disjoint_intervals=True, sort_by=['u', 'v', 'ts']):
+        if df is not None:
+            if not isinstance(df, InstantaneousDF):
+                if not isinstance(df, pd.DataFrame):
+                    df = InstantaneousDF(list(iter(df)), columns=['u', 'v', 'ts'])
+                else:
+                    df = InstantaneousDF(df)
+            self.df_ = df
+            self.sort_by = sort_by
+            self.merged_ = disjoint_intervals
+
+    @property
+    def df(self):
+        if bool(self):
+            return self.merge_.sort_.df_
+        else:
+            return InstantaneousDF(columns=['u', 'v', 'ts'])
+
+    @property
+    def dfm(self):
+        if bool(self):
+            return self.merge_.df_
+        else:
+            return InstantaneousDF(columns=['u', 'v', 'ts'])
+
+    @property
+    def basic_nodestream(self):
+        # Create node stream
+        if bool(self):
+            return NodeStreamB(self.nodeset, ITimeSetDF([(self.df_.ts.min(), self.df_.ts.max())]))
+        else:
+            return NodeStreamB()
+
+    @property
+    def minimal_nodestream(self):
+        # All the time intervals that a node belongs to a link
+        if bool(self):
+            mdf = self.df_[['v', 'ts']].rename(columns={'v': 'u'}).append(self.df_[['u', 'ts']])
+            return INodeStreamDF(mdf, disjoint_intervals=False)
+        else:
+            return INodeStreamDF()
+
+
+    @property
+    def timeset(self):
+        if bool(self):
+            return ITimeSetS(self.df_[['ts']].values.flat)
+        else:
+            return ITimeSetS()
+
+    def __contains__(self, v):
+        assert isinstance(v, tuple) and len(v) == 3
+        if not bool(self) or (v[0] is None and v[1] is None and v[2] is None):
+            return False
+
+        lpd = []
+        if v[0] is not None:
+            lpd.append(self.df.u == v[0])
+        if v[1] is not None:
+            lpd.append(self.df.v == v[1])
+        if v[2] is not None:
+            if isinstance(v[2], Real):
+                lpd.append(self.df_.index_at(v[2]))
+            else:
+                raise ValueError('Input can either be a real number or an ascending interval of two real numbers')
+        return reduce(operator.__and__, lpd).any()
+
+    def __iter__(self):
+        if bool(self):
+            return self.df.itertuples(index=False, name=None)
+        else:
+            return iter([])
+
+    def links_at(self, t):
+        if not bool(self):
+            return LinkSetDF()
+        else:
+            return LinkSetDF(self.df.df_at(t).drop(columns=['ts']), no_duplicates=False)
+
+    def times_of(self, u, v, direction='out'):
+        if not bool(self):
+            return TimeSetDF()
+        di = True
+        if direction == 'out':
+            df = self.df[(self.df.u == u) & (self.df.v == v)]
+        elif direction == 'in':
+            df = self.df[(self.df.v == u) & (self.df.u == v)]
+        elif direction == 'both':
+            df, di = self.df[self.df.u.isin({u, v}) & self.df.v.isin({u, v})], False
+        else:
+            raise UnrecognizedDirection()
+        return ITimeSetS(df['ts'].values.flat)
+
+    def neighbors(self, u, direction='out'):
+        if not bool(self):
+            return NodeStreamDF()
+        if direction == 'out':
+            df = self.df[self.df.u == u].drop(columns=['u']).rename(columns={'v': 'u'})
+        elif direction == 'in':
+            df = self.df[self.df.v == u].drop(columns=['v'])
+        elif direction=='both':
+            df = self.df[self.df.u == u].drop(columns=['u']).rename(columns={'v': 'u'})
+            df = df.append(self.df[self.df.v == u].drop(columns=['v']), ignore_index=True)
+        else:
+            raise UnrecognizedDirection()
+        return INodeStreamDF(df, disjoint_intervals=False)
+
+    def substream(self, nsu, nsv, ts):
+        if not isinstance(nsu, ABC.NodeSet):
+            raise UnrecognizedNodeSet('nsu')
+        if not isinstance(nsv, ABC.NodeSet):
+            raise UnrecognizedNodeSet('nsv')
+        if not isinstance(ts, ABC.TimeSet):
+            raise UnrecognizedTimeSet('ts')
+        if bool(self) and bool(nsu) and bool(nsv) and bool(ts):
+            if isinstance(ts, ABC.ITimeSet):
+                return ILinkStreamDF(self.df[self.df.u.isin(nsu) & self.df.v.isin(nsv)].intersect(utils.its_to_idf(ts), by_key=False, on_column=['u', 'v']))
+            else:
+                dfp = self.df[self.df.u.isin(nsu) & self.df.v.isin(nsv)]
+                dfp['tf'] = dfp['ts']
+                return ILinkStreamDF(pd.IntervalDF(dfp.intersect(InstantaneousDF(list(ts), columns=["ts"]), by_key=False, on_column=['u', 'v'])[['u', 'v', 'ts']]))
+        else:
+            return LinkStreamDF()
+
+    def __and__(self, ls):
+        if isinstance(ls, ABC.LinkStream):
+            if bool(ls) and bool(self):
+                if isinstance(ls, ABC.ILinkStream):
+                    if not isinstance(ls, ILinkStreamDF):
+                        try:
+                            return ls & self
+                        except NotImplementedError:
+                            ls = ILinkStreamDF(ls)
+                    return ILinkStreamDF(self.df.intersect(ls.df))
+                else:
+                    return ILinkStreamDF(LinkStreamDF(LinkStreamDF(self) & ls).df.drop(columns=['tf']))
+        else:
+            raise UnrecognizedLinkStream('right operand')
+        return LinkStreamDF()
+
+    def __or__(self, ls):
+        if isinstance(ls, ABC.LinkStream):
+            if not bool(self):
+                return ls.copy()
+            elif bool(ls):
+                if isinstance(ls, ABC.ILinkStream):
+                    if not isinstance(ls, ILinkStreamDF):
+                        try:
+                            return ls | self
+                        except NotImplementedError:
+                            ls = ILinkStreamDF(ls)
+                    return ILinkStreamDF(self.df.union(ls.df))
+                else:
+                    return LinkStreamDF(self) | ls
+            else:
+                return self.copy()
+        else:
+            raise UnrecognizedLinkStream('right operand')
+
+    def __sub__(self, ls):
+        if isinstance(ls, ABC.LinkStream):
+            if bool(self) and bool(ls):
+                if isinstance(ls, ABC.ILinkStream):
+                    if not isinstance(ls, ILinkStreamDF):
+                        try:
+                            return ls.__rsub__(self)
+                        except (AttributeError, NotImplementedError):
+                            ls = ILinkStreamDF(ls)
+                    return ILinkStreamDF(self.df.difference(ls.df))
+                else:
+                    return LinkStreamDF(self) - ls
+        else:
+            raise UnrecognizedLinkStream('right operand')
+        return self.copy()
+
+    def issuperset(self, ls):
+        if isinstance(ls, ABC.LinkStream):
+            if bool(self) and bool(ls):
+                if isinstance(ls, ABC.ILinkStream):
+                    if not isinstance(ls, ILinkStreamDF):
+                        try:
+                            return ls.__issubset__(self)
+                        except (AttributeError, NotImplementedError):
+                            ls = ILinkStreamDF(ls)
+                    return self.df.issuper(ls.df)
+                else:
+                    return LinkStreamDF(self).issuper(ls)
+            else:
+                return not bool(ls)
+        else:
+            raise UnrecognizedLinkStream('ls')
+        return False
+
+    def neighborhood(self, ns, direction='out'):
+        # if df join on u / combine (intersect) and the union intervals (for union)
+        # if range
+        derror = False
+        if not isinstance(ns, ABC.NodeStream):
+            raise UnrecognizedNodeStream('ns')
+        if isinstance(ns, NodeStreamB):
+            if direction == 'out':
+                df = self.df.rename(columns={'v': 'u', 'u': 'v'})
+                df = df[df.v.isin(ns.nodeset_)].drop('v', axis=1)
+            elif direction == 'in':
+                df = self.df[self.df.v.isin(ns.nodeset_)].drop('v', axis=1)
+            elif direction == 'both':
+                df = self.df.rename(columns={'v': 'u', 'u': 'v'})
+                df = df[df.v.isin(ns.nodeset_)].drop('v', axis=1)
+                df = df.append(self.df[self.df.v.isin(ns.nodeset_)].drop('v', axis=1))
+            else:
+                derror = True
+            if not derror:
+                ts = ns.timeset_
+                if isinstance(ts, ABC.ITimeSet):
+                    ts = utils.its_to_idf(ts)
+                else:
+                    df, ts = IntervalDF(self.df), utils.ts_to_df(ts)
+                df = df.intersect(df, ts, on_columns=['u', 'v'], by_key=False)
+        else:
+            if isinstance(ns, ABC.INodeStream):
+                df, base_df = self.dfm, utils.ins_to_idf(ns)
+            else:
+                df, base_df = IntervalDF(self.dfm), utils.ns_to_df(ns)
+            if direction == 'out':
+                df = df.map_intersect(base_df)
+            elif direction == 'in':
+                df = df.rename(columns={'u': 'v', 'v': 'u'}).map_intersect(base_df)
+            elif direction == 'both':
+                dfo, df = df, df.map_intersect(base_df)
+                df = df.append(dfo.rename(columns={'u': 'v', 'v': 'u'}).map_intersect(base_df), ignore_index=True)
+            else:
+                derror = True
+        if derror:
+            raise UnrecognizedDirection()
+        if isinstance(df, IntervalDF):
+            df = df.drop(columns=['tf'])
+        return INodeStreamDF(df, disjoint_intervals=False)
+
+    def induced_substream(self, ns):
+        if isinstance(ns, ABC.NodeStream):
+            if bool(self) and bool(ns):
+                if isinstance(ns, NodeStreamB):
+                    tdf, ts = self.df_[self.df_['v'].isin(ns.nodeset_) & self.df_['u'].isin(ns.nodeset_)], ns.timeset_
+                    if isinstance(ts, ABC.ITimeSet):
+                        ts = utils.its_to_idf(ts)
+                    else:
+                        df, ts = IntervalDF(self.df), utils.ts_to_df(ts)
+                    tdf = tdf.intersect(ts, on_columns=['u', 'v'], by_key=False)
+                else:
+                    base_df = utils.ns_to_df(ns)
+                    if isinstance(ns, ABC.INodeStream):
+                        df, base_df = self.dfm, utils.ins_to_idf(ns)
+                    else:
+                        df, base_df = IntervalDF(self.dfm), utils.ns_to_df(ns)
+                    tdf = self.df_.cartesian_intersect(base_df)
+                if not tdf.empty:
+                    if isinstance(tdf, IntervalDF):
+                        tdf = tdf.drop(columns=['tf'])   
+                return ILinkStreamDF(tdf)
+        else:
+            raise UnrecognizedNodeStream('ns')
+        return ILinkStreamDF()
+
+    def get_maximal_cliques(self, delta, direction='both'):
+        df = self.df.copy()
+        df['ts'] += delta*0.5
+        df['tf'] = df['ts'] + delta
+        return LinkStreamDF(df, disjoint_intervals=(delta == .0)).get_maximal_cliques(direction=direction)
+
+
+    def centrality(self, u, direction='both'):
+        def ego(e, ne, l, both):
+            # print >> sys.stderr, "Running node : " + str(e)
+            u, v, t, index, times = 0, 0, 0, 0, list()
+
+            ce, info = dict(), dict()
+            for i in ne:
+                info[(e,i)] = -1
+                for x in ne-{i}:
+                    info[(i,x)] = -1
+                info[(i,e)] = -1
+
+            index = 0
+            time = l[index][2] #starting time.
+            ne_x, lines, paths = ne | {e}, dict(), dict()
+
+            if both:
+                def add_lines(u, v, t):
+                    lines[(u,v)] = t
+                    lines[(v,u)] = t 
+            else:
+                def add_lines(u, v, t):
+                    lines[(u,v)] = t
+
+            while(index < len(l) -1):
+                # get all links of time stamp
+                while(index < len(l) -1):
+                    u,v,t = l[index]
+                    add_lines(u, v, t)
+                    index += 1
+                    if(t != time):
+                        break
+
+                for u in ne:
+                    for v in ne-{u}:
+                        # print u,v
+                        ce[(u,v)] = 0.0
+                        Q = set()
+                        if (u,v) not in lines:
+                            # print u,v
+                            news = info[(u,v)]
+                            for x in ne_x - {u, v}:
+                                ux = info[(u, x)]
+                                if (x, v) in lines:
+                                    xv = lines[(x, v)]
+                                else:
+                                    xv = info[(x, v)]
+                                if ux != -1 and xv != -1 and ux < xv: 
+                                    if ux == news:
+                                        Q.add(x)
+                                    if ux > news:
+                                        Q = {x}
+                                        news = ux
+
+                            if (u,v) in paths:
+                                old_paths = paths[(u,v)]
+                                if old_paths[0] == news:
+                                    paths[(u, v)] = (news, paths[(u,v)][1] | Q)
+                                elif old_paths[0] < news:
+                                    paths[(u, v)] = (news, Q)
+                            else:
+                                paths[(u, v)] = (news, Q)
+
+                            if e in paths[(u, v)][1]:
+                                ce[(u, v)] = 1.0/len(paths[(u, v)][1])
+                        else:
+                            paths[(u, v)] = (t, {u})
+                        
+        
+                times.append((time, sum(ce.values())))
+                for k in lines:
+                    info[k] = lines[k]
+                time, lines = l[index][2], {}
+            return times
+
+            def as_link(u, v):
+                return (u, v)
+            def add_nodes(u, v):
+                nodes[u].add(v)
+        if direction == 'in':
+            def as_link(u, v):
+                return (v, u)
+            def add_nodes(u, v):
+                nodes[v].add(u)
+        elif direction == 'both':
+            def as_link(u, v):
+                return frozenset([u, v])
+            def add_nodes(u, v):
+                nodes[v].add(u)
+                nodes[u].add(v)
+        elif direction != 'out':
+            raise UnrecognizedDirection()
+
+        if self.sort_by == ['ts']:
+            df = self.df
+        else:
+            df = self.dfm.sort_values(by=['ts'])
+
+        both = False
+        if direction == 'in':
+            df = df.rename(columns={'u': 'v', 'v': 'u'})
+        elif direction == 'both':
+            both = True
+
+        lines = list((u, v, ts) for u, v, ts, in df.sort_values(by=['ts']).itertuples(index=False, name=None))            
+        return ego(u, self.linkset.neighbors(u, direction=direction).nodes_, lines, both)
