@@ -31,18 +31,18 @@ def test_link_stream_df():
     assert (1, 3, 3.4) not in lsa
     assert (1, 2, (3.4, 4)) in lsa
 
-    assert lsa.link_duration(1, 2) == 3
-    assert lsa.link_duration(2, 1) == 4
-    assert lsa.link_duration(2, 1) == lsa.link_duration(1, 2, 'in')
-    assert lsa.link_duration(1, 2, direction='both') == 6
-    assert lsa.link_duration(5, 1) == 0
+    assert lsa.link_duration((1, 2)) == 3
+    assert lsa.link_duration((2, 1)) == 4
+    assert lsa.link_duration((2, 1)) == lsa.link_duration((1, 2), 'in')
+    assert lsa.link_duration((1, 2), direction='both') == 6
+    assert lsa.link_duration((5, 1)) == 0
 
     assert set(lsa.links_at(1)) == {(2, 1)}
     assert set(lsa.links_at((2, 2.5))) == {(1, 2), (2, 1)}
     assert set(lsa.links_at(10)) == set()
 
-    assert set(lsa.times_of(1, 2)) == {(2, 5)}
-    assert set(lsa.times_of(10, 3)) == set()
+    assert set(lsa.times_of((1, 2))) == {(2, 5)}
+    assert set(lsa.times_of((10, 3))) == set()
 
     assert lsa.m_at(2) == 2
     assert lsa.m_at(10) == 0
@@ -133,15 +133,15 @@ def test_ilink_stream_df():
     assert (1, 3, 1) not in lsa
     assert (1, 2, 2) in lsa
 
-    assert lsa.link_duration(1, 2) == 0
-    assert lsa.link_duration(5, 1) == 0
+    assert lsa.link_duration((1, 2)) == 0
+    assert lsa.link_duration((5, 1)) == 0
 
     assert set(lsa.links_at(6)) == {(2, 1)}
     assert set(lsa.links_at(3)) == {(1, 2), (2, 1)}
     assert set(lsa.links_at(10)) == set()
 
-    assert set(lsa.times_of(1, 2)) == {2, 3}
-    assert set(lsa.times_of(10, 3)) == set()
+    assert set(lsa.times_of((1, 2))) == {2, 3}
+    assert set(lsa.times_of((10, 3))) == set()
 
     assert lsa.m_at(3) == 2
     assert lsa.m_at(10) == 0

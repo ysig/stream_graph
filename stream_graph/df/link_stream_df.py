@@ -174,19 +174,42 @@ class LinkStreamDF(ABC.LinkStream):
         else:
             return LinkSetDF(self.df.df_at(t).drop(columns=['ts', 'tf']), no_duplicates=False)
 
-    def times_of(self, u, v, direction='out'):
+    def times_of(self, l=None, direction='out'):
         if not bool(self):
-            return TimeSetDF()
-        di = True
-        if direction == 'out':
-            df = self.df[(self.df.u == u) & (self.df.v == v)]
-        elif direction == 'in':
-            df = self.df[(self.df.v == u) & (self.df.u == v)]
-        elif direction == 'both':
-            df, di = self.df[self.df.u.isin({u, v}) & self.df.v.isin({u, v})], False
+            if l is None:
+                return {}
+            else:
+                return TimeSetDF()
+        if l is None:
+            times = defaultdict(list)
+            di = True
+            if direction == 'out':
+                def add(u, v, ts, tf):
+                    times[(u, v)].append((ts, tf))
+            elif direction == 'in':
+                def add(u, v, ts, tf):
+                    times[(u, v)].append((ts, tf))
+            elif direction == 'both':
+                def add(u, v, ts, tf):
+                    times[tuple(sorted([u, v]))].append((ts, tf))
+                di = False
+            else:
+                raise UnrecognizedDirection()
+            for u, v, ts, tf in iter(self):
+                add((u, v))
+            return {l: TimeSetDF(ts, disjoint_intervals=di) for l, ts in iteritems(times)}
         else:
-            raise UnrecognizedDirection()
-        return TimeSetDF(df.drop(columns=['u', 'v']), disjoint_intervals=di)
+            di = True
+            u, v = l
+            if direction == 'out':
+                df = self.df[(self.df.u == u) & (self.df.v == v)]
+            elif direction == 'in':
+                df = self.df[(self.df.v == u) & (self.df.u == v)]
+            elif direction == 'both':
+                df, di = self.df[self.df.u.isin({u, v}) & self.df.v.isin({u, v})], False
+            else:
+                raise UnrecognizedDirection()
+            return TimeSetDF(df.drop(columns=['u', 'v']), disjoint_intervals=di)
 
     def neighbors_at(self, u, t, direction='out'):
         if not bool(self):
@@ -202,19 +225,40 @@ class LinkStreamDF(ABC.LinkStream):
             raise UnrecognizedDirection()
         return NodeSetS(df[df.index_at(t)].u.values.flat)
 
-    def neighbors(self, u, direction='out'):
+    def neighbors(self, u=None, direction='out'):
         if not bool(self):
-            return NodeStreamDF()
-        if direction == 'out':
-            df = self.df[self.df.u == u].drop(columns=['u']).rename(columns={'v': 'u'})
-        elif direction == 'in':
-            df = self.df[self.df.v == u].drop(columns=['v'])
-        elif direction=='both':
-            df = self.df[self.df.u == u].drop(columns=['u']).rename(columns={'v': 'u'})
-            df = df.append(self.df[self.df.v == u].drop(columns=['v']), ignore_index=True)
+            if u is None:
+                return dict()
+            else:
+                return NodeStreamDF()
+        if u is None:
+            neighbors = defaultdict(list)
+            if direction == 'out':
+                def add(u, v, ts, tf):
+                    neighbors[u].append((v, ts, tf))
+            elif direction == 'in':
+                def add(u, v, ts, tf):
+                    neighbors[v].append((u, ts, tf))
+            elif direction=='both':
+                def add(u, v, ts, tf):
+                    neighbors[u].append((v, ts, tf))
+                    neighbors[v].append((u, ts, tf))
+            else:
+                raise UnrecognizedDirection()
+            for u, v, ts, tf in iter(self):
+                add(u, v, ts, tf)
+            return {u: NodeStreamDF(ns, disjoint_intervals=False) for u, ns in iteritems(neighbors)}
         else:
-            raise UnrecognizedDirection()
-        return NodeStreamDF(df, disjoint_intervals=False)
+            if direction == 'out':
+                df = self.df[self.df.u == u].drop(columns=['u']).rename(columns={'v': 'u'})
+            elif direction == 'in':
+                df = self.df[self.df.v == u].drop(columns=['v'])
+            elif direction=='both':
+                df = self.df[self.df.u == u].drop(columns=['u']).rename(columns={'v': 'u'})
+                df = df.append(self.df[self.df.v == u].drop(columns=['v']), ignore_index=True)
+            else:
+                raise UnrecognizedDirection()
+            return NodeStreamDF(df, disjoint_intervals=False)
 
     def substream(self, nsu, nsv, ts):
         if not isinstance(nsu, ABC.NodeSet):
@@ -569,33 +613,77 @@ class ILinkStreamDF(ABC.ILinkStream, LinkStreamDF):
         else:
             return LinkSetDF(self.df.df_at(t).drop(columns=['ts']), no_duplicates=False)
 
-    def times_of(self, u, v, direction='out'):
+    def times_of(self, l=None, direction='out'):
         if not bool(self):
-            return TimeSetDF()
-        di = True
-        if direction == 'out':
-            df = self.df[(self.df.u == u) & (self.df.v == v)]
-        elif direction == 'in':
-            df = self.df[(self.df.v == u) & (self.df.u == v)]
-        elif direction == 'both':
-            df, di = self.df[self.df.u.isin({u, v}) & self.df.v.isin({u, v})], False
-        else:
-            raise UnrecognizedDirection()
-        return ITimeSetS(df['ts'].values.flat)
+            if l is None:
+                return {}            
+            else:
+                return TimeSetDF()
 
-    def neighbors(self, u, direction='out'):
-        if not bool(self):
-            return NodeStreamDF()
-        if direction == 'out':
-            df = self.df[self.df.u == u].drop(columns=['u']).rename(columns={'v': 'u'})
-        elif direction == 'in':
-            df = self.df[self.df.v == u].drop(columns=['v'])
-        elif direction=='both':
-            df = self.df[self.df.u == u].drop(columns=['u']).rename(columns={'v': 'u'})
-            df = df.append(self.df[self.df.v == u].drop(columns=['v']), ignore_index=True)
+        if l is None:
+            if direction == 'out':
+                def key(u, v):
+                    return (u, v)
+            elif direction == 'in':
+                def key(u, v):
+                    return (v, u)
+            elif direction == 'both':
+                def key(u, v):
+                    return tuple(sorted([u, v]))
+            else:
+                raise UnrecognizedDirection()
+            times = defaultdict(set)
+            for u, v, ts, tf in iter(self):
+                times[key(u, v)].add(ts)
+            return {l: TimeSetS(ts) for l, ts in iteritems(times)}
         else:
-            raise UnrecognizedDirection()
-        return INodeStreamDF(df, disjoint_intervals=False)
+            di = True
+            u, v = l
+            if direction == 'out':
+                df = self.df[(self.df.u == u) & (self.df.v == v)]
+            elif direction == 'in':
+                df = self.df[(self.df.v == u) & (self.df.u == v)]
+            elif direction == 'both':
+                df, di = self.df[self.df.u.isin({u, v}) & self.df.v.isin({u, v})], False
+            else:
+                raise UnrecognizedDirection()
+            return ITimeSetS(df['ts'].values.flat)
+
+    def neighbors(self, u=None, direction='out'):
+        if not bool(self):
+            if u is None:
+                return {}
+            else:
+                return NodeStreamDF()
+
+        if u is None:
+            neighbors = defaultdict(set)
+            if direction == 'out':
+                def add(u, v, ts):
+                    neighbors[u].add((v, ts))
+            elif direction == 'in':
+                def add(u, v, ts):
+                    neighbors[v].add((u, ts))
+            elif direction=='both':
+                def add(u, v, ts):
+                    neighbors[u].add((v, ts))
+                    neighbors[v].add((u, ts))
+            else:
+                raise UnrecognizedDirection()
+            for u, v, ts in iter(self):
+                add(u, v, ts)
+            return {u: INodeStreamDF(ns) for u, ns in iteritems(neighbors)}
+        else:
+            if direction == 'out':
+                df = self.df[self.df.u == u].drop(columns=['u']).rename(columns={'v': 'u'})
+            elif direction == 'in':
+                df = self.df[self.df.v == u].drop(columns=['v'])
+            elif direction=='both':
+                df = self.df[self.df.u == u].drop(columns=['u']).rename(columns={'v': 'u'})
+                df = df.append(self.df[self.df.v == u].drop(columns=['v']), ignore_index=True)
+            else:
+                raise UnrecognizedDirection()
+            return INodeStreamDF(df, disjoint_intervals=False)
 
     def substream(self, nsu, nsv, ts):
         if not isinstance(nsu, ABC.NodeSet):
@@ -760,7 +848,9 @@ class ILinkStreamDF(ABC.ILinkStream, LinkStreamDF):
         return LinkStreamDF(df, disjoint_intervals=(delta == .0)).get_maximal_cliques(direction=direction)
 
 
-    def centrality(self, u, direction='both'):
+    def centrality(self, u=None, direction='both'):
+        if u is None:
+            return {u: self.centrality(u, direction=direction) for u in self.nodeset}
         def ego(e, ne, l, both):
             # print >> sys.stderr, "Running node : " + str(e)
             u, v, t, index, times = 0, 0, 0, 0, list()

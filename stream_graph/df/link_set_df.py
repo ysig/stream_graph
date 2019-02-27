@@ -5,7 +5,8 @@ from stream_graph import ABC
 from stream_graph.exceptions import UnrecognizedLinkSet
 from stream_graph.exceptions import UnrecognizedDirection
 from stream_graph.set.node_set_s import NodeSetS
-
+from collections import Counter
+from six import iteritems
 
 class LinkSetDF(ABC.LinkSet):
     def __init__(self, df=None, no_duplicates=False, sort_by=['u', 'v']):
@@ -75,27 +76,63 @@ class LinkSetDF(ABC.LinkSet):
     def mdf(self):
         return self.merge_df_.reindex_.df_
 
-    def neighbors(self, u, direction='out'):
-        if direction == 'out':
-            s = self.df[self.df.u == u].v.values.flat
-        elif direction == 'in':
-            s = self.df[self.df.v == u].u.values.flat
-        elif direction == 'both':
-            s = itertools.chain(self.df[self.df.u == u].v.values.flat,
-                                self.df[self.df.v == u].u.values.flat)
+    def neighbors(self, u=None, direction='out'):
+        if u is None:
+            neighbors = defaultdict(set)
+            if direction == 'out':
+                def add(u, v):
+                    degrees[u].add(v)
+            elif direction == 'in':
+                def add(u, v):
+                    degrees[v].add(u)
+            elif direction == 'both':
+                def add(u, v):
+                    degrees[u].add(v)
+                    degrees[v].add(u)
+            else:
+                raise UnrecognizedDirection()
+            for u, v in iter(self):
+                add(u, v)
+            return {u: Nodeset(s) for u, s in iteritems(neighbors)}
         else:
-            raise UnrecognizedDirection()
-        return NodeSetS(s)
+            if direction == 'out':
+                s = self.df[self.df.u == u].v.values.flat
+            elif direction == 'in':
+                s = self.df[self.df.v == u].u.values.flat
+            elif direction == 'both':
+                s = itertools.chain(self.df[self.df.u == u].v.values.flat,
+                                    self.df[self.df.v == u].u.values.flat)
+            else:
+                raise UnrecognizedDirection()
+            return NodeSetS(s)
 
-    def degree(self, u, direction='out'):
-        if direction == 'out':
-            return (self.df.u == u).sum()
-        elif direction == 'in':
-            return (self.df.v == u).sum()
-        elif direction == 'both':
-            return ((self.df.u == u) | (self.df.v == u)).sum()
+    def degree(self, u=None, direction='out'):
+        if u is None:
+            degrees = Counter()
+            if direction == 'out':
+                def add(u, v):
+                    degrees[u] += 1
+            elif direction == 'in':
+                def add(u, v):
+                    degrees[v] += 1
+            elif direction == 'both':
+                def add(u, v):
+                    degrees[u] += 1
+                    degrees[v] += 1
+            else:
+                raise UnrecognizedDirection()
+            for u, v in iter(self):
+                add(u, v)
+            return degrees
         else:
-            raise UnrecognizedDirection()
+            if direction == 'out':
+                return (self.df.u == u).sum()
+            elif direction == 'in':
+                return (self.df.v == u).sum()
+            elif direction == 'both':
+                return ((self.df.u == u) | (self.df.v == u)).sum()
+            else:
+                raise UnrecognizedDirection()
 
     def __contains__(self, l):
         assert isinstance(l, tuple) and len(l) == 2

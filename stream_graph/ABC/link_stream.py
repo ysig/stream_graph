@@ -1,6 +1,8 @@
 import copy
 import abc
 
+from six import iteritems
+
 # 2/3 Cross Compatibility
 ABC = abc.ABCMeta('ABC', (object,), {'__slots__': ()}) 
 
@@ -150,14 +152,12 @@ class LinkStream(ABC):
         pass
 
     @abc.abstractmethod
-    def times_of(self, u, v, direction='out'):
+    def times_of(self, l=None, direction='out'):
         """Return the times that a link appears.
         
         Parameters
         ----------
-        u : Node_Id
-
-        v : Node_Id
+        l : (Node_Id, Node_Id) or None
 
         direction : string={'in', 'out', 'both'}, default='both'
         
@@ -165,6 +165,7 @@ class LinkStream(ABC):
         -------
         timeset : TimeSet
             Return the times where a link starting from u to v (direction='out') or from v to u (direction='in') or 'both' exist.
+            If l is None, returns the timesets corresponding to all links
 
         """
         pass
@@ -191,19 +192,20 @@ class LinkStream(ABC):
         pass
 
     @abc.abstractmethod
-    def neighbors(self, u, direction='out'):
+    def neighbors(self, u=None, direction='out'):
         """Return the nodestream of a neighbors of a node.
         
         Parameters
         ----------
-        u : Node_Id
+        u : Node_Id or None
 
         direction : string={'in', 'out', 'both'}, default='both'
         
         Returns
         -------
-        nodestream : NodeStream
+        nodestream : NodeStream or dict
             Return the ('in', 'out' or 'both') nodestream of neighbors at a certain time(s).
+            Return a dictionary of nodes as keys assigned by their neighboring nodestream.
 
         """
         pass
@@ -407,24 +409,27 @@ class LinkStream(ABC):
         """
         return self.links_at(t).size
 
-    def link_duration(self, u, v, direction='out'):
+    def link_duration(self, l=None, direction='out'):
         """Returns the total duration of a link.
         
         Parameters
         ----------
-        u : Node_Id
-
-        v : Node_Id
+        l : (Node_Id, Node_Id) or None
 
         direction : string={'in', 'out', 'both'}, default='both'
         
         Returns
         -------
-        time : Real
+        time : Real or dict
             Returns the the total time that link(s) (u, v)[direction='out'], (v, u)[direction='in'] or 'both' (u, v) and (v, u) appear.
+            If l is None returns a dictionary of all links with their times.
 
         """
-        return self.times_of(u, v, direction=direction).size
+        if l is None:
+            times = self.times_of(None, direction=direction)
+            return {l: t.size for l, t in iteritems(times)}
+        else:
+            return self.times_of(l=l, direction=direction).size
 
     @abc.abstractmethod
     def get_maximal_cliques(self, direction='both'):

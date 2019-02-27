@@ -353,7 +353,7 @@ class InstantaneousDF(pd.DataFrame):
     def df_at(self, t):
         return self[self.index_at(t)]
 
-    def df_count_at(df, t):
+    def df_count_at(self, t):
         return self.index_at(t).sum()
 
     def index_at(self, t):

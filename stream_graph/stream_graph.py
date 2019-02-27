@@ -1,7 +1,17 @@
 from . import ABC
+from six import iteritems
 from .exceptions import UnrecognizedStreamGraph
 
 class StreamGraph(object):
+    """StreamGraph
+    
+    A StreamGraph :math:`S=(T, V, W, E)` is a collection of four elements:
+    - :math:`T`, a time-set
+    - :math:`V`, a node-set
+    - :math:`W\subseteq T \times V`, a node-stream
+    - :math:`E\subseteq T \times V \otimes V`, a link-stream
+
+    """
     def __init__(self, nodeset=None, timeset=None, nodestream=None, linkstream=None):
         if not isinstance(nodeset, ABC.NodeSet):
             from . import NodeSetS
@@ -58,78 +68,224 @@ class StreamGraph(object):
 
     @property
     def linkstream_coverage(self):
-        denom = float(self.nodeset_.size * self.nodestream_.total_common_time)
+        """Calculate the coverage of the link-stream.
+        
+        Parameters
+        ----------
+        None. Property.
+        
+        Returns
+        -------
+        ns_coverage : Real
+            Returns :math:`\frac{|E|}{\sum_{uv \in V\times V}|T_{u} \cap T_{v}|}`
+
+        """
+        denom = float(self.nodestream_.total_common_time)
         if denom > .0:
-            return self.linkstream_.size / denom
+            return 2*self.linkstream_.size / denom
         else:
             return .0
 
     @property
     def nodestream_coverage(self):
-        denom = float(self.nodeset_.size * self.nodestream_.total_common_time)
+        """Calculate the coverage of the node-stream.
+        
+        Parameters
+        ----------
+        None. Property.
+        
+        Returns
+        -------
+        ns_coverage : Real
+            Returns :math:`\frac{|W|}{|V\timesT|}}`
+
+        """
+        denom = float(self.timeset_.size * self.nodeset_.size)
         if denom > .0:
-            return self.linkstream_.size / denom
+            return self.nodestream_.size / denom
         else:
             return .0
 
-    def time_coverage(self, u, v=None, direction='out'):
+    def time_coverage_node(self, u=None, direction='out'):
+        """Calculate the time coverage of a node inside the stream_graph.
+        
+        Parameters
+        ----------
+        u: NodeId or None
+        
+        direction: 'in', 'out' or 'both', default='out'
+        
+        Returns
+        -------
+        time_coverage_node : Real or dict
+            Returns :math:`\frac{|T_{u}|}{|T|}`.
+            If u is None, returns a dictionary of all nodes and their coverages.
+
+        """
         denom = float(self.timeset_.size)
         if denom == .0:
-            return .0
-        elif v is None:
-            return self.nodestream_.times_of(u).size / denom
+            if u is None:
+                return {u: .0 for u in self.nodeset_}
+            else:
+                return .0
         else:
-            return self.linkstream_.times_of(u, v, direction).size / denom
+            if u is None:
+                times = self.nodestream_.times_of()
+                return {u: ts.size/denom for u, ts in iteritems(times)}
+            else:
+                return self.nodestream_.times_of(u).size / denom
 
-    def node_coverage(self, t):
+    def time_coverage_link(self, l=None, direction='out'):
+        """Calculate the time coverage of a link inside the stream_graph.
+        
+        Parameters
+        ----------
+        l: (NodeId, NodeId) or None
+        
+        direction: 'in', 'out' or 'both', default='out'
+        
+        Returns
+        -------
+        time_coverage : Real or dict
+            Returns :math:`\frac{|T_{uv}|}{|T_{u} \cap T_{v}|}`.
+            If l is None, returns a dictionary of all links and their coverages.
+
+        """
+        if l is None:
+            times = self.linkstream_.times_of(direction=direction)
+            active_links = set(k for k, v in iteritems(times) if v > .0)
+            if len(active_links):
+                common_times = self.nodestream_.common_times_pair(l=links)
+                time_coverage_links = dict()
+                for k, v in iteritems(times):
+                    if v > .0:
+                        ct = common_times[k]
+                        if ct > .0:
+                            time_coverage_links[k] = v/float(ct)
+                            continue
+                    time_coverage_links[k] = .0 
+                return time_coverage_links
+            else:
+                return {l: .0 for k in active_links.keys()}
+        else:
+            denom = float(self.nodestream_.common_times_pair(l)
+            if denom == .0:
+                return .0
+            else:
+                return self.linkstream_.times_of(l, direction).size / denom
+
+    def node_coverage_at(self, t):
+        """Calculate the node coverage of a time instant inside the stream_graph.
+        
+        Parameters
+        ----------
+        t: time
+        
+        Returns
+        -------
+        node_coverage : Real
+            Returns :math:`\frac{|V_{t}|}{|V|}`.
+
+        """
         denom = float(self.nodeset_.size )
         if denom > .0:
             return self.nodestream_.n_at(t) / denom
         else:
             return .0
 
-    def link_coverage(self, t):
+    def link_coverage_at(self, t):
+        """Calculate the link coverage of a time instant inside the stream_graph.
+        
+        Parameters
+        ----------
+        t: time
+        
+        Returns
+        -------
+        link_coverage : Real
+            Returns :math:`\frac{|E_{t}|}{|V|*|V|}`
+
+        """
         denom = float(self.nodestream_.nodes_at(t).size ** 2)
         if denom > .0:
-            return self.linkstream_.links_at(t).size / denom
+            return 2 * self.linkstream_.links_at(t).size / denom
         else:
             return .0
 
-    def neighbor_coverage(self, u, direction='out'):
-        denom = float(self.nodeset_.size * self.timeset_.size)
-        if denom > .0:
-            return self.linkstream_.neighbors(u, direction).size / denom
+    def neighbor_coverage(self, u=None, direction='out'):
+        """Calculate the neighbor coverage of a node inside the stream_graph.
+        
+        Parameters
+        ----------
+        u: NodeId or None
+        
+        direction: 'in', 'out' or 'both', default='out'
+        
+        Returns
+        -------
+        neighbor_coverage : Real or dict
+            Returns :math:`\frac{|N(u)|}{\sum_{v\in V}|T_{u}\cap T_{v}|}`
+            If u is None, returns a dictionary of all nodes and their neighbor coverages.
+
+        """
+        if l is None:
+            times = {k: v.size for k, v in iteritems(self.linkstream_.neighbors(direction=direction))}
+            common_times = self.nodestream_.common_times()# maybe add a u = nodes argument in nodestream_common_times
+            neighbor_coverage = dict()
+            for k, v in iteritems(times):
+                if v > .0:
+                    ct = common_times[k]
+                    if ct > .0:
+                        neighbor_coverage[k] = v/float(ct)
+                        continue
+                neighbor_coverage[k] = .0 
+            return neighbor_coverage
         else:
-            return .0
+            denom = float(self.nodestream_.common_times_pair(l)
+            if denom == .0:
+                return .0
+            else:
+                return self.linkstream_.neighbors(l, direction).size / denom
 
     def neighbor_coverage_at(self, u, t, direction='out'):
-        denom = float(self.nodeset_.size)
+        """Calculate the coverage of a node inside the stream_graph.
+        
+        Parameters
+        ----------
+        u: NodeId or None
+
+        t: time
+
+        direction: 'in', 'out' or 'both', default='out'
+        
+        Returns
+        -------
+        time_coverage : Real
+            Returns :math:`\frac{|N_{t}_(u)|}{|V|}`
+
+        """
+        denom = float(self.nodestream_.n_at(t))
         if denom > .0:
             return self.linkstream_.neighbors_at(u, t, direction).size / denom
         else:
             return .0
 
-    @property
-    def total_density(self):
-        denom = float(self.nodestream_.total_common_time)
-        if denom > .0:
-            return self.linkstream_.size / denom
-        else:
-            return .0
+    def mean_degree_at(self, t):
+        """Calculate the mean degree at a give time.
+        
+        Parameters
+        ----------
+        t: Time
+        
+        Returns
+        -------
+        time_coverage : Real
+            Returns :math:`\frac{|E_{t}|}{|W_{t}|}`
 
-    def density(self, u, v=None, direction='out'):
-        denom = float(self.nodestream_.common_time(u, v))
-        if denom == .0:
-            return .0
-        elif v is None:
-            return self.linkstream_.neighbors(u, direction).size / denom
-        else:
-            return self.linkstream_.times_of(u, v, direction).size / denom
-
-    def density_at(self, t):
+        """
         denom = float(self.nodestream_.n_at(t))
         if denom > .0:
-            return self.linkstream_.linkstream_at(t).size / denom
+            return self.linkstream_.m_at(t) / denom
         else:
             return .0
 
@@ -172,6 +328,18 @@ class StreamGraph(object):
 
     @property
     def n(self):
+        """Calculate the number of nodes of the stream-graph.
+        
+        Parameters
+        ----------
+        None. Property.
+        
+        Returns
+        -------
+        n : Real
+            Returns :math:`\frac{|W|}{|T|}`
+
+        """
         denom = float(self.timeset_.size)
         if denom > .0:
             return self.nodestream_.size/denom
@@ -180,19 +348,21 @@ class StreamGraph(object):
 
     @property
     def m(self):
+        """Calculate the number of edges of the stream-graph.
+        
+        Parameters
+        ----------
+        None. Property.
+        
+        Returns
+        -------
+        n : Real
+            Returns :math:`\frac{|E|}{|T|}`
+
+        """
         denom = float(self.timeset_.size)
         if denom > .0:
             return self.linkstream_.size/denom
-        else:
-            return .0
-
-    def contribution(self, u, v=None, direction='out'):
-        denom = float(self.timeset_.size)
-        if denom > .0:
-            if v is None:
-                return self.nodestream_.node_duration(u) / denom
-            else:
-                return self.linkstream_.link_duration(u, v, direction=direction) / denom
         else:
             return .0
 

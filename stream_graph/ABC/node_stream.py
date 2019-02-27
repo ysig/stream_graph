@@ -134,25 +134,28 @@ class NodeStream(ABC):
         """
         pass
 
-    def node_duration(self, u):
+    def node_duration(self, u=None):
         """Returns the duration of a node.
         
         Parameters
         ----------
-        u : Node_Id
-        
+        u : Node_Id or None
 
         Returns
         -------
-        duration : Real
+        duration : Real or None
             The total amount of time that a node exist.
+            If None, returns a dict with the amount of time for all nodes in the nodestream.
         
         """
-        return self.times_of(u).size
+        if u is None:
+            return {u: self.times_of(u).size for u in self.nodeset}
+        else:
+            return self.times_of(u).size
 
     @abc.abstractmethod
-    def common_time(self, u, v=None):
-        """Returns the common_time between a node and one other or All.
+    def common_time(self, u=None, v=None):
+        """Returns the common_time between a node and one other or all.
         
         Parameters
         ----------
@@ -164,7 +167,7 @@ class NodeStream(ABC):
         -------
         total_time : Real
             If :code:`v` is `None`, returns :math:`\sum_{u,v\in V,\; u\\neq v} |T_{u} \cap T_{v}|`.
-            Else, return :math:`|T_{u} \cap T_{v}|`.
+            Else, return a dictionary for all u with :math:`|T_{u} \cap T_{v}|`.
 
         """
         pass
@@ -186,17 +189,18 @@ class NodeStream(ABC):
         pass
 
     @abc.abstractmethod
-    def times_of(self, u):
+    def times_of(self, u=None):
         """Returns TimeSet that a nodes appears in the NodeStream.
         
         Parameters
         ----------
-        u : Node_Id
+        u : Node_Id or None
         
         Returns
         -------
-        timeset : TimeSet
+        timeset : TimeSet or dict
             Returns the times that node :code:`u` exists.
+            Return a dictionary of the timeset for each node u.
 
         """
         pass
@@ -344,8 +348,12 @@ class INodeStream(NodeStream):
     def size(self):
         return 0
     
-    def node_duration(self, u):
+    def node_duration(self, u=None):
+        if u is None:
+            return {u:0 for u in self.nodeset}
         return 0
 
-    def common_time(self, u, v=None):
-        return 0.
+    def common_time(self, u=None, v=None):
+        if u is None and v is None:
+            return {u:0 for u in self.nodeset}
+        return 0

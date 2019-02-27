@@ -50,30 +50,30 @@ class LinkSet(ABC):
         return self.__bool__()
 
     @abc.abstractmethod
-    def neighbors(self, u, direction='out'):
+    def neighbors(self, u=None, direction='out'):
         """Return the nodeset of a neighbors of a node.
         
         Parameters
         ----------
-        u : Node_Id
+        u : Node_Id or None
 
         direction : string={'in', 'out', 'both'}, default='both'
         
         Returns
         -------
-        nodestream : NodeStream
+        nodestream : NodeStream or dict
             Return the ('in', 'out' or 'both') nodeset of neighbors of u.
-
+            If u is None, returns a dictionary of nodestreams for all nodes.
         """
         pass
 
     @abc.abstractmethod
-    def degree(self, u, direction='out'):
+    def degree(self, u=None, direction='out'):
         """Return the degree of a node.
         
         Parameters
         ----------
-        u : Node_Id
+        u : Node_Id or None
 
         direction : string={'in', 'out', 'both'}, default='both'
         
@@ -81,7 +81,7 @@ class LinkSet(ABC):
         -------
         nodestream : NodeStream
             Return the ('in', 'out' or 'both') degree of a node of u.
-
+            If None returns a dictionary for all nodes.
         """
         pass
 

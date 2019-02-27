@@ -19,14 +19,16 @@ def test_stream_graph():
     assert sga.nodestream_coverage == 0.25
     assert sga.linkstream_coverage == 0.25
 
-    assert sga.time_coverage(1) == 1.0
-    assert sga.time_coverage(1, 2) == 0.42857142857142855
-    assert sga.time_coverage(1, 2, 'in') == 0.5714285714285714
-    assert sga.time_coverage(1, 2, 'both') == 0.8571428571428571
+    assert sga.time_coverage_node(1) == 1.0
+    assert sga.time_coverage_link((1, 2)) == 0.42857142857142855
+    assert sga.time_coverage_link((1, 2), 'in') == 0.5714285714285714
+    assert sga.time_coverage_link((1, 2), 'both') == 0.8571428571428571
 
-    assert sga.node_coverage(2.5) == 1.0
-    assert sga.node_coverage(10) == 0.
-    assert sga.node_coverage(2.5) == 1.0
+    assert sga.node_coverage_at(2.5) == 1.0
+    assert sga.node_coverage_at(10) == 0.
+    assert sga.node_coverage_at(2.5) == 1.0
+    
+    assert sga.link_coverage_at(2.5) == 1.0
 
     assert sga.neighbor_coverage(1) == 0.21428571428571427
     assert sga.neighbor_coverage(1, 'in') == 0.2857142857142857
@@ -37,16 +39,16 @@ def test_stream_graph():
     assert sga.neighbor_coverage_at(1, 2.5, 'both') == 0.5
 
     assert sga.total_density == 0.5
-    assert sga.density(1) == 1.5
-    assert sga.density(1, 2) == 1.5
-    assert sga.density(1, 2, 'in') == 2.0
-    assert sga.density(1, 2, 'both') == 3.0
-    assert sga.density(2.5) == 0.
+    assert sga.density_node(1) == 1.5
+    assert sga.density_link((1, 2)) == 1.5
+    assert sga.density_link((1, 2), 'in') == 2.0
+    assert sga.density_link((1, 2), 'both') == 3.0
+    assert sga.density_at(3.5) == 1.5
 
-    assert sga.contribution(1) == 0.2857142857142857
-    assert sga.contribution(1, 2) == 0.42857142857142855
-    assert sga.contribution(1, 2, 'in') == 0.5714285714285714
-    assert sga.contribution(1, 2, 'both') == 0.8571428571428571
+    assert sga.contribution_node(1) == 0.2857142857142857
+    assert sga.contribution_link((1, 2)) == 0.42857142857142855
+    assert sga.contribution_link((1, 2), 'in') == 0.5714285714285714
+    assert sga.contribution_link((1, 2), 'both') == 0.8571428571428571
 
 if __name__ == "__main__":
     test_stream_graph()

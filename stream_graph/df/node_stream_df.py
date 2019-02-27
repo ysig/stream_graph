@@ -200,30 +200,71 @@ class NodeStreamDF(ABC.NodeStream):
             raise UnrecognizedNodeStream('second operand')
         return NodeStreamDF()
 
-    def node_duration(self, u):
+    def node_duration(self, u=None):
         if bool(self):
             return self.df[self.df.u == u].measure_time()
         else:
             return 0
 
-    def common_time(self, u, v=None):
-        if bool(self):
-            if v is None:
-                idx = (self.df.u == u)
-                if idx.any():
-                    a, b = self.df[idx], self.df[~idx]
-                    return a.interval_intersection_size(b)
-            else:
-                idxa, idxb = (self.df.u == u), (self.df.u == v)
-                if idxa.any() and idxb.any():
-                    return self.df[idxa].interval_intersection_size(self.df[idxb])
-        return 0.
+    def node_durations(self):
+        node_durations = Counter()
+        for u, ts, tf in iter(self):
+            node_durations[u] += tf - ts
+        return node_durations
 
-    def number_of_nodes_at(self,  t):
+    def common_time(self, u=None, v=None):
+        if u is None and v is None:
+            if not bool(self):
+                return dict()
+            dfp = df[['u', 'ts']].rename(columns={"ts": "t"})
+            dfp['f'] = True
+            dfpv = df[['u', 'tf']].rename(columns={"ts": "t"})
+            dfpv['f'] = False
+            df = dfp.append(dfpv, ignore_index=True).sort_values(by=['t', 'f'])
+            active_nodes, common_times = set(), Counter()
+            e = df.t.min()
+            for u, t, f in df.itertuples(index=False, name=None):
+                if f:
+                    # start
+                    ct = (len(active_nodes) - 1)*(t - e)
+                    if ct > .0:
+                        for v in active_nodes:
+                            common_times[v] += ct
+                    active_nodes.add(u)
+                else:
+                    # finish
+                    active_nodes.remove(u)
+                    ct = len(active_nodes)*(t - e)
+                    if ct > .0:
+                        common_times[u] += ct
+                        for v in active_nodes:
+                            common_times[v] += ct
+
+            return common_times
+        else:
+            if u is None:
+                u, v = v, u
+            if bool(self):
+                if v is None:
+                    idx = (self.df.u == u)
+                    if idx.any():
+                        a, b = self.df[idx], self.df[~idx]
+                        return a.interval_intersection_size(b)
+                else:
+                    idxa, idxb = (self.df.u == u), (self.df.u == v)
+                    if idxa.any() and idxb.any():
+                        return self.df[idxa].interval_intersection_size(self.df[idxb])
+            return 0.
+
+    # Return what if t not specified?
+
+    def n_at(self, t):
         if bool(self):
             return self.df.df_count_at(t)
         else:
             return 0
+
+    # Return what if t not specified?
 
     def nodes_at(self, t):
         if bool(self):
@@ -236,11 +277,20 @@ class NodeStreamDF(ABC.NodeStream):
         else:
             return NodeSetS()
 
-    def times_of(self, u):
-        if bool(self):
-            return TimeSetDF(self.df[self.df.u == u].drop(columns=['u']), disjoint_intervals=False)
+    def times_of(self, u=None):
+        if u is None:
+            if bool(self):
+                times = defaultdict(list)
+                for u, ts, tf in iter(self):
+                    times[u].append((ts, tf))
+                return {u: TimeSetDF(times) for u, times in iteritems(times)}
+            else:
+                return dict()
         else:
-            return TimeSetDF()
+            if bool(self):
+                return TimeSetDF(self.df[self.df.u == u].drop(columns=['u']))
+            else:
+                return TimeSetDF()
 
     def issuperset(self, ns):
         if isinstance(ns, ABC.NodeStream):
@@ -375,11 +425,20 @@ class INodeStreamDF(ABC.INodeStream, NodeStreamDF):
         else:
             return NodeSetS()
 
-    def times_of(self, u):
+    def times_of(self, u=None):
         if bool(self):
-            return ITimeSetS(self.df[self.df.u == u]['ts'].values.flat)
+            if u is None:
+                times = defaultdict(set)
+                for u, ts in iter(self):
+                    times[u].add(ts)
+                return {u: ITimeSetS(s) for u, s in iteritems(times)}
+            else:
+                return ITimeSetS(self.df[self.df.u == u]['ts'].values.flat)
         else:
-            return ITimeSetS()
+            if u is None:
+                return ITimeSetS()
+            else:
+                return dict()
 
     def issuperset(self, ns):
         if isinstance(ns, ABC.NodeStream):

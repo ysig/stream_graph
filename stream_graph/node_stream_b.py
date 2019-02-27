@@ -75,13 +75,20 @@ class NodeStreamB(ABC.NodeStream):
         return ((u[0] is None or u[0] in self.nodeset_) and
                 (u[1] is None or u[1] in self.timeset_))
 
-    def node_duration(self, u):
-        if u in self.nodeset_:
-            return self.total_time
+    def node_duration(self, u=None):
+        if u is None:
+            return {u: self.total_time for u in self.nodeset_}
         else:
-            return 0.
+            if u in self.nodeset_:
+                return self.total_time
+            else:
+                return 0.
 
-    def common_time(self, u, v=None):
+    def common_time(self, u=None, v=None):
+        if u is None and v is None:
+            return {u: (self.n-1) * self.total_time for u in self.nodeset_}
+        elif u is None:
+            u, v = v, u
         if bool(self) and u in self.nodeset_:
             if v is None:
                 return (self.n-1) * self.total_time
@@ -114,7 +121,9 @@ class NodeStreamB(ABC.NodeStream):
         else:
             return 0
 
-    def times_of(self, u):
+    def times_of(self, u=None):
+        if u is None:
+            return {u: self.timeset for u in self.nodeset_}
         if bool(self) and u in self.timeset_:
             return self.timeset
         else:
