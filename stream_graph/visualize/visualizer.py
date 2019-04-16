@@ -3,6 +3,7 @@ from stream_graph import StreamGraph
 from six import iteritems
 
 class Visualizer(object):
+    """Visualization objects for a stream-graph."""
     def __init__(self, items=None, filename=None, image_type='fig'):
         self._data = dict(link_streams=[], node_set=None, time_set=None, node_stream=None)
         if image_type not in ['fig', 'svg']:
@@ -58,24 +59,24 @@ class Visualizer(object):
 
     def _add(self, item):
         if isinstance(item, StreamGraph):
-            self._add_ls(item.linkstream)
+            self._add_ls(item.temporal_linkset)
             self._add_ns(item.nodeset)
-            self._add_nsm(item.nodestream)
+            self._add_nsm(item.temporal_nodeset)
             self._add_ts(item.timeset)
         elif isinstance(item, ABC.TimeSet):
             self._add_ts(item)
         elif isinstance(item, ABC.NodeSet):
             self._add_ns(item)
-        elif isinstance(item, ABC.NodeStream):
+        elif isinstance(item, ABC.TemporalNodeSet):
             self._add_nsm(item)
             self._add_ns(item.nodeset)
             self._add_ts(item.timeset) 
-        elif isinstance(item, ABC.LinkStream):
+        elif isinstance(item, ABC.TemporalLinkSet):
             self._add_ls(item)
-            self._add(item.basic_nodestream)
+            self._add(item.basic_temporal_nodeset)
 
     def __iadd__(self, item):
-        if not any(isinstance(item, x) for x in [StreamGraph, ABC.TimeSet, ABC.NodeSet, ABC.NodeStream, ABC.LinkStream]) and isinstance(item, Iterable):
+        if not any(isinstance(item, x) for x in [StreamGraph, ABC.TimeSet, ABC.NodeSet, ABC.TemporalNodeSet, ABC.TemporalLinkSet]) and isinstance(item, Iterable):
             for i in item:
                 self._add(i)
         else:

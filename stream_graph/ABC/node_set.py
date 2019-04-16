@@ -15,7 +15,7 @@ class NodeSet(ABC):
     @abc.abstractmethod
     def size(self):
         """Returns the size of the NodeSet.
-        
+
         Parameters
         ----------
         None. Property.

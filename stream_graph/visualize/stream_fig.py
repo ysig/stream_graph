@@ -26,26 +26,8 @@ def drange(start, stop, step):
         yield r
         r += step
 
-class Drawing:
-    """
-        Initializes a stream graph drawing.
-
-        :param alpha: Start time of stream graph.
-        :param omega: End time of stream graph.
-        :param time_width: Width (in the final fig) of one time unit.
-        :param discrete: Duration of the time step if time is discrete. 0 if time is continuous.
-
-        :type alpha: float
-        :type omega: float
-        :type time_width: positive int
-        :type discrete: positive int
-        
-        :Example:
-        
-        >>> d = Drawing(alpha=0, omega=5.5)
-        >>> d = Drawing(alpha=0, omega=6, discrete=2)
-    """
-
+class Drawing(object):
+    """FIG Drawing class."""
     __version__ = '1.1.1'
     _alpha = 0.0
     _omega = 0.0
@@ -73,6 +55,32 @@ class Drawing:
 
 
     def __init__(self, filename, alpha=0.0, omega=10.0, time_width=500, discrete=0, directed=False):
+        """Initializes a stream graph drawing.
+
+        Parameters
+        ----------
+        alpha: float
+            Start time of stream graph.
+        
+        omega: float
+            End time of stream graph.
+
+        time_width: int > 0
+            Width (in the final fig) of one time unit.
+
+        discrete: int > 0
+            Duration of the time step if time is discrete. 0 if time is continuous.
+
+        directed: Bool
+            Defines if links are given with directions.
+        
+        Example
+        -------
+        
+        >>> d = Drawing(alpha=0, omega=5.5)
+        >>> d = Drawing(alpha=0, omega=6, discrete=2)
+        """
+
         self._alpha = float(alpha)
         self._omega = float(omega)
         self._time_unit = time_width

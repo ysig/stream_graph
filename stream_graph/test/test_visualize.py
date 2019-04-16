@@ -2,18 +2,18 @@
 import os.path
 from stream_graph import StreamGraph
 from stream_graph import Visualizer
-from stream_graph import LinkStreamDF
+from stream_graph import TemporalLinkSetDF
 
 def test_visualize_sg_fig(remove=True):
     df = [(1, 2, 2, 3), (1, 2, 3, 5), (1, 2, 6, 8)] 
-    Visualizer(LinkStreamDF(df, disjoint_intervals=False)).produce()
+    Visualizer(TemporalLinkSetDF(df, disjoint_intervals=False)).produce()
     assert os.path.exists('test_visualize.fig')
     if remove:
         os.remove('test_visualize.fig')
 
 def test_visualize_sg_svg(remove=True):
     df = [(1, 2, 2, 3), (1, 2, 3, 5), (1, 2, 6, 8)] 
-    Visualizer(LinkStreamDF(df, disjoint_intervals=False), image_type='svg').produce()
+    Visualizer(TemporalLinkSetDF(df, disjoint_intervals=False), image_type='svg').produce()
     assert os.path.exists('test_visualize.svg')
     if remove:
         os.remove('test_visualize.svg')

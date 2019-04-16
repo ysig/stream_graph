@@ -94,6 +94,9 @@ autodoc_warningiserror=True
 # Autodoc all members and inherited-members
 autodoc_default_flags = ['members', 'inherited-members']
 
+
+autodoc_inherit_docstrings = False
+
 # Autoclass __init__
 autoclass_content = 'both'
 

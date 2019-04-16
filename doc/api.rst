@@ -12,9 +12,27 @@ ABC Reference
 
    NodeSet
    LinkSet
+
+.. autosummary::
+   :toctree: generated/
+   :template: api.rst
+
    TimeSet
-   NodeStream
-   LinkStream
+   TemporalNodeSet
+   TemporalLinkSet
+
+
+.. autosummary::
+   :toctree: generated/
+   :template: api.rst
+
+   ITimeSet
+   ITemporalNodeSet
+   ITemporalLinkSet
+
+============
+Base Classes
+============
 
 .. currentmodule:: stream_graph
 
@@ -22,5 +40,152 @@ ABC Reference
    :toctree: generated/
    :template: class.rst
 
-   NodeSetS
+   Graph
+   StreamGraph
 
+===================
+ABC Implementations
+===================
+
+
+.. currentmodule:: stream_graph
+
+NodeSet
+-------
+
+.. autosummary::
+   :toctree: generated/
+   :template: api.rst
+
+   NodeSetS
+   
+LinkSet
+-------
+
+.. autosummary::
+   :toctree: generated/
+   :template: api.rst
+
+   LinkSetDF
+
+TimeSet
+-------
+
+.. autosummary::
+   :toctree: generated/
+   :template: api.rst
+
+   TimeSetDF
+
+
+TemporalNodeSet
+---------------
+
+.. autosummary::
+   :toctree: generated/
+   :template: api.rst
+
+   TemporalNodeSetDF
+   TemporalNodeSetB
+
+
+TemporalLinkSet
+---------------
+
+.. autosummary::
+   :toctree: generated/
+   :template: api.rst
+
+   TemporalLinkSetDF
+
+ITimeSet
+--------
+
+.. autosummary::
+   :toctree: generated/
+   :template: api.rst
+
+   ITimeSetS
+
+
+ITemporalNodeSet
+----------------
+
+.. autosummary::
+   :toctree: generated/
+   :template: api.rst
+
+   ITemporalNodeSetDF
+
+
+ITemporalLinkSet
+----------------
+
+.. autosummary::
+   :toctree: generated/
+   :template: api.rst
+
+   ITemporalLinkSetDF
+
+===================
+Temporal-DataFrames
+===================
+
+.. currentmodule:: stream_graph.base.interval_df
+
+.. autosummary::
+   :toctree: generated/
+   :template: pandas.rst
+
+   IntervalDF
+   
+.. currentmodule:: stream_graph.base.instantaneous_df
+
+.. autosummary::
+   :toctree: generated/
+   :template: pandas.rst
+
+   InstantaneousDF
+
+
+==========
+Visualizer
+==========
+
+.. currentmodule:: stream_graph
+
+.. autosummary::
+   :toctree: generated/
+   :template: api.rst
+
+   Visualizer
+
+Utilities
+---------
+
+.. currentmodule:: stream_graph.visualize
+
+.. autosummary::
+   :toctree: generated/
+   :template: api.rst
+
+   stream_fig.Drawing
+   stream_svg.Drawing
+
+==========
+Exceptions
+==========
+
+.. currentmodule:: stream_graph.exceptions
+
+.. autosummary::
+   :toctree: generated/
+   :template: api.rst
+
+   UnrecognizedNodeSet
+   UnrecognizedLinkSet
+   UnrecognizedTimeSet
+   UnrecognizedTemporalNodeSet
+   UnrecognizedTemporalLinkSet
+   UnrecognizedStreamGraph
+   UnrecognizedDirection

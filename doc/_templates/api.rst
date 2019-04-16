@@ -4,6 +4,8 @@
 .. currentmodule:: {{ module }}
 
 .. autoclass:: {{ objname }}
+   :special-members:
+   :inherited-members:
 
 .. include:: {{module}}.{{objname}}.examples
 

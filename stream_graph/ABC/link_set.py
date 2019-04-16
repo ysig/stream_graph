@@ -12,7 +12,6 @@ class LinkSet(ABC):
     """
 
     @property
-    @abc.abstractmethod
     def size(self):
         """Returns the size of the LinkSet.
         
@@ -27,7 +26,35 @@ class LinkSet(ABC):
             The number of links.
         
         """
-        pass
+        return sum(1 for _ in iter(self))
+
+    @property
+    def size_weighted(self):
+        """Returns the weighted size of the LinkSet.
+        
+        Parameters
+        ----------
+        None. Property.
+        
+
+        Returns
+        -------
+        size : Real
+            The sum of weights of links.
+        
+        """
+        weighted = self.weighted
+        if weighted is not None:
+            if weighted:
+                return self._size_weighted
+            else:
+                return self.mdf.shape[0]
+        else:
+            return .0
+
+    def _size_weighted(self):
+        return sum(k[-1] for k in iter(self))
+
 
     @abc.abstractmethod
     def __bool__(self):
@@ -61,28 +88,42 @@ class LinkSet(ABC):
         
         Returns
         -------
-        nodestream : NodeStream or dict
+        nodestream : NodeSet or NodeCollection(NodeSet)
             Return the ('in', 'out' or 'both') nodeset of neighbors of u.
-            If u is None, returns a dictionary of nodestreams for all nodes.
+            If u is None, returns a NodeCollection of its node with its neighbors.
+
         """
         pass
 
-    @abc.abstractmethod
-    def degree(self, u=None, direction='out'):
+    def degree(self, u=None, direction='out', weights=False):
         """Return the degree of a node.
         
         Parameters
         ----------
-        u : Node_Id or None
+        u : Node_Id, default=None
 
         direction : string={'in', 'out', 'both'}, default='both'
-        
+
+        weights : bool, default=False
+
         Returns
         -------
-        nodestream : NodeStream
+        nodestream : Real or NodeCollection(Real)
             Return the ('in', 'out' or 'both') degree of a node of u.
-            If None returns a dictionary for all nodes.
+            If None returns a NodeCollection with the degree for each Node.
+.
         """
+        if weighted and self.weighted:
+            return self._degree_weighted(u, direction)
+        else:
+            return self._degree_unweighted(u, direction)
+
+    @abc.abstractmethod
+    def _degree_weighted(self, u, direction):
+        pass
+
+    @abc.abstractmethod
+    def _degree_unweighted(self, u, direction):
         pass
 
     @abc.abstractmethod

@@ -1,5 +1,6 @@
 import copy
 import abc
+from warnings import warn
 
 # 2/3 Cross Compatibility
 ABC = abc.ABCMeta('ABC', (object,), {'__slots__': ()}) 
@@ -10,6 +11,29 @@ class TimeSet(ABC):
     A TimeSet can be abstractly be defined as a set of intervals :code:`(ts, tf)`.
 
     """
+
+    @property
+    def instantaneous(self):
+        """Defines if the Time Set is instantaneous."""
+        return False
+
+    @property
+    @abc.abstractmethod
+    def discrete(self):
+        """Designate if the TimeSet is on discrete Time.
+        
+        Parameters
+        ----------
+        None. Property.
+        
+
+        Returns
+        -------
+        discrete : Bool
+            True if the time is discrete.
+        
+        """        
+        pass
 
     @property
     @abc.abstractmethod
@@ -148,7 +172,46 @@ class TimeSet(ABC):
         else:
             return copy.copy(self)
 
+    def discretize(self, bins=None, bin_size=None):
+        """Returns a discrete version of the current TimeSet.
+        
+        Parameters
+        ----------
+        bins : Iterable or None.
+            If None, step should be provided.
+            If Iterable it should contain n+1 elements that declare the start and the end of all (continuous) bins.
+        
+        bin_size : Int or datetime
+            If bins is provided this argument is ommited.
+            Else declare the size of each bin.
+        
+        Returns
+        -------
+        timeset_discrete : TimeSet
+            Returns a discrete version of the TimeSet.
+
+        bins : list
+            A list of the created bins.
+
+        """
+        if not self.discrete:
+            return self._to_discrete(bins, bin_size)
+        else:
+            warn(str(self.__class__) + ' is already discrete')
+            return self, bins
+
+    @abc.abstractmethod
+    def _to_discrete(self, bins, bin_size):
+        pass
+
 class ITimeSet(TimeSet):
+    """Instantaneous TimeSet Object API Specification.
+    
+    A TimeSet can be abstractly be defined as a set of time-stamps :code:`t`.
+
+    """
+
     @property
-    def size(self):
-        return 0
+    def instantaneous(self):
+        """Defines if the Time Set is instantaneous."""
+        return True

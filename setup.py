@@ -7,7 +7,7 @@ with open('requirements.txt') as f:
 
 
 setup(name='stream_graph',
-      version='0.0',
+      version='0.1',
       description='A library for Stream Graphs',
       author='Ioannis Siglidis [LIP6]',
       author_email='Yiannis.Siglidis@lip6.fr',

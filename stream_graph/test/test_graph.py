@@ -13,10 +13,12 @@ def test_graph():
     assert g.n == 4
     assert g.m == 3
 
-    assert g.coverage() == 3/16.0
+    assert g.total_coverage == 3/16.0
     assert g.coverage(2) == 1/16.0
     assert g.coverage(2, 'in') == 1/16.0
     assert g.coverage(2, 'both') == 1/8.0
+    assert list(g.coverage()) == [(1, 0.0625), (2, 0.0625), (3, 0.0625)]
+    assert list(g.coverage(direction='both')) == [(1, 0.125), (2, 0.125), (3, 0.125)]
 
 if __name__ == "__main__":
     test_graph()
