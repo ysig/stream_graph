@@ -31,7 +31,6 @@ from stream_graph.exceptions import UnrecognizedNodeSet
 from stream_graph.exceptions import UnrecognizedTimeSet
 from stream_graph.exceptions import UnrecognizedDirection
 
-
 class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
     """DataFrame implementation of ABC.ITEMPORALLINKSET"""
     def __init__(self, df=None, no_duplicates=True, sort_by=['u', 'v', 'ts'], discrete=None, weighted=False):
@@ -320,6 +319,29 @@ class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
             else:
                 return NodeSetS(df.df_at(t).u.values.flat)
 
+    def _degree_of_discrete(self, u, direction):
+        if u is None:
+            if direction == 'out':
+                iter_ = (u for u, v, ts in self.dfm.itertuples())
+            elif direction == 'in':
+                iter_ = (v for u, v, ts in self.dfm.itertuples())
+            elif direction == 'both':
+                iter_ = (u for a, b, c in self.dfm.itertuples() for u in [a, b])
+            else:
+                raise UnrecognizedDirection()
+            return NodeCollection(Counter(iter_))
+        else:
+            if direction == 'out':
+                df = self.df[self.df.u == u].drop(columns=['u']).rename(columns={'v': 'u'})
+            elif direction == 'in':
+                df = self.df[self.df.v == u].drop(columns=['v'])
+            elif direction=='both':
+                df = self.df[self.df.u == u].drop(columns=['u']).rename(columns={'v': 'u'})
+                df = df.append(self.df[self.df.v == u].drop(columns=['v']), ignore_index=True)
+            else:
+                raise UnrecognizedDirection()
+            return TemporalNodeSetDF(df, disjoint_intervals=False, discrete=self.discrete).size
+
     def _degree_at_weighted(self, u, t, direction):
         if u is None:
             if t is None:
@@ -606,8 +628,10 @@ class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
 
     def get_maximal_cliques(self, delta, direction='both'):
         df = (self.df.drop(columns='w') if self.weighted else self.df.copy())
-        df['ts'] += delta*0.5
+        df['ts'] -= delta/2.0
         df['tf'] = df['ts'] + delta
+        if self.discrete:
+            df = df.astype({'ts': int, 'tf': int})
         return TemporalLinkSetDF(df, disjoint_intervals=(delta == .0), discrete=self.discrete, weighted=self.weighted).get_maximal_cliques(direction=direction)
 
 
@@ -717,9 +741,42 @@ class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
 
         lines = list(key for key in df[['u', 'v', 'ts']].itertuples(index=False, name=None))            
         if u is None:
-            return NodeCollection({u: ego(u, self.linkset.neighbors(u, direction=direction).nodes_, lines, both) for u in self.nodeset})
+            neigh = {u: n.nodes_ for u, n in self.linkset.neighbors(direction=direction)}
+            return NodeCollection({u: ego(u, neigh.get(u, set()), lines, both) for u in self.nodeset})
         else:
             return ego(u, self.linkset.neighbors(u, direction=direction).nodes_, lines, both)
+
+    def centrality_c(self, u=None, direction='both'):
+        from stream_graph._c_functions import ego
+        if not self.discrete:
+            assert False
+
+        if direction == 'in':
+            def as_link(u, v):
+                return (v, u)
+            def add_nodes(u, v):
+                nodes[v].add(u)
+        elif direction == 'both':
+            def as_link(u, v):
+                return frozenset([u, v])
+            def add_nodes(u, v):
+                nodes[v].add(u)
+                nodes[u].add(v)
+        elif direction != 'out':
+            raise UnrecognizedDirection()
+
+        if self.sort_by == ['ts']:
+            df = self.df
+        else:
+            df = self.dfm.sort_values(by=['ts'])
+
+        both = False
+        if direction == 'in':
+            df = df.rename(columns={'u': 'v', 'v': 'u'})
+        elif direction == 'both':
+            both = True
+
+        return ego(u, df[['u', 'v', 'ts']], both)
 
     def _to_discrete(self, bins, bin_size):
         df, bins = time_discretizer_df(self.df, bins, bin_size, columns=['ts'])

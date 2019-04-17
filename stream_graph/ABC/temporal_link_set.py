@@ -250,6 +250,25 @@ class TemporalLinkSet(ABC):
             return self._degree_at_unweighted(u, t, direction)
 
     @abc.abstractmethod
+    def degree_of(self, u=None, direction='out'):
+        """Return the time-degree of a node at a certain time.
+        
+        Parameters
+        ----------
+        u : Node_Id
+
+        direction : string={'in', 'out', 'both'}, default='both'
+
+        Returns
+        -------
+        nodeset : NodeCollection or Real
+            Return the ('in', 'out' or 'both') time-degree of a node.
+            If u is None return the time-degree for all nodes.
+
+        """
+        pass
+
+    @abc.abstractmethod
     def _degree_at_weighted(self, u, t, direction):
         pass
 
@@ -724,6 +743,35 @@ class ITemporalLinkSet(TemporalLinkSet):
                     return LinkCollection({l: 0. for l in self.linkset})
             else:
                 return .0
+
+    def degree_of(self, u=None, direction='out'):
+        """Return the time-degree of a node at a certain time.
+        
+        Parameters
+        ----------
+        u : Node_Id
+
+        direction : string={'in', 'out', 'both'}, default='both'
+
+        Returns
+        -------
+        nodeset : NodeSet or NodeCollection or TimeCollection
+            Return the ('in', 'out' or 'both') time-degree of a node.
+            If u is None return the degree for all node at time t.
+
+        """
+        if self.discrete:
+            return self._degree_of_discrete(u=u, direction=direction)
+        else:
+            if u is None:
+                from stream_graph.collections import LinkCollection
+                return LinkCollection({u: 0. for u in self.nodeset})
+            else:
+                return .0
+
+    @abc.abstractmethod
+    def _degree_of_discrete(self, u, direction):
+        pass
 
     @abc.abstractmethod
     def _duration_of_discrete(self, l=None, direction='out'):
