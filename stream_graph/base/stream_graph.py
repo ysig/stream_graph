@@ -63,6 +63,39 @@ class StreamGraph(object):
     # Python2 cross-compatibility
     __nonzero__ = __bool__
 
+    def __str__(self):
+        if bool(self):
+            out = [('Node-Set', str(self.nodeset_))]
+            out += [('Time-Set', str(self.timeset_))]
+            out += [('Temporal-Node-Set', str(self.temporal_nodeset_))]
+            out += [('Temporal-Link-Set', str(self.temporal_linkset_))]
+            header = ['Stream-Graph']
+            header += [len(header[0])*'=']
+            return '\n\n'.join(['\n'.join(header)] + ['\n'.join([a, len(a)*'-', b]) for a, b in out])
+        else:
+            out = ["Empty Stream-Graph"]
+            out = [out[0] + "\n" + len(out[0])*'-']
+            if not hasattr(self, 'nodeset_'):
+                out += ['- Node-Set: None']
+            elif not bool(self.nodeset_):
+                out += ['- Node-Set: Empty']
+
+            if not hasattr(self, 'timeset_'):
+                out += ['- Time-Set: None']
+            elif not bool(self.timeset_):
+                out += ['- Time-Set: Empty']
+
+            if not hasattr(self, 'temporal_nodeset_'):
+                out += ['- Temporal-Node-Set: None']
+            elif not bool(self.temporal_nodeset_):
+                out += ['- Temporal-Node-Set: Empty']
+
+            if not hasattr(self, 'temporal_linkset_'):
+                out += ['- Temporal-Link-Set: None']
+            elif not bool(self.temporal_linkset_):
+                out += ['- Temporal-Link-Set: Empty']
+            return '\n\n  '.join(out)
+
     @property
     def weighted(self):
         return self.temporal_linkset_.weighted

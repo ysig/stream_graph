@@ -30,7 +30,7 @@ def ego(u, df, both):
         inp.push_back(pair[int, pair[int, int]](ts, pair[int, int](m(a), m(b))))
 
     if u is None:
-        return NodeCollection({u: closeness(inp, m(u)) for u in us})
+        return NodeCollection({u: closeness(inp, m(u), both) for u in us})
     else:
-        return closeness(inp, m(u))
+        return closeness(inp, m(u), both)
 

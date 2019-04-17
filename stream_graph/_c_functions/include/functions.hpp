@@ -4,6 +4,6 @@
 #include <vector>
 using namespace std;
 
-double closeness(vector<pair<int, pair<int,int> > > input, int x);
+double closeness(vector<pair<int, pair<int,int> > > input, int x, bool both);
 
 #endif

@@ -1,6 +1,8 @@
 import copy
 import abc
 
+from ._utils import ABC_to_string
+
 # 2/3 Cross Compatibility
 ABC = abc.ABCMeta('ABC', (object,), {'__slots__': ()}) 
 
@@ -10,6 +12,28 @@ class LinkSet(ABC):
     A LinkSet can be abstractly be defined as a set of links :code:`(u, v)`.
 
     """
+
+    def __str__(self):
+        return ABC_to_string(self, ['u', 'v'])
+
+    @property
+    @abc.abstractmethod
+    def weighted(self):
+        """Designate if the LinkSet has weights.
+        
+        Parameters
+        ----------
+        None. Property.
+        
+
+        Returns
+        -------
+        weights : Bool
+            True if the links are weighted.
+            None if the linkset is empty.
+        
+        """
+        pass    
 
     @property
     def size(self):
@@ -113,7 +137,7 @@ class LinkSet(ABC):
             If None returns a NodeCollection with the degree for each Node.
 .
         """
-        if weighted and self.weighted:
+        if weights and self.weighted:
             return self._degree_weighted(u, direction)
         else:
             return self._degree_unweighted(u, direction)

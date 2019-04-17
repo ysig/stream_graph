@@ -3,6 +3,8 @@ import abc
 
 from six import iteritems
 
+from ._utils import ABC_to_string
+
 # 2/3 Cross Compatibility
 ABC = abc.ABCMeta('ABC', (object,), {'__slots__': ()}) 
 
@@ -12,6 +14,9 @@ class TemporalLinkSet(ABC):
     A TemporalLinkSet can be abstractly be defined as a set of links :code:`(u, v)` associated with a set of intervals :code:`(ts, tf)`.
 
     """
+    def __str__(self):
+        return ABC_to_string(self, ['u', 'v'])
+    
     @property
     def _column_signature(self):
         return ('u', 'v', 'ts', 'tf')
@@ -20,6 +25,23 @@ class TemporalLinkSet(ABC):
     def instantaneous(self):
         """Defines if the Time Set is instantaneous."""
         return False
+
+    @property
+    def weighted(self):
+        """Designate if the TemporalLinkSet is weighted.
+        
+        Parameters
+        ----------
+        None. Property.
+        
+
+        Returns
+        -------
+        discrete : Bool or None
+            True if weighted. Returns None if empty.
+
+        """        
+        pass
 
     @property
     @abc.abstractmethod
@@ -33,9 +55,10 @@ class TemporalLinkSet(ABC):
 
         Returns
         -------
-        discrete : Bool
+        discrete : Bool or None
             True if the time is discrete.
-        
+            Returns None if empty.
+
         """        
         pass
 
@@ -681,6 +704,7 @@ class ITemporalLinkSet(TemporalLinkSet):
     A ITemporalLinkSet can be abstractly be defined as a set of links :code:`(u, v)` associated with a timestamp :code:`ts`.
 
     """
+
     @property
     def _column_signature(self):
         return ('u', 'v', 'ts')

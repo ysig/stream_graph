@@ -6,7 +6,7 @@ from itertools import combinations
 from itertools import product
 from collections import Iterable
 from six import string_types
-
+from ._utils import ABC_to_string
 
 # 2/3 Cross Compatibility
 ABC = abc.ABCMeta('ABC', (object,), {'__slots__': ()}) 
@@ -17,6 +17,9 @@ class TemporalNodeSet(ABC):
     A TemporalNodeSet can be abstractly be defined as a set of nodes :code:`u` associated with a set of time intervals :code:`(ts, tf)`.
 
     """
+
+    def __str__(self):
+        return ABC_to_string(self, ['u'])
 
     @property
     def instantaneous(self):
@@ -35,8 +38,9 @@ class TemporalNodeSet(ABC):
 
         Returns
         -------
-        discrete : Bool
+        discrete : Bool or None
             True if the time is discrete.
+            Returns None if empty.
         
         """        
         pass

@@ -31,6 +31,26 @@ class Graph(object):
     __nonzero__ = __bool__
 
 
+    def __str__(self):
+        if bool(self):
+            out = [('Node-Set', str(self.nodeset_))]
+            out += [('Link-Set', str(self.linkset_))]
+            header = ['Graph']
+            header += [len(header[0])*'=']
+            return '\n\n'.join(['\n'.join(header)] + ['\n'.join([a, len(a)*'-', b]) for a, b in out])
+        else:
+            out = ["Empty Graph"]
+            out = [out[0] + "\n" + len(out[0])*'-']
+            if not hasattr(self, 'nodeset_'):
+                out += ['- Node-Set: None']
+            elif not bool(self.nodeset_):
+                out += ['- Node-Set: Empty']
+            if not hasattr(self, 'linkset_'):
+                out += ['- Link-Set: None']
+            elif not bool(self.linkset_):
+                out += ['- Link-Set: Empty']
+            return '\n\n  '.join(out)
+
     @property
     def weighted(self):
         return self.linkset_.weighted
@@ -106,6 +126,22 @@ class Graph(object):
         return self.linkset_.size
 
     @property
+    def m_weighted(self):
+        """Extract the weighted number of links.
+        
+        Parameters
+        ----------
+        None. Property
+        
+        Returns
+        -------
+        m: Int
+            Returns the size of the linkset defining this graph.
+
+        """
+        return self.linkset_.size_weighted
+
+    @property
     def total_coverage(self):
         """Extract the total coverage of the graph.
         
@@ -124,8 +160,27 @@ class Graph(object):
         else:
             return 0.
 
+    @property
+    def total_coverage_weighted(self):
+        """Extract the weighted total coverage of the graph.
+        
+        Parameters
+        ----------
+        None. Property.
+        
+        Returns
+        -------
+        total_coverage: Real
+            Returns :math:`\\frac{m}{n^{2}}`.
 
-    def coverage(self, u=None, direction='out'):
+        """
+        if bool(self):
+            return self.m_weighted/float(self.n ** 2)
+        else:
+            return 0.
+
+
+    def coverage(self, u=None, direction='out', weights=False):
         """Extract the total coverage of the graph.
         
         Parameters
@@ -133,7 +188,9 @@ class Graph(object):
         u: NodeId or None
 
         direction: 'in', 'out' or 'both', default='out'
-        
+
+        weights: Bool
+
         Returns
         -------
         total_coverage: Real or NodeCollection
@@ -146,9 +203,9 @@ class Graph(object):
             if u is None:
                 def fun(x, y):
                     return y/denom
-                return self.linkset_.degree(direction=direction).map(fun)
+                return self.linkset_.degree(direction=direction, weights=weights).map(fun)
             else:
-                return self.linkset_.degree(u, direction=direction)/denom
+                return self.linkset_.degree(u, direction=direction, weights=weights)/denom
         else:
             if u is None:
                 return NodeCollection()

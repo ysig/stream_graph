@@ -32,9 +32,21 @@ class LinkSetDF(ABC.LinkSet):
         if df is not None:
             if not isinstance(df, pd.DataFrame):
                 df = list(df)
-            self.df_ = pd.DataFrame(df, columns=['u', 'v'] + (['w'] if weighted else []))
+            self.df_ = pd.DataFrame(df)
             if weighted:
-                self.df_['w'] = self.df_['w'].fillna(1)
+                if len(self.df_.columns) == 3:
+                    self.df_.columns = ['u', 'v', 'w']
+                elif len(self.df_.columns) == 2:
+                    self.df_.columns = ['u', 'v']
+                    self.df_['w'] = 1
+                else:
+                    raise ValueError('If weighted is True, input should be an iterable of at least 2 and at most 3 elements.')
+            else:
+                if len(self.df_.columns) == 2:
+                    self.df_.columns = ['u', 'v']
+                else:
+                    raise ValueError('If weighted is False, input should be an iterable of exactly 2 elements.')
+                                    
             self.sort_by = sort_by
             self.merged_ = no_duplicates
             self.weighted_ = weighted

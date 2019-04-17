@@ -51,6 +51,26 @@ class TemporalNodeSetB(ABC.TemporalNodeSet):
         elif any(is_none):
             raise ValueError('All arguments should have values or be None')
 
+    def __str__(self):
+        if bool(self):
+            out = [('Node-Set', str(self.nodeset_))]
+            out += [('Time-Set', str(self.timeset_))]
+            header = ['Mixed-TemporalNodeset']
+            header += [len(header[0])*'=']
+            return '\n\n'.join(['\n'.join(header)] + ['\n'.join([a, len(a)*'-', b]) for a, b in out])
+        else:
+            out = ["Empty Mixed-TemporalNodeset"]
+            out = [out[0] + "\n" + len(out[0])*'-']
+            if not hasattr(self, 'nodeset_'):
+                out += ['- Node-Set: None']
+            elif not bool(self.nodeset_):
+                out += ['- Node-Set: Empty']
+            if not hasattr(self, 'timeset_'):
+                out += ['- Time-Set: None']
+            elif not bool(self.timeset_):
+                out += ['- Time-Set: Empty']
+            return '\n\n  '.join(out)
+
     @property
     def discrete(self):
         return (None if not bool(self.timeset_) else self.timeset_.discrete)

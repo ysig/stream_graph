@@ -2,6 +2,8 @@ import copy
 import abc
 from warnings import warn
 
+from ._utils import ABC_to_string
+
 # 2/3 Cross Compatibility
 ABC = abc.ABCMeta('ABC', (object,), {'__slots__': ()}) 
 
@@ -11,6 +13,9 @@ class TimeSet(ABC):
     A TimeSet can be abstractly be defined as a set of intervals :code:`(ts, tf)`.
 
     """
+
+    def __str__(self):
+        return ABC_to_string(self)
 
     @property
     def instantaneous(self):
@@ -31,8 +36,9 @@ class TimeSet(ABC):
         -------
         discrete : Bool
             True if the time is discrete.
-        
-        """        
+            Returns None if empty.
+
+        """
         pass
 
     @property

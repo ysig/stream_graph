@@ -1,6 +1,8 @@
 import copy
 import abc
 
+from ._utils import ABC_to_string
+
 # 2/3 Cross Compatibility
 ABC = abc.ABCMeta('ABC', (object,), {'__slots__': ()}) 
 
@@ -10,6 +12,9 @@ class NodeSet(ABC):
     A NodeSet can be abstractly be defined as a set of node :code:`u`.
 
     """
+
+    def __str__(self):
+        return ABC_to_string(self, columns=['u'])
 
     @property
     @abc.abstractmethod
