@@ -1,0 +1,523 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>stream_graph.ITimeSetS &mdash; Stream Graph 0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/gallery.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/_static/css/supplementary.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="stream_graph.ITemporalNodeSetDF" href="stream_graph.ITemporalNodeSetDF.html" />
+    <link rel="prev" title="stream_graph.TemporalLinkSetDF" href="stream_graph.TemporalLinkSetDF.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Stream Graph
+          
+
+          
+            
+            <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../api.html">ABC Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html#base-classes">Base Classes</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html#abc-implementations">ABC Implementations</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../api.html#nodeset">NodeSet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#linkset">LinkSet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#timeset">TimeSet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#temporalnodeset">TemporalNodeSet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#temporallinkset">TemporalLinkSet</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../api.html#itimeset">ITimeSet</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">stream_graph</span></code>.ITimeSetS</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#itemporalnodeset">ITemporalNodeSet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#itemporallinkset">ITemporalLinkSet</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html#temporal-dataframes">Temporal-DataFrames</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html#visualizer">Visualizer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html#exceptions">Exceptions</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../auto_examples/index.html">Life is a miserable act of immanence.</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Stream Graph</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../api.html">ABC Reference</a> &raquo;</li>
+        
+      <li><code class="xref py py-mod docutils literal notranslate"><span class="pre">stream_graph</span></code>.ITimeSetS</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/generated/stream_graph.ITimeSetS.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="stream-graph-itimesets">
+<h1><code class="xref py py-mod docutils literal notranslate"><span class="pre">stream_graph</span></code>.ITimeSetS<a class="headerlink" href="#stream-graph-itimesets" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="stream_graph.ITimeSetS">
+<em class="property">class </em><code class="descclassname">stream_graph.</code><code class="descname">ITimeSetS</code><span class="sig-paren">(</span><em>times=None</em>, <em>discrete=None</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/72294b6/stream_graph/base/itime_set_s.py#L10"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/base/itime_set_s.html#ITimeSetS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.ITimeSetS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set implementation of the ABC.ITimeSet</p>
+<dl class="field-list simple">
+<dt class="field-odd">Attributes</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">discrete</span></code></dt><dd><p>Designate if the TimeSet is on discrete Time.</p>
+</dd>
+<dt><a class="reference internal" href="#stream_graph.ITimeSetS.instantaneous" title="stream_graph.ITimeSetS.instantaneous"><code class="xref py py-obj docutils literal notranslate"><span class="pre">instantaneous</span></code></a></dt><dd><p>Defines if the Time Set is instantaneous.</p>
+</dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">size</span></code></dt><dd><p>Returns the size of the TimeSet.</p>
+</dd>
+<dt><strong>timeset_df</strong></dt><dd></dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="longtable docutils align-center">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#stream_graph.ITimeSetS.copy" title="stream_graph.ITimeSetS.copy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code></a>([deep])</p></td>
+<td><p>Returns a deep or shallow copy of the current TimeSet.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#stream_graph.ITimeSetS.discretize" title="stream_graph.ITimeSetS.discretize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">discretize</span></code></a>([bins, bin_size])</p></td>
+<td><p>Returns a discrete version of the current TimeSet.</p></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-center">
+<colgroup>
+<col style="width: 58%" />
+<col style="width: 42%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><strong>issuperset</strong></p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>Initialize a nodeset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>times: Iterable, default=None</strong></dt><dd><p>The Iterable should contain a valid Time (Int or Real).</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Attributes</dt>
+<dd class="field-even"><dl class="simple">
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">discrete</span></code></dt><dd><p>Designate if the TimeSet is on discrete Time.</p>
+</dd>
+<dt><a class="reference internal" href="#stream_graph.ITimeSetS.instantaneous" title="stream_graph.ITimeSetS.instantaneous"><code class="xref py py-obj docutils literal notranslate"><span class="pre">instantaneous</span></code></a></dt><dd><p>Defines if the Time Set is instantaneous.</p>
+</dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">size</span></code></dt><dd><p>Returns the size of the TimeSet.</p>
+</dd>
+<dt><strong>timeset_df</strong></dt><dd></dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="longtable docutils align-center">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#stream_graph.ITimeSetS.copy" title="stream_graph.ITimeSetS.copy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code></a>([deep])</p></td>
+<td><p>Returns a deep or shallow copy of the current TimeSet.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#stream_graph.ITimeSetS.discretize" title="stream_graph.ITimeSetS.discretize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">discretize</span></code></a>([bins, bin_size])</p></td>
+<td><p>Returns a discrete version of the current TimeSet.</p></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-center">
+<colgroup>
+<col style="width: 58%" />
+<col style="width: 42%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><strong>issuperset</strong></p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="stream_graph.ITimeSetS.__class__">
+<code class="descname">__class__</code><a class="reference external" href="https://github.com/ysig/stream_graph/blob/72294b6/stream_graph/../../../../usr/local/lib/python3.6/abc.py#L109"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.ITimeSetS.__class__" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference external" href="https://docs.python.org/3/library/abc.html#abc.ABCMeta" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABCMeta</span></code></a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="stream_graph.ITimeSetS.__delattr__">
+<code class="descname">__delattr__</code><span class="sig-paren">(</span><em>$self</em>, <em>name</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.ITimeSetS.__delattr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implement delattr(self, name).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="stream_graph.ITimeSetS.__dir__">
+<code class="descname">__dir__</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; list<a class="headerlink" href="#stream_graph.ITimeSetS.__dir__" title="Permalink to this definition">¶</a></dt>
+<dd><p>default dir() implementation</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="stream_graph.ITimeSetS.__eq__">
+<code class="descname">__eq__</code><span class="sig-paren">(</span><em>$self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.ITimeSetS.__eq__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return self==value.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="stream_graph.ITimeSetS.__format__">
+<code class="descname">__format__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.ITimeSetS.__format__" title="Permalink to this definition">¶</a></dt>
+<dd><p>default object formatter</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="stream_graph.ITimeSetS.__ge__">
+<code class="descname">__ge__</code><span class="sig-paren">(</span><em>$self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.ITimeSetS.__ge__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return self&gt;=value.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="stream_graph.ITimeSetS.__getattribute__">
+<code class="descname">__getattribute__</code><span class="sig-paren">(</span><em>$self</em>, <em>name</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.ITimeSetS.__getattribute__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return getattr(self, name).</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="stream_graph.ITimeSetS.__gt__">
+<code class="descname">__gt__</code><span class="sig-paren">(</span><em>$self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.ITimeSetS.__gt__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return self&gt;value.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="stream_graph.ITimeSetS.__hash__">
+<code class="descname">__hash__</code><span class="sig-paren">(</span><em>$self</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.ITimeSetS.__hash__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return hash(self).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="stream_graph.ITimeSetS.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>times=None</em>, <em>discrete=None</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/72294b6/stream_graph/base/itime_set_s.py#L12"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/base/itime_set_s.html#ITimeSetS.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.ITimeSetS.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize a nodeset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>times: Iterable, default=None</strong></dt><dd><p>The Iterable should contain a valid Time (Int or Real).</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="stream_graph.ITimeSetS.__init_subclass__">
+<code class="descname">__init_subclass__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.ITimeSetS.__init_subclass__" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method is called when a class is subclassed.</p>
+<p>The default implementation does nothing. It may be
+overridden to extend subclasses.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="stream_graph.ITimeSetS.__le__">
+<code class="descname">__le__</code><span class="sig-paren">(</span><em>$self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.ITimeSetS.__le__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return self&lt;=value.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="stream_graph.ITimeSetS.__lt__">
+<code class="descname">__lt__</code><span class="sig-paren">(</span><em>$self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.ITimeSetS.__lt__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return self&lt;value.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="stream_graph.ITimeSetS.__ne__">
+<code class="descname">__ne__</code><span class="sig-paren">(</span><em>$self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.ITimeSetS.__ne__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return self!=value.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="stream_graph.ITimeSetS.__new__">
+<code class="descname">__new__</code><span class="sig-paren">(</span><em>$type</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.ITimeSetS.__new__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create and return a new object.  See help(type) for accurate signature.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="stream_graph.ITimeSetS.__reduce__">
+<code class="descname">__reduce__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.ITimeSetS.__reduce__" title="Permalink to this definition">¶</a></dt>
+<dd><p>helper for pickle</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="stream_graph.ITimeSetS.__reduce_ex__">
+<code class="descname">__reduce_ex__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.ITimeSetS.__reduce_ex__" title="Permalink to this definition">¶</a></dt>
+<dd><p>helper for pickle</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="stream_graph.ITimeSetS.__repr__">
+<code class="descname">__repr__</code><span class="sig-paren">(</span><em>$self</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.ITimeSetS.__repr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return repr(self).</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="stream_graph.ITimeSetS.__setattr__">
+<code class="descname">__setattr__</code><span class="sig-paren">(</span><em>$self</em>, <em>name</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.ITimeSetS.__setattr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implement setattr(self, name, value).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="stream_graph.ITimeSetS.__sizeof__">
+<code class="descname">__sizeof__</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; int<a class="headerlink" href="#stream_graph.ITimeSetS.__sizeof__" title="Permalink to this definition">¶</a></dt>
+<dd><p>size of object in memory, in bytes</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="stream_graph.ITimeSetS.__subclasshook__">
+<code class="descname">__subclasshook__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.ITimeSetS.__subclasshook__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Abstract classes can override this to customize issubclass().</p>
+<p>This is invoked early on by abc.ABCMeta.__subclasscheck__().
+It should return True, False or NotImplemented.  If it returns
+NotImplemented, the normal algorithm is used.  Otherwise, it
+overrides the normal algorithm (and the outcome is cached).</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="stream_graph.ITimeSetS.__weakref__">
+<code class="descname">__weakref__</code><a class="headerlink" href="#stream_graph.ITimeSetS.__weakref__" title="Permalink to this definition">¶</a></dt>
+<dd><p>list of weak references to the object (if defined)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="stream_graph.ITimeSetS.copy">
+<code class="descname">copy</code><span class="sig-paren">(</span><em>deep=True</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/72294b6/stream_graph/ABC/time_set.py#L164"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.ITimeSetS.copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a deep or shallow copy of the current TimeSet.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>deep</strong><span class="classifier">Bool</span></dt><dd></dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>timeset_copy</strong><span class="classifier">TimeSet</span></dt><dd><p>Returns a deep or shallow copy of the current TimeSet.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="stream_graph.ITimeSetS.discretize">
+<code class="descname">discretize</code><span class="sig-paren">(</span><em>bins=None</em>, <em>bin_size=None</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/72294b6/stream_graph/ABC/time_set.py#L182"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.ITimeSetS.discretize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a discrete version of the current TimeSet.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>bins</strong><span class="classifier">Iterable or None.</span></dt><dd><p>If None, step should be provided.
+If Iterable it should contain n+1 elements that declare the start and the end of all (continuous) bins.</p>
+</dd>
+<dt><strong>bin_size</strong><span class="classifier">Int or datetime</span></dt><dd><p>If bins is provided this argument is ommited.
+Else declare the size of each bin.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>timeset_discrete</strong><span class="classifier">TimeSet</span></dt><dd><p>Returns a discrete version of the TimeSet.</p>
+</dd>
+<dt><strong>bins</strong><span class="classifier">list</span></dt><dd><p>A list of the created bins.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="stream_graph.ITimeSetS.instantaneous">
+<code class="descname">instantaneous</code><a class="headerlink" href="#stream_graph.ITimeSetS.instantaneous" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines if the Time Set is instantaneous.</p>
+</dd></dl>
+
+</dd></dl>
+
+<div class="clearer"></div></div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="stream_graph.ITemporalNodeSetDF.html" class="btn btn-neutral float-right" title="stream_graph.ITemporalNodeSetDF" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="stream_graph.TemporalLinkSetDF.html" class="btn btn-neutral float-left" title="stream_graph.TemporalLinkSetDF" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, LIP6
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

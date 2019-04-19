@@ -1,0 +1,16 @@
+:mod:`stream_graph.base.instantaneous_df`.InstantaneousDF
+================================================================
+
+.. currentmodule:: stream_graph.base.instantaneous_df
+
+.. autoclass:: InstantaneousDF
+
+   
+   .. automethod:: __init__
+   
+
+.. include:: stream_graph.base.instantaneous_df.InstantaneousDF.examples
+
+.. raw:: html
+
+    <div class="clearer"></div>

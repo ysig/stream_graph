@@ -1,0 +1,569 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ABC Reference &mdash; Stream Graph 0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/gallery.css" type="text/css" />
+  <link rel="stylesheet" href="_static/_static/css/supplementary.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="stream_graph.ABC.NodeSet" href="generated/stream_graph.ABC.NodeSet.html" />
+    <link rel="prev" title="Overview" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Stream Graph
+          
+
+          
+            
+            <img src="_static/logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">ABC Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="generated/stream_graph.ABC.NodeSet.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">stream_graph.ABC</span></code>.NodeSet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/stream_graph.ABC.LinkSet.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">stream_graph.ABC</span></code>.LinkSet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/stream_graph.ABC.TimeSet.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">stream_graph.ABC</span></code>.TimeSet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/stream_graph.ABC.TemporalNodeSet.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">stream_graph.ABC</span></code>.TemporalNodeSet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/stream_graph.ABC.TemporalLinkSet.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">stream_graph.ABC</span></code>.TemporalLinkSet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/stream_graph.ABC.ITimeSet.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">stream_graph.ABC</span></code>.ITimeSet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/stream_graph.ABC.ITemporalNodeSet.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">stream_graph.ABC</span></code>.ITemporalNodeSet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/stream_graph.ABC.ITemporalLinkSet.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">stream_graph.ABC</span></code>.ITemporalLinkSet</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#base-classes">Base Classes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="generated/stream_graph.Graph.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">stream_graph</span></code>.Graph</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/stream_graph.StreamGraph.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">stream_graph</span></code>.StreamGraph</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#abc-implementations">ABC Implementations</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#nodeset">NodeSet</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="generated/stream_graph.NodeSetS.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">stream_graph</span></code>.NodeSetS</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#linkset">LinkSet</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="generated/stream_graph.LinkSetDF.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">stream_graph</span></code>.LinkSetDF</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#timeset">TimeSet</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="generated/stream_graph.TimeSetDF.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">stream_graph</span></code>.TimeSetDF</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#temporalnodeset">TemporalNodeSet</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="generated/stream_graph.TemporalNodeSetDF.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">stream_graph</span></code>.TemporalNodeSetDF</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/stream_graph.TemporalNodeSetB.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">stream_graph</span></code>.TemporalNodeSetB</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#temporallinkset">TemporalLinkSet</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="generated/stream_graph.TemporalLinkSetDF.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">stream_graph</span></code>.TemporalLinkSetDF</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#itimeset">ITimeSet</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="generated/stream_graph.ITimeSetS.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">stream_graph</span></code>.ITimeSetS</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#itemporalnodeset">ITemporalNodeSet</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="generated/stream_graph.ITemporalNodeSetDF.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">stream_graph</span></code>.ITemporalNodeSetDF</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#itemporallinkset">ITemporalLinkSet</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="generated/stream_graph.ITemporalLinkSetDF.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">stream_graph</span></code>.ITemporalLinkSetDF</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#temporal-dataframes">Temporal-DataFrames</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="generated/stream_graph.base.interval_df.IntervalDF.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">stream_graph.base.interval_df</span></code>.IntervalDF</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/stream_graph.base.instantaneous_df.InstantaneousDF.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">stream_graph.base.instantaneous_df</span></code>.InstantaneousDF</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#visualizer">Visualizer</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="generated/stream_graph.Visualizer.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">stream_graph</span></code>.Visualizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#utilities">Utilities</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="generated/stream_graph.visualize.stream_fig.Drawing.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">stream_graph.visualize.stream_fig</span></code>.Drawing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/stream_graph.visualize.stream_svg.Drawing.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">stream_graph.visualize.stream_svg</span></code>.Drawing</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#exceptions">Exceptions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="generated/stream_graph.exceptions.UnrecognizedNodeSet.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">stream_graph.exceptions</span></code>.UnrecognizedNodeSet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/stream_graph.exceptions.UnrecognizedLinkSet.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">stream_graph.exceptions</span></code>.UnrecognizedLinkSet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/stream_graph.exceptions.UnrecognizedTimeSet.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">stream_graph.exceptions</span></code>.UnrecognizedTimeSet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/stream_graph.exceptions.UnrecognizedTemporalNodeSet.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">stream_graph.exceptions</span></code>.UnrecognizedTemporalNodeSet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/stream_graph.exceptions.UnrecognizedTemporalLinkSet.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">stream_graph.exceptions</span></code>.UnrecognizedTemporalLinkSet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/stream_graph.exceptions.UnrecognizedStreamGraph.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">stream_graph.exceptions</span></code>.UnrecognizedStreamGraph</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/stream_graph.exceptions.UnrecognizedDirection.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">stream_graph.exceptions</span></code>.UnrecognizedDirection</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="auto_examples/index.html">Life is a miserable act of immanence.</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Stream Graph</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>ABC Reference</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/api.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="abc-reference">
+<span id="api-ref"></span><h1>ABC Reference<a class="headerlink" href="#abc-reference" title="Permalink to this headline">¶</a></h1>
+<table class="longtable docutils align-center">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/stream_graph.ABC.NodeSet.html#stream_graph.ABC.NodeSet" title="stream_graph.ABC.NodeSet"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NodeSet</span></code></a></p></td>
+<td><p>NodeSet Object API Specification.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/stream_graph.ABC.LinkSet.html#stream_graph.ABC.LinkSet" title="stream_graph.ABC.LinkSet"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LinkSet</span></code></a></p></td>
+<td><p>LinkSet Object API Specification.</p></td>
+</tr>
+</tbody>
+</table>
+<table class="longtable docutils align-center">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/stream_graph.ABC.TimeSet.html#stream_graph.ABC.TimeSet" title="stream_graph.ABC.TimeSet"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TimeSet</span></code></a></p></td>
+<td><p>TimeSet Object API Specification.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/stream_graph.ABC.TemporalNodeSet.html#stream_graph.ABC.TemporalNodeSet" title="stream_graph.ABC.TemporalNodeSet"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TemporalNodeSet</span></code></a></p></td>
+<td><p>TemporalNodeSet Object API Specification.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/stream_graph.ABC.TemporalLinkSet.html#stream_graph.ABC.TemporalLinkSet" title="stream_graph.ABC.TemporalLinkSet"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TemporalLinkSet</span></code></a></p></td>
+<td><p>TemporalLinkSet Object API Specification.</p></td>
+</tr>
+</tbody>
+</table>
+<table class="longtable docutils align-center">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/stream_graph.ABC.ITimeSet.html#stream_graph.ABC.ITimeSet" title="stream_graph.ABC.ITimeSet"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ITimeSet</span></code></a></p></td>
+<td><p>Instantaneous TimeSet Object API Specification.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/stream_graph.ABC.ITemporalNodeSet.html#stream_graph.ABC.ITemporalNodeSet" title="stream_graph.ABC.ITemporalNodeSet"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ITemporalNodeSet</span></code></a></p></td>
+<td><p>ITemporalNodeSet Object API Specification.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/stream_graph.ABC.ITemporalLinkSet.html#stream_graph.ABC.ITemporalLinkSet" title="stream_graph.ABC.ITemporalLinkSet"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ITemporalLinkSet</span></code></a></p></td>
+<td><p>Instantaneous Temporal LinkSet Object API Specification.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="base-classes">
+<h1>Base Classes<a class="headerlink" href="#base-classes" title="Permalink to this headline">¶</a></h1>
+<table class="longtable docutils align-center">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/stream_graph.Graph.html#stream_graph.Graph" title="stream_graph.Graph"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Graph</span></code></a>([nodeset, linkset, weighted])</p></td>
+<td><p>A Graph <span class="math notranslate nohighlight">\(S=(V, E)\)</span> is a collection of two elements:</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/stream_graph.StreamGraph.html#stream_graph.StreamGraph" title="stream_graph.StreamGraph"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StreamGraph</span></code></a>([nodeset, timeset, …])</p></td>
+<td><p>A StreamGraph <span class="math notranslate nohighlight">\(S=(T, V, W, E)\)</span> is a collection of four elements:</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="abc-implementations">
+<h1>ABC Implementations<a class="headerlink" href="#abc-implementations" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="nodeset">
+<h2>NodeSet<a class="headerlink" href="#nodeset" title="Permalink to this headline">¶</a></h2>
+<table class="longtable docutils align-center">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/stream_graph.NodeSetS.html#stream_graph.NodeSetS" title="stream_graph.NodeSetS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NodeSetS</span></code></a>([nodes])</p></td>
+<td><p>Set implementation of the ABC.NodeSet</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="linkset">
+<h2>LinkSet<a class="headerlink" href="#linkset" title="Permalink to this headline">¶</a></h2>
+<table class="longtable docutils align-center">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/stream_graph.LinkSetDF.html#stream_graph.LinkSetDF" title="stream_graph.LinkSetDF"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LinkSetDF</span></code></a>([df, no_duplicates, sort_by, weighted])</p></td>
+<td><p>DataFrame implementation of the ABC.LinkSet</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="timeset">
+<h2>TimeSet<a class="headerlink" href="#timeset" title="Permalink to this headline">¶</a></h2>
+<table class="longtable docutils align-center">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/stream_graph.TimeSetDF.html#stream_graph.TimeSetDF" title="stream_graph.TimeSetDF"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TimeSetDF</span></code></a>([df, disjoint_intervals, discrete])</p></td>
+<td><p>A DataFrame implementation of a TimeSet.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="temporalnodeset">
+<h2>TemporalNodeSet<a class="headerlink" href="#temporalnodeset" title="Permalink to this headline">¶</a></h2>
+<table class="longtable docutils align-center">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/stream_graph.TemporalNodeSetDF.html#stream_graph.TemporalNodeSetDF" title="stream_graph.TemporalNodeSetDF"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TemporalNodeSetDF</span></code></a>([df, disjoint_intervals, …])</p></td>
+<td><p>DataFrame implementation of ABC.TemporalNodeSet</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/stream_graph.TemporalNodeSetB.html#stream_graph.TemporalNodeSetB" title="stream_graph.TemporalNodeSetB"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TemporalNodeSetB</span></code></a>([nodeset, timeset, discrete])</p></td>
+<td><p>Implementation of ABC.TemporalNodeSet using class combination.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="temporallinkset">
+<h2>TemporalLinkSet<a class="headerlink" href="#temporallinkset" title="Permalink to this headline">¶</a></h2>
+<table class="longtable docutils align-center">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/stream_graph.TemporalLinkSetDF.html#stream_graph.TemporalLinkSetDF" title="stream_graph.TemporalLinkSetDF"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TemporalLinkSetDF</span></code></a>([df, disjoint_intervals, …])</p></td>
+<td><p>DataFrame implementation of ABC.TemporalLinkSet</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="itimeset">
+<h2>ITimeSet<a class="headerlink" href="#itimeset" title="Permalink to this headline">¶</a></h2>
+<table class="longtable docutils align-center">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/stream_graph.ITimeSetS.html#stream_graph.ITimeSetS" title="stream_graph.ITimeSetS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ITimeSetS</span></code></a>([times, discrete])</p></td>
+<td><p>Set implementation of the ABC.ITimeSet</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="itemporalnodeset">
+<h2>ITemporalNodeSet<a class="headerlink" href="#itemporalnodeset" title="Permalink to this headline">¶</a></h2>
+<table class="longtable docutils align-center">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/stream_graph.ITemporalNodeSetDF.html#stream_graph.ITemporalNodeSetDF" title="stream_graph.ITemporalNodeSetDF"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ITemporalNodeSetDF</span></code></a>([df, no_duplicates, …])</p></td>
+<td><p>DataFrame implementation of ABC.ITemporalNodeSet</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="itemporallinkset">
+<h2>ITemporalLinkSet<a class="headerlink" href="#itemporallinkset" title="Permalink to this headline">¶</a></h2>
+<table class="longtable docutils align-center">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/stream_graph.ITemporalLinkSetDF.html#stream_graph.ITemporalLinkSetDF" title="stream_graph.ITemporalLinkSetDF"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ITemporalLinkSetDF</span></code></a>([df, no_duplicates, …])</p></td>
+<td><p>DataFrame implementation of ABC.ITEMPORALLINKSET</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="temporal-dataframes">
+<h1>Temporal-DataFrames<a class="headerlink" href="#temporal-dataframes" title="Permalink to this headline">¶</a></h1>
+<table class="longtable docutils align-center">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/stream_graph.base.interval_df.IntervalDF.html#stream_graph.base.interval_df.IntervalDF" title="stream_graph.base.interval_df.IntervalDF"><code class="xref py py-obj docutils literal notranslate"><span class="pre">IntervalDF</span></code></a>(*args, **kargs)</p></td>
+<td><p><dl class="field-list simple">
+<dt class="field-odd">Attributes</dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+</p></td>
+</tr>
+</tbody>
+</table>
+<table class="longtable docutils align-center">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/stream_graph.base.instantaneous_df.InstantaneousDF.html#stream_graph.base.instantaneous_df.InstantaneousDF" title="stream_graph.base.instantaneous_df.InstantaneousDF"><code class="xref py py-obj docutils literal notranslate"><span class="pre">InstantaneousDF</span></code></a>(*args, **kargs)</p></td>
+<td><p><dl class="field-list simple">
+<dt class="field-odd">Attributes</dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="visualizer">
+<h1>Visualizer<a class="headerlink" href="#visualizer" title="Permalink to this headline">¶</a></h1>
+<table class="longtable docutils align-center">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/stream_graph.Visualizer.html#stream_graph.Visualizer" title="stream_graph.Visualizer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Visualizer</span></code></a>([items, filename, image_type])</p></td>
+<td><p>Visualization objects for a stream-graph.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="utilities">
+<h2>Utilities<a class="headerlink" href="#utilities" title="Permalink to this headline">¶</a></h2>
+<table class="longtable docutils align-center">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/stream_graph.visualize.stream_fig.Drawing.html#stream_graph.visualize.stream_fig.Drawing" title="stream_graph.visualize.stream_fig.Drawing"><code class="xref py py-obj docutils literal notranslate"><span class="pre">stream_fig.Drawing</span></code></a>(name[, alpha, omega, …])</p></td>
+<td><p>FIG Drawing class.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/stream_graph.visualize.stream_svg.Drawing.html#stream_graph.visualize.stream_svg.Drawing" title="stream_graph.visualize.stream_svg.Drawing"><code class="xref py py-obj docutils literal notranslate"><span class="pre">stream_svg.Drawing</span></code></a>([name, alpha, omega, …])</p></td>
+<td><p>Initializes a stream graph drawing.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="exceptions">
+<h1>Exceptions<a class="headerlink" href="#exceptions" title="Permalink to this headline">¶</a></h1>
+<table class="longtable docutils align-center">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/stream_graph.exceptions.UnrecognizedNodeSet.html#stream_graph.exceptions.UnrecognizedNodeSet" title="stream_graph.exceptions.UnrecognizedNodeSet"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UnrecognizedNodeSet</span></code></a>(variable_name[, …])</p></td>
+<td><p>Exception raised when a variable is not an instance of ABC.NodeSet.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/stream_graph.exceptions.UnrecognizedLinkSet.html#stream_graph.exceptions.UnrecognizedLinkSet" title="stream_graph.exceptions.UnrecognizedLinkSet"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UnrecognizedLinkSet</span></code></a>(variable_name[, …])</p></td>
+<td><p>Exception raised when a variable is not an instance of ABC.LinkSet.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/stream_graph.exceptions.UnrecognizedTimeSet.html#stream_graph.exceptions.UnrecognizedTimeSet" title="stream_graph.exceptions.UnrecognizedTimeSet"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UnrecognizedTimeSet</span></code></a>(variable_name[, …])</p></td>
+<td><p>Exception raised when a variable is not an instance of ABC.TimeSet.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/stream_graph.exceptions.UnrecognizedTemporalNodeSet.html#stream_graph.exceptions.UnrecognizedTemporalNodeSet" title="stream_graph.exceptions.UnrecognizedTemporalNodeSet"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UnrecognizedTemporalNodeSet</span></code></a>(variable_name[, …])</p></td>
+<td><p>Exception raised when a variable is not an instance of ABC.TemporalNodeSet.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/stream_graph.exceptions.UnrecognizedTemporalLinkSet.html#stream_graph.exceptions.UnrecognizedTemporalLinkSet" title="stream_graph.exceptions.UnrecognizedTemporalLinkSet"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UnrecognizedTemporalLinkSet</span></code></a>(variable_name[, …])</p></td>
+<td><p>Exception raised when a variable is not an instance of ABC.TemporalLinkSet.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/stream_graph.exceptions.UnrecognizedStreamGraph.html#stream_graph.exceptions.UnrecognizedStreamGraph" title="stream_graph.exceptions.UnrecognizedStreamGraph"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UnrecognizedStreamGraph</span></code></a>(variable_name[, …])</p></td>
+<td><p>Exception raised when a variable is not an instance of ABC.TemporalStreamGraph.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/stream_graph.exceptions.UnrecognizedDirection.html#stream_graph.exceptions.UnrecognizedDirection" title="stream_graph.exceptions.UnrecognizedDirection"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UnrecognizedDirection</span></code></a>()</p></td>
+<td><p>Exception when we do not have a valid Direction.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="generated/stream_graph.ABC.NodeSet.html" class="btn btn-neutral float-right" title="stream_graph.ABC.NodeSet" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral float-left" title="Overview" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, LIP6
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
