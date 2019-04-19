@@ -69,8 +69,6 @@ class TemporalLinkSetDF(ABC.TemporalLinkSet):
                     df = pd.DataFrame(list(iter(df)))
                 if len(df.columns) == 4:
                     df.columns = ['u', 'v', 'ts', 'tf']
-                    if weighted and not disjoint_intervals:
-                        df, disjoint_intervals = IntervalDF(df).merge(), True
                 elif len(df.columns) == 5:
                     df.columns = ['u', 'v', 'ts', 'tf', 'w']
                 else:

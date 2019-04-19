@@ -469,17 +469,6 @@ pair<vector<int>, vector<double>> closeness_times(vector<pair<int, pair<int,int>
     }
 }
 
-
-double closeness(vector<pair<int, pair<int,int>>> input, int x, bool both){
-    vector<double> cum_closeness = closeness_times(input, x, both).second;
-
-    double s = 0;
-	for(int i = 0 ; i < cum_closeness.size() ; i++){
-		s += cum_closeness[i];
-	}
-	return s;
-}
-
 double closeness_at(vector<pair<int, pair<int,int>>> input, int x, int t, bool both){
     pair<vector<int>, vector<double>> obj = closeness_times(input, x, both);
     vector<int> time_closeness = obj.first;
@@ -489,7 +478,7 @@ double closeness_at(vector<pair<int, pair<int,int>>> input, int x, int t, bool b
     return cum_closeness[idx];
 }
 
-vector<pair<int, double>> closeness_at_all(vector<pair<int, pair<int,int>>> input, int x, int t, bool both){
+vector<pair<int, double>> closeness(vector<pair<int, pair<int,int>>> input, int x, bool both){
     pair<vector<int>, vector<double>> obj = closeness_times(input, x, both);
     vector<int> time_closeness = obj.first;
     vector<double> cum_closeness = obj.second;

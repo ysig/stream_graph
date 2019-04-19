@@ -237,6 +237,47 @@ class TimeCollection(TimeGenerator):
     def __len__(self):
         return len(self.it)
 
+    def __getitem__(self, i):
+        return self.it[i]
+
+    def search_time(self, t):
+        if self.instantaneous:
+            return self._search_time_instantaneous(t)
+        else:
+            return self._search_time_continuous(t)
+
+    def _search_time_continuous(self, t):
+        L, R = 0, len(self.it)
+        while L < R:
+            m = int((L + R) / 2)
+            if self.it[m][0] <= t:
+                L = m + 1 
+            else:
+                R = m
+        return max(L - 1, 0)
+    
+    def _search_time_instantaneous(self, t):
+        L, R = 0, len(self.it) - 1
+        while L <= R:
+            m = int((L + R) / 2)
+            if self.it[m][0] < t:
+                L = m + 1
+            elif self.it[m][0] > t:
+                R = m - 1
+            else:
+                return m
+        return None
+
+    def get_at(self, t, not_found=None):
+        if self.instantaneous:
+            idx = _search_time_instantaneous(self, t)
+            if idx is None:
+                return not_found
+            else:
+                return self[idx]
+        else:
+            return self[self._search_time_continuous(t)]
+
     def __bool__(self):
         """Implementation of the :code:`bool` casting of a NodeSet object.
         

@@ -59,10 +59,7 @@ class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
                         discrete = df.discrete
                     df = pd.DataFrame(list(iter(df)))
                 if len(df.columns) == 3:
-                    df.columns = ['u', 'v', 'ts']
-                    if weighted:
-                        if not no_duplicates:
-                            df, no_duplicates = InstantaneousDF(df).merge(), True
+                    df.columns = ['u', 'v', 'ts']                            
                 elif len(df.columns) == 4 :
                     df.columns = ['u', 'v', 'ts', 'w']
                     if not weighted:
@@ -628,93 +625,29 @@ class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
 
     def get_maximal_cliques(self, delta, direction='both'):
         df = (self.df.drop(columns='w') if self.weighted else self.df.copy())
-        df['ts'] -= delta/2.0
-        df['tf'] = df['ts'] + delta
+        di = (delta == .0)
+        if not di:
+            if self.instantaneous:
+                min_time, max_time = df.ts.min(), df.ts.max()
+            else:
+                min_time, max_time = df.ts.min(), df.tf.max()
+            df['ts'] -= delta/2.0
+            df['tf'] = df['ts'] + delta
+            df['ts'].clip_lower(min_time, inplace=True)
+            df['tf'].clip_upper(max_time, inplace=True)
         if self.discrete:
             df = df.astype({'ts': int, 'tf': int})
-        return TemporalLinkSetDF(df, disjoint_intervals=(delta == .0), discrete=self.discrete, weighted=self.weighted).get_maximal_cliques(direction=direction)
+        return TemporalLinkSetDF(df, disjoint_intervals=di, discrete=self.discrete, weighted=self.weighted).get_maximal_cliques(direction=direction)
 
 
-    def centrality(self, u=None, direction='both'):
-        def ego(e, ne, l, both):
-            # print >> sys.stderr, "Running node : " + str(e)
-            u, v, t, index, times = 0, 0, 0, 0, list()
-
-            ce, info = dict(), dict()
-            for i in ne:
-                info[(e,i)] = -1
-                for x in ne-{i}:
-                    info[(i,x)] = -1
-                info[(i,e)] = -1
-
-            index = 0
-            time = l[index][2] #starting time.
-            ne_x, lines, paths = ne | {e}, dict(), dict()
-
-            if both:
-                def add_lines(u, v, t):
-                    lines[(u,v)] = t
-                    lines[(v,u)] = t 
-            else:
-                def add_lines(u, v, t):
-                    lines[(u,v)] = t
-
-            while(index < len(l) -1):
-                # get all links of time stamp
-                while(index < len(l) -1):
-                    u,v,t = l[index]
-                    add_lines(u, v, t)
-                    index += 1
-                    if(t != time):
-                        break
-
-                for u in ne:
-                    for v in ne-{u}:
-                        # print u,v
-                        ce[(u,v)] = 0.0
-                        Q = set()
-                        if (u,v) not in lines:
-                            # print u,v
-                            news = info[(u,v)]
-                            for x in ne_x - {u, v}:
-                                ux = info[(u, x)]
-                                if (x, v) in lines:
-                                    xv = lines[(x, v)]
-                                else:
-                                    xv = info[(x, v)]
-                                if ux != -1 and xv != -1 and ux < xv: 
-                                    if ux == news:
-                                        Q.add(x)
-                                    if ux > news:
-                                        Q = {x}
-                                        news = ux
-
-                            if (u,v) in paths:
-                                old_paths = paths[(u,v)]
-                                if old_paths[0] == news:
-                                    paths[(u, v)] = (news, paths[(u,v)][1] | Q)
-                                elif old_paths[0] < news:
-                                    paths[(u, v)] = (news, Q)
-                            else:
-                                paths[(u, v)] = (news, Q)
-
-                            if e in paths[(u, v)][1]:
-                                ce[(u, v)] = 1.0/len(paths[(u, v)][1])
-                        else:
-                            paths[(u, v)] = (t, {u})
-                        
-        
-                times.append((time, sum(ce.values())))
-                for k in lines:
-                    info[k] = lines[k]
-                time, lines = l[index][2], {}
-            return times
-
+    def ego_betweeness(self, u=None, t=None, direction='both', detailed=False):
+        from stream_graph._c_functions import ego
+        if direction == 'out':
             def as_link(u, v):
                 return (u, v)
             def add_nodes(u, v):
                 nodes[u].add(v)
-        if direction == 'in':
+        elif direction == 'in':
             def as_link(u, v):
                 return (v, u)
             def add_nodes(u, v):
@@ -725,7 +658,7 @@ class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
             def add_nodes(u, v):
                 nodes[v].add(u)
                 nodes[u].add(v)
-        elif direction != 'out':
+        else:
             raise UnrecognizedDirection()
 
         if self.sort_by == ['ts']:
@@ -742,14 +675,19 @@ class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
         lines = list(key for key in df[['u', 'v', 'ts']].itertuples(index=False, name=None))            
         if u is None:
             neigh = {u: n.nodes_ for u, n in self.linkset.neighbors(direction=direction)}
-            return NodeCollection({u: ego(u, neigh.get(u, set()), lines, both) for u in self.nodeset})
+            if t is None:
+                return NodeCollection({u: ego(u, neigh.get(u, set()), lines, both, detailed) for u in self.nodeset})
+            else:
+                return NodeCollection({u: ego(u, neigh.get(u, set()), lines, both, detailed).get_at(t, .0) for u in self.nodeset})
+        elif t is None:
+            return ego(u, self.linkset.neighbors(u, direction=direction).nodes_, lines, both, detailed)
         else:
-            return ego(u, self.linkset.neighbors(u, direction=direction).nodes_, lines, both)
+            return ego(u, self.linkset.neighbors(u, direction=direction).nodes_, lines, both, detailed).get_at(t, .0)
 
-    def centrality_c(self, u=None, direction='both'):
-        from stream_graph._c_functions import ego
-        if not self.discrete:
-            assert False
+
+    def closeness(self, u=None, t=None, direction='both', detailed=False):
+        from stream_graph._c_functions import closeness_c
+        assert self.df_['ts'].dtype.kind in ['i']
 
         if direction == 'in':
             def as_link(u, v):
@@ -776,7 +714,7 @@ class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
         elif direction == 'both':
             both = True
 
-        return ego(u, df[['u', 'v', 'ts']], both)
+        return closeness_c(u, t, df[['u', 'v', 'ts']], both, detailed)
 
     def _to_discrete(self, bins, bin_size):
         df, bins = time_discretizer_df(self.df, bins, bin_size, columns=['ts'])

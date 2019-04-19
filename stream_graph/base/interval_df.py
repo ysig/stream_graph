@@ -440,10 +440,15 @@ class IntervalWDF(pd.DataFrame):
             df = self.append(df, ignore_index=True, sort=False)
         events = df.events[['t', 'start', 'w']]
         e, _, w_current = events.iloc[0]
+        p = None
         for t, f, w in events.iloc[1:]:
             if t > e:
                 if w_current != 0:
-                    out.append((e, t, w_current))
+                    if p is not None and out[p] == w_current:
+                        out[p] = out[p][0] + (t, w_current)
+                    else:
+                        p = len(out)
+                        out.append((e, t, w_current))
                 e = t
             wcurrent += (w if f else -w)
         return self.__class__(out, columns=['ts', 'tf', 'w'])
@@ -453,15 +458,23 @@ class IntervalWDF(pd.DataFrame):
             df = self 
         else:
             df = self.append(df, ignore_index=True, sort=False)
-        w_current, e, out = defaultdict(float), dict(), list()
+        w_current, e, prev, out = defaultdict(float), dict(), dict(), list()
         for col in df.events[['t', 'start', 'w'] + on_column].itertuples(index=False, name=None):
             t, f, w = col[:3]
             key = col[3:]
             if key not in e:
                 e[key] = t
             elif t > e[key]:
-                if w_current[key] != 0:
-                    out.append(key + (e[key], t, w_current[key]))
+                wck = w_current[key]
+                if wck != 0:
+                    pk = prev.get(key, None)
+                    if pk is not None and out[pk][-1] == wck:
+                        out[pk] = out[pk][:-2] + (t, wck)
+                    else:
+                        prev[key] = len(out)
+                        out.append(key + (e[key], t, wck))
+                else:
+                    prev.pop(key, None)
                 e[key] = t
             w_current[key] += (w if f else -w)
         return self.__class__(out, columns=(on_column + ['ts', 'tf', 'w']))
@@ -486,7 +499,7 @@ class IntervalWDF(pd.DataFrame):
         def order(x):
             return (x[1], x[2], x[0])
 
-        w_current, e, out = defaultdict(float), defaultdict(float), list()
+        w_current, e, prev, out = defaultdict(float), defaultdict(float), dict(), list()
         b_area, et = False, tuple()
         for col in sorted(iter_, key=order):
             _, t, f = col[:3]
@@ -494,8 +507,16 @@ class IntervalWDF(pd.DataFrame):
             keys = ([k] if len(k) else all_keys)
             for key in keys:
                 w_total = w_current[key] + w_current[et]
-                if t > e[key] and w_total != .0:
-                    out.append(key + (e[key], t, w_total))
+                pk = prev.get(key, None)
+                if t > e[key]:
+                    if w_total != .0:
+                        if pk is not None and out[pk][-1] == w_total:
+                            out[pk] = out[pk][:-2] + (t, w_total)
+                        else:
+                            prev[key] = len(out)
+                            out.append(key + (e[key], t, w_total))
+                    else:
+                        prev.pop(key, None)
                 e[key] = t
             w_current[k] += (w if f else -w)
         return self.__class__(out, columns=(on_column + ['ts', 'tf', 'w']))
@@ -524,10 +545,18 @@ class IntervalWDF(pd.DataFrame):
         e, f, w, r = events.iloc[0]
         w_current = (set(), set())
         w_current[int(r)].add(w)
+        prev = None
         for t, f, w, r in events.iloc[1:]:
             if t > e:
                 if all(len(w) for w in w_current):
-                    out.append((e, t, sum(w_current[0]) + sum(w_current[1])))
+                    wc = sum(w_current[0]) + sum(w_current[1])
+                    if prev is not None and out[prev][-1] == wc:
+                        out[prev] = (out[prev][0], t, wc)
+                    else:
+                        prev = len(out)
+                        out.append((e, t, wc))
+                else:
+                    prev = None
                 e = t
             if f:
                 # start
@@ -544,7 +573,7 @@ class IntervalWDF(pd.DataFrame):
             return (set(), set())
 
         # Intersect
-        w_current, e, out = defaultdict(constr), dict(), list()
+        w_current, e, prev, out = defaultdict(constr), dict(), dict(), list()
 
         for col in df.events[['t', 'start', 'w', 'r'] + on_column].itertuples(index=False, name=None):
             t, f, w, r = col[:4]
@@ -554,7 +583,15 @@ class IntervalWDF(pd.DataFrame):
             elif t > e[key]:
                 if all(len(w) for w in w_current[key]):
                     wa, wb = w_current[key]
-                    out.append(key + (e[key], t, sum(wa) + sum(wb)))
+                    wc = sum(wa) + sum(wb)
+                    pk = prev.get(key, None)
+                    if pk is not None and out[pk][-1] == wc:
+                        out[prev] = out[prev:-2] + (t, wc)
+                    else:
+                        prev[key] = len(out)
+                        out.append(key + (e[key], t, wc))
+                else:
+                    prev.pop(key, None)
                 e[key] = t
             if f:
                 # start
@@ -564,7 +601,7 @@ class IntervalWDF(pd.DataFrame):
         return self.__class__(out, columns=(on_column + ['ts', 'tf', 'w']))
 
     def _intersect_on_key(self, dfb, on_column):
-        w_current, e, out = dict(), dict(), list()
+        w_current, e, prev, out = dict(), dict(), dict(), list()
         iter_ = list((True, ) + x for x in _events_not_sorted(self, True)[['t', 'start'] + on_column + ['w']].itertuples(index=False, name=None))
         if 'w' in dfb:
             iter_ += list((False, ) + x for x in _events_not_sorted(dfb, False)[['t', 'start', 'w']].itertuples(index=False, name=None))
@@ -580,8 +617,17 @@ class IntervalWDF(pd.DataFrame):
             if len(key) > 1:
                 w, key = key[-1], key[:-1]
                 wc = w_current.pop(key, .0)
-                if key in e and t > e[key] and wc != 0 and b_area:
-                    out.append(key + (e[key], t, wc + wb))
+                if key in e and t > e[key] and b_area:
+                    wck = wc + wb
+                    if wck != 0:
+                        pk = prev.get(key, None)
+                        if pk is not None and out[pk][-1] == wck:
+                            out[prev] = out[prev:-2] + (t, wck)
+                        else:
+                            prev[key] = len(out)
+                            out.append(key + (e[key], t, wck))
+                    else:
+                        prev.pop(key, None)
                 e[key] = t
                 wc += (w if f else -w)
                 if wc != .0:
@@ -591,7 +637,16 @@ class IntervalWDF(pd.DataFrame):
                 if not f:
                     for k, w in iteritems(w_current):
                         if t > e[k]:
-                            out.append(k + (e[k], t, w + wb))
+                            wck = w + wb
+                            if wck != 0:
+                                pk = prev.get(key, None)
+                                if pk is not None and out[pk][-1] == wck:
+                                    out[prev] = out[prev:-2] + (t, wck)
+                                else:
+                                    prev[key] = len(out)
+                                    out.append(key + (e[key], t, wck))
+                            else:
+                                prev.pop(key, None)
                             e[k] = t
                 else:
                     for k in w_current.keys():
