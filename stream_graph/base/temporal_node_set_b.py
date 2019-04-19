@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 from itertools import chain
 from itertools import permutations
 from itertools import combinations

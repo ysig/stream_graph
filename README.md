@@ -1,6 +1,6 @@
-# StreamGraph: A prototype of [stream-graps](https://hal.archives-ouvertes.fr/hal-01665084)
+# StreamGraph: A prototype for [stream-graphs](https://hal.archives-ouvertes.fr/hal-01665084)
 
-[[documentation][https://www.google.com]]
+
 
 ## Installing stream_graph
 ==========================
@@ -42,3 +42,9 @@ Getting Starting
 ----------------
 
 For a first tutorial please you can have a look at [collegeMsg][https://github.com/ysig/stream_graph/tree/master/tutorial/collegeMsg/collegeMsg.ipynb].
+
+[Documentation][https://www.google.com]
+-----------------------------------------
+
+The project documentation is automatically generated online using Sphinx.
+To generate it yourself, move to doc folder and execute: `make clean hmtl`, while installing any needed dependencies.

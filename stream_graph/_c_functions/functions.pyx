@@ -53,7 +53,7 @@ def closeness_c(u, t, df, both, detailed):
     else:
         def tc(vec):
             def iterate(vec):
-                tl, prev = [], -1
+                prev = None
                 for t, v in iter_(vec):
                     if v == prev:
                         continue
@@ -100,7 +100,7 @@ def ego(e, ne, l, both, detailed):
             times.append((time, val))
     else:
         def take(times, prev, val):
-            if prev[0] is None and prev[0] != val:
+            if prev[0] is None or prev[0] != val:
                 times.append((time, val))
                 prev[0] = val
 

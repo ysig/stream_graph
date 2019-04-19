@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 import operator
 from functools import reduce
 from warnings import warn
@@ -382,7 +383,7 @@ class TemporalLinkSetDF(ABC.TemporalLinkSet):
                     out[u] = TimeSparseCollection(out[u], caster=NodeSetS)
                 return NodeCollection(out)
             else:
-                return LinkSetDF(self.dfm.df_at(t)).neighbors(u=None, direction=direction)
+                return LinkSetDF(self.dfm.df_at(t).drop(columns=['ts', 'tf'])).neighbors(u=None, direction=direction)
         else:
             di, wc = True, (['w'] if self.weighted else [])
             if direction == 'out':
@@ -432,7 +433,7 @@ class TemporalLinkSetDF(ABC.TemporalLinkSet):
                     out[u] = TimeCollection(out[u])
                 return NodeCollection(out)
             else:
-                return LinkSetDF(self.df.df_at(t), weighted=True).degree(u=None, direction=direction, weights=True)
+                return LinkSetDF(self.df.df_at(t).drop(columns=['ts', 'tf']), weighted=True).degree(u=None, direction=direction, weights=True)
         else:
             di = True
             if direction == 'out':
@@ -495,7 +496,7 @@ class TemporalLinkSetDF(ABC.TemporalLinkSet):
                     out[u] = TimeCollection(out[u])
                 return NodeCollection(out)
             else:
-                return LinkSetDF(self.df.df_at(t)).degree(u=None, direction=direction)
+                return LinkSetDF(self.df.df_at(t).drop(columns=['ts', 'tf'])).degree(u=None, direction=direction)
         else:
             di = True
             if direction == 'out':

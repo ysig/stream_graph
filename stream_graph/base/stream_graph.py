@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 from warnings import warn
 from six import iteritems
 from stream_graph import ABC

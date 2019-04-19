@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 import copy
 from stream_graph import ABC
 from .node_set_s import NodeSetS

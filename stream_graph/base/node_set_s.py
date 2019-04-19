@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 from stream_graph import ABC
 from stream_graph.exceptions import UnrecognizedNodeSet
 

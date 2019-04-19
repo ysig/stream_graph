@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 from numbers import Real
 
 import pandas as pd

@@ -402,20 +402,30 @@ def test_itemporal_link_set_df():
         except UnrecognizedTemporalLinkSet:
             pass
 
-        df = [(1, 2, 4), (1, 2, 8), (2, 3, 4), (1, 3, 6), (3, 4, 2), (2, 4, 3)]
-        assert ITemporalLinkSetDF(df, discrete=d).get_maximal_cliques(delta=3) == {(frozenset({3, 4}), (3.5, 6.5)),
-                                                                       (frozenset({1, 2, 3}), (7.5, 8.5)), 
-                                                                       (frozenset({1, 2}), (5.5, 8.5)),
-                                                                       (frozenset({2, 4}), (4.5, 7.5)),
-                                                                       (frozenset({1, 2}), (9.5, 12.5)),
-                                                                       (frozenset({2, 3, 4}), (5.5, 6.5)),
-                                                                       (frozenset({2, 3}), (5.5, 8.5)),
-                                                                       (frozenset({1, 3}), (7.5, 10.5))}
+        df = [(1, 2, 2), (1, 2, 3), (2, 3, 2), (1, 3, 4), (3, 4, 3), (2, 4, 5)]
+        assert list(ITemporalLinkSetDF(df, discrete=d).ego_betweeness(3, direction='both')) == [(2, 0.0), (3, 1.0)]
+        assert list(ITemporalLinkSetDF(df, discrete=d).closeness(2, direction='both')) == [(2, 1.3333333333333333), (3, 1.5), (4, 1.0), (5, 0.0)]
 
-        df = [(1, 2, 2), (1, 2, 3), (2, 3, 2), (1, 3, 4), (3, 4, 3), (2, 4, 5)]    
-        assert ITemporalLinkSetDF(df, discrete=d).centrality(3, direction='both') == [(2, 0.0), (3, 1.0)]
+    df = [(1, 2, 4), (1, 2, 8), (2, 3, 4), (1, 3, 6), (3, 4, 2), (2, 4, 3)]
+    assert ITemporalLinkSetDF(df, discrete=False).get_maximal_cliques(delta=3) == set([(frozenset([1, 2]), (6.5, 8.0)),
+                                                                                       (frozenset([2, 3, 4]), (2.5, 3.5)),
+                                                                                       (frozenset([1, 2]), (2.5, 5.5)),
+                                                                                       (frozenset([1, 2, 3]), (4.5, 5.5)),
+                                                                                       (frozenset([2, 4]), (2.0, 4.5)),
+                                                                                       (frozenset([1, 3]), (4.5, 7.5)),
+                                                                                       (frozenset([2, 3]), (2.5, 5.5)),
+                                                                                       (frozenset([3, 4]), (2.0, 3.5))])
 
-    df = [(1, 2, 2), (1, 2, 3), (2, 1, 6), (2, 1, 3), (2, 1, 3)]
+    assert ITemporalLinkSetDF(df, discrete=True).get_maximal_cliques(delta=3) == set([(frozenset([1, 2]), (2, 5)),
+                                                                                      (frozenset([2, 3]), (2, 5)),
+                                                                                      (frozenset([3, 4]), (2, 3)),
+                                                                                      (frozenset([1, 2, 3]), (4, 5)),
+                                                                                      (frozenset([1, 3]), (4, 7)),
+                                                                                      (frozenset([1, 2]), (6, 8)),
+                                                                                      (frozenset([2, 3, 4]), (2, 3)),
+                                                                                      (frozenset([2, 4]), (2, 4))])
+
+    df = [(1, 2, 2), (1, 2, 3), (2, 1, 6), (2, 1, 3)]
     lsa = ITemporalLinkSetDF(df, no_duplicates=False, weighted=True)
 
     assert bool(lsa)
@@ -528,17 +538,18 @@ def test_itemporal_link_set_df():
         pass
 
     df = [(1, 2, 4), (1, 2, 8), (2, 3, 4), (1, 3, 6), (3, 4, 2), (2, 4, 3)]
-    assert ITemporalLinkSetDF(df, weighted=True).get_maximal_cliques(delta=3) == {(frozenset({3, 4}), (3.5, 6.5)),
-                                                                                  (frozenset({1, 2, 3}), (7.5, 8.5)), 
-                                                                                  (frozenset({1, 2}), (5.5, 8.5)),
-                                                                                  (frozenset({2, 4}), (4.5, 7.5)),
-                                                                                  (frozenset({1, 2}), (9.5, 12.5)),
-                                                                                  (frozenset({2, 3, 4}), (5.5, 6.5)),
-                                                                                  (frozenset({2, 3}), (5.5, 8.5)),
-                                                                                  (frozenset({1, 3}), (7.5, 10.5))}
+    assert ITemporalLinkSetDF(df, weighted=True).get_maximal_cliques(delta=3) == set([(frozenset([1, 2]), (6.5, 8.0)),
+                                                                                      (frozenset([2, 3, 4]), (2.5, 3.5)),
+                                                                                      (frozenset([1, 2]), (2.5, 5.5)),
+                                                                                      (frozenset([1, 2, 3]), (4.5, 5.5)),
+                                                                                      (frozenset([2, 4]), (2.0, 4.5)),
+                                                                                      (frozenset([1, 3]), (4.5, 7.5)),
+                                                                                      (frozenset([2, 3]), (2.5, 5.5)),
+                                                                                      (frozenset([3, 4]), (2.0, 3.5))])
     
-    df = [(1, 2, 2), (1, 2, 3), (2, 3, 2), (1, 3, 4), (3, 4, 3), (2, 4, 5)]    
-    assert ITemporalLinkSetDF(df, weighted=True).centrality(3, direction='both') == [(2, 0.0), (3, 1.0)]
+    df = [(1, 2, 2), (1, 2, 3), (2, 3, 2), (1, 3, 4), (3, 4, 3), (2, 4, 5)]
+    assert list(ITemporalLinkSetDF(df, weighted=True).ego_betweeness(3, direction='both')) == [(2, 0.0), (3, 1.0)]
+    assert list(ITemporalLinkSetDF(df, weighted=True).closeness(2, direction='both')) == [(2, 1.3333333333333333), (3, 1.5), (4, 1.0), (5, 0.0)]
 
 if __name__ == "__main__":
     test_temporal_link_set_df()

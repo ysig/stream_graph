@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 import warnings
 from datetime import datetime, timedelta
 import pandas as pd
@@ -6,7 +7,6 @@ from functools import reduce
 from operator import mul
 from copy import deepcopy
 from six import iteritems
-from scipy.stats import poisson
 
 class NodeCollection(object):
     def __init__(self, it={}):
@@ -419,6 +419,8 @@ class DataCube(object):
 
     def poisson(self, op_id, log_overflow=1000.):
         if bool(self):
+            from scipy.stats import poisson        
+
             const, measures, labeled = self._measure(op_id)        
             out = list()
 

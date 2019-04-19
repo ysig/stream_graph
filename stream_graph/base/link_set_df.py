@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 import pandas as pd
 import itertools
 
@@ -29,7 +30,13 @@ class LinkSetDF(ABC.LinkSet):
 
         """
         # Add a check for dataframe style
-        if df is not None:
+        if df is None:
+            not_empty = False
+        elif isinstance(df, pd.DataFrame):
+            not_empty = not df.empty
+        else:
+            not_empty = len(df) > 0
+        if not_empty:
             if not isinstance(df, pd.DataFrame):
                 df = list(df)
             self.df_ = pd.DataFrame(df)
@@ -44,7 +51,11 @@ class LinkSetDF(ABC.LinkSet):
             else:
                 if len(self.df_.columns) == 2:
                     self.df_.columns = ['u', 'v']
+                elif len(self.df_.columns) == 3:
+                    self.df_.drop(columns=self.df_.columns[2], inplace=True)
+                    self.df_.columns = ['u', 'v']
                 else:
+                    print(self.df_)
                     raise ValueError('If weighted is False, input should be an iterable of exactly 2 elements.')
                                     
             self.sort_by = sort_by
@@ -134,11 +145,17 @@ class LinkSetDF(ABC.LinkSet):
 
     @property
     def df(self):
-        return self.merge_.sort_.reindex_.df_
+        if bool(self):
+            return self.merge_.sort_.reindex_.df_
+        else:
+            return pd.DataFrame(columns=['u', 'v'])
 
     @property
     def mdf(self):
-        return self.merge_.reindex_.df_
+        if bool(self):
+            return self.merge_.reindex_.df_
+        else:
+            return pd.DataFrame(columns=['u', 'v'])
 
     def neighbors(self, u=None, direction='out'):
         if u is None:
@@ -155,8 +172,8 @@ class LinkSetDF(ABC.LinkSet):
                     neighbors[v].add(u)
             else:
                 raise UnrecognizedDirection()
-            for u, v, *_ in iter(self):
-                add(u, v)
+            for key in iter(self):
+                add(key[0], key[1])
             return NodeCollection({u: NodeSetS(s) for u, s in iteritems(neighbors)})
         else:
             if direction == 'out':

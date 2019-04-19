@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 import operator
 from functools import reduce
 from numbers import Real
@@ -298,7 +299,7 @@ class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
                     out[u] = TimeCollection(out[u])
                 return NodeCollection(out)
             else:
-                return LinkSetDF(self.dfm.df_at(t), weighted=self.weighted).neighbors(u=None, direction=direction)
+                return LinkSetDF(self.dfm.df_at(t).drop(columns=['ts']), weighted=self.weighted).neighbors(u=None, direction=direction)
         else:
             di = True
             if direction == 'out':
@@ -367,7 +368,7 @@ class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
                     out[u] = TimeCollection(out[u])
                 return NodeCollection(out)
             else:
-                return LinkSetDF(self.dfm.df_at(t), weighted=self.weighted).degree(u=None, direction=direction)
+                return LinkSetDF(self.dfm.df_at(t).drop(columns=['ts']), weighted=self.weighted).degree(u=None, direction=direction)
         else:
             di = True
             if direction == 'out':

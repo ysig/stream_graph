@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 from numbers import Real
 from warnings import warn
 from collections import defaultdict

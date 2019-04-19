@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 import copy
 import abc
 
@@ -578,7 +579,7 @@ class TemporalLinkSet(ABC):
             time_links = self.links_at()
             return TimeCollection([(t, l.size_weighted) for t, l in time_links], time_links.instants)
         else:
-            return links_at(t).size_weighted
+            return self.links_at(t).size_weighted
 
     def _m_at_unweighted(self, t):
         if t is None:    
@@ -586,7 +587,7 @@ class TemporalLinkSet(ABC):
             time_links = self.links_at()
             return TimeCollection([(t, l.size) for t, l in time_links], time_links.instants)
         else:
-            return links_at(t).size
+            return self.links_at(t).size
 
 
     def duration_of(self, l=None, direction='out'):

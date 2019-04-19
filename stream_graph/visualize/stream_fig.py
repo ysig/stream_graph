@@ -54,7 +54,7 @@ class Drawing(object):
     _directed = False
 
 
-    def __init__(self, filename, alpha=0.0, omega=10.0, time_width=500, discrete=0, directed=False):
+    def __init__(self, name, alpha=0.0, omega=10.0, time_width=500, discrete=0, directed=False):
         """Initializes a stream graph drawing.
 
         Parameters
@@ -86,7 +86,17 @@ class Drawing(object):
         self._time_unit = time_width
         self._discrete = discrete
         self._directed = directed
-        self._filename = open(filename, '+w')
+        if name is None:
+            if str(sys.argv[0].split('.')[-1]) == 'py':
+                heading = '.'.join(sys.argv[0].split('.')[:-1])
+            else:
+                heading = sys.argv[0]
+            name = heading + ".svg"
+            cnt = 1
+            while os.path.exists(name):
+                name = heading + "(" + str(cnt) + ").svg"
+                cnt += 1
+        self._filename = open(name, 'w')
 
         self.linetype = 2
 

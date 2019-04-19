@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 import pandas as pd
 import numpy as np
 from itertools import chain
@@ -165,7 +166,7 @@ class IntervalDF(pd.DataFrame):
 
     def issuper(self, dfb, on_column=None, by_key=True):
         on_column = self.get_ni_columns(on_column)
-        if on_column is None:
+        if not len(on_column):
             return issuper_base(self, dfb)
         elif by_key:
             dfr = self
@@ -187,7 +188,7 @@ class IntervalDF(pd.DataFrame):
 
     def nonempty_intersection(self, bdf, on_column="u", by_key=True):
         on_column = self.get_ni_columns(on_column)
-        if on_column is None:
+        if not len(on_column):
             return nonempty_intersection_base(self, dfb)
         elif by_key:
             common_df = dfr.append(dfb, ignore_index=True, sort=False)
@@ -644,7 +645,7 @@ class IntervalWDF(pd.DataFrame):
                                     out[prev] = out[prev:-2] + (t, wck)
                                 else:
                                     prev[key] = len(out)
-                                    out.append(key + (e[key], t, wck))
+                                    out.append(k + (e[k], t, wck))
                             else:
                                 prev.pop(key, None)
                             e[k] = t

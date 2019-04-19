@@ -3,6 +3,7 @@ from pandas import DataFrame
 from stream_graph import LinkSetDF
 from stream_graph.exceptions import UnrecognizedLinkSet
 from stream_graph.exceptions import UnrecognizedDirection
+from operator import itemgetter
 
 def test_link_set_df():
     links_a = [(1, 2), (2, 3), (3, 1), (1, 2)]
@@ -46,13 +47,13 @@ def test_link_set_df():
     assert dict(lsa.degree(direction='out')) == {1: 1, 2: 1, 3: 1}
     assert dict(lsa.degree(direction='in')) == {2: 1, 3: 1, 1: 1}
     assert dict(lsa.degree(direction='both')) == {1: 2, 2: 2, 3: 2}
-    
+
     assert set(lsa.neighbors(1, 'out')) == {2}
     assert set(lsa.neighbors(1, 'in')) == {3}
     assert set(lsa.neighbors(1, 'both')) == {2, 3}
-    assert list((a, set(b)) for (a, b) in lsa.neighbors(direction='out')) == [(1, {2}), (2, {3}), (3, {1})]
-    assert list((a, set(b)) for (a, b) in lsa.neighbors(direction='in')) == [(2, {1}), (3, {2}), (1, {3})]
-    assert list((a, set(b)) for (a, b) in lsa.neighbors(direction='both')) == [(1, {2, 3}), (2, {1, 3}), (3, {1, 2})]
+    assert list((a, set(b)) for (a, b) in lsa.neighbors(direction='out')) == sorted([(1, {2}), (2, {3}), (3, {1})], key=itemgetter(0))
+    assert list((a, set(b)) for (a, b) in lsa.neighbors(direction='in')) == sorted([(2, {1}), (3, {2}), (1, {3})], key=itemgetter(0))
+    assert list((a, set(b)) for (a, b) in lsa.neighbors(direction='both')) == sorted([(1, {2, 3}), (2, {1, 3}), (3, {1, 2})], key=itemgetter(0))
 
     try:
         lsa.degree(1, 'tdod')
@@ -94,6 +95,7 @@ def test_link_set_weighted():
     assert not bool(LinkSetDF(weighted=True))
 
     assert lsa.size == 3
+    assert lsa.size_weighted == 4
     assert LinkSetDF(weighted=True).size == 0
 
     assert (1, 2) in lsa
@@ -121,13 +123,13 @@ def test_link_set_weighted():
     assert list(lsa - lsb) == sorted([(1, 2, 2)])
     assert (lsb - lsa).size == 1
 
-    assert lsa.degree(1, 'out', weighted=True) == 2
-    assert lsa.degree(1, 'in', weighted=True) == 1
-    assert lsa.degree(1, 'both', weighted=True) == 3
+    assert lsa.degree(1, 'out', weights=True) == 2
+    assert lsa.degree(1, 'in', weights=True) == 1
+    assert lsa.degree(1, 'both', weights=True) == 3
 
-    assert dict(lsa.degree(direction='out', weighted=True)) == {1: 2, 2: 1, 3: 1}
-    assert dict(lsa.degree(direction='in', weighted=True)) == {2: 2, 3: 1, 1: 1}
-    assert dict(lsa.degree(direction='both', weighted=True)) == {1: 3, 2: 3, 3: 2}
+    assert dict(lsa.degree(direction='out', weights=True)) == {1: 2, 2: 1, 3: 1}
+    assert dict(lsa.degree(direction='in', weights=True)) == {2: 2, 3: 1, 1: 1}
+    assert dict(lsa.degree(direction='both', weights=True)) == {1: 3, 2: 3, 3: 2}
 
     assert lsa.degree(1, 'out') == 1
     assert lsa.degree(1, 'in') == 1
@@ -140,9 +142,9 @@ def test_link_set_weighted():
     assert set(lsa.neighbors(1, 'out')) == {2}
     assert set(lsa.neighbors(1, 'in')) == {3}
     assert set(lsa.neighbors(1, 'both')) == {2, 3}
-    assert list((a, set(b)) for (a, b) in lsa.neighbors(direction='out')) == [(1, {2}), (2, {3}), (3, {1})]
-    assert list((a, set(b)) for (a, b) in lsa.neighbors(direction='in')) == [(2, {1}), (3, {2}), (1, {3})]
-    assert list((a, set(b)) for (a, b) in lsa.neighbors(direction='both')) == [(1, {2, 3}), (2, {1, 3}), (3, {1, 2})]
+    assert list((a, set(b)) for (a, b) in lsa.neighbors(direction='out')) == sorted([(1, {2}), (2, {3}), (3, {1})], key=itemgetter(0))
+    assert list((a, set(b)) for (a, b) in lsa.neighbors(direction='in')) == sorted([(2, {1}), (3, {2}), (1, {3})], key=itemgetter(0))
+    assert list((a, set(b)) for (a, b) in lsa.neighbors(direction='both')) == sorted([(1, {2, 3}), (2, {1, 3}), (3, {1, 2})], key=itemgetter(0))
 
     links_b = {(2, 3), (3, 1), (1, 4), (2, 3)}
     lsb = LinkSetDF(links_b, no_duplicates=False)
