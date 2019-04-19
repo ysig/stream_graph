@@ -41,9 +41,9 @@ $ pip install git+https://github.com/ysig/stream_graph/
 Getting Starting
 ----------------
 
-For a first tutorial please you can have a look at [collegeMsg][https://github.com/ysig/stream_graph/tree/master/tutorial/collegeMsg/collegeMsg.ipynb].
+For a first tutorial please you can have a look at [collegeMsg](https://github.com/ysig/stream_graph/tree/master/tutorial/collegeMsg/collegeMsg.ipynb).
 
-[Documentation][https://www.google.com]
+[Documentation](https://ysig.github.io/stream_graph/doc/)
 -----------------------------------------
 
 The project documentation is automatically generated online using Sphinx.

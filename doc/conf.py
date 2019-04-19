@@ -58,13 +58,7 @@ extensions = [
 ]
 
 # Add external links
-xref_links = {
-    "lgscv": ("sklearn.model_selection.GridSearchCV",
-              "http://scikit-learn.org/stable/modules/generated/sklearn.model_selection.GridSearchCV.html"
-              ),
-    "gd": ("https://ls11-www.cs.tu-dortmund.de/staff/morris/graphkerneldatasets",
-            "https://ls11-www.cs.tu-dortmund.de/staff/morris/graphkerneldatasets")
-    }
+xref_links = {}
 
 
 # this is needed for some reason...

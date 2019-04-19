@@ -135,7 +135,7 @@ Temporal-DataFrames
 
 .. autosummary::
    :toctree: generated/
-   :template: pandas.rst
+   :template: class.rst
 
    IntervalDF
    
@@ -143,7 +143,7 @@ Temporal-DataFrames
 
 .. autosummary::
    :toctree: generated/
-   :template: pandas.rst
+   :template: class.rst
 
    InstantaneousDF
 
