@@ -7,7 +7,7 @@ jobs:
     steps:
       - checkout
       - run: python -m venv ./venv
-      - run: bash ./ci_scripts/circleci/install.sh
+      - run: bash ./ci_scripts/circleci/install.sh 
       - store_artifacts:
           path: doc/_build/
           destination: doc

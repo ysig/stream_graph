@@ -3,7 +3,7 @@
 
 
 Installing `stream_graph`
-=========================
+-------------------------
 
 The grakel library requires:
 
