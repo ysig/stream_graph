@@ -48,7 +48,7 @@ cp -R $HOME/tmp/* ./$DOC_URL/
 
 git config --global user.email $EMAIL
 git config --global user.name $USERNAME
-git add -f ./$DOC_URL/
+git add -f ./$DOC_URL/ index.html
 git commit -m "$MSG"
 git push -f origin gh-pages
 if [ $? -ne 0 ]; then
