@@ -42,7 +42,7 @@ for name in $(ls -A $HOME/$DOC_REPO); do
 done
 
 # Copy the new build docs
-echo '<meta http-equiv="refresh" content="0; ${DOC_URL}" />' > index.html
+echo '<meta http-equiv="refresh" content="0; doc" />' > index.html
 mkdir $DOC_URL
 cp -R $HOME/tmp/* ./$DOC_URL/
 
