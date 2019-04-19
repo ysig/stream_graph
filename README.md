@@ -2,8 +2,8 @@
 
 
 
-## Installing stream_graph
-==========================
+Installing `stream_graph`
+=========================
 
 The grakel library requires:
 
