@@ -50,7 +50,7 @@ workflows:
       - deploy:
           requires:
             - python3
-          filters:
-            branches:
-              only: develop
+#          filters:
+#            branches:
+#              only: develop
 
