@@ -7,14 +7,13 @@
 # System dependencies
 sudo -E apt-get -yq remove texlive-binaries --purge > /dev/null
 sudo apt-get update > /dev/null
-sudo apt-get install libatlas-dev > /dev/null
-sudo apt-get install build-essential > /dev/null
+sudo apt-get install build-essential libffi-dev > /dev/null
 
 # Setup a python venv and install basics
 source ./venv/bin/activate
 pip install --upgrade pip
 pip install --upgrade pandas matplotlib setuptools sphinx sphinx-gallery sphinx_rtd_theme sphinxcontrib-bibtex nb2plots numpydoc pillow cairosvg > /dev/null
-pip install ccfi
+pip install cffi
 pip install -r requirements.txt > /dev/null
 
 # More dependencies
