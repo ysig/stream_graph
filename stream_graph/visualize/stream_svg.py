@@ -53,7 +53,6 @@ class Drawing(object):
     _omega = 0.0
     _discrete = -1
 
-    _time_unit = 500
     _node_unit = 30
     _node_sep = _node_unit/4
     
@@ -86,7 +85,7 @@ class Drawing(object):
     __add_tm = []
     __add_tl = None
 
-    def __init__(self, name=None, alpha=0.0, omega=10.0, discrete=0, directed=False):
+    def __init__(self, name=None, alpha=0.0, omega=10.0, time_width=40, discrete=0, directed=False):
         if name is None:
             if str(sys.argv[0].split('.')[-1]) == 'py':
                 heading = '.'.join(sys.argv[0].split('.')[:-1])
@@ -102,6 +101,7 @@ class Drawing(object):
         self._omega = float(omega)
         self._discrete = discrete
         self._directed = directed
+        self._time_unit = time_width
 
         self._offset_x = self._font_size + self._tick_font_size
         self._offset_y = self._tick_font_size + self._tick_font_size + self._tick_width

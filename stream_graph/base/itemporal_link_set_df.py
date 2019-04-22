@@ -21,6 +21,7 @@ from .node_set_s import NodeSetS
 from .temporal_node_set_b import TemporalNodeSetB
 from .temporal_link_set_df import TemporalLinkSetDF
 from .itime_set_s import ITimeSetS
+from .time_set_df import TimeSetDF
 from stream_graph.collections import NodeCollection
 from stream_graph.collections import LinkCollection
 from stream_graph.collections import TimeGenerator
@@ -164,7 +165,7 @@ class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
     def basic_temporal_nodeset(self):
         # Create node stream
         if bool(self):
-            return TemporalNodeSetB(self.nodeset, ITimeSetDF([(self.df_.ts.min(), self.df_.ts.max())], discrete=self.discrete))
+            return TemporalNodeSetB(self.nodeset, TimeSetDF([(self.df_.ts.min(), self.df_.ts.max())], discrete=self.discrete))
         else:
             return TemporalNodeSetB()
 
@@ -173,7 +174,7 @@ class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
         # All the time intervals that a node belongs to a link
         if bool(self):
             mdf = self.df_[['v', 'ts']].rename(columns={'v': 'u'}).append(self.df_[['u', 'ts']])
-            return ITemporalNodeSetDF(mdf, disjoint_intervals=False, discrete=self.discrete)
+            return ITemporalNodeSetDF(mdf, no_duplicates=False, discrete=self.discrete)
         else:
             return ITemporalNodeSetDF()
 

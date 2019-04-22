@@ -274,9 +274,9 @@ class TimeCollection(TimeGenerator):
             if idx is None:
                 return not_found
             else:
-                return self[idx]
+                return self[idx][1]
         else:
-            return self[self._search_time_continuous(t)]
+            return self[self._search_time_continuous(t)][1]
 
     def __bool__(self):
         """Implementation of the :code:`bool` casting of a NodeSet object.

@@ -57,23 +57,38 @@ class Visualizer(object):
         else:
             self._data['time_set'] = self._data['time_set'] | ts
 
+    @property
+    def discrete(self):
+        return self._discrete
+
+    @discrete.setter
+    def discrete(self, discrete):
+        if hasattr(self, '_discrete'):
+            assert self._discrete == discrete
+        else:
+            self._discrete = discrete
+
     def _add(self, item):
         if isinstance(item, StreamGraph):
             self._add_ls(item.temporal_linkset)
             self._add_ns(item.nodeset)
             self._add_nsm(item.temporal_nodeset)
             self._add_ts(item.timeset)
+            self.discrete = item.discrete
         elif isinstance(item, ABC.TimeSet):
             self._add_ts(item)
+            self.discrete = item.discrete
         elif isinstance(item, ABC.NodeSet):
             self._add_ns(item)
         elif isinstance(item, ABC.TemporalNodeSet):
             self._add_nsm(item)
             self._add_ns(item.nodeset)
-            self._add_ts(item.timeset) 
+            self._add_ts(item.timeset)
+            self.discrete = item.discrete
         elif isinstance(item, ABC.TemporalLinkSet):
             self._add_ls(item)
-            self._add(item.basic_temporal_nodeset)
+            self._add(item.minimal_temporal_nodeset)
+            self.discrete = item.discrete
 
     def __iadd__(self, item):
         if not any(isinstance(item, x) for x in [StreamGraph, ABC.TimeSet, ABC.NodeSet, ABC.TemporalNodeSet, ABC.TemporalLinkSet]) and isinstance(item, Iterable):
@@ -94,39 +109,60 @@ class Visualizer(object):
         else:
             return colors
 
-    def _plot_linkstream(self):
+    def _plot_linkstream(self, pallete):
         data = self._data['link_streams']
-        pallete = self._make_pallete(len(data))
         if len(data):
             for ls, color in zip(data, pallete):
-                for (u, v, ts, tf) in iter(ls):
-                    self.dwg.addLink(u, v, ts, tf, color=color)
+                if ls.instantaneous:
+                    for (u, v, ts) in iter(ls):
+                        self.dwg.addLink(u, v, ts, ts, color=color)
+                else:
+                    for (u, v, ts, tf) in iter(ls):
+                        self.dwg.addLink(u, v, ts, tf, color=color)
+
 
     def _plot_nodes(self, min_time, max_time):
         nodes = dict()
         for n in self._data['node_set']:
             nodes[n] = []
-        for (u, ts, tf) in self._data['node_stream']:
-            if ts != min_time or tf != max_time:
-                nodes[u].append((ts, tf))
+        if self._data['node_stream'].instantaneous:
+            for (u, ts) in self._data['node_stream']:
+                if ts >= min_time and ts <= max_time:
+                    nodes[u].append((ts, ts))
+        else:
+            for (u, ts, tf) in self._data['node_stream']:
+                if ts != min_time or tf != max_time:
+                    nodes[u].append((ts, tf))
         def takez(a):
             return a[0]
         for (u, times) in iteritems(nodes):
             self.dwg.addNode(u, sorted(times, key=takez))
 
-    def _plot(self, filename):
-        min_time = min(i for (i, _) in self._data['time_set'])
-        max_time = max(i for (_, i) in self._data['time_set'])
+    def _plot(self, filename, **kargs):
+        if self._data['time_set'].instantaneous:
+            min_time = min(self._data['time_set'])
+            max_time = max(self._data['time_set'])
+        else:
+            min_time = min(i for (i, _) in self._data['time_set'])
+            max_time = max(i for (_, i) in self._data['time_set'])
         if self._ext == 'fig':
             from .stream_fig import Drawing
         else:
             from .stream_svg import Drawing
-        self.dwg = Drawing(filename, alpha=min_time, omega=max_time)
-        self._plot_nodes(min_time, max_time)
-        self._plot_linkstream()
-        self.dwg.addTimeLine()
 
-    def produce(self, filename=None):
+        nargs = dict()
+        if 'time_width' in nargs:
+            nargs['time_width'] = kargs['time_width']
+        self.dwg = Drawing(filename, alpha=min_time, omega=max_time, discrete=self.discrete,**nargs)
+        pallete = self._make_pallete(len(self._data['link_streams']))
+        self._plot_nodes(min_time, max_time)
+        self._plot_linkstream(pallete)
+        margs = dict()
+        if 'ticks' in kargs:
+            margs['ticks'] = kargs['ticks']
+        self.dwg.addTimeLine(**margs)
+
+    def produce(self, filename=None, **kargs):
         if filename is None:
             filename = self.save_address
-        self._plot(filename)
+        self._plot(filename, **kargs)

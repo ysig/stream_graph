@@ -51,9 +51,9 @@ def test_link_set_df():
     assert set(lsa.neighbors(1, 'out')) == {2}
     assert set(lsa.neighbors(1, 'in')) == {3}
     assert set(lsa.neighbors(1, 'both')) == {2, 3}
-    assert list((a, set(b)) for (a, b) in lsa.neighbors(direction='out')) == sorted([(1, {2}), (2, {3}), (3, {1})], key=itemgetter(0))
-    assert list((a, set(b)) for (a, b) in lsa.neighbors(direction='in')) == sorted([(2, {1}), (3, {2}), (1, {3})], key=itemgetter(0))
-    assert list((a, set(b)) for (a, b) in lsa.neighbors(direction='both')) == sorted([(1, {2, 3}), (2, {1, 3}), (3, {1, 2})], key=itemgetter(0))
+    assert sorted(list((a, set(b)) for (a, b) in lsa.neighbors(direction='out')), key=itemgetter(0)) == sorted([(1, {2}), (2, {3}), (3, {1})], key=itemgetter(0))
+    assert sorted(list((a, set(b)) for (a, b) in lsa.neighbors(direction='in')), key=itemgetter(0)) == sorted([(2, {1}), (3, {2}), (1, {3})], key=itemgetter(0))
+    assert sorted(list((a, set(b)) for (a, b) in lsa.neighbors(direction='both')), key=itemgetter(0)) == sorted([(1, {2, 3}), (2, {1, 3}), (3, {1, 2})], key=itemgetter(0))
 
     try:
         lsa.degree(1, 'tdod')
@@ -142,9 +142,9 @@ def test_link_set_weighted():
     assert set(lsa.neighbors(1, 'out')) == {2}
     assert set(lsa.neighbors(1, 'in')) == {3}
     assert set(lsa.neighbors(1, 'both')) == {2, 3}
-    assert list((a, set(b)) for (a, b) in lsa.neighbors(direction='out')) == sorted([(1, {2}), (2, {3}), (3, {1})], key=itemgetter(0))
-    assert list((a, set(b)) for (a, b) in lsa.neighbors(direction='in')) == sorted([(2, {1}), (3, {2}), (1, {3})], key=itemgetter(0))
-    assert list((a, set(b)) for (a, b) in lsa.neighbors(direction='both')) == sorted([(1, {2, 3}), (2, {1, 3}), (3, {1, 2})], key=itemgetter(0))
+    assert sorted(list((a, set(b)) for (a, b) in lsa.neighbors(direction='out')), key=itemgetter(0)) == sorted([(1, {2}), (2, {3}), (3, {1})], key=itemgetter(0))
+    assert sorted(list((a, set(b)) for (a, b) in lsa.neighbors(direction='in')), key=itemgetter(0)) == sorted([(2, {1}), (3, {2}), (1, {3})], key=itemgetter(0))
+    assert sorted(list((a, set(b)) for (a, b) in lsa.neighbors(direction='both')), key=itemgetter(0)) == sorted([(1, {2, 3}), (2, {1, 3}), (3, {1, 2})], key=itemgetter(0))
 
     links_b = {(2, 3), (3, 1), (1, 4), (2, 3)}
     lsb = LinkSetDF(links_b, no_duplicates=False)

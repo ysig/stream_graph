@@ -660,7 +660,7 @@ class TemporalLinkSet(ABC):
             Generate the StreamGraph containing the minimal TemporalNodeSet and the minimal TimeSet.
 
         """
-        from stream_graph.stream_graph import StreamGraph
+        from stream_graph.base.stream_graph import StreamGraph
         return StreamGraph(self.nodeset, self.timeset, self.minimal_temporal_nodeset, self)
     
     # Python2 cross-compatibility
