@@ -183,7 +183,7 @@
 <h1><code class="xref py py-mod docutils literal notranslate"><span class="pre">stream_graph</span></code>.LinkSetDF<a class="headerlink" href="#stream-graph-linksetdf" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="stream_graph.LinkSetDF">
-<em class="property">class </em><code class="descclassname">stream_graph.</code><code class="descname">LinkSetDF</code><span class="sig-paren">(</span><em>df=None, no_duplicates=False, sort_by=['u', 'v'], weighted=False</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/d2dff64/stream_graph/base/link_set_df.py#L14"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/base/link_set_df.html#LinkSetDF"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.LinkSetDF" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">stream_graph.</code><code class="descname">LinkSetDF</code><span class="sig-paren">(</span><em>df=None, no_duplicates=False, sort_by=['u', 'v'], weighted=False</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/0e71ecd/stream_graph/base/link_set_df.py#L14"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/base/link_set_df.html#LinkSetDF"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.LinkSetDF" title="Permalink to this definition">¶</a></dt>
 <dd><p>DataFrame implementation of the ABC.LinkSet</p>
 <dl class="field-list simple">
 <dt class="field-odd">Attributes</dt>
@@ -214,16 +214,16 @@
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#stream_graph.LinkSetDF.copy" title="stream_graph.LinkSetDF.copy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code></a>([deep])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#stream_graph.LinkSetDF.copy" title="stream_graph.LinkSetDF.copy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code></a>(self[, deep])</p></td>
 <td><p>Returns a deep or shallow copy of the current LinkSet.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#stream_graph.LinkSetDF.degree" title="stream_graph.LinkSetDF.degree"><code class="xref py py-obj docutils literal notranslate"><span class="pre">degree</span></code></a>([u, direction, weights])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#stream_graph.LinkSetDF.degree" title="stream_graph.LinkSetDF.degree"><code class="xref py py-obj docutils literal notranslate"><span class="pre">degree</span></code></a>(self[, u, direction, weights])</p></td>
 <td><p>Return the degree of a node.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">issuperset</span></code>(ls)</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">issuperset</span></code>(self, ls)</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">neighbors</span></code>([u, direction])</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">neighbors</span></code>(self[, u, direction])</p></td>
 <td><p></p></td>
 </tr>
 </tbody>
@@ -269,41 +269,41 @@ If an Iterable it should produce <code class="code docutils literal notranslate"
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#stream_graph.LinkSetDF.copy" title="stream_graph.LinkSetDF.copy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code></a>([deep])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#stream_graph.LinkSetDF.copy" title="stream_graph.LinkSetDF.copy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code></a>(self[, deep])</p></td>
 <td><p>Returns a deep or shallow copy of the current LinkSet.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#stream_graph.LinkSetDF.degree" title="stream_graph.LinkSetDF.degree"><code class="xref py py-obj docutils literal notranslate"><span class="pre">degree</span></code></a>([u, direction, weights])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#stream_graph.LinkSetDF.degree" title="stream_graph.LinkSetDF.degree"><code class="xref py py-obj docutils literal notranslate"><span class="pre">degree</span></code></a>(self[, u, direction, weights])</p></td>
 <td><p>Return the degree of a node.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">issuperset</span></code>(ls)</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">issuperset</span></code>(self, ls)</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">neighbors</span></code>([u, direction])</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">neighbors</span></code>(self[, u, direction])</p></td>
 <td><p></p></td>
 </tr>
 </tbody>
 </table>
 <dl class="attribute">
 <dt id="stream_graph.LinkSetDF.__class__">
-<code class="descname">__class__</code><a class="reference external" href="https://github.com/ysig/stream_graph/blob/d2dff64/stream_graph/../../../../usr/local/lib/python3.6/abc.py#L109"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.LinkSetDF.__class__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__class__</code><a class="reference external" href="https://github.com/ysig/stream_graph/blob/0e71ecd/stream_graph/../../../../usr/local/lib/python3.6/abc.py#L109"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.LinkSetDF.__class__" title="Permalink to this definition">¶</a></dt>
 <dd><p>alias of <a class="reference external" href="https://docs.python.org/3/library/abc.html#abc.ABCMeta" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABCMeta</span></code></a></p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="stream_graph.LinkSetDF.__delattr__">
-<code class="descname">__delattr__</code><span class="sig-paren">(</span><em>$self</em>, <em>name</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.LinkSetDF.__delattr__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__delattr__</code><span class="sig-paren">(</span><em>self</em>, <em>name</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.LinkSetDF.__delattr__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Implement delattr(self, name).</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="stream_graph.LinkSetDF.__dir__">
-<code class="descname">__dir__</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; list<a class="headerlink" href="#stream_graph.LinkSetDF.__dir__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__dir__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.LinkSetDF.__dir__" title="Permalink to this definition">¶</a></dt>
 <dd><p>default dir() implementation</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="stream_graph.LinkSetDF.__eq__">
-<code class="descname">__eq__</code><span class="sig-paren">(</span><em>$self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.LinkSetDF.__eq__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__eq__</code><span class="sig-paren">(</span><em>self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.LinkSetDF.__eq__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return self==value.</p>
 </dd></dl>
 
@@ -315,31 +315,31 @@ If an Iterable it should produce <code class="code docutils literal notranslate"
 
 <dl class="attribute">
 <dt id="stream_graph.LinkSetDF.__ge__">
-<code class="descname">__ge__</code><span class="sig-paren">(</span><em>$self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.LinkSetDF.__ge__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__ge__</code><span class="sig-paren">(</span><em>self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.LinkSetDF.__ge__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return self&gt;=value.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="stream_graph.LinkSetDF.__getattribute__">
-<code class="descname">__getattribute__</code><span class="sig-paren">(</span><em>$self</em>, <em>name</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.LinkSetDF.__getattribute__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__getattribute__</code><span class="sig-paren">(</span><em>self</em>, <em>name</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.LinkSetDF.__getattribute__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return getattr(self, name).</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="stream_graph.LinkSetDF.__gt__">
-<code class="descname">__gt__</code><span class="sig-paren">(</span><em>$self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.LinkSetDF.__gt__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__gt__</code><span class="sig-paren">(</span><em>self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.LinkSetDF.__gt__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return self&gt;value.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="stream_graph.LinkSetDF.__hash__">
-<code class="descname">__hash__</code><span class="sig-paren">(</span><em>$self</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.LinkSetDF.__hash__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__hash__</code><span class="sig-paren">(</span><em>self</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.LinkSetDF.__hash__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return hash(self).</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="stream_graph.LinkSetDF.__init__">
-<code class="descname">__init__</code><span class="sig-paren">(</span><em>df=None, no_duplicates=False, sort_by=['u', 'v'], weighted=False</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/d2dff64/stream_graph/base/link_set_df.py#L16"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/base/link_set_df.html#LinkSetDF.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.LinkSetDF.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>self, df=None, no_duplicates=False, sort_by=['u', 'v'], weighted=False</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/0e71ecd/stream_graph/base/link_set_df.py#L16"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/base/link_set_df.html#LinkSetDF.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.LinkSetDF.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize a LinkSet.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -366,25 +366,25 @@ overridden to extend subclasses.</p>
 
 <dl class="attribute">
 <dt id="stream_graph.LinkSetDF.__le__">
-<code class="descname">__le__</code><span class="sig-paren">(</span><em>$self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.LinkSetDF.__le__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__le__</code><span class="sig-paren">(</span><em>self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.LinkSetDF.__le__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return self&lt;=value.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="stream_graph.LinkSetDF.__lt__">
-<code class="descname">__lt__</code><span class="sig-paren">(</span><em>$self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.LinkSetDF.__lt__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__lt__</code><span class="sig-paren">(</span><em>self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.LinkSetDF.__lt__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return self&lt;value.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="stream_graph.LinkSetDF.__ne__">
-<code class="descname">__ne__</code><span class="sig-paren">(</span><em>$self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.LinkSetDF.__ne__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__ne__</code><span class="sig-paren">(</span><em>self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.LinkSetDF.__ne__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return self!=value.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="stream_graph.LinkSetDF.__new__">
-<code class="descname">__new__</code><span class="sig-paren">(</span><em>$type</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.LinkSetDF.__new__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__new__</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.LinkSetDF.__new__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create and return a new object.  See help(type) for accurate signature.</p>
 </dd></dl>
 
@@ -402,19 +402,19 @@ overridden to extend subclasses.</p>
 
 <dl class="attribute">
 <dt id="stream_graph.LinkSetDF.__repr__">
-<code class="descname">__repr__</code><span class="sig-paren">(</span><em>$self</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.LinkSetDF.__repr__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__repr__</code><span class="sig-paren">(</span><em>self</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.LinkSetDF.__repr__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return repr(self).</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="stream_graph.LinkSetDF.__setattr__">
-<code class="descname">__setattr__</code><span class="sig-paren">(</span><em>$self</em>, <em>name</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.LinkSetDF.__setattr__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__setattr__</code><span class="sig-paren">(</span><em>self</em>, <em>name</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.LinkSetDF.__setattr__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Implement setattr(self, name, value).</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="stream_graph.LinkSetDF.__sizeof__">
-<code class="descname">__sizeof__</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; int<a class="headerlink" href="#stream_graph.LinkSetDF.__sizeof__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__sizeof__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.LinkSetDF.__sizeof__" title="Permalink to this definition">¶</a></dt>
 <dd><p>size of object in memory, in bytes</p>
 </dd></dl>
 
@@ -436,7 +436,7 @@ overrides the normal algorithm (and the outcome is cached).</p>
 
 <dl class="method">
 <dt id="stream_graph.LinkSetDF.copy">
-<code class="descname">copy</code><span class="sig-paren">(</span><em>deep=True</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/d2dff64/stream_graph/ABC/link_set.py#L254"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.LinkSetDF.copy" title="Permalink to this definition">¶</a></dt>
+<code class="descname">copy</code><span class="sig-paren">(</span><em>self</em>, <em>deep=True</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/0e71ecd/stream_graph/ABC/link_set.py#L254"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.LinkSetDF.copy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a deep or shallow copy of the current LinkSet.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -455,7 +455,7 @@ overrides the normal algorithm (and the outcome is cached).</p>
 
 <dl class="method">
 <dt id="stream_graph.LinkSetDF.degree">
-<code class="descname">degree</code><span class="sig-paren">(</span><em>u=None</em>, <em>direction='out'</em>, <em>weights=False</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/d2dff64/stream_graph/ABC/link_set.py#L123"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.LinkSetDF.degree" title="Permalink to this definition">¶</a></dt>
+<code class="descname">degree</code><span class="sig-paren">(</span><em>self</em>, <em>u=None</em>, <em>direction='out'</em>, <em>weights=False</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/0e71ecd/stream_graph/ABC/link_set.py#L123"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.LinkSetDF.degree" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the degree of a node.</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters</dt>
@@ -470,7 +470,9 @@ overrides the normal algorithm (and the outcome is cached).</p>
 <dt><strong>nodestream</strong><span class="classifier">Real or NodeCollection(Real)</span></dt><dd><p>Return the (‘in’, ‘out’ or ‘both’) degree of a node of u.
 If None returns a NodeCollection with the degree for each Node.</p>
 </dd>
-<dt><strong>.</strong></dt><dd></dd>
+</dl>
+<dl class="simple">
+<dt>.</dt><dd></dd>
 </dl>
 </dd>
 </dl>

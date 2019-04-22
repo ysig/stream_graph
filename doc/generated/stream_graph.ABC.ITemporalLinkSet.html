@@ -180,7 +180,7 @@
 <h1><code class="xref py py-mod docutils literal notranslate"><span class="pre">stream_graph.ABC</span></code>.ITemporalLinkSet<a class="headerlink" href="#stream-graph-abc-itemporallinkset" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="stream_graph.ABC.ITemporalLinkSet">
-<em class="property">class </em><code class="descclassname">stream_graph.ABC.</code><code class="descname">ITemporalLinkSet</code><a class="reference external" href="https://github.com/ysig/stream_graph/blob/d2dff64/stream_graph/ABC/temporal_link_set.py#L702"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/ABC/temporal_link_set.html#ITemporalLinkSet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.ABC.ITemporalLinkSet" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">stream_graph.ABC.</code><code class="descname">ITemporalLinkSet</code><a class="reference external" href="https://github.com/ysig/stream_graph/blob/0e71ecd/stream_graph/ABC/temporal_link_set.py#L702"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/ABC/temporal_link_set.html#ITemporalLinkSet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.ABC.ITemporalLinkSet" title="Permalink to this definition">¶</a></dt>
 <dd><p>Instantaneous Temporal LinkSet Object API Specification.</p>
 <p>A ITemporalLinkSet can be abstractly be defined as a set of links <code class="code docutils literal notranslate"><span class="pre">(u,</span> <span class="pre">v)</span></code> associated with a timestamp <code class="code docutils literal notranslate"><span class="pre">ts</span></code>.</p>
 <dl class="field-list simple">
@@ -220,56 +220,56 @@
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#stream_graph.ABC.ITemporalLinkSet.copy" title="stream_graph.ABC.ITemporalLinkSet.copy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code></a>([deep])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#stream_graph.ABC.ITemporalLinkSet.copy" title="stream_graph.ABC.ITemporalLinkSet.copy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code></a>(self[, deep])</p></td>
 <td><p>Returns a deep or shallow copy of the current TemporalLinkSet.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#stream_graph.ABC.ITemporalLinkSet.degree_at" title="stream_graph.ABC.ITemporalLinkSet.degree_at"><code class="xref py py-obj docutils literal notranslate"><span class="pre">degree_at</span></code></a>([u, t, direction, weights])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#stream_graph.ABC.ITemporalLinkSet.degree_at" title="stream_graph.ABC.ITemporalLinkSet.degree_at"><code class="xref py py-obj docutils literal notranslate"><span class="pre">degree_at</span></code></a>(self[, u, t, direction, weights])</p></td>
 <td><p>Return the degree of a node at a certain time.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#stream_graph.ABC.ITemporalLinkSet.degree_of" title="stream_graph.ABC.ITemporalLinkSet.degree_of"><code class="xref py py-obj docutils literal notranslate"><span class="pre">degree_of</span></code></a>([u, direction])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#stream_graph.ABC.ITemporalLinkSet.degree_of" title="stream_graph.ABC.ITemporalLinkSet.degree_of"><code class="xref py py-obj docutils literal notranslate"><span class="pre">degree_of</span></code></a>(self[, u, direction])</p></td>
 <td><p>Return the time-degree of a node at a certain time.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#stream_graph.ABC.ITemporalLinkSet.discretize" title="stream_graph.ABC.ITemporalLinkSet.discretize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">discretize</span></code></a>([bins, bin_size])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#stream_graph.ABC.ITemporalLinkSet.discretize" title="stream_graph.ABC.ITemporalLinkSet.discretize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">discretize</span></code></a>(self[, bins, bin_size])</p></td>
 <td><p>Returns a discrete version of the current TemporalLinkSet.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#stream_graph.ABC.ITemporalLinkSet.duration_of" title="stream_graph.ABC.ITemporalLinkSet.duration_of"><code class="xref py py-obj docutils literal notranslate"><span class="pre">duration_of</span></code></a>([l, direction])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#stream_graph.ABC.ITemporalLinkSet.duration_of" title="stream_graph.ABC.ITemporalLinkSet.duration_of"><code class="xref py py-obj docutils literal notranslate"><span class="pre">duration_of</span></code></a>(self[, l, direction])</p></td>
 <td><p>Returns the total duration of a link.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#stream_graph.ABC.ITemporalLinkSet.get_maximal_cliques" title="stream_graph.ABC.ITemporalLinkSet.get_maximal_cliques"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_maximal_cliques</span></code></a>([direction])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#stream_graph.ABC.ITemporalLinkSet.get_maximal_cliques" title="stream_graph.ABC.ITemporalLinkSet.get_maximal_cliques"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_maximal_cliques</span></code></a>(self[, direction])</p></td>
 <td><p>Returns the maximal cliques of the temporal-linkstream.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#stream_graph.ABC.ITemporalLinkSet.induced_substream" title="stream_graph.ABC.ITemporalLinkSet.induced_substream"><code class="xref py py-obj docutils literal notranslate"><span class="pre">induced_substream</span></code></a>(ns)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#stream_graph.ABC.ITemporalLinkSet.induced_substream" title="stream_graph.ABC.ITemporalLinkSet.induced_substream"><code class="xref py py-obj docutils literal notranslate"><span class="pre">induced_substream</span></code></a>(self, ns)</p></td>
 <td><p>Returns the induced substream from a TemporalNodeSet.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#stream_graph.ABC.ITemporalLinkSet.issuperset" title="stream_graph.ABC.ITemporalLinkSet.issuperset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">issuperset</span></code></a>(ls)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#stream_graph.ABC.ITemporalLinkSet.issuperset" title="stream_graph.ABC.ITemporalLinkSet.issuperset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">issuperset</span></code></a>(self, ls)</p></td>
 <td><p>Check if a TemporalLinkSet contains another TemporalLinkSet.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#stream_graph.ABC.ITemporalLinkSet.links_at" title="stream_graph.ABC.ITemporalLinkSet.links_at"><code class="xref py py-obj docutils literal notranslate"><span class="pre">links_at</span></code></a>()</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#stream_graph.ABC.ITemporalLinkSet.links_at" title="stream_graph.ABC.ITemporalLinkSet.links_at"><code class="xref py py-obj docutils literal notranslate"><span class="pre">links_at</span></code></a>([t])</p></td>
 <td><p>Return the links at a certain time.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#stream_graph.ABC.ITemporalLinkSet.m_at" title="stream_graph.ABC.ITemporalLinkSet.m_at"><code class="xref py py-obj docutils literal notranslate"><span class="pre">m_at</span></code></a>([t, weights])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#stream_graph.ABC.ITemporalLinkSet.m_at" title="stream_graph.ABC.ITemporalLinkSet.m_at"><code class="xref py py-obj docutils literal notranslate"><span class="pre">m_at</span></code></a>(self[, t, weights])</p></td>
 <td><p>Returns the number of links appearing at a certain time.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#stream_graph.ABC.ITemporalLinkSet.neighborhood" title="stream_graph.ABC.ITemporalLinkSet.neighborhood"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neighborhood</span></code></a>(ns[, direction])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#stream_graph.ABC.ITemporalLinkSet.neighborhood" title="stream_graph.ABC.ITemporalLinkSet.neighborhood"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neighborhood</span></code></a>(self, ns[, direction])</p></td>
 <td><p>Returns the neighborhood of a TemporalNodeSet.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#stream_graph.ABC.ITemporalLinkSet.neighbors" title="stream_graph.ABC.ITemporalLinkSet.neighbors"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neighbors</span></code></a>([u, direction])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#stream_graph.ABC.ITemporalLinkSet.neighbors" title="stream_graph.ABC.ITemporalLinkSet.neighbors"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neighbors</span></code></a>(self[, u, direction])</p></td>
 <td><p>Return the temporal_nodeset of a neighbors of a node.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#stream_graph.ABC.ITemporalLinkSet.neighbors_at" title="stream_graph.ABC.ITemporalLinkSet.neighbors_at"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neighbors_at</span></code></a>([u, t, direction])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#stream_graph.ABC.ITemporalLinkSet.neighbors_at" title="stream_graph.ABC.ITemporalLinkSet.neighbors_at"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neighbors_at</span></code></a>(self[, u, t, direction])</p></td>
 <td><p>Return the NodeSet of neighbors of node at a certain time.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#stream_graph.ABC.ITemporalLinkSet.substream" title="stream_graph.ABC.ITemporalLinkSet.substream"><code class="xref py py-obj docutils literal notranslate"><span class="pre">substream</span></code></a>(nsu, nsv, ts)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#stream_graph.ABC.ITemporalLinkSet.substream" title="stream_graph.ABC.ITemporalLinkSet.substream"><code class="xref py py-obj docutils literal notranslate"><span class="pre">substream</span></code></a>(self, nsu, nsv, ts)</p></td>
 <td><p>Return the subtream occuring from two nodesets and a timeset.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#stream_graph.ABC.ITemporalLinkSet.times_of" title="stream_graph.ABC.ITemporalLinkSet.times_of"><code class="xref py py-obj docutils literal notranslate"><span class="pre">times_of</span></code></a>([l, direction])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#stream_graph.ABC.ITemporalLinkSet.times_of" title="stream_graph.ABC.ITemporalLinkSet.times_of"><code class="xref py py-obj docutils literal notranslate"><span class="pre">times_of</span></code></a>(self[, l, direction])</p></td>
 <td><p>Return the times that a link appears.</p></td>
 </tr>
 </tbody>
 </table>
 <dl class="method">
 <dt id="stream_graph.ABC.ITemporalLinkSet.__and__">
-<code class="descname">__and__</code><span class="sig-paren">(</span><em>ls</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/d2dff64/stream_graph/ABC/temporal_link_set.py#L371"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.ABC.ITemporalLinkSet.__and__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__and__</code><span class="sig-paren">(</span><em>self</em>, <em>ls</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/0e71ecd/stream_graph/ABC/temporal_link_set.py#L371"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.ABC.ITemporalLinkSet.__and__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Implementation of the <code class="code docutils literal notranslate"><span class="pre">&amp;</span></code> operator of a TemporalLinkSet object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -288,7 +288,7 @@
 
 <dl class="method">
 <dt id="stream_graph.ABC.ITemporalLinkSet.__bool__">
-<code class="descname">__bool__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/d2dff64/stream_graph/ABC/temporal_link_set.py#L355"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.ABC.ITemporalLinkSet.__bool__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__bool__</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/0e71ecd/stream_graph/ABC/temporal_link_set.py#L355"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.ABC.ITemporalLinkSet.__bool__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Implementation of the <code class="code docutils literal notranslate"><span class="pre">bool</span></code> casting of a TemporalLinkSet object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -307,13 +307,13 @@
 
 <dl class="attribute">
 <dt id="stream_graph.ABC.ITemporalLinkSet.__class__">
-<code class="descname">__class__</code><a class="reference external" href="https://github.com/ysig/stream_graph/blob/d2dff64/stream_graph/../../../../usr/local/lib/python3.6/abc.py#L109"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.ABC.ITemporalLinkSet.__class__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__class__</code><a class="reference external" href="https://github.com/ysig/stream_graph/blob/0e71ecd/stream_graph/../../../../usr/local/lib/python3.6/abc.py#L109"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.ABC.ITemporalLinkSet.__class__" title="Permalink to this definition">¶</a></dt>
 <dd><p>alias of <a class="reference external" href="https://docs.python.org/3/library/abc.html#abc.ABCMeta" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABCMeta</span></code></a></p>
 </dd></dl>
 
 <dl class="method">
 <dt id="stream_graph.ABC.ITemporalLinkSet.__contains__">
-<code class="descname">__contains__</code><span class="sig-paren">(</span><em>l</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/d2dff64/stream_graph/ABC/temporal_link_set.py#L84"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.ABC.ITemporalLinkSet.__contains__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__contains__</code><span class="sig-paren">(</span><em>self</em>, <em>l</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/0e71ecd/stream_graph/ABC/temporal_link_set.py#L84"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.ABC.ITemporalLinkSet.__contains__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Implementation of the <code class="code docutils literal notranslate"><span class="pre">in</span></code> operator for TemporalLinkSet.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -335,19 +335,19 @@ l[2] : <code class="code docutils literal notranslate"><span class="pre">t</span
 
 <dl class="attribute">
 <dt id="stream_graph.ABC.ITemporalLinkSet.__delattr__">
-<code class="descname">__delattr__</code><span class="sig-paren">(</span><em>$self</em>, <em>name</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.ABC.ITemporalLinkSet.__delattr__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__delattr__</code><span class="sig-paren">(</span><em>self</em>, <em>name</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.ABC.ITemporalLinkSet.__delattr__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Implement delattr(self, name).</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="stream_graph.ABC.ITemporalLinkSet.__dir__">
-<code class="descname">__dir__</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; list<a class="headerlink" href="#stream_graph.ABC.ITemporalLinkSet.__dir__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__dir__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.ABC.ITemporalLinkSet.__dir__" title="Permalink to this definition">¶</a></dt>
 <dd><p>default dir() implementation</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="stream_graph.ABC.ITemporalLinkSet.__eq__">
-<code class="descname">__eq__</code><span class="sig-paren">(</span><em>$self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.ABC.ITemporalLinkSet.__eq__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__eq__</code><span class="sig-paren">(</span><em>self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.ABC.ITemporalLinkSet.__eq__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return self==value.</p>
 </dd></dl>
 
@@ -359,31 +359,31 @@ l[2] : <code class="code docutils literal notranslate"><span class="pre">t</span
 
 <dl class="attribute">
 <dt id="stream_graph.ABC.ITemporalLinkSet.__ge__">
-<code class="descname">__ge__</code><span class="sig-paren">(</span><em>$self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.ABC.ITemporalLinkSet.__ge__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__ge__</code><span class="sig-paren">(</span><em>self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.ABC.ITemporalLinkSet.__ge__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return self&gt;=value.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="stream_graph.ABC.ITemporalLinkSet.__getattribute__">
-<code class="descname">__getattribute__</code><span class="sig-paren">(</span><em>$self</em>, <em>name</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.ABC.ITemporalLinkSet.__getattribute__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__getattribute__</code><span class="sig-paren">(</span><em>self</em>, <em>name</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.ABC.ITemporalLinkSet.__getattribute__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return getattr(self, name).</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="stream_graph.ABC.ITemporalLinkSet.__gt__">
-<code class="descname">__gt__</code><span class="sig-paren">(</span><em>$self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.ABC.ITemporalLinkSet.__gt__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__gt__</code><span class="sig-paren">(</span><em>self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.ABC.ITemporalLinkSet.__gt__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return self&gt;value.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="stream_graph.ABC.ITemporalLinkSet.__hash__">
-<code class="descname">__hash__</code><span class="sig-paren">(</span><em>$self</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.ABC.ITemporalLinkSet.__hash__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__hash__</code><span class="sig-paren">(</span><em>self</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.ABC.ITemporalLinkSet.__hash__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return hash(self).</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="stream_graph.ABC.ITemporalLinkSet.__init__">
-<code class="descname">__init__</code><span class="sig-paren">(</span><em>$self</em>, <em>/</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.ABC.ITemporalLinkSet.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>self</em>, <em>/</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.ABC.ITemporalLinkSet.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
 </dd></dl>
 
@@ -397,7 +397,7 @@ overridden to extend subclasses.</p>
 
 <dl class="method">
 <dt id="stream_graph.ABC.ITemporalLinkSet.__iter__">
-<code class="descname">__iter__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/d2dff64/stream_graph/ABC/temporal_link_set.py#L419"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.ABC.ITemporalLinkSet.__iter__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__iter__</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/0e71ecd/stream_graph/ABC/temporal_link_set.py#L419"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.ABC.ITemporalLinkSet.__iter__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Implementation of the <code class="code docutils literal notranslate"><span class="pre">iter</span></code> function for a TemporalLinkSet object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -416,31 +416,31 @@ overridden to extend subclasses.</p>
 
 <dl class="attribute">
 <dt id="stream_graph.ABC.ITemporalLinkSet.__le__">
-<code class="descname">__le__</code><span class="sig-paren">(</span><em>$self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.ABC.ITemporalLinkSet.__le__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__le__</code><span class="sig-paren">(</span><em>self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.ABC.ITemporalLinkSet.__le__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return self&lt;=value.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="stream_graph.ABC.ITemporalLinkSet.__lt__">
-<code class="descname">__lt__</code><span class="sig-paren">(</span><em>$self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.ABC.ITemporalLinkSet.__lt__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__lt__</code><span class="sig-paren">(</span><em>self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.ABC.ITemporalLinkSet.__lt__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return self&lt;value.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="stream_graph.ABC.ITemporalLinkSet.__ne__">
-<code class="descname">__ne__</code><span class="sig-paren">(</span><em>$self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.ABC.ITemporalLinkSet.__ne__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__ne__</code><span class="sig-paren">(</span><em>self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.ABC.ITemporalLinkSet.__ne__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return self!=value.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="stream_graph.ABC.ITemporalLinkSet.__new__">
-<code class="descname">__new__</code><span class="sig-paren">(</span><em>$type</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.ABC.ITemporalLinkSet.__new__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__new__</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.ABC.ITemporalLinkSet.__new__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create and return a new object.  See help(type) for accurate signature.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="stream_graph.ABC.ITemporalLinkSet.__or__">
-<code class="descname">__or__</code><span class="sig-paren">(</span><em>ls</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/d2dff64/stream_graph/ABC/temporal_link_set.py#L387"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.ABC.ITemporalLinkSet.__or__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__or__</code><span class="sig-paren">(</span><em>self</em>, <em>ls</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/0e71ecd/stream_graph/ABC/temporal_link_set.py#L387"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.ABC.ITemporalLinkSet.__or__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Implementation of the <code class="code docutils literal notranslate"><span class="pre">|</span></code> operator for a TemporalLinkSet object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -471,25 +471,25 @@ overridden to extend subclasses.</p>
 
 <dl class="attribute">
 <dt id="stream_graph.ABC.ITemporalLinkSet.__repr__">
-<code class="descname">__repr__</code><span class="sig-paren">(</span><em>$self</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.ABC.ITemporalLinkSet.__repr__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__repr__</code><span class="sig-paren">(</span><em>self</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.ABC.ITemporalLinkSet.__repr__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return repr(self).</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="stream_graph.ABC.ITemporalLinkSet.__setattr__">
-<code class="descname">__setattr__</code><span class="sig-paren">(</span><em>$self</em>, <em>name</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.ABC.ITemporalLinkSet.__setattr__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__setattr__</code><span class="sig-paren">(</span><em>self</em>, <em>name</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.ABC.ITemporalLinkSet.__setattr__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Implement setattr(self, name, value).</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="stream_graph.ABC.ITemporalLinkSet.__sizeof__">
-<code class="descname">__sizeof__</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; int<a class="headerlink" href="#stream_graph.ABC.ITemporalLinkSet.__sizeof__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__sizeof__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.ABC.ITemporalLinkSet.__sizeof__" title="Permalink to this definition">¶</a></dt>
 <dd><p>size of object in memory, in bytes</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="stream_graph.ABC.ITemporalLinkSet.__sub__">
-<code class="descname">__sub__</code><span class="sig-paren">(</span><em>ls</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/d2dff64/stream_graph/ABC/temporal_link_set.py#L403"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.ABC.ITemporalLinkSet.__sub__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__sub__</code><span class="sig-paren">(</span><em>self</em>, <em>ls</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/0e71ecd/stream_graph/ABC/temporal_link_set.py#L403"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.ABC.ITemporalLinkSet.__sub__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Implementation of the <code class="code docutils literal notranslate"><span class="pre">-</span></code> operator for a TemporalLinkSet object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -581,7 +581,7 @@ overrides the normal algorithm (and the outcome is cached).</p>
 
 <dl class="method">
 <dt id="stream_graph.ABC.ITemporalLinkSet.copy">
-<code class="descname">copy</code><span class="sig-paren">(</span><em>deep=True</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/d2dff64/stream_graph/ABC/temporal_link_set.py#L501"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.ABC.ITemporalLinkSet.copy" title="Permalink to this definition">¶</a></dt>
+<code class="descname">copy</code><span class="sig-paren">(</span><em>self</em>, <em>deep=True</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/0e71ecd/stream_graph/ABC/temporal_link_set.py#L501"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.ABC.ITemporalLinkSet.copy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a deep or shallow copy of the current TemporalLinkSet.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -600,7 +600,7 @@ overrides the normal algorithm (and the outcome is cached).</p>
 
 <dl class="method">
 <dt id="stream_graph.ABC.ITemporalLinkSet.degree_at">
-<code class="descname">degree_at</code><span class="sig-paren">(</span><em>u=None</em>, <em>t=None</em>, <em>direction='out'</em>, <em>weights=False</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/d2dff64/stream_graph/ABC/temporal_link_set.py#L248"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.ABC.ITemporalLinkSet.degree_at" title="Permalink to this definition">¶</a></dt>
+<code class="descname">degree_at</code><span class="sig-paren">(</span><em>self</em>, <em>u=None</em>, <em>t=None</em>, <em>direction='out'</em>, <em>weights=False</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/0e71ecd/stream_graph/ABC/temporal_link_set.py#L248"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.ABC.ITemporalLinkSet.degree_at" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the degree of a node at a certain time.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -626,7 +626,7 @@ If u and t are None return the degree for each node at its time instant.</p>
 
 <dl class="method">
 <dt id="stream_graph.ABC.ITemporalLinkSet.degree_of">
-<code class="descname">degree_of</code><span class="sig-paren">(</span><em>u=None</em>, <em>direction='out'</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/d2dff64/stream_graph/ABC/temporal_link_set.py#L772"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/ABC/temporal_link_set.html#ITemporalLinkSet.degree_of"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.ABC.ITemporalLinkSet.degree_of" title="Permalink to this definition">¶</a></dt>
+<code class="descname">degree_of</code><span class="sig-paren">(</span><em>self</em>, <em>u=None</em>, <em>direction='out'</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/0e71ecd/stream_graph/ABC/temporal_link_set.py#L772"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/ABC/temporal_link_set.html#ITemporalLinkSet.degree_of"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.ABC.ITemporalLinkSet.degree_of" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the time-degree of a node at a certain time.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -667,7 +667,7 @@ Returns None if empty.</p>
 
 <dl class="method">
 <dt id="stream_graph.ABC.ITemporalLinkSet.discretize">
-<code class="descname">discretize</code><span class="sig-paren">(</span><em>bins=None</em>, <em>bin_size=None</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/d2dff64/stream_graph/ABC/temporal_link_set.py#L670"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.ABC.ITemporalLinkSet.discretize" title="Permalink to this definition">¶</a></dt>
+<code class="descname">discretize</code><span class="sig-paren">(</span><em>self</em>, <em>bins=None</em>, <em>bin_size=None</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/0e71ecd/stream_graph/ABC/temporal_link_set.py#L670"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.ABC.ITemporalLinkSet.discretize" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a discrete version of the current TemporalLinkSet.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -693,7 +693,7 @@ Else declare the size of each bin.</p>
 
 <dl class="method">
 <dt id="stream_graph.ABC.ITemporalLinkSet.duration_of">
-<code class="descname">duration_of</code><span class="sig-paren">(</span><em>l=None</em>, <em>direction='out'</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/d2dff64/stream_graph/ABC/temporal_link_set.py#L744"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/ABC/temporal_link_set.html#ITemporalLinkSet.duration_of"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.ABC.ITemporalLinkSet.duration_of" title="Permalink to this definition">¶</a></dt>
+<code class="descname">duration_of</code><span class="sig-paren">(</span><em>self</em>, <em>l=None</em>, <em>direction='out'</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/0e71ecd/stream_graph/ABC/temporal_link_set.py#L744"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/ABC/temporal_link_set.html#ITemporalLinkSet.duration_of"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.ABC.ITemporalLinkSet.duration_of" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the total duration of a link.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -714,7 +714,7 @@ If l is None returns a dictionary of all links with their times.</p>
 
 <dl class="method">
 <dt id="stream_graph.ABC.ITemporalLinkSet.get_maximal_cliques">
-<code class="descname">get_maximal_cliques</code><span class="sig-paren">(</span><em>direction='both'</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/d2dff64/stream_graph/ABC/temporal_link_set.py#L616"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.ABC.ITemporalLinkSet.get_maximal_cliques" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_maximal_cliques</code><span class="sig-paren">(</span><em>self</em>, <em>direction='both'</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/0e71ecd/stream_graph/ABC/temporal_link_set.py#L616"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.ABC.ITemporalLinkSet.get_maximal_cliques" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the maximal cliques of the temporal-linkstream.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -733,7 +733,7 @@ If l is None returns a dictionary of all links with their times.</p>
 
 <dl class="method">
 <dt id="stream_graph.ABC.ITemporalLinkSet.induced_substream">
-<code class="descname">induced_substream</code><span class="sig-paren">(</span><em>ns</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/d2dff64/stream_graph/ABC/temporal_link_set.py#L451"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.ABC.ITemporalLinkSet.induced_substream" title="Permalink to this definition">¶</a></dt>
+<code class="descname">induced_substream</code><span class="sig-paren">(</span><em>self</em>, <em>ns</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/0e71ecd/stream_graph/ABC/temporal_link_set.py#L451"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.ABC.ITemporalLinkSet.induced_substream" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the induced substream from a TemporalNodeSet.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -758,7 +758,7 @@ If l is None returns a dictionary of all links with their times.</p>
 
 <dl class="method">
 <dt id="stream_graph.ABC.ITemporalLinkSet.issuperset">
-<code class="descname">issuperset</code><span class="sig-paren">(</span><em>ls</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/d2dff64/stream_graph/ABC/temporal_link_set.py#L435"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.ABC.ITemporalLinkSet.issuperset" title="Permalink to this definition">¶</a></dt>
+<code class="descname">issuperset</code><span class="sig-paren">(</span><em>self</em>, <em>ls</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/0e71ecd/stream_graph/ABC/temporal_link_set.py#L435"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.ABC.ITemporalLinkSet.issuperset" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if a TemporalLinkSet contains another TemporalLinkSet.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -777,7 +777,7 @@ If l is None returns a dictionary of all links with their times.</p>
 
 <dl class="method">
 <dt id="stream_graph.ABC.ITemporalLinkSet.links_at">
-<code class="descname">links_at</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/d2dff64/stream_graph/ABC/temporal_link_set.py#L103"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.ABC.ITemporalLinkSet.links_at" title="Permalink to this definition">¶</a></dt>
+<code class="descname">links_at</code><span class="sig-paren">(</span><em>t=None</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/0e71ecd/stream_graph/ABC/temporal_link_set.py#L103"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.ABC.ITemporalLinkSet.links_at" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the links at a certain time.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -835,7 +835,7 @@ If t is None, return a continuous TimeGenerator of LinkSet</p>
 
 <dl class="method">
 <dt id="stream_graph.ABC.ITemporalLinkSet.m_at">
-<code class="descname">m_at</code><span class="sig-paren">(</span><em>t=None</em>, <em>weights=False</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/d2dff64/stream_graph/ABC/temporal_link_set.py#L551"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.ABC.ITemporalLinkSet.m_at" title="Permalink to this definition">¶</a></dt>
+<code class="descname">m_at</code><span class="sig-paren">(</span><em>self</em>, <em>t=None</em>, <em>weights=False</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/0e71ecd/stream_graph/ABC/temporal_link_set.py#L551"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.ABC.ITemporalLinkSet.m_at" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the number of links appearing at a certain time.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -874,7 +874,7 @@ If t is None, return a continuous TimeGenerator of LinkSet</p>
 
 <dl class="method">
 <dt id="stream_graph.ABC.ITemporalLinkSet.neighborhood">
-<code class="descname">neighborhood</code><span class="sig-paren">(</span><em>ns</em>, <em>direction='out'</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/d2dff64/stream_graph/ABC/temporal_link_set.py#L467"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.ABC.ITemporalLinkSet.neighborhood" title="Permalink to this definition">¶</a></dt>
+<code class="descname">neighborhood</code><span class="sig-paren">(</span><em>self</em>, <em>ns</em>, <em>direction='out'</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/0e71ecd/stream_graph/ABC/temporal_link_set.py#L467"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.ABC.ITemporalLinkSet.neighborhood" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the neighborhood of a TemporalNodeSet.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -894,7 +894,7 @@ If t is None, return a continuous TimeGenerator of LinkSet</p>
 
 <dl class="method">
 <dt id="stream_graph.ABC.ITemporalLinkSet.neighbors">
-<code class="descname">neighbors</code><span class="sig-paren">(</span><em>u=None</em>, <em>direction='out'</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/d2dff64/stream_graph/ABC/temporal_link_set.py#L316"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.ABC.ITemporalLinkSet.neighbors" title="Permalink to this definition">¶</a></dt>
+<code class="descname">neighbors</code><span class="sig-paren">(</span><em>self</em>, <em>u=None</em>, <em>direction='out'</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/0e71ecd/stream_graph/ABC/temporal_link_set.py#L316"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.ABC.ITemporalLinkSet.neighbors" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the temporal_nodeset of a neighbors of a node.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -915,7 +915,7 @@ Return a dictionary of nodes as keys assigned by their neighboring temporal_node
 
 <dl class="method">
 <dt id="stream_graph.ABC.ITemporalLinkSet.neighbors_at">
-<code class="descname">neighbors_at</code><span class="sig-paren">(</span><em>u=None</em>, <em>t=None</em>, <em>direction='out'</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/d2dff64/stream_graph/ABC/temporal_link_set.py#L224"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.ABC.ITemporalLinkSet.neighbors_at" title="Permalink to this definition">¶</a></dt>
+<code class="descname">neighbors_at</code><span class="sig-paren">(</span><em>self</em>, <em>u=None</em>, <em>t=None</em>, <em>direction='out'</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/0e71ecd/stream_graph/ABC/temporal_link_set.py#L224"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.ABC.ITemporalLinkSet.neighbors_at" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the NodeSet of neighbors of node at a certain time.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -979,7 +979,7 @@ Else returns zero.</p>
 
 <dl class="method">
 <dt id="stream_graph.ABC.ITemporalLinkSet.substream">
-<code class="descname">substream</code><span class="sig-paren">(</span><em>nsu</em>, <em>nsv</em>, <em>ts</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/d2dff64/stream_graph/ABC/temporal_link_set.py#L335"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.ABC.ITemporalLinkSet.substream" title="Permalink to this definition">¶</a></dt>
+<code class="descname">substream</code><span class="sig-paren">(</span><em>self</em>, <em>nsu</em>, <em>nsv</em>, <em>ts</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/0e71ecd/stream_graph/ABC/temporal_link_set.py#L335"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.ABC.ITemporalLinkSet.substream" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the subtream occuring from two nodesets and a timeset.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1000,7 +1000,7 @@ Else returns zero.</p>
 
 <dl class="method">
 <dt id="stream_graph.ABC.ITemporalLinkSet.times_of">
-<code class="descname">times_of</code><span class="sig-paren">(</span><em>l=None</em>, <em>direction='out'</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/d2dff64/stream_graph/ABC/temporal_link_set.py#L205"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.ABC.ITemporalLinkSet.times_of" title="Permalink to this definition">¶</a></dt>
+<code class="descname">times_of</code><span class="sig-paren">(</span><em>self</em>, <em>l=None</em>, <em>direction='out'</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/0e71ecd/stream_graph/ABC/temporal_link_set.py#L205"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.ABC.ITemporalLinkSet.times_of" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the times that a link appears.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>

@@ -186,7 +186,7 @@
 <h1><code class="xref py py-mod docutils literal notranslate"><span class="pre">stream_graph</span></code>.NodeSetS<a class="headerlink" href="#stream-graph-nodesets" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="stream_graph.NodeSetS">
-<em class="property">class </em><code class="descclassname">stream_graph.</code><code class="descname">NodeSetS</code><span class="sig-paren">(</span><em>nodes=None</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/d2dff64/stream_graph/base/node_set_s.py#L6"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/base/node_set_s.html#NodeSetS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.NodeSetS" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">stream_graph.</code><code class="descname">NodeSetS</code><span class="sig-paren">(</span><em>nodes=None</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/0e71ecd/stream_graph/base/node_set_s.py#L6"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/base/node_set_s.html#NodeSetS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.NodeSetS" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set implementation of the ABC.NodeSet</p>
 <dl class="field-list simple">
 <dt class="field-odd">Attributes</dt>
@@ -204,10 +204,10 @@
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#stream_graph.NodeSetS.copy" title="stream_graph.NodeSetS.copy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code></a>([deep])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#stream_graph.NodeSetS.copy" title="stream_graph.NodeSetS.copy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code></a>(self[, deep])</p></td>
 <td><p>Returns a deep or shallow copy of the current NodeSet.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">issuperset</span></code>(ns)</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">issuperset</span></code>(self, ns)</p></td>
 <td><p></p></td>
 </tr>
 </tbody>
@@ -235,35 +235,35 @@
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#stream_graph.NodeSetS.copy" title="stream_graph.NodeSetS.copy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code></a>([deep])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#stream_graph.NodeSetS.copy" title="stream_graph.NodeSetS.copy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code></a>(self[, deep])</p></td>
 <td><p>Returns a deep or shallow copy of the current NodeSet.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">issuperset</span></code>(ns)</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">issuperset</span></code>(self, ns)</p></td>
 <td><p></p></td>
 </tr>
 </tbody>
 </table>
 <dl class="attribute">
 <dt id="stream_graph.NodeSetS.__class__">
-<code class="descname">__class__</code><a class="reference external" href="https://github.com/ysig/stream_graph/blob/d2dff64/stream_graph/../../../../usr/local/lib/python3.6/abc.py#L109"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.NodeSetS.__class__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__class__</code><a class="reference external" href="https://github.com/ysig/stream_graph/blob/0e71ecd/stream_graph/../../../../usr/local/lib/python3.6/abc.py#L109"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.NodeSetS.__class__" title="Permalink to this definition">¶</a></dt>
 <dd><p>alias of <a class="reference external" href="https://docs.python.org/3/library/abc.html#abc.ABCMeta" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABCMeta</span></code></a></p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="stream_graph.NodeSetS.__delattr__">
-<code class="descname">__delattr__</code><span class="sig-paren">(</span><em>$self</em>, <em>name</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.NodeSetS.__delattr__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__delattr__</code><span class="sig-paren">(</span><em>self</em>, <em>name</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.NodeSetS.__delattr__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Implement delattr(self, name).</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="stream_graph.NodeSetS.__dir__">
-<code class="descname">__dir__</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; list<a class="headerlink" href="#stream_graph.NodeSetS.__dir__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__dir__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.NodeSetS.__dir__" title="Permalink to this definition">¶</a></dt>
 <dd><p>default dir() implementation</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="stream_graph.NodeSetS.__eq__">
-<code class="descname">__eq__</code><span class="sig-paren">(</span><em>$self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.NodeSetS.__eq__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__eq__</code><span class="sig-paren">(</span><em>self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.NodeSetS.__eq__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return self==value.</p>
 </dd></dl>
 
@@ -275,31 +275,31 @@
 
 <dl class="attribute">
 <dt id="stream_graph.NodeSetS.__ge__">
-<code class="descname">__ge__</code><span class="sig-paren">(</span><em>$self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.NodeSetS.__ge__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__ge__</code><span class="sig-paren">(</span><em>self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.NodeSetS.__ge__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return self&gt;=value.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="stream_graph.NodeSetS.__getattribute__">
-<code class="descname">__getattribute__</code><span class="sig-paren">(</span><em>$self</em>, <em>name</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.NodeSetS.__getattribute__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__getattribute__</code><span class="sig-paren">(</span><em>self</em>, <em>name</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.NodeSetS.__getattribute__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return getattr(self, name).</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="stream_graph.NodeSetS.__gt__">
-<code class="descname">__gt__</code><span class="sig-paren">(</span><em>$self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.NodeSetS.__gt__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__gt__</code><span class="sig-paren">(</span><em>self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.NodeSetS.__gt__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return self&gt;value.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="stream_graph.NodeSetS.__hash__">
-<code class="descname">__hash__</code><span class="sig-paren">(</span><em>$self</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.NodeSetS.__hash__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__hash__</code><span class="sig-paren">(</span><em>self</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.NodeSetS.__hash__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return hash(self).</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="stream_graph.NodeSetS.__init__">
-<code class="descname">__init__</code><span class="sig-paren">(</span><em>nodes=None</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/d2dff64/stream_graph/base/node_set_s.py#L8"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/base/node_set_s.html#NodeSetS.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.NodeSetS.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>self</em>, <em>nodes=None</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/0e71ecd/stream_graph/base/node_set_s.py#L8"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/base/node_set_s.html#NodeSetS.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.NodeSetS.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize a nodeset.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -321,25 +321,25 @@ overridden to extend subclasses.</p>
 
 <dl class="attribute">
 <dt id="stream_graph.NodeSetS.__le__">
-<code class="descname">__le__</code><span class="sig-paren">(</span><em>$self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.NodeSetS.__le__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__le__</code><span class="sig-paren">(</span><em>self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.NodeSetS.__le__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return self&lt;=value.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="stream_graph.NodeSetS.__lt__">
-<code class="descname">__lt__</code><span class="sig-paren">(</span><em>$self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.NodeSetS.__lt__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__lt__</code><span class="sig-paren">(</span><em>self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.NodeSetS.__lt__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return self&lt;value.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="stream_graph.NodeSetS.__ne__">
-<code class="descname">__ne__</code><span class="sig-paren">(</span><em>$self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.NodeSetS.__ne__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__ne__</code><span class="sig-paren">(</span><em>self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.NodeSetS.__ne__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return self!=value.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="stream_graph.NodeSetS.__new__">
-<code class="descname">__new__</code><span class="sig-paren">(</span><em>$type</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.NodeSetS.__new__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__new__</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.NodeSetS.__new__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create and return a new object.  See help(type) for accurate signature.</p>
 </dd></dl>
 
@@ -357,19 +357,19 @@ overridden to extend subclasses.</p>
 
 <dl class="attribute">
 <dt id="stream_graph.NodeSetS.__repr__">
-<code class="descname">__repr__</code><span class="sig-paren">(</span><em>$self</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.NodeSetS.__repr__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__repr__</code><span class="sig-paren">(</span><em>self</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.NodeSetS.__repr__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return repr(self).</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="stream_graph.NodeSetS.__setattr__">
-<code class="descname">__setattr__</code><span class="sig-paren">(</span><em>$self</em>, <em>name</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.NodeSetS.__setattr__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__setattr__</code><span class="sig-paren">(</span><em>self</em>, <em>name</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.NodeSetS.__setattr__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Implement setattr(self, name, value).</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="stream_graph.NodeSetS.__sizeof__">
-<code class="descname">__sizeof__</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; int<a class="headerlink" href="#stream_graph.NodeSetS.__sizeof__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__sizeof__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.NodeSetS.__sizeof__" title="Permalink to this definition">¶</a></dt>
 <dd><p>size of object in memory, in bytes</p>
 </dd></dl>
 
@@ -391,7 +391,7 @@ overrides the normal algorithm (and the outcome is cached).</p>
 
 <dl class="method">
 <dt id="stream_graph.NodeSetS.copy">
-<code class="descname">copy</code><span class="sig-paren">(</span><em>deep=True</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/d2dff64/stream_graph/ABC/node_set.py#L153"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.NodeSetS.copy" title="Permalink to this definition">¶</a></dt>
+<code class="descname">copy</code><span class="sig-paren">(</span><em>self</em>, <em>deep=True</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/0e71ecd/stream_graph/ABC/node_set.py#L153"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.NodeSetS.copy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a deep or shallow copy of the current NodeSet.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
