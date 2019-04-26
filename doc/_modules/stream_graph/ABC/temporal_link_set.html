@@ -496,24 +496,41 @@
         <span class="k">pass</span></div>
 
 <div class="viewcode-block" id="TemporalLinkSet.substream"><a class="viewcode-back" href="../../../generated/stream_graph.ABC.TemporalLinkSet.html#stream_graph.ABC.TemporalLinkSet.substream">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">substream</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nsu</span><span class="p">,</span> <span class="n">nsv</span><span class="p">,</span> <span class="n">ts</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">substream</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nsu</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nsv</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ts</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return the subtream occuring from two nodesets and a timeset.</span>
 <span class="sd">        </span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        nsu : NodeSet</span>
+<span class="sd">        nsu : NodeSet or None</span>
 
-<span class="sd">        nsv : NodeSet</span>
+<span class="sd">        nsv : NodeSet or None</span>
 
-<span class="sd">        ts : TimeSet</span>
+<span class="sd">        ts : TimeSet or None</span>
 <span class="sd">        </span>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        temporal_linkstream : TemporalLinkSet</span>
 <span class="sd">            Return substream containing starting nodes from nsu, end nodes of nsv, contained from the intersection with ts.</span>
+<span class="sd">            If a nodeset is None, all nodes and considered. If a timeset is None, all time is considered.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span></div>
+
+<div class="viewcode-block" id="TemporalLinkSet.filter"><a class="viewcode-back" href="../../../generated/stream_graph.ABC.TemporalLinkSet.html#stream_graph.ABC.TemporalLinkSet.filter">[docs]</a>    <span class="k">def</span> <span class="nf">filter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fun</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Filter the link stream.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        fun : function</span>
+<span class="sd">            A function that for each a tuple as it is defined from iter, return True or False.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        temporal_linkstream : TemporalLinkSet</span>
+<span class="sd">            Return sub-linkstream that satisfies the function.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">pass</span></div>
+        <span class="k">assert</span> <span class="n">callable</span><span class="p">(</span><span class="n">fun</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">([</span><span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="k">if</span> <span class="n">fun</span><span class="p">(</span><span class="n">key</span><span class="p">)],</span> <span class="n">weighted</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">weighted</span><span class="p">,</span> <span class="n">discrete</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">discrete</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TemporalLinkSet.__bool__"><a class="viewcode-back" href="../../../generated/stream_graph.ABC.TemporalLinkSet.html#stream_graph.ABC.TemporalLinkSet.__bool__">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">__bool__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -678,38 +695,6 @@
             <span class="k">return</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
-
-    <span class="k">def</span> <span class="nf">m_at</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Returns the number of links appearing at a certain time.</span>
-<span class="sd">        </span>
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        t : Int</span>
-
-<span class="sd">        weights : bool, default=False</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        m : Int</span>
-<span class="sd">            Returns the numer of links at a certain time.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">weights</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">weighted</span><span class="p">:</span>
-            <span class="k">def</span> <span class="nf">sizew</span><span class="p">(</span><span class="n">ls</span><span class="p">):</span>
-                <span class="k">return</span> <span class="n">ls</span><span class="o">.</span><span class="n">size_weighted</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">def</span> <span class="nf">sizew</span><span class="p">(</span><span class="n">ls</span><span class="p">):</span>
-                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span>
-        <span class="k">if</span> <span class="n">t</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">stream_graph.collections</span> <span class="k">import</span> <span class="n">TimeCollection</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-                <span class="k">return</span> <span class="n">TimeCollection</span><span class="p">()</span>
-            <span class="n">time_links</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">links_at</span><span class="p">()</span>
-            <span class="k">return</span> <span class="n">TimeCollection</span><span class="p">([(</span><span class="n">t</span><span class="p">,</span> <span class="n">sizew</span><span class="p">(</span><span class="n">l</span><span class="p">))</span> <span class="k">for</span> <span class="n">t</span><span class="p">,</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">time_links</span><span class="p">],</span> <span class="n">time_links</span><span class="o">.</span><span class="n">instants</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-                <span class="k">return</span> <span class="o">.</span><span class="mi">0</span>
-            <span class="k">return</span> <span class="n">sizew</span><span class="p">(</span><span class="n">links_at</span><span class="p">(</span><span class="n">t</span><span class="p">))</span>
 
 <div class="viewcode-block" id="TemporalLinkSet.m_at"><a class="viewcode-back" href="../../../generated/stream_graph.ABC.TemporalLinkSet.html#stream_graph.ABC.TemporalLinkSet.m_at">[docs]</a>    <span class="k">def</span> <span class="nf">m_at</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Returns the number of links appearing at a certain time.</span>
@@ -943,7 +928,7 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        nodeset : NodeSet or NodeCollection or TimeCollection</span>
+<span class="sd">        degree : Number or LinkCollection</span>
 <span class="sd">            Return the (&#39;in&#39;, &#39;out&#39; or &#39;both&#39;) time-degree of a node.</span>
 <span class="sd">            If u is None return the degree for all node at time t.</span>
 
@@ -953,7 +938,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">u</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="kn">from</span> <span class="nn">stream_graph.collections</span> <span class="k">import</span> <span class="n">LinkCollection</span>
-                <span class="k">return</span> <span class="n">LinkCollection</span><span class="p">({</span><span class="n">u</span><span class="p">:</span> <span class="mf">0.</span> <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodeset</span><span class="p">})</span>
+                <span class="k">return</span> <span class="n">NodeCollection</span><span class="p">({</span><span class="n">u</span><span class="p">:</span> <span class="mf">0.</span> <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodeset</span><span class="p">})</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">return</span> <span class="o">.</span><span class="mi">0</span></div>
 

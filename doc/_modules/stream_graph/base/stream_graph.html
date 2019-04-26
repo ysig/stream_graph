@@ -172,10 +172,10 @@
 <span class="sd">    </span>
 <span class="sd">    A StreamGraph :math:`S=(T, V, W, E)` is a collection of four elements:</span>
 
-<span class="sd">        - :math:`T`, a time-set</span>
 <span class="sd">        - :math:`V`, a node-set</span>
-<span class="sd">        - :math:`W\subseteq T \times V`, a node-stream</span>
-<span class="sd">        - :math:`E\subseteq T \times V \otimes V`, a link-stream</span>
+<span class="sd">        - :math:`T`, a time-set</span>
+<span class="sd">        - :math:`W\subseteq T \times V`, a temporal-node-set</span>
+<span class="sd">        - :math:`E\subseteq T \times V \otimes V`, a temporal-link-set</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 <div class="viewcode-block" id="StreamGraph.__init__"><a class="viewcode-back" href="../../../generated/stream_graph.StreamGraph.html#stream_graph.StreamGraph.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nodeset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">timeset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">temporal_nodeset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">temporal_linkset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">discrete</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">weighted</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -322,7 +322,7 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        ns_coverage : Real</span>
-<span class="sd">            Returns :math:`\\frac{|W|}{|V\\timesT|}}`</span>
+<span class="sd">            Returns :math:`\\frac{|W|}{|V\\times T|}`</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">denom</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">timeset_</span><span class="o">.</span><span class="n">size</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodeset_</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
@@ -367,7 +367,7 @@
 <span class="sd">        l: (NodeId, NodeId) or None</span>
 <span class="sd">        </span>
 <span class="sd">        direction: &#39;in&#39;, &#39;out&#39; or &#39;both&#39;, default=&#39;out&#39;</span>
-<span class="sd">        </span>
+
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        time_coverage : Real or LinkCollection</span>
@@ -434,11 +434,11 @@
 <span class="sd">            Returns :math:`\\frac{|E_{t}|}{|V|^{2}}`.</span>
 <span class="sd">            Returns the time collection for each link at each time-event.</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>        
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">t</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">ns</span><span class="p">,</span> <span class="n">ms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">temporal_nodeset_</span><span class="o">.</span><span class="n">n_at</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="kc">None</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">temporal_linkset_</span><span class="o">.</span><span class="n">m_at</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">)</span>
-            <span class="k">def</span> <span class="nf">fun</span><span class="p">(</span><span class="n">x</span><span class="o">=.</span><span class="mi">0</span><span class="p">,</span> <span class="n">y</span><span class="o">=.</span><span class="mi">0</span><span class="p">):</span>
-                <span class="k">return</span> <span class="p">((</span><span class="mi">2</span><span class="o">*</span><span class="n">x</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">y</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span> <span class="k">if</span> <span class="n">x</span> <span class="o">!=</span> <span class="o">.</span><span class="mi">0</span> <span class="ow">and</span> <span class="n">y</span> <span class="o">!=</span> <span class="o">.</span><span class="mi">0</span> <span class="k">else</span> <span class="o">.</span><span class="mi">0</span><span class="p">)</span>
+            <span class="k">def</span> <span class="nf">fun</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+                <span class="k">return</span> <span class="p">((</span><span class="mi">2</span><span class="o">*</span><span class="n">y</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span> <span class="k">if</span> <span class="n">x</span> <span class="o">!=</span> <span class="o">.</span><span class="mi">0</span> <span class="k">else</span> <span class="o">.</span><span class="mi">0</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">ns</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">fun</span><span class="p">,</span> <span class="n">missing_value</span><span class="o">=.</span><span class="mi">0</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">denom</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">temporal_nodeset_</span><span class="o">.</span><span class="n">n_at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
@@ -459,7 +459,7 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        neighbor_coverage : Real or dict</span>
-<span class="sd">            Returns :math:`\\frac{|N(u)|}{\\sum_{v\\in V}{|T_{u}\\cap T_{v}|}`</span>
+<span class="sd">            Returns :math:`\\frac{|N(u)|}{\\sum_{v\\in V}{|T_{u}\\cap T_{v}|}}`</span>
 <span class="sd">            If u is None, returns a dictionary of all nodes and their neighbor coverages.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -501,10 +501,10 @@
 <span class="sd">            If u and t are None return the neighbor coverage for each node at each time-event.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">def</span> <span class="nf">coverage</span><span class="p">(</span><span class="n">x</span><span class="o">=.</span><span class="mi">0</span><span class="p">,</span> <span class="n">y</span><span class="o">=.</span><span class="mi">0</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">x</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="k">if</span> <span class="n">x</span><span class="o">!=.</span><span class="mi">0</span> <span class="ow">and</span> <span class="n">y</span><span class="o">!=.</span><span class="mi">0</span> <span class="k">else</span> <span class="o">.</span><span class="mi">0</span>
+        <span class="k">def</span> <span class="nf">coverage</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">(</span><span class="n">x</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="k">if</span> <span class="n">y</span><span class="o">!=.</span><span class="mi">0</span> <span class="k">else</span> <span class="o">.</span><span class="mi">0</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">t</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">temporal_nodeset_</span><span class="o">.</span><span class="n">n_at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+            <span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">temporal_nodeset_</span><span class="o">.</span><span class="n">n_at</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">u</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">neighbors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">temporal_linkset_</span><span class="o">.</span><span class="n">degree_at</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">direction</span><span class="p">,</span> <span class="n">weights</span><span class="p">)</span>
                 <span class="k">def</span> <span class="nf">fun</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
