@@ -200,14 +200,36 @@ class ITemporalNodeSetDF(ABC.ITemporalNodeSet):
             raise UnrecognizedTemporalNodeSet('second operand')
         return self.__class__()
 
+    def n_at(self, t=None):
+        if bool(self):
+            if t is None:
+                return TimeCollection(sorted(list(iteritems(Counter(t for t in self.dfm.ts)))), True)
+            elif isinstance(t, Real):
+                return len(set(self.df.df_at(t).u.values.flat))
+            else:
+                raise ValueError('Input can either be a real number or an ascending interval of two real numbers')
+        else:
+            if t is None:
+                return TimeCollection(iter(), True)
+            else:
+                return NodeSetS()
+
     def nodes_at(self, t=None):
         if bool(self):
             if t is None:
-                def generate(df):
-                    for _, df_grouped in df:
-                        ts = df_grouped.iloc[0]['ts']
-                        yield (ts, NodeSetS(set(df_grouped.u.values)))
-                return TimeGenerator(generate(self.dfm.groupby('ts')), True)
+                def generate(iter_):
+                    prev = None
+                    for u, ts in iter_:
+                        if prev is None:
+                            active_set, prev = {u}, ts
+                        elif ts != prev:
+                            yield (prev, NodeSetS(set(active_set)))
+                            active_set, prev = {u}, ts                        
+                        else:
+                            active_set.add(u)
+                    if len(active_set):
+                        yield (prev, NodeSetS(set(active_set)))
+                return TimeGenerator(generate(self.df_.sort_values(by='ts').itertuples(name=None, index=False)), True)
             elif isinstance(t, Real):
                 return NodeSetS(self.df.df_at(t).u.values.flat)
             else:
@@ -255,9 +277,8 @@ class ITemporalNodeSetDF(ABC.ITemporalNodeSet):
     def _total_common_time_discrete(self):
         ct = 0
         if bool(self):
-            for _, df_grouped in self.df:
-                if df_grouped.shape[0] > 1:
-                    ct += (df_grouped.shape[0]-1)*df_grouped.shape[0]/2
+            counter = Counter(ts for _, ts in iter(self))
+            ct = sum(((val-1)*val)/2 for _, val in iteritems(counter) if val > 1)
         return ct
 
     @property
@@ -269,7 +290,7 @@ class ITemporalNodeSetDF(ABC.ITemporalNodeSet):
 
     def _node_duration_discrete(self, u=None):
         if u is None:
-            return NodeCollection(Counter(self.df.u.values.flat))
+            return NodeCollection(Counter(u for u in self.df.u))
         else:
             if bool(self):
                 return (self.df.u == u).sum()
@@ -279,18 +300,21 @@ class ITemporalNodeSetDF(ABC.ITemporalNodeSet):
     def _common_time_discrete(self, u=None):
         if u is None or self._common_time__list_input(u):
             ct = defaultdict(int)
+            carrier = defaultdict(set)
+            for v, ts in iter(self):
+                carrier[ts].add(v)
             if u is None:
-                for _, df_grouped in self.df.groupby('ts'):
-                    if df_grouped.shape[0] > 1:
-                        for u in df_grouped.u:
-                            ct[u] += (df_grouped.shape[0]-1)
-            else:
+                for ts, us in iteritems(carrier):
+                    if len(us) > 1:
+                        for v in us:
+                            ct[v] += (len(us)-1)
+            else:         
                 valid_nodes = set(u)
-                for _, df_grouped in self.df.groupby('ts'):
-                    if df_grouped.shape[0] > 1:
-                        for u in df_grouped.u:
-                            if u in valid_nodes:
-                                ct[u] += (df_grouped.shape[0]-1)                
+                for ts, us in iteritems(carrier):
+                    if len(us) > 1:
+                        for v in us:
+                            if v in valid_nodes:
+                                ct[v] += (len(us)-1)
             return NodeCollection(ct)
         else:
             if bool(self):
@@ -302,21 +326,12 @@ class ITemporalNodeSetDF(ABC.ITemporalNodeSet):
 
     def _common_time_pair_discrete(self, l=None):
         if l is None or self._common_time_pair__list_input(l):
-            ct = defaultdict(int)
-            if l is None:
-                for _, df_grouped in self.df.groupby('ts'):
-                    if df_grouped.shape[0] > 1:
-                        for l in combinations(df_grouped.u, 2):
-                            ct[l] += 1
-            else:
-                valid_links = set(l)
-                valid_nodes = set(u for l in valid_links for u in l)
-                for _, df_grouped in self.df.groupby('ts'):
-                    if df_grouped.shape[0] > 1:
-                        for l in combinations(set(df_grouped.u.values.flat) & valid_nodes, 2):
-                            if l in valid_links:
-                                ct[u] += 1
-            return NodeCollection(ct)
+            carrier = defaultdict(set)
+            for u, ts in iter(self):
+                carrier[u].add(ts)
+
+            valid_links = (combinations(set(carrier.keys()), 2) if l is None else set(l))
+            return LinkCollection({(u, v): len(carrier[u] & carrier[v]) for u, v in iter(valid_links)})
         else:
             u, v = l
             if bool(self):

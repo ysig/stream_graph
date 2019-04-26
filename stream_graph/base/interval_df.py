@@ -62,7 +62,7 @@ class IntervalDF(pd.DataFrame):
         dfp['start'] = True
         dfpv = self[columns + ['tf']].rename(columns={"tf": "t"})
         dfpv['start'] = False
-        return dfp.append(dfpv, ignore_index=True, sort=False).sort_values(by=['t', 'start'])
+        return dfp.append(dfpv, ignore_index=True, sort=False).sort_values(by=['t', 'start'], ascending=[True, False])
 
     def measure_time(self, discrete=False):
         if discrete:
@@ -88,7 +88,7 @@ class IntervalDF(pd.DataFrame):
 
     def _save_or_return(self, df, inplace):
         if df is None:
-            df = self.IntervalDF(columns=self.columns)
+            df = self.__class__(columns=self.columns)
 
         if inplace and df is not self:
             return self._update_inplace(df._data)
@@ -100,8 +100,66 @@ class IntervalDF(pd.DataFrame):
         if not len(on_column):
             df = merge_intervals_base(self)
         else:
-            df = self.groupby(on_column).apply(merge_intervals_base).gby_format()
+            df = self._union_by_key(None, on_column)
         return self._save_or_return(df, inplace)
+
+    def _union_by_key(self, df, on_column):
+        if df is None:
+            df = self 
+        else:
+            df = self.append(df, ignore_index=True, sort=False)
+        w_current, e, prev, out = defaultdict(int), dict(), dict(), list()
+        for col in df.events[['t', 'start'] + on_column].itertuples(index=False, name=None):
+            t, f = col[:2]
+            key = col[2:]
+            if key in e:
+                wck = w_current[key]
+                if wck != 0:
+                    pk = prev.get(key, None)
+                    if pk is not None and out[pk][-1] == e[key]:
+                        out[pk] = out[pk][:-1] + (t,)
+                    else:
+                        prev[key] = len(out)
+                        out.append(key + (e[key], t,))
+                else:
+                    prev.pop(key, None)
+            e[key] = t
+            w_current[key] += (1 if f else -1)
+        return self.__class__(out, columns=(on_column + ['ts', 'tf']))
+
+    def _union_on_key(self, df, on_column):
+        df = (self.__class__(df) if not isinstance(df, self.__class__) else df)
+           
+        # Extract information and possible keys
+        iter_ = list((False, ) + x for x in _events_not_sorted(self)[['t', 'start'] + on_column].itertuples(index=False, name=None))
+        all_keys = list(set(tup[3:] for tup in iter_))
+        iter_ += list((True, ) + x for x in _events_not_sorted(df)[['t', 'start']].itertuples(index=False, name=None))
+
+        # Sort List
+        def order(x):
+            return (x[1], not x[2], x[0])
+
+        w_current, e, prev, out = defaultdict(int), dict(), dict(), list()
+        b_area, et = False, tuple()
+        for col in sorted(iter_, key=order):
+            _, t, f = col[:3]
+            k = col[3:]
+            keys = ([k] if len(k) > 0 else all_keys)
+            for key in keys:
+                if key in e:
+                    w_total = w_current[key] + w_current[et]
+                    if w_total > 0:
+                        pk = prev.get(key, None)
+                        if pk is not None and out[pk][-1] == e[key]:
+                            out[pk] = out[pk][:-1] + (t,)
+                        else:
+                            prev[key] = len(out)
+                            out.append(key + (e[key], t))
+                    else:
+                        prev.pop(key, None)
+                e[key] = t
+            w_current[k] += (1 if f else -1)
+        return self.__class__(out, columns=(on_column + ['ts', 'tf']))
 
     def union(self, df=None, on_column=None, by_key=True, inplace=False):#supper slow
         if df.empty:
@@ -113,12 +171,82 @@ class IntervalDF(pd.DataFrame):
         if not len(on_column):
             df = merge_intervals_base(self.append(df, ignore_index=True, sort=False))
         elif by_key:
-            df = self.append(df, ignore_index=True, sort=False).groupby(on_column).apply(merge_intervals_base).gby_format()
+            df = self._union_by_key(df, on_column)
         else:
-            def append_merge(dfa, dfb):
-                return merge_intervals_base(dfa.append(dfb, ignore_index=True, sort=False))
-            df = self.groupby(on_column).apply(append_merge, df).gby_format()
+            df = self._union_on_key(df, on_column)
         return self._save_or_return(df, inplace)
+
+    def _intersect_on_key(self, dfb, on_column):
+        active_keys, e, prev, out = set(), dict(), dict(), list()
+        iter_ = list((True, ) + x for x in _events_not_sorted(self)[['t', 'start'] + on_column].itertuples(index=False, name=None))
+        iter_ += list((False, ) + x for x in _events_not_sorted(dfb)[['t', 'start']].itertuples(index=False, name=None))
+        t_max = min(self.tf.max(), dfb.tf.max())
+        def order(x):
+            return (x[1], not x[2], not x[0])
+
+        b_area = False
+        for col in sorted(iter_, key=order):
+            _, t, f = col[:3]
+            rc = col[3:]
+            envelope = (len(col) == 3)
+            keys = (active_keys if envelope else [rc])
+            if not f:
+                if len(keys) and b_area:
+                    for k in keys:
+                        pk = prev.pop(k, None)
+                        if pk is not None and out[pk][-1] == e[k]:
+                            out[pk] = out[pk][:-1] + (t,)
+                        else:
+                            prev[k] = len(out)
+                            out.append(k + (e[k], t))
+                        e[k] = t
+                if not envelope:
+                    active_keys.remove(rc)
+            elif not envelope:
+                e[rc] = t
+                active_keys.add(rc)
+            else:
+                for k in active_keys:
+                    e[k] = t
+            if envelope:
+                b_area = f
+            if t > t_max:
+                break
+
+        return self.__class__(out, columns=(on_column + ['ts', 'tf']))
+
+    def _intersect_by_key(self, dfb, on_column):
+        df = self.append(dfb, ignore_index=True, sort=False)
+        df['r'] = np.concatenate((np.full((self.shape[0],), True), np.full((dfb.shape[0],), False)))
+        t_max = min(self.tf.max(), dfb.tf.max())
+
+        def constr():
+            return [0, 0]
+
+        # Intersect
+        active_keys, e, prev, out = defaultdict(constr), dict(), dict(), list()
+
+        for col in df.events[['t', 'start', 'r'] + on_column].itertuples(index=False, name=None):
+            t, f, r = col[:3]
+            key = col[3:]
+            if key not in e:
+                e[key] = t
+            else:
+                if active_keys[key][0] > 0 and active_keys[key][1] > 0:
+                    pk = prev.get(key, None)
+                    if pk is not None and out[pk][-1] == e[key]:
+                        out[pk] = out[pk:-1] + (t)
+                    else:
+                        prev[key] = len(out)
+                        out.append(key + (e[key], t))
+                else:
+                    prev.pop(key, None)
+                e[key] = t
+            # start
+            active_keys[key][int(r)] += (1 if f else -1)
+            if t > t_max:
+                break
+        return self.__class__(out, columns=(on_column + ['ts', 'tf']))
 
     def intersect(self, df=None, on_column=None, by_key=True, inplace=False):
         if df is None or df.empty:
@@ -130,12 +258,81 @@ class IntervalDF(pd.DataFrame):
         if not len(on_column):
             df = intersect_intervals_base(self.append(df, ignore_index=True, sort=False))
         elif by_key:
-            df = self.append(df, ignore_index=True, sort=False).groupby(on_column).apply(intersect_intervals_base).gby_format()   
+            df = self._intersect_by_key(df, on_column)
         else:
-            def append_intersect(dfa, dfb):
-                return intersect_intervals_base(dfa.append(dfb, ignore_index=True, sort=False))
-            df = self.groupby(on_column).apply(append_intersect, df).gby_format()     
+            df = self._intersect_on_key(df, on_column)
         return self._save_or_return(df, inplace)
+
+
+    # All differences expect merged df's
+    def _difference_time_only(self, dfb):
+        # Difference
+        out = []
+        df = self.append(dfb, ignore_index=True, sort=False)
+        df['r'] = np.concatenate((np.full((self.shape[0],), False), np.full((dfb.shape[0],), True)))
+
+        events = df.events[['t', 'start', 'r']]            
+        e, f, r = events.iloc[0]
+        b_area, w_current = r, (1 if f else -1)
+        for t, f, r in events.iloc[1:].itertuples(name=None, index=False):
+            if t > e and not b_area and w_current != 0:
+                out.append((e, t))
+            if r:
+                b_area = f
+            else:
+                w_current += (1 if f else -1)
+            e = t
+        return self.__class__(out, columns=['ts', 'tf'])  
+
+    def _difference_by_key(self, dfb, on_column):
+        df = self.append(dfb, ignore_index=True, sort=False)
+        df['r'] = np.concatenate((np.full((self.shape[0],), False), np.full((dfb.shape[0],), True)))
+
+        w_current, e, out, b_area = defaultdict(float), dict(), list(), defaultdict(bool)
+        for col in df.events[['t', 'start', 'r'] + on_column].itertuples(index=False, name=None):
+            t, f, r = col[:3]
+            key = col[3:]
+            if key in e and t > e[key] and not b_area[key] and w_current[key] != 0:
+                out.append(key + (e[key], t))
+            if r:
+                b_area[key] = f
+            else:
+                w_current[key] += (1 if f else -1)
+            e[key] = t
+        return self.__class__(out, columns=(on_column + ['ts', 'tf']))
+
+    def _difference_on_key(self, dfb, on_column):
+        w_current, e, out = dict(), dict(), list()
+        iter_ = list((True, ) + x for x in _events_not_sorted(self)[['t', 'start'] + on_column].itertuples(index=False, name=None))
+        iter_ += list((False, ) + x for x in _events_not_sorted(dfb)[['t', 'start']].itertuples(index=False, name=None))
+        def key(x):
+            return (x[1], not x[0], not x[2])
+
+        b_area = False
+        for col in sorted(iter_, key=key):
+            _, t, f = col[:3]
+            key = col[3:]
+            if len(key):
+                if key not in e:
+                    e[key] = t
+                elif t > e[key] and w_current.get(key, 0) != 0 and b_area and len(key):
+                    out.append(key + (e[key], t))
+                e[key] = t
+                wc = w_current.pop(key, 0) + (1 if f else -1)
+                if wc != 0:
+                    w_current[key] = wc    
+            else:
+                if f:
+                    for k in w_current.keys():
+                        if t > e[k]:
+                            out.append(k + (e[k], t))
+                            e[k] = t
+                else:
+                    for k in w_current.keys():
+                        e[k] = t
+                b_area = not f
+        return self.__class__(out, columns=(on_column + ['ts', 'tf']))
+
 
     def difference(self, dfb, on_column=None, by_key=True, inplace=False):
         if self.empty or dfb.empty:
@@ -143,21 +340,11 @@ class IntervalDF(pd.DataFrame):
 
         on_column = self.get_ni_columns(on_column)
         if not len(on_column):
-            df = difference_base(self, dfb)
+            df = self._difference_time_only(dfb)
         elif by_key:
-            nr, nb = self.shape[0], dfb.shape[0]
-            mdf = self.append(dfb, ignore_index=True, sort=False)
-            mdf['r'] = np.concatenate((np.full((nr,), True), np.full((nb,), False)))
-
-            def trans(df):
-                tr, tb = df[df.r], df[~df.r]
-                if tr.empty or tb.empty:
-                    return tr
-                return difference_base(tr, tb)
-
-            df = mdf.groupby(on_column).apply(trans).gby_format()
+            df = self._difference_by_key(dfb, on_column)
         else:
-            df = self.groupby(on_column).apply(difference_base, dfb).gby_format() 
+            df = self._difference_on_key(dfb, on_column)
         return self._save_or_return(df, inplace)
 
     def gby_format(self):
@@ -234,25 +421,25 @@ class IntervalDF(pd.DataFrame):
         else:
             return -np.sum((d * cnt_a[1:] * cnt_b[1:]))
 
-def difference_base(tr, tb):
-    tb = tb[(tb.ts != tb.tf)]
-    if tb.empty:
-        return IntervalDF({'ts': tr.ts.values, 'tf': tr.tf.values})
-    elif not tr.empty:
-        tsr, tsb, tfr, tfb = tr.ts.values, tb.ts.values, tr.tf.values, tb.tf.values
-        lr, lb = tsr.shape[0], tsb.shape[0]
-        dt = np.concatenate((tsr, tsb, tfb, tfr))
-        tii = np.concatenate((np.full((lr,), -1), np.full((lb,), -1), np.full((lb,), 1), np.full((lr,), 1)))
-        tbp = np.concatenate((np.full((lr,), False), np.full((lb,), True), np.full((lb,), True), np.full((lr,), False)))
-        index = np.lexsort((tii, tbp, dt))
-        cr, dts, tbps = np.cumsum(tii[index]), dt[index], tbp[index]
-        idxn = np.where(((cr[1:] == -2) & tbps[1:]) |
-                        ((cr[1:] == 0) & ~tbps[1:]))[0] #(trps[:-1] == trps[1:])
-        if idxn.size:
-            df = pd.DataFrame({'ts': dts[idxn], 'tf': dts[idxn+1]})
-            return IntervalDF(df[df.ts != df.tf])
-    else:
-        return IntervalDF(columns=['ts', 'tf'])
+#def difference_base(tr, tb):
+#    tb = tb[(tb.ts != tb.tf)]
+#    if tb.empty:
+#        return IntervalDF({'ts': tr.ts.values, 'tf': tr.tf.values})
+#    elif not tr.empty:
+#        tsr, tsb, tfr, tfb = tr.ts.values, tb.ts.values, tr.tf.values, tb.tf.values
+#        lr, lb = tsr.shape[0], tsb.shape[0]
+#        dt = np.concatenate((tsr, tsb, tfb, tfr))
+#        tii = np.concatenate((np.full((lr,), -1), np.full((lb,), -1), np.full((lb,), 1), np.full((lr,), 1)))
+#        tbp = np.concatenate((np.full((lr,), False), np.full((lb,), True), np.full((lb,), True), np.full((lr,), False)))
+#        index = np.lexsort((tii, tbp, dt))
+#        cr, dts, tbps = np.cumsum(tii[index]), dt[index], tbp[index]
+#        idxn = np.where(((cr[1:] == -2) & tbps[1:]) |
+#                        ((cr[1:] == 0) & ~tbps[1:]))[0] #(trps[:-1] == trps[1:])
+#        if idxn.size:
+#            df = pd.DataFrame({'ts': dts[idxn], 'tf': dts[idxn+1]})
+#            return IntervalDF(df[df.ts != df.tf])
+#    else:
+#        return IntervalDF(columns=['ts', 'tf'])
 
 def map_intersect_base(df, base):
     u, _ = df.name
@@ -498,9 +685,9 @@ class IntervalWDF(pd.DataFrame):
 
         # Sort List
         def order(x):
-            return (x[1], x[2], x[0])
+            return (x[1], not x[2], x[0])
 
-        w_current, e, prev, out = defaultdict(float), defaultdict(float), dict(), list()
+        w_current, e, prev, out = defaultdict(float), dict(), dict(), list()
         b_area, et = False, tuple()
         for col in sorted(iter_, key=order):
             _, t, f = col[:3]
@@ -509,7 +696,7 @@ class IntervalWDF(pd.DataFrame):
             for key in keys:
                 w_total = w_current[key] + w_current[et]
                 pk = prev.get(key, None)
-                if t > e[key]:
+                if key in e and t > e[key]:
                     if w_total != .0:
                         if pk is not None and out[pk][-1] == w_total:
                             out[pk] = out[pk][:-2] + (t, w_total)
@@ -608,12 +795,15 @@ class IntervalWDF(pd.DataFrame):
             iter_ += list((False, ) + x for x in _events_not_sorted(dfb, False)[['t', 'start', 'w']].itertuples(index=False, name=None))
         else:
             iter_ += list((False, ) + x for x in _events_not_sorted(dfb, False)[['t', 'start']].itertuples(index=False, name=None))
-        def get(x):
-            return (x[1], x[2], x[0])
+        t_max = min(self.tf.max(), dfb.tf.max())
+        def order(x):
+            return (x[1], x[0], x[2])
 
         b_area, wb = False, 0.
-        for col in sorted(iter_, key=get):
+        for col in sorted(iter_, key=order):
             _, t, f = col[:3]
+            if t > t_max:
+                break
             key = col[3:]
             if len(key) > 1:
                 w, key = key[-1], key[:-1]
@@ -672,13 +862,14 @@ class IntervalWDF(pd.DataFrame):
 
     def _difference_time_only(self, dfb):
         # Difference
+        out = []
         df = self.append(dfb, ignore_index=True, sort=False)
         df['r'] = np.concatenate((np.full((self.shape[0],), False), np.full((dfb.shape[0],), True)))
 
         events = df.events[['t', 'start', 'r', 'w']]            
         e, f, w, r = events.iloc[0]
-        b_area = r
-        for t, f, r, w in events.iloc[1:]:
+        b_area, w_current = r, w
+        for t, f, r, w in events.iloc[1:].itertuples(name=None, index=False):
             if t > e and not b_area and w_current != 0:
                 out.append((e, t, w_current))
             if r:
@@ -710,7 +901,8 @@ class IntervalWDF(pd.DataFrame):
         iter_ = list((True, ) + x for x in _events_not_sorted(self, True)[['t', 'start'] + on_column + ['w']].itertuples(index=False, name=None))
         iter_ += list((False, ) + x for x in _events_not_sorted(dfb, True)[['t', 'start']].itertuples(index=False, name=None))
         def key(x):
-            return (x[1], x[2], x[0])
+            return (x[1], not x[0], not x[2])
+
         b_area = False
         for col in sorted(iter_, key=key):
             _, t, f = col[:3]
@@ -720,7 +912,7 @@ class IntervalWDF(pd.DataFrame):
                 key = key[:-1]
                 if key not in e:
                     e[key] = t
-                elif t > e[key] and w_current[key] != 0 and b_area and len(key):
+                elif t > e[key] and w_current.get(key, 0) != 0 and b_area and len(key):
                     out.append(key + (e[key], t, w_current[key]))
                 e[key] = t
                 wc = w_current.pop(key, .0) + (w if f else -w)

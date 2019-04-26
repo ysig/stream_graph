@@ -47,7 +47,7 @@ def test_stream_graph():
         assert dict(sga.neighbor_coverage()) == {1: 0.42857142857142855, 2: 0.5714285714285714}
 
         assert sga.mean_degree_at(2, weights=w) == 1.0
-        assert list(sga.mean_degree_at(weights=w)) == [(1, 2.0), (2, 1.0), (3, 2.0), (5, 0.0), (6, 2.0), (8, 0.0)]
+        assert list(sga.mean_degree_at(weights=w)) == [(1, 0.5), (2, 1.0), (3, 0.5), (5, 0.0), (6, 0.5), (8, 0.0)]
 
 if __name__ == "__main__":
     test_stream_graph()

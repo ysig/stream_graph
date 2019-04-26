@@ -9,10 +9,10 @@ class StreamGraph(object):
     
     A StreamGraph :math:`S=(T, V, W, E)` is a collection of four elements:
 
-        - :math:`T`, a time-set
         - :math:`V`, a node-set
-        - :math:`W\subseteq T \times V`, a node-stream
-        - :math:`E\subseteq T \times V \otimes V`, a link-stream
+        - :math:`T`, a time-set
+        - :math:`W\subseteq T \times V`, a temporal-node-set
+        - :math:`E\subseteq T \times V \otimes V`, a temporal-link-set
 
     """
     def __init__(self, nodeset=None, timeset=None, temporal_nodeset=None, temporal_linkset=None, discrete=None, weighted=False):
@@ -159,7 +159,7 @@ class StreamGraph(object):
         Returns
         -------
         ns_coverage : Real
-            Returns :math:`\\frac{|W|}{|V\\timesT|}}`
+            Returns :math:`\\frac{|W|}{|V\\times T|}`
 
         """
         denom = float(self.timeset_.size * self.nodeset_.size)
@@ -204,7 +204,7 @@ class StreamGraph(object):
         l: (NodeId, NodeId) or None
         
         direction: 'in', 'out' or 'both', default='out'
-        
+
         Returns
         -------
         time_coverage : Real or LinkCollection
@@ -271,11 +271,11 @@ class StreamGraph(object):
             Returns :math:`\\frac{|E_{t}|}{|V|^{2}}`.
             Returns the time collection for each link at each time-event.
 
-        """        
+        """
         if t is None:
             ns, ms = self.temporal_nodeset_.n_at(t=None), self.temporal_linkset_.m_at(t=None, weights=weights)
-            def fun(x=.0, y=.0):
-                return ((2*x / float(y**2)) if x != .0 and y != .0 else .0)
+            def fun(x, y):
+                return ((2*y / float(x**2)) if x != .0 else .0)
             return ns.merge(ms, fun, missing_value=.0)
         else:
             denom = float(self.temporal_nodeset_.n_at(t) ** 2)
@@ -296,7 +296,7 @@ class StreamGraph(object):
         Returns
         -------
         neighbor_coverage : Real or dict
-            Returns :math:`\\frac{|N(u)|}{\\sum_{v\\in V}{|T_{u}\\cap T_{v}|}`
+            Returns :math:`\\frac{|N(u)|}{\\sum_{v\\in V}{|T_{u}\\cap T_{v}|}}`
             If u is None, returns a dictionary of all nodes and their neighbor coverages.
 
         """
@@ -338,10 +338,10 @@ class StreamGraph(object):
             If u and t are None return the neighbor coverage for each node at each time-event.
 
         """
-        def coverage(x=.0, y=.0):
-            return x/float(y) if x!=.0 and y!=.0 else .0
+        def coverage(x, y):
+            return (x/float(y) if y!=.0 else .0)
         if t is None:
-            n = self.temporal_nodeset_.n_at(t)
+            n = self.temporal_nodeset_.n_at(None)
             if u is None:
                 neighbors = self.temporal_linkset_.degree_at(None, None, direction, weights)
                 def fun(x, y):

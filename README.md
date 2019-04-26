@@ -34,17 +34,17 @@ Installing the master-version
 -----------------------------
 
 ```shell
-$ pip install git+https://github.com/ysig/stream_graph/
+pip install git+https://github.com/ysig/stream_graph/
 ```
 
 
 Getting Starting
 ----------------
 
-For a first tutorial please you can have a look at [collegeMsg](https://github.com/ysig/stream_graph/tree/master/tutorial/collegeMsg/collegeMsg.ipynb).
+For a first tutorial please you can have a look at [emailEU](https://github.com/ysig/stream_graph/tree/master/tutorial/emailEU/emailEU.ipynb).
 
 [Documentation](https://ysig.github.io/stream_graph/doc/)
------------------------------------------
+----------------------------------------------------------
 
 The project documentation is automatically generated online using Sphinx.
 To generate it yourself, move to doc folder and execute: `make clean hmtl`, while installing any needed dependencies.

@@ -5,6 +5,7 @@ from collections import Counter
 from collections import defaultdict
 from six import iteritems
 from six import string_types
+from numbers import Real
 
 class InstantaneousDF(pd.DataFrame):
     def __init__(self, *args, **kargs):
@@ -104,14 +105,12 @@ class InstantaneousDF(pd.DataFrame):
                 df = self.append(df, ignore_index=True, sort=False)
             df = df[df.duplicated(keep='first')]
         else:
-            ts = df[['ts']] if isinstance(df, pd.DataFrame) else pd.DataFrame(list(df), columns=['ts'])
-            if ts.empty:
+            ts = (set(df.ts) if isinstance(df, pd.DataFrame) else set(df))
+            if not len(ts):
                 return self._save_or_return(None, inplace)
-                
-            def append_kd(dfa, dfb):
-                dfc = dfa[['ts']].append(dfb, ignore_index=True, sort=False)
-                return dfc[dfc.duplicated(keep='first')]
-            df = self.__class__(self.groupby(on_column).apply(append_kd, ts)).gby_format()
+
+            df = self[on_column + ['ts']]
+            df = df[df.ts.isin(ts)].drop_duplicates()
         return self._save_or_return(df, inplace)
 
     def difference(self, dfb, on_column=None, by_key=True, inplace=False):
@@ -350,12 +349,25 @@ class InstantaneousWDF(pd.DataFrame):
         if not len(on_column) or by_key:
             df = (None if df.empty else self._intersect_by_key(df, on_column))
         else:
-            if 'w' in df:
-                ts = dict(pd.DataFrame(df[['ts', 'w']]).itertuples(index=False, name=None)  if isinstance(df, pd.DataFrame) else iter(df))
-                df = (self._intersect_on_key_weighted(ts, on_column) if len(ts) else None)
+            weighted = False
+            if isinstance(df, pd.DataFrame):
+                if 'w' in df.columns:
+                    ts = dict(pd.DataFrame(df[['ts', 'w']]).itertuples(index=False, name=None))
+                    weighted = True
+                else:
+                    ts = set(df.ts.values.flat)
             else:
-                ts = set(df.ts.values.flat if isinstance(df, pd.DataFrame) else iter(df))
-                df = (self._intersect_on_key_unweighted(ts, on_column) if len(ts) else None)
+                ts = list(df)
+                if any(not isinstance(t, (int, Real)) for t in ts):
+                    weighted = True
+                    ts = dict(t for t in ts)
+                else:
+                    ts = set(ts)
+                    
+            if weighted:
+                df = self._intersect_on_key_weighted(ts, on_column) if len(ts) else None
+            else:
+                df = self._intersect_on_key_unweighted(ts, on_column) if len(ts) else None
         return self._save_or_return(df, inplace)
 
     def _difference_by_key(self, df, on_column):

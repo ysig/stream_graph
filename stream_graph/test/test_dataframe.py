@@ -42,9 +42,11 @@ def dump_iter_(df):
     
 def test_interval_df():
     cx = IntervalDF
+    assert op_([[1, 3, 4], [1, 4, 6]], o='m', cx=cx) == [(1, 3, 6)]
     assert op_([[1, 3, 5], [1, 4, 6]], o='m', cx=cx) == [(1, 3, 6)]
     for bk in [True, False]:
         l = ([1] if bk else [])
+        assert op_([[1, 3, 5]], y=[l + [5, 6]], o='u', bk=bk, cx=cx) == [(1, 3, 6)]
         assert op_([[1, 3, 5]], y=[l + [4, 6]], o='u', bk=bk, cx=cx) == [(1, 3, 6)]
         assert op_([[1, 3, 6]], y=[l + [4, 7]], o='i', bk=bk, cx=cx) == [(1, 4, 6)]
         assert op_([[1, 4, 7]], y=[l + [3, 6]], o='i', bk=bk, cx=cx) == [(1, 4, 6)]

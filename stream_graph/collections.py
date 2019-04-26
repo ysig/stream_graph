@@ -159,9 +159,11 @@ class TimeGenerator(object):
                     if m != ignore_value:
                         yield (t_b, m)
             if b.instants:
-                obj = generate(iter(self), iter(b), measure, ignore_value, missing_value)                 
+                obj = generate(iter(self), iter(b), measure, ignore_value, missing_value)                
             else:
-                obj = generate(iter(b), iter(self), measure, ignore_value, missing_value)                 
+                def measure_yx(x, y):
+                    return measure(y, x)
+                obj = generate(iter(b), iter(self), measure_yx, ignore_value, missing_value)                 
         else:
             def generate(a_iter, b_iter, measure, ignore_value, missing_value):
                 def addq(queue, obj):
@@ -206,7 +208,7 @@ class TimeGenerator(object):
                     cache = queue.pop()
                     queue = updateq(queue, cache[2])
                     a, b = ab(a, b, cache)
-                    m = measure(a, b)
+                    m = measure(b, a)
                     if m != m_old:
                         yield (cache[0], m)
             obj = generate(iter(self), iter(b), measure, ignore_value, missing_value)
@@ -227,7 +229,7 @@ class TimeCollection(TimeGenerator):
 
     def __str__(self):
         if bool(self):
-            return "stream_graph.TimeCollection: " + str(list(self))
+            return "stream_graph.TimeCollection" + ("[instantaneous]" if self.instantaneous else "") + ": " + str(list(self))
         else:
             return "stream_graph.TimeCollection: Empty"
 

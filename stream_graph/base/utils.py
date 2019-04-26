@@ -58,6 +58,18 @@ def its_to_idf(ts):
     else:
         return InstantaneousDF(columns=["ts"])
 
+def t_in(ts, t, L, R):
+    # Assumes an sorted-disjoint dataframe
+    while L <= R:
+        m = int((L + R) / 2)
+        if ts[m][0] <= t and ts[m][1] >= t:
+            return True
+        elif ts[m][0] < t:
+            L = m + 1
+        elif ts[m][1] > t:
+            R = m - 1
+    return False
+
 def nsr_disjoint_union(nodes, min_time, max_time, ba, bb):
     return TemporalNodeSetDF().set_df(IntervalDF(iter((n, mn, mx)
                                                  for n in nodes
@@ -66,6 +78,7 @@ def nsr_disjoint_union(nodes, min_time, max_time, ba, bb):
                                              columns=["u", "ts", "tf"]),
                                  min_time=min_time,
                                  max_time=max_time)
+
 
 def make_discrete_bins(bins, bin_size, time_min, time_max):
     if bins is None:

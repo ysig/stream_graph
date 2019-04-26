@@ -333,24 +333,41 @@ class TemporalLinkSet(ABC):
         pass
 
     @abc.abstractmethod
-    def substream(self, nsu, nsv, ts):
+    def substream(self, nsu=None, nsv=None, ts=None):
         """Return the subtream occuring from two nodesets and a timeset.
         
         Parameters
         ----------
-        nsu : NodeSet
+        nsu : NodeSet or None
 
-        nsv : NodeSet
+        nsv : NodeSet or None
 
-        ts : TimeSet
+        ts : TimeSet or None
         
         Returns
         -------
         temporal_linkstream : TemporalLinkSet
             Return substream containing starting nodes from nsu, end nodes of nsv, contained from the intersection with ts.
+            If a nodeset is None, all nodes and considered. If a timeset is None, all time is considered.
 
         """
-        pass
+
+    def filter(self, fun):
+        """Filter the link stream.
+        
+        Parameters
+        ----------
+        fun : function
+            A function that for each a tuple as it is defined from iter, return True or False.
+        
+        Returns
+        -------
+        temporal_linkstream : TemporalLinkSet
+            Return sub-linkstream that satisfies the function.
+
+        """
+        assert callable(fun)
+        return self.__class__([key for key in iter(self) if fun(key)], weighted=self.weighted, discrete=self.discrete)
 
     @abc.abstractmethod
     def __bool__(self):
@@ -515,38 +532,6 @@ class TemporalLinkSet(ABC):
             return copy.deepcopy(self)
         else:
             return copy.copy(self)
-
-    def m_at(self, t=None, weights=False):
-        """Returns the number of links appearing at a certain time.
-        
-        Parameters
-        ----------
-        t : Int
-
-        weights : bool, default=False
-
-        Returns
-        -------
-        m : Int
-            Returns the numer of links at a certain time.
-
-        """
-        if weights and self.weighted:
-            def sizew(ls):
-                return ls.size_weighted
-        else:
-            def sizew(ls):
-                return self.size
-        if t is None:
-            from stream_graph.collections import TimeCollection
-            if not bool(self):
-                return TimeCollection()
-            time_links = self.links_at()
-            return TimeCollection([(t, sizew(l)) for t, l in time_links], time_links.instants)
-        else:
-            if not bool(self):
-                return .0
-            return sizew(links_at(t))
 
     def m_at(self, t=None, weights=False):
         """Returns the number of links appearing at a certain time.
@@ -780,7 +765,7 @@ class ITemporalLinkSet(TemporalLinkSet):
 
         Returns
         -------
-        nodeset : NodeSet or NodeCollection or TimeCollection
+        degree : Number or LinkCollection
             Return the ('in', 'out' or 'both') time-degree of a node.
             If u is None return the degree for all node at time t.
 
@@ -790,7 +775,7 @@ class ITemporalLinkSet(TemporalLinkSet):
         else:
             if u is None:
                 from stream_graph.collections import LinkCollection
-                return LinkCollection({u: 0. for u in self.nodeset})
+                return NodeCollection({u: 0. for u in self.nodeset})
             else:
                 return .0
 

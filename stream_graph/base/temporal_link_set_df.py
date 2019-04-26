@@ -34,7 +34,7 @@ from stream_graph.exceptions import UnrecognizedDirection
 
 class TemporalLinkSetDF(ABC.TemporalLinkSet):
     """DataFrame implementation of ABC.TemporalLinkSet"""
-    def __init__(self, df=None, disjoint_intervals=True, sort_by=['u', 'v', 'ts', 'tf'], discrete=None, weighted=False):
+    def __init__(self, df=None, disjoint_intervals=True, sort_by=None, discrete=None, weighted=False):
         """Initialize a Temporal Link Set.
 
         Parameters
@@ -588,17 +588,41 @@ class TemporalLinkSetDF(ABC.TemporalLinkSet):
             return TemporalNodeSetDF(df, disjoint_intervals=False, discrete=self.discrete).size
 
     def substream(self, nsu, nsv, ts):
-        if not isinstance(nsu, ABC.NodeSet):
-            raise UnrecognizedNodeSet('nsu')
-        if not isinstance(nsv, ABC.NodeSet):
-            raise UnrecognizedNodeSet('nsv')
-        if not isinstance(ts, ABC.TimeSet):
-            raise UnrecognizedTimeSet('ts')
-        assert self.discrete == ts.discrete
-        if bool(self) and bool(nsu) and bool(nsv) and bool(ts):
-            return TemporalLinkSetDF(self.df[self.df.u.isin(nsu) & self.df.v.isin(nsv)].intersect(utils.ts_to_df(ts), by_key=False, on_column=['u', 'v']), discrete=self.discrete, weighted=self.weighted)
+        if nsu is not None:
+            if not isinstance(nsu, ABC.NodeSet):
+                try:
+                    nsu = NodeSetS(nsu)
+                except:
+                    raise UnrecognizedNodeSet('nsu')
+        if nsv is not None:
+            if not isinstance(nsv, ABC.NodeSet):
+                try:
+                    nsv = NodeSetS(nsv)
+                except:
+                    raise UnrecognizedNodeSet('nsv')
+        if ts is not None:
+            if not isinstance(ts, ABC.TimeSet):
+                try:
+                    ts = TimeSetDF(ts)
+                except:
+                    raise UnrecognizedTimeSet('ts')
+        if all(o is None for o in [nsu, nsv, ts]):
+            return self.copy()
+        if bool(self) and all((o is None or bool(o)) for o in [nsu, nsv, ts]):
+            if nsu is not None and nsv is not None:
+                df = self.df[self.df.u.isin(nsu) & self.df.v.isin(nsv)]
+            elif nsu is not None:
+                df = self.df[self.df.u.isin(nsu)]
+            elif nsv is not None:
+                df = self.df[self.df.v.isin(nsv)]
+            else:
+                df = self
+
+            if ts is not None:
+                df = df.intersect(utils.ts_to_df(ts), by_key=False, on_column=['u', 'v'])
+            return self.__class__(df, discrete=self.discrete, weighted=self.weighted)
         else:
-            return TemporalLinkSetDF()
+            return self.__class__()
 
     def __and__(self, ls):
         if isinstance(ls, ABC.TemporalLinkSet):
