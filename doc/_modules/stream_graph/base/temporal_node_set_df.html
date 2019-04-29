@@ -1,0 +1,648 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>stream_graph.base.temporal_node_set_df &mdash; Stream Graph 0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/gallery.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/_static/css/supplementary.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> Stream Graph
+          
+
+          
+            
+            <img src="../../../_static/logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">ABC Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html#base-classes">Base Classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html#abc-implementations">ABC Implementations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html#temporal-dataframes">Temporal-DataFrames</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html#visualizer">Visualizer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html#exceptions">Exceptions</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../auto_examples/index.html">Life is a miserable act of immanence.</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials.html">EmailEu</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Stream Graph</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>stream_graph.base.temporal_node_set_df</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for stream_graph.base.temporal_node_set_df</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">numbers</span> <span class="k">import</span> <span class="n">Real</span>
+<span class="kn">from</span> <span class="nn">warnings</span> <span class="k">import</span> <span class="n">warn</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">defaultdict</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">Iterable</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">Counter</span>
+<span class="kn">from</span> <span class="nn">six</span> <span class="k">import</span> <span class="n">iteritems</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="k">import</span> <span class="n">combinations</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="k">import</span> <span class="n">permutations</span>
+
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="kn">import</span> <span class="nn">stream_graph</span> <span class="k">as</span> <span class="nn">sg</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">utils</span>
+<span class="kn">from</span> <span class="nn">stream_graph</span> <span class="k">import</span> <span class="n">ABC</span>
+<span class="kn">from</span> <span class="nn">.time_set_df</span> <span class="k">import</span> <span class="n">TimeSetDF</span>
+<span class="kn">from</span> <span class="nn">.interval_df</span> <span class="k">import</span> <span class="n">IntervalDF</span>
+<span class="kn">from</span> <span class="nn">.node_set_s</span> <span class="k">import</span> <span class="n">NodeSetS</span>
+<span class="kn">from</span> <span class="nn">.itime_set_s</span> <span class="k">import</span> <span class="n">ITimeSetS</span>
+<span class="kn">from</span> <span class="nn">stream_graph.exceptions</span> <span class="k">import</span> <span class="n">UnrecognizedTemporalNodeSet</span>
+<span class="kn">from</span> <span class="nn">stream_graph.collections</span> <span class="k">import</span> <span class="n">TimeCollection</span>
+<span class="kn">from</span> <span class="nn">stream_graph.collections</span> <span class="k">import</span> <span class="n">TimeGenerator</span>
+<span class="kn">from</span> <span class="nn">stream_graph.collections</span> <span class="k">import</span> <span class="n">NodeCollection</span>
+<span class="kn">from</span> <span class="nn">stream_graph.collections</span> <span class="k">import</span> <span class="n">LinkCollection</span>
+
+<div class="viewcode-block" id="TemporalNodeSetDF"><a class="viewcode-back" href="../../../generated/stream_graph.TemporalNodeSetDF.html#stream_graph.TemporalNodeSetDF">[docs]</a><span class="k">class</span> <span class="nc">TemporalNodeSetDF</span><span class="p">(</span><span class="n">ABC</span><span class="o">.</span><span class="n">TemporalNodeSet</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;DataFrame implementation of ABC.TemporalNodeSet&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="TemporalNodeSetDF.__init__"><a class="viewcode-back" href="../../../generated/stream_graph.TemporalNodeSetDF.html#stream_graph.TemporalNodeSetDF.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">disjoint_intervals</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sort_by</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;u&#39;</span><span class="p">,</span> <span class="s1">&#39;ts&#39;</span><span class="p">,</span> <span class="s1">&#39;tf&#39;</span><span class="p">],</span> <span class="n">discrete</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize a Temporal Node Set.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        df: pandas.DataFrame or Iterable, default=None</span>
+<span class="sd">            If a DataFrame it should contain four columns for u and ts, tf.</span>
+<span class="sd">            If an Iterable it should produce :code:`(u, ts, tf)` tuples of one NodeId (int or str) and two timestamps (Real) with :code:`ts &lt; tf`.</span>
+
+<span class="sd">        disjoint_intervals: Bool, default=False</span>
+<span class="sd">            Defines if for each node all intervals are disjoint.</span>
+
+<span class="sd">        sort_by: Any non-empty subset of [&#39;u&#39;, &#39;ts&#39;, &#39;tf&#39;].</span>
+<span class="sd">            The order of the DataFrame elements by which they will be produced when iterated.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">df</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">ABC</span><span class="o">.</span><span class="n">TemporalNodeSet</span><span class="p">):</span>
+                <span class="n">discrete</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">discrete</span>
+            <span class="k">elif</span> <span class="n">discrete</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">discrete</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">kargs</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="p">(</span><span class="n">IntervalDF</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)):</span>
+                <span class="n">df</span> <span class="o">=</span> <span class="n">IntervalDF</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">df</span><span class="p">)),</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;u&#39;</span><span class="p">,</span> <span class="s1">&#39;ts&#39;</span><span class="p">,</span> <span class="s1">&#39;tf&#39;</span><span class="p">],</span> <span class="o">**</span><span class="n">kargs</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">df</span> <span class="o">=</span> <span class="n">IntervalDF</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="o">**</span><span class="n">kargs</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">df_</span> <span class="o">=</span> <span class="n">df</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sort_by</span> <span class="o">=</span> <span class="n">sort_by</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">merged_</span> <span class="o">=</span> <span class="n">disjoint_intervals</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sorted_</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">discrete_</span> <span class="o">=</span> <span class="n">discrete</span>
+            <span class="k">if</span> <span class="n">discrete</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_</span><span class="p">[</span><span class="s1">&#39;ts&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">kind</span> <span class="o">!=</span> <span class="s1">&#39;i&#39;</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_</span><span class="p">[</span><span class="s1">&#39;tf&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">kind</span> <span class="o">!=</span> <span class="s1">&#39;i&#39;</span><span class="p">:</span>
+                <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;SemanticWarning: For a discrete instance time-instants should be an integers&#39;</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">discrete</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">discrete_</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">sort_by</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;sort_by_&#39;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sort_by_</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="nd">@sort_by</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">sort_by</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;sort_by_&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">sort_by_</span> <span class="o">==</span> <span class="n">value</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sorted_</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sort_by_</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_merged_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;merged_&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">merged_</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_sorted_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span><span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;sort_by_&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;sorted_&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">sorted_</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">sort_by_</span> <span class="ow">is</span> <span class="kc">None</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">sort_df_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_sorted_</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">df_</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sort_by</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sorted_</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">merge_df_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">merged_</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">df_</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">merged_</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">df</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sort_df_</span><span class="o">.</span><span class="n">merge_df_</span><span class="o">.</span><span class="n">df_</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">IntervalDF</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;u&#39;</span><span class="p">,</span> <span class="s1">&#39;ts&#39;</span><span class="p">,</span> <span class="s1">&#39;tf&#39;</span><span class="p">])</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">dfm</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">merge_df_</span><span class="o">.</span><span class="n">df</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">IntervalDF</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;u&#39;</span><span class="p">,</span> <span class="s1">&#39;ts&#39;</span><span class="p">,</span> <span class="s1">&#39;tf&#39;</span><span class="p">])</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">n</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">nunique</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">timeset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">TimeSetDF</span><span class="p">(</span><span class="n">discrete</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">discrete</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">TimeSetDF</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df_</span><span class="p">[[</span><span class="s1">&#39;ts&#39;</span><span class="p">,</span> <span class="s1">&#39;tf&#39;</span><span class="p">]],</span> <span class="n">disjoint_intervals</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">discrete</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">discrete</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">nodeset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">NodeSetS</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">NodeSetS</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df_</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">flat</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">total_common_time</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># sum of cartesian interval intersection</span>
+        <span class="k">if</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">interval_intersection_size</span><span class="p">(</span><span class="n">discrete</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">discrete</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dfm</span><span class="o">.</span><span class="n">measure_time</span><span class="p">(</span><span class="n">discrete</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">discrete</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span>
+
+    <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">itertuples</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">iter</span><span class="p">([])</span>
+
+    <span class="k">def</span> <span class="nf">__bool__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;df_&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_</span><span class="o">.</span><span class="n">empty</span>
+
+    <span class="k">def</span> <span class="nf">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="n">u</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">tuple</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">u</span><span class="p">)</span> <span class="ow">is</span> <span class="mi">2</span>
+        <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span> <span class="ow">or</span> <span class="p">(</span><span class="n">u</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">u</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="n">u</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span>
+        <span class="k">elif</span> <span class="n">u</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">u</span> <span class="o">==</span> <span class="n">u</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">any</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">u</span> <span class="o">==</span> <span class="n">u</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">u</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="nb">tuple</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">u</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">df</span><span class="o">.</span><span class="n">index_at_interval</span><span class="p">(</span><span class="n">u</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">u</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">any</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">df</span><span class="o">.</span><span class="n">index_at</span><span class="p">(</span><span class="n">u</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">any</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__and__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ns</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ns</span><span class="p">,</span> <span class="n">ABC</span><span class="o">.</span><span class="n">TemporalNodeSet</span><span class="p">):</span>
+            <span class="k">assert</span> <span class="n">ns</span><span class="o">.</span><span class="n">discrete</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">discrete</span>
+            <span class="k">if</span> <span class="n">ns</span> <span class="ow">and</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ns</span><span class="p">,</span> <span class="n">sg</span><span class="o">.</span><span class="n">TemporalNodeSetB</span><span class="p">):</span>
+                    <span class="k">return</span> <span class="n">TemporalNodeSetDF</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">ns</span><span class="o">.</span><span class="n">nodeset</span><span class="p">)]</span><span class="o">.</span><span class="n">intersect</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">ts_to_df</span><span class="p">(</span><span class="n">ns</span><span class="o">.</span><span class="n">timeset_</span><span class="p">),</span> <span class="n">by_key</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ns</span><span class="p">,</span> <span class="n">TemporalNodeSetDF</span><span class="p">):</span>
+                        <span class="k">try</span><span class="p">:</span>
+                            <span class="k">return</span> <span class="n">ns</span> <span class="o">&amp;</span> <span class="bp">self</span>
+                        <span class="k">except</span> <span class="ne">NotImplementedError</span><span class="p">:</span>
+                            <span class="k">pass</span>
+                    <span class="n">df</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">ns_to_df</span><span class="p">(</span><span class="n">ns</span><span class="p">)</span><span class="o">.</span><span class="n">intersect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">df</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ns</span><span class="p">,</span> <span class="n">ABC</span><span class="o">.</span><span class="n">ITemporalNodeSet</span><span class="p">):</span>
+                        <span class="k">return</span> <span class="n">ITemporalNodeSetDF</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;tf&#39;</span><span class="p">]),</span> <span class="n">discrete</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">discrete</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">return</span> <span class="n">TemporalNodeSetDF</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">discrete</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">discrete</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">UnrecognizedTemporalNodeSet</span><span class="p">(</span><span class="s1">&#39;second operand&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">TemporalNodeSetDF</span><span class="p">(</span><span class="n">discrete</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">discrete</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__or__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ns</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ns</span><span class="p">,</span> <span class="n">ABC</span><span class="o">.</span><span class="n">TemporalNodeSet</span><span class="p">):</span>
+            <span class="k">assert</span> <span class="n">ns</span><span class="o">.</span><span class="n">discrete</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">discrete</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">ns</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">ns</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ns</span><span class="p">,</span> <span class="n">sg</span><span class="o">.</span><span class="n">TemporalNodeSetB</span><span class="p">):</span>
+                    <span class="n">nst</span><span class="p">,</span> <span class="n">tdf</span> <span class="o">=</span> <span class="n">ns</span><span class="o">.</span><span class="n">nodeset</span><span class="p">,</span> <span class="n">utils</span><span class="o">.</span><span class="n">ts_to_df</span><span class="p">(</span><span class="n">ns</span><span class="o">.</span><span class="n">timeset_</span><span class="p">)</span>
+                    <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="o">~</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">nst</span><span class="p">)]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">nst</span><span class="p">)]</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">tdf</span><span class="p">,</span> <span class="n">by_key</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                    <span class="n">nstd</span> <span class="o">=</span> <span class="n">nst</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodeset</span>
+                    <span class="k">if</span> <span class="nb">bool</span><span class="p">(</span><span class="n">nstd</span><span class="p">):</span>
+                        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+                            <span class="nb">list</span><span class="p">((</span><span class="n">n</span><span class="p">,</span> <span class="n">ts</span><span class="p">,</span> <span class="n">tf</span><span class="p">)</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">nstd</span> <span class="k">for</span> <span class="n">ts</span><span class="p">,</span> <span class="n">tf</span> <span class="ow">in</span> <span class="n">tdf</span><span class="p">),</span>
+                            <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;u&#39;</span><span class="p">,</span> <span class="s1">&#39;ts&#39;</span><span class="p">,</span> <span class="s1">&#39;tf&#39;</span><span class="p">]),</span>
+                            <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="n">TemporalNodeSetDF</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">discrete</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">discrete</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ns</span><span class="p">,</span> <span class="n">TemporalNodeSetDF</span><span class="p">):</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="k">return</span> <span class="n">ns</span> <span class="o">|</span> <span class="bp">self</span>
+                    <span class="k">except</span> <span class="ne">NotImplementedError</span><span class="p">:</span>
+                        <span class="k">pass</span>
+                <span class="k">return</span> <span class="n">TemporalNodeSetDF</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">ns_to_df</span><span class="p">(</span><span class="n">ns</span><span class="p">)),</span> <span class="n">discrete</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">discrete</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">UnrecognizedTemporalNodeSet</span><span class="p">(</span><span class="s1">&#39;second operand&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">TemporalNodeSetDF</span><span class="p">(</span><span class="n">discrete</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">discrete</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__sub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ns</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ns</span><span class="p">,</span> <span class="n">ABC</span><span class="o">.</span><span class="n">TemporalNodeSet</span><span class="p">):</span>
+            <span class="k">assert</span> <span class="n">ns</span><span class="o">.</span><span class="n">discrete</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">discrete</span>
+            <span class="k">if</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">ns</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ns</span><span class="p">,</span> <span class="n">sg</span><span class="o">.</span><span class="n">TemporalNodeSetB</span><span class="p">):</span>
+                        <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="o">~</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">ns</span><span class="o">.</span><span class="n">nodeset</span><span class="p">)]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">ns</span><span class="o">.</span><span class="n">nodeset</span><span class="p">)]</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span>
+                                <span class="n">utils</span><span class="o">.</span><span class="n">ts_to_df</span><span class="p">(</span><span class="n">ns</span><span class="o">.</span><span class="n">timeset_</span><span class="p">),</span> <span class="n">by_key</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
+                            <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">ns_to_df</span><span class="p">(</span><span class="n">ns</span><span class="p">))</span>
+                    <span class="k">return</span> <span class="n">TemporalNodeSetDF</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">discrete</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">discrete</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">UnrecognizedTemporalNodeSet</span><span class="p">(</span><span class="s1">&#39;second operand&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">TemporalNodeSetDF</span><span class="p">(</span><span class="n">discrete</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">discrete</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">node_duration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">u</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">obj</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+            <span class="n">dc</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">discrete</span> <span class="k">else</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">ts</span><span class="p">,</span> <span class="n">tf</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dfm</span><span class="o">.</span><span class="n">itertuples</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+                <span class="n">obj</span><span class="p">[</span><span class="n">u</span><span class="p">]</span> <span class="o">+=</span> <span class="n">tf</span> <span class="o">-</span> <span class="n">ts</span> <span class="o">+</span> <span class="n">dc</span>
+            <span class="k">return</span> <span class="n">NodeCollection</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">u</span> <span class="o">==</span> <span class="n">u</span><span class="p">]</span><span class="o">.</span><span class="n">measure_time</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">discrete</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="mi">0</span>
+
+    <span class="k">def</span> <span class="nf">common_time</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">u</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_common_time__list_input</span><span class="p">(</span><span class="n">u</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">NodeCollection</span><span class="p">(</span><span class="nb">dict</span><span class="p">())</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dfm</span><span class="o">.</span><span class="n">events</span>
+            <span class="n">active_nodes</span><span class="p">,</span> <span class="n">common_times</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(),</span> <span class="n">Counter</span><span class="p">()</span>
+            <span class="n">e</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">u</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">def</span> <span class="nf">add_item</span><span class="p">(</span><span class="n">active_nodes</span><span class="p">,</span> <span class="n">ct</span><span class="p">):</span>
+                    <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="p">(</span><span class="n">active_nodes</span><span class="p">):</span>
+                        <span class="n">common_times</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">+=</span> <span class="n">ct</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">allowed_nodes</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+                <span class="k">def</span> <span class="nf">add_item</span><span class="p">(</span><span class="n">active_nodes</span><span class="p">,</span> <span class="n">ct</span><span class="p">):</span>
+                    <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="p">(</span><span class="n">active_nodes</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">allowed_nodes</span><span class="p">)):</span>
+                        <span class="n">common_times</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">+=</span> <span class="n">ct</span>
+
+            <span class="n">dc</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">discrete</span> <span class="k">else</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">itertuples</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+                <span class="n">ct</span> <span class="o">=</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">active_nodes</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">t</span> <span class="o">-</span> <span class="n">e</span> <span class="o">+</span> <span class="n">dc</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">ct</span> <span class="o">&gt;</span> <span class="o">.</span><span class="mi">0</span><span class="p">:</span>
+                    <span class="n">add_item</span><span class="p">(</span><span class="n">active_nodes</span><span class="p">,</span> <span class="n">ct</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">f</span><span class="p">:</span>
+                    <span class="c1"># start</span>
+                    <span class="n">active_nodes</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># finish</span>
+                    <span class="n">active_nodes</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+                <span class="n">e</span> <span class="o">=</span> <span class="n">t</span> 
+
+            <span class="k">return</span> <span class="n">NodeCollection</span><span class="p">(</span><span class="n">common_times</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+                <span class="n">idx</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">u</span> <span class="o">==</span> <span class="n">u</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">idx</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+                    <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="o">~</span><span class="n">idx</span><span class="p">]</span>
+                    <span class="k">return</span> <span class="n">a</span><span class="o">.</span><span class="n">interval_intersection_size</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">discrete</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">discrete</span><span class="p">)</span>
+            <span class="k">return</span> <span class="mf">0.</span>
+
+    <span class="k">def</span> <span class="nf">common_time_pair</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">l</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">l</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_common_time_pair__list_input</span><span class="p">(</span><span class="n">l</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">LinkCollection</span><span class="p">(</span><span class="nb">dict</span><span class="p">())</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dfm</span><span class="o">.</span><span class="n">events</span>
+            <span class="n">active_nodes</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+            <span class="n">e</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">l</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">common_times</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">()</span>
+                <span class="k">def</span> <span class="nf">add_item</span><span class="p">(</span><span class="n">active_nodes</span><span class="p">,</span> <span class="n">ct</span><span class="p">):</span>
+                    <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">combinations</span><span class="p">(</span><span class="n">active_nodes</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
+                        <span class="n">common_times</span><span class="p">[(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">)]</span> <span class="o">+=</span> <span class="n">ct</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">links</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>
+                <span class="n">common_times</span> <span class="o">=</span> <span class="p">{</span><span class="n">l</span><span class="p">:</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">links</span><span class="p">}</span>
+                <span class="n">allowed_nodes</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">c</span> <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">links</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="p">[</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">])</span>
+                <span class="k">def</span> <span class="nf">add_item</span><span class="p">(</span><span class="n">active_nodes</span><span class="p">,</span> <span class="n">ct</span><span class="p">):</span>
+                    <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">permutations</span><span class="p">(</span><span class="n">active_nodes</span> <span class="o">&amp;</span> <span class="n">allowed_nodes</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
+                        <span class="k">if</span> <span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="ow">in</span> <span class="n">common_times</span><span class="p">:</span>
+                            <span class="n">common_times</span><span class="p">[(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">)]</span> <span class="o">+=</span> <span class="n">ct</span>
+
+            <span class="n">dc</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">discrete</span> <span class="k">else</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">itertuples</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+                <span class="n">ct</span> <span class="o">=</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">active_nodes</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">t</span> <span class="o">-</span> <span class="n">e</span> <span class="o">+</span> <span class="n">dc</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">ct</span> <span class="o">&gt;</span> <span class="o">.</span><span class="mi">0</span><span class="p">:</span>
+                    <span class="n">add_item</span><span class="p">(</span><span class="n">active_nodes</span><span class="p">,</span> <span class="n">ct</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">f</span><span class="p">:</span>
+                    <span class="c1"># start</span>
+                    <span class="n">active_nodes</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># finish</span>
+                    <span class="n">active_nodes</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+                <span class="n">e</span> <span class="o">=</span> <span class="n">t</span>
+            <span class="k">return</span> <span class="n">LinkCollection</span><span class="p">(</span><span class="n">common_times</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="n">l</span>
+            <span class="k">if</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+                <span class="n">idxa</span><span class="p">,</span> <span class="n">idxb</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">u</span> <span class="o">==</span> <span class="n">u</span><span class="p">),</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">u</span> <span class="o">==</span> <span class="n">v</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">idxa</span><span class="o">.</span><span class="n">any</span><span class="p">()</span> <span class="ow">and</span> <span class="n">idxb</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+                    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">idxa</span><span class="p">]</span><span class="o">.</span><span class="n">interval_intersection_size</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">idxb</span><span class="p">],</span> <span class="n">discrete</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">discrete</span><span class="p">)</span>
+            <span class="k">return</span> <span class="mf">0.</span>
+
+    <span class="c1"># Return what if t not specified?</span>
+    <span class="k">def</span> <span class="nf">n_at</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">t</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dfm</span><span class="o">.</span><span class="n">events</span>
+                <span class="n">u</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">f</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">active_nodes</span> <span class="o">=</span> <span class="p">{</span><span class="n">u</span><span class="p">}</span>
+                <span class="n">nodes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+                <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span><span class="o">.</span><span class="n">itertuples</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">f</span><span class="p">:</span>
+                        <span class="c1"># start</span>
+                        <span class="k">if</span> <span class="n">t</span> <span class="o">&gt;</span> <span class="n">e</span><span class="p">:</span>
+                            <span class="n">nodes</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">e</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">active_nodes</span><span class="p">)))</span>
+                        <span class="n">active_nodes</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="c1"># finish</span>
+                        <span class="k">if</span> <span class="n">t</span> <span class="o">&gt;</span> <span class="n">e</span><span class="p">:</span>
+                            <span class="n">nodes</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">e</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">active_nodes</span><span class="p">)))</span>
+                        <span class="n">active_nodes</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+                    <span class="n">e</span> <span class="o">=</span> <span class="n">t</span>
+                <span class="n">ef</span><span class="p">,</span> <span class="n">nan</span> <span class="o">=</span> <span class="n">nodes</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">e</span> <span class="o">!=</span> <span class="n">ef</span> <span class="ow">or</span> <span class="n">nan</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">active_nodes</span><span class="p">):</span>
+                    <span class="n">nodes</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">e</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">active_nodes</span><span class="p">)))</span>
+                <span class="k">return</span> <span class="n">TimeCollection</span><span class="p">(</span><span class="n">nodes</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">count_at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">t</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">TimeCollection</span><span class="p">([],</span> <span class="kc">False</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="mi">0</span>
+
+    <span class="k">def</span> <span class="nf">nodes_at</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">t</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">def</span> <span class="nf">generate</span><span class="p">(</span><span class="n">df</span><span class="p">):</span>
+                    <span class="n">u</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">f</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">active_nodes</span> <span class="o">=</span> <span class="p">{</span><span class="n">u</span><span class="p">}</span>
+                    <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span><span class="o">.</span><span class="n">itertuples</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+                        <span class="k">if</span> <span class="n">t</span> <span class="o">&gt;</span> <span class="n">e</span><span class="p">:</span>
+                            <span class="n">ef</span><span class="p">,</span> <span class="n">san</span> <span class="o">=</span> <span class="n">e</span><span class="p">,</span> <span class="nb">set</span><span class="p">(</span><span class="n">active_nodes</span><span class="p">)</span>
+                            <span class="k">yield</span> <span class="p">(</span><span class="n">ef</span><span class="p">,</span> <span class="n">NodeSetS</span><span class="p">(</span><span class="n">san</span><span class="p">))</span>
+                        <span class="k">if</span> <span class="n">f</span><span class="p">:</span>
+                            <span class="c1"># start                        </span>
+                            <span class="n">active_nodes</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="c1"># finish</span>
+                            <span class="n">active_nodes</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+                        <span class="n">e</span> <span class="o">=</span> <span class="n">t</span>
+                    <span class="k">if</span> <span class="n">e</span> <span class="o">!=</span> <span class="n">ef</span> <span class="ow">or</span> <span class="n">san</span> <span class="o">!=</span> <span class="n">active_nodes</span><span class="p">:</span>
+                        <span class="k">yield</span> <span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">NodeSetS</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">active_nodes</span><span class="p">)))</span>
+
+                <span class="k">return</span> <span class="n">TimeGenerator</span><span class="p">(</span><span class="n">generate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dfm</span><span class="o">.</span><span class="n">events</span><span class="p">))</span>
+
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="ow">is</span> <span class="mi">2</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">Real</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">Real</span><span class="p">)</span> <span class="ow">and</span> <span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">&lt;=</span><span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+                <span class="k">return</span> <span class="n">NodeSetS</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">df_at_interval</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">flat</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">Real</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">NodeSetS</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">df_at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">flat</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Input can either be a real number or an ascending interval of two real numbers&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">t</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">TimeGenerator</span><span class="p">(</span><span class="nb">iter</span><span class="p">())</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">NodeSetS</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">times_of</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">u</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+                <span class="n">times</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">ts</span><span class="p">,</span> <span class="n">tf</span> <span class="ow">in</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+                    <span class="n">times</span><span class="p">[</span><span class="n">u</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">ts</span><span class="p">,</span> <span class="n">tf</span><span class="p">))</span>
+                <span class="k">return</span> <span class="n">NodeCollection</span><span class="p">({</span><span class="n">u</span><span class="p">:</span> <span class="n">TimeSetDF</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">discrete</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">discrete</span><span class="p">)</span> <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">times</span> <span class="ow">in</span> <span class="n">iteritems</span><span class="p">(</span><span class="n">times</span><span class="p">)})</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">NodeCollection</span><span class="p">(</span><span class="nb">dict</span><span class="p">())</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">TimeSetDF</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">u</span> <span class="o">==</span> <span class="n">u</span><span class="p">]</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;u&#39;</span><span class="p">]),</span> <span class="n">discrete</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">discrete</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">TimeSetDF</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">issuperset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ns</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ns</span><span class="p">,</span> <span class="n">ABC</span><span class="o">.</span><span class="n">TemporalNodeSet</span><span class="p">):</span>
+            <span class="k">assert</span> <span class="n">ns</span><span class="o">.</span><span class="n">discrete</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">discrete</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+                <span class="k">return</span> <span class="kc">False</span>
+            <span class="k">elif</span> <span class="nb">bool</span><span class="p">(</span><span class="n">ns</span><span class="p">):</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ns</span><span class="p">,</span> <span class="n">sg</span><span class="o">.</span><span class="n">TemporalNodeSetB</span><span class="p">):</span>
+                    <span class="n">nst</span> <span class="o">=</span> <span class="n">ns</span><span class="o">.</span><span class="n">nodeset</span>
+                    <span class="k">if</span> <span class="n">nst</span><span class="o">.</span><span class="n">issuperset</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nodeset</span><span class="p">):</span>
+                        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">nst</span><span class="p">)]</span><span class="o">.</span><span class="n">issuper</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">ts_to_df</span><span class="p">(</span><span class="n">ns</span><span class="o">.</span><span class="n">timeset_</span><span class="p">),</span> <span class="n">by_key</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="ow">not</span> <span class="n">ns</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">issuper</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">ns_to_df</span><span class="p">(</span><span class="n">ns</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">UnrecognizedTemporalNodeSet</span><span class="p">(</span><span class="s1">&#39;ns&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">def</span> <span class="nf">_to_discrete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bins</span><span class="p">,</span> <span class="n">bin_size</span><span class="p">):</span>
+        <span class="n">df</span><span class="p">,</span> <span class="n">bins</span> <span class="o">=</span> <span class="n">time_discretizer_df</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">,</span> <span class="n">bins</span><span class="p">,</span> <span class="n">bin_size</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;ts&#39;</span><span class="p">,</span> <span class="s1">&#39;tf&#39;</span><span class="p">])</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">disjoint_intervals</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">discrete</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">bins</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, LIP6
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
