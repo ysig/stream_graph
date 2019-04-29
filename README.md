@@ -5,13 +5,14 @@
 Installing `stream_graph`
 -------------------------
 
-The grakel library requires:
+The `stream_graph` library requires:
 
 * Python [>=2.7, >=3.5]
 * Numpy [>=1.14.0]
 * Pandas [>=0.24.0]
 * Cython [>=0.27.3]
 * six [>=1.11.0]
+* svgwrite [>=1.2.1]
 
 Installing Dependencies
 -----------------------
