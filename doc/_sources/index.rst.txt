@@ -7,6 +7,14 @@ Overview
 
 A *prototype* implementation of `stream graphs <https://hal.archives-ouvertes.fr/hal-01665084>`_.
 
+============
+Installation
+============
+.. toctree::
+  :maxdepth: 1
+
+  installation
+
 
 ==========
 API
