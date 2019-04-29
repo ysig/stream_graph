@@ -4,8 +4,8 @@
 
 .. _sphx_glr_auto_examples:
 
-Life is a miserable act of immanence.
--------------------------------------
+Getting Started
+---------------
 
 
 
