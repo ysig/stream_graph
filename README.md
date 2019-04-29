@@ -1,4 +1,4 @@
-# StreamGraph: A prototype for [stream-graphs](https://hal.archives-ouvertes.fr/hal-01665084)
+# A prototype for [stream-graphs](https://hal.archives-ouvertes.fr/hal-01665084)
 
 
 
