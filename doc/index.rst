@@ -32,7 +32,7 @@ Tutorials
 .. toctree::
   :maxdepth: 1
 
-  tutorials/index
+  tutorials
 
 ==================
 Indices and tables
