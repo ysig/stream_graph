@@ -13,7 +13,7 @@ from six import iteritems
 
 class LinkSetDF(ABC.LinkSet):
     """DataFrame implementation of the ABC.LinkSet"""
-    def __init__(self, df=None, no_duplicates=False, sort_by=['u', 'v'], weighted=False):
+    def __init__(self, df=None, no_duplicates=False, sort_by=None, weighted=False):
         """Initialize a LinkSet.
 
         Parameters
@@ -42,22 +42,33 @@ class LinkSetDF(ABC.LinkSet):
             self.df_ = pd.DataFrame(df)
             if weighted:
                 if len(self.df_.columns) == 3:
-                    self.df_.columns = ['u', 'v', 'w']
+                    try:
+                        self.df_ = self.df_[['u', 'v', 'w']]
+                    except Exception:
+                        self.df_.columns = ['u', 'v', 'w']
                 elif len(self.df_.columns) == 2:
-                    self.df_.columns = ['u', 'v']
+                    try:
+                        self.df_ = self.df_[['u', 'v']]
+                    except Exception:
+                        self.df_.columns = ['u', 'v']
                     self.df_['w'] = 1
                 else:
                     raise ValueError('If weighted is True, input should be an iterable of at least 2 and at most 3 elements.')
             else:
                 if len(self.df_.columns) == 2:
-                    self.df_.columns = ['u', 'v']
+                    try:
+                        self.df_ = self.df_[['u', 'v']]
+                    except Exception:
+                        self.df_.columns = ['u', 'v']
                 elif len(self.df_.columns) == 3:
-                    self.df_.drop(columns=self.df_.columns[2], inplace=True)
-                    self.df_.columns = ['u', 'v']
+                    try:
+                        self.df_ = self.df_[['u', 'v']]
+                    except Exception:
+                        self.df_.drop(columns=self.df_.columns[2], inplace=True)
+                        self.df_.columns = ['u', 'v']
                 else:
                     print(self.df_)
                     raise ValueError('If weighted is False, input should be an iterable of exactly 2 elements.')
-                                    
             self.sort_by = sort_by
             self.merged_ = no_duplicates
             self.weighted_ = weighted

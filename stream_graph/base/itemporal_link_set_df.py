@@ -62,9 +62,15 @@ class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
                         discrete = df.discrete
                     df = pd.DataFrame(list(iter(df)))
                 if len(df.columns) == 3:
-                    df.columns = ['u', 'v', 'ts']                            
+                    try:
+                        df = df[['u', 'v', 'ts']]
+                    except Exception:
+                        df.columns = ['u', 'v', 'ts']                            
                 elif len(df.columns) == 4 :
-                    df.columns = ['u', 'v', 'ts', 'w']
+                    try:
+                        df = df[['u', 'v', 'ts', 'w']]
+                    except Exception:
+                        df.columns = ['u', 'v', 'ts', 'w']
                     if not weighted:
                         df.drop(columns='w')
                 else:
@@ -148,7 +154,7 @@ class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
     @property
     def linkset(self):
         if bool(self):
-            return LinkSetDF(self.df_[['u', 'v']].drop_duplicates(), weighted=self.weighted)
+            return LinkSetDF(self.df_.drop(columns=['ts']), no_duplicates=False, weighted=self.weighted)
         else:
             return LinkSetDF()
 

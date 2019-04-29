@@ -42,7 +42,7 @@ pip install git+https://github.com/ysig/stream_graph/
 Getting Starting
 ----------------
 
-For a first tutorial please you can have a look at [emailEU](https://nbviewer.jupyter.org/github/ysig/stream_graph/blob/master/tutorials/emailEU/email-Eu.ipynb).
+For a first tutorial please you can have a look at [emailEU](https://nbviewer.jupyter.org/github/ysig/stream_graph/blob/master/tutorials/emailEU/email-Eu.ipynb), or visit the [tutorials page](https://ysig.github.io/stream_graph/doc/tutorials.html) inside the documentation.
 
 [Documentation](https://ysig.github.io/stream_graph/doc/)
 ----------------------------------------------------------
