@@ -14,6 +14,7 @@
 
 import sys
 import os
+import shutil
 
 import sphinx_gallery
 import sphinx_rtd_theme
@@ -51,6 +52,7 @@ extensions = [
     'sphinx.ext.todo',
     'sphinx.ext.mathjax',
     'numpydoc',
+    'nbsphinx',
     'sphinx.ext.ifconfig',
     'sphinx.ext.viewcode',
     'sphinx_gallery.gen_gallery',
@@ -329,6 +331,10 @@ def generate_example_rst(app, what, name, obj, options, lines):
 
 
 def setup(app):
+    for dirName, subdirList, _ in os.walk('../tutorials'):
+        for dr in subdirList:
+            shutil.copytree(os.path.join(dirName, dr), os.path.join('tutorials', dr))
+    
     app.add_stylesheet('_static/css/supplementary.css')
     app.connect('autodoc-process-docstring', generate_example_rst)
 

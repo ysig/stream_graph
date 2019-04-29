@@ -25,6 +25,15 @@ Examples
 
   auto_examples/index
 
+
+============
+Tutorials
+============
+.. toctree::
+  :maxdepth: 1
+
+  tutorials/index
+
 ==================
 Indices and tables
 ==================
