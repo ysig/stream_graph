@@ -1,11 +1,11 @@
-# A prototype for [stream-graphs](https://hal.archives-ouvertes.fr/hal-01665084)
+# A prototype for stream-graphs
 
 This library is an attempt for the modelization of Stream Graphs.
 A Stream Graph is a Graph whose nodes and edges (also called 'links') can appear and disappear throughout time.
 Inside this module various methods that facilitate the study of such graphs can be found, both simple as degree distibutions (over time), as well as complicated like computing maximal cliques, centrality-scores etc. 
 This library is hence designed for the analysis of the temporal dynamics of networks, such as communication dynamics in social media. 
 
-A Stream-Graph was first formally defined by Matthieu Latapy et al. in [[1](https://hal.archives-ouvertes.fr/hal-01665084)], as a object constituted of four components: a) a set of nodes belonging to the graph, b) a time-set representing the graph's lifespan, c) a temporal-node-set, that is a set of nodes and times representing the presence of node, and d) a temporal-link-set, that is a set of node pairs and times representing the presence of link.
+A Stream-Graph was first formally defined by Matthieu Latapy et al. in [[1]](https://hal.archives-ouvertes.fr/hal-01665084), as a object constituted of four components: a) a set of nodes belonging to the graph, b) a time-set representing the graph's lifespan, c) a temporal-node-set, that is a set of nodes and times representing the presence of node, and d) a temporal-link-set, that is a set of node pairs and times representing the presence of link.
 
 **Note**: This library is currently **work in progress** and so elementary structures may change, without keeping a support for previous versions.
 
