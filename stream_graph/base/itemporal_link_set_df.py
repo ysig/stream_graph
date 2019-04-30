@@ -11,6 +11,7 @@ from six import iteritems
 import pandas as pd
 
 from . import utils
+from . import functions
 from stream_graph import ABC
 from .itemporal_node_set_df import ITemporalNodeSetDF
 from .link_set_df import LinkSetDF
@@ -798,7 +799,6 @@ class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
 
 
     def ego_betweeness(self, u=None, t=None, direction='both', detailed=False):
-        from stream_graph._c_functions import ego, ego_at
         if direction == 'out':
             def as_link(u, v):
                 return (u, v)
@@ -833,13 +833,13 @@ class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
         if u is None:
             neigh = {u: n.nodes_ for u, n in self.linkset.neighbors(direction=direction)}
             if t is None:
-                return NodeCollection({u: ego(u, neigh.get(u, set()), lines, both, detailed) for u in self.nodeset})
+                return NodeCollection({u: functions.ego(u, neigh.get(u, set()), lines, both, detailed) for u in self.nodeset})
             else:
-                return NodeCollection({u: ego_at(u, neigh.get(u, set()), lines, t, both, detailed) for u in self.nodeset})
+                return NodeCollection({u: functions.ego_at(u, neigh.get(u, set()), lines, t, both, detailed) for u in self.nodeset})
         elif t is None:
-            return ego(u, self.linkset.neighbors(u, direction=direction).nodes_, lines, both, detailed)
+            return functions.ego(u, self.linkset.neighbors(u, direction=direction).nodes_, lines, both, detailed)
         else:
-            return ego_at(u, self.linkset.neighbors(u, direction=direction).nodes_, lines, t, both, detailed)
+            return functions.ego_at(u, self.linkset.neighbors(u, direction=direction).nodes_, lines, t, both, detailed)
 
 
     def closeness(self, u=None, t=None, direction='both', detailed=False):
