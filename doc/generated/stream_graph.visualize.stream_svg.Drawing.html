@@ -91,9 +91,17 @@
             
             
               <ul>
-<li class="toctree-l1"><a class="reference internal" href="../installation.html">Dependencies</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../installation.html#installing-dependencies">Installing Dependencies</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../installation.html#installing-the-master-version">Installing the master-version</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../introduction/about.html">General Information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../introduction/installation.html">Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../introduction/installation.html#installing-dependencies">Installing Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../introduction/installation.html#installing-the-master-version">Installing the master-version</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../auto_examples/index.html">Getting Started</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials.html">1. EmailEu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials.html#id2">2. bitcoin-alpha</a></li>
 </ul>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../api.html">ABC Reference</a></li>
@@ -110,13 +118,6 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../api.html#exceptions">Exceptions</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../auto_examples/index.html">Getting Started</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials.html">1. EmailEu</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials.html#id2">2. bitcoin-alpha</a></li>
 </ul>
 
             
@@ -187,7 +188,7 @@
 <h1><code class="xref py py-mod docutils literal notranslate"><span class="pre">stream_graph.visualize.stream_svg</span></code>.Drawing<a class="headerlink" href="#stream-graph-visualize-stream-svg-drawing" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="stream_graph.visualize.stream_svg.Drawing">
-<em class="property">class </em><code class="descclassname">stream_graph.visualize.stream_svg.</code><code class="descname">Drawing</code><span class="sig-paren">(</span><em>name=None</em>, <em>alpha=0.0</em>, <em>omega=10.0</em>, <em>time_width=40</em>, <em>discrete=0</em>, <em>directed=False</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/3ddf02d/stream_graph/visualize/stream_svg.py#L31"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/visualize/stream_svg.html#Drawing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.visualize.stream_svg.Drawing" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">stream_graph.visualize.stream_svg.</code><code class="descname">Drawing</code><span class="sig-paren">(</span><em>name=None</em>, <em>alpha=0.0</em>, <em>omega=10.0</em>, <em>time_width=40</em>, <em>discrete=0</em>, <em>directed=False</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/cc1ab69/stream_graph/visualize/stream_svg.py#L31"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/visualize/stream_svg.html#Drawing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.visualize.stream_svg.Drawing" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initializes a stream graph drawing.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -402,7 +403,7 @@ overrides the normal algorithm (and the outcome is cached).</p>
 
 <dl class="method">
 <dt id="stream_graph.visualize.stream_svg.Drawing.addLink">
-<code class="descname">addLink</code><span class="sig-paren">(</span><em>self</em>, <em>u</em>, <em>v</em>, <em>b</em>, <em>e</em>, <em>curving=0.0</em>, <em>color='black'</em>, <em>height=0.5</em>, <em>width=None</em>, <em>direction='both'</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/3ddf02d/stream_graph/visualize/stream_svg.py#L194"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/visualize/stream_svg.html#Drawing.addLink"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.visualize.stream_svg.Drawing.addLink" title="Permalink to this definition">¶</a></dt>
+<code class="descname">addLink</code><span class="sig-paren">(</span><em>self</em>, <em>u</em>, <em>v</em>, <em>b</em>, <em>e</em>, <em>curving=0.0</em>, <em>color='black'</em>, <em>height=0.5</em>, <em>width=None</em>, <em>direction='both'</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/cc1ab69/stream_graph/visualize/stream_svg.py#L194"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/visualize/stream_svg.html#Drawing.addLink"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.visualize.stream_svg.Drawing.addLink" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adds a link from time b to time e between nodes u and v.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -433,7 +434,7 @@ positive values will draw the link bent on the right</p></li>
 
 <dl class="method">
 <dt id="stream_graph.visualize.stream_svg.Drawing.addNode">
-<code class="descname">addNode</code><span class="sig-paren">(</span><em>self</em>, <em>u</em>, <em>times=[]</em>, <em>color='black'</em>, <em>rectangle_color='white'</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/3ddf02d/stream_graph/visualize/stream_svg.py#L128"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/visualize/stream_svg.html#Drawing.addNode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.visualize.stream_svg.Drawing.addNode" title="Permalink to this definition">¶</a></dt>
+<code class="descname">addNode</code><span class="sig-paren">(</span><em>self</em>, <em>u</em>, <em>times=[]</em>, <em>color='black'</em>, <em>rectangle_color='white'</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/cc1ab69/stream_graph/visualize/stream_svg.py#L128"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/visualize/stream_svg.html#Drawing.addNode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.visualize.stream_svg.Drawing.addNode" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adds a new node to the stream graph.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -456,7 +457,7 @@ positive values will draw the link bent on the right</p></li>
 
 <dl class="method">
 <dt id="stream_graph.visualize.stream_svg.Drawing.addNodeCluster">
-<code class="descname">addNodeCluster</code><span class="sig-paren">(</span><em>self</em>, <em>u</em>, <em>times=[]</em>, <em>color='blue'</em>, <em>width=None</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/3ddf02d/stream_graph/visualize/stream_svg.py#L363"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/visualize/stream_svg.html#Drawing.addNodeCluster"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.visualize.stream_svg.Drawing.addNodeCluster" title="Permalink to this definition">¶</a></dt>
+<code class="descname">addNodeCluster</code><span class="sig-paren">(</span><em>self</em>, <em>u</em>, <em>times=[]</em>, <em>color='blue'</em>, <em>width=None</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/cc1ab69/stream_graph/visualize/stream_svg.py#L363"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/visualize/stream_svg.html#Drawing.addNodeCluster"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.visualize.stream_svg.Drawing.addNodeCluster" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adds a node cluster (drawn as a rectangle) for one node over time.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -480,7 +481,7 @@ positive values will draw the link bent on the right</p></li>
 
 <dl class="method">
 <dt id="stream_graph.visualize.stream_svg.Drawing.addParameter">
-<code class="descname">addParameter</code><span class="sig-paren">(</span><em>self</em>, <em>start</em>, <em>end</em>, <em>letter</em>, <em>value</em>, <em>color='black'</em>, <em>width=1</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/3ddf02d/stream_graph/visualize/stream_svg.py#L406"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/visualize/stream_svg.html#Drawing.addParameter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.visualize.stream_svg.Drawing.addParameter" title="Permalink to this definition">¶</a></dt>
+<code class="descname">addParameter</code><span class="sig-paren">(</span><em>self</em>, <em>start</em>, <em>end</em>, <em>letter</em>, <em>value</em>, <em>color='black'</em>, <em>width=1</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/cc1ab69/stream_graph/visualize/stream_svg.py#L406"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/visualize/stream_svg.html#Drawing.addParameter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.visualize.stream_svg.Drawing.addParameter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adds a parameter (like Delta=2). Multiple parameters will be placed at the top of the drawing, on each other’s side</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -502,7 +503,7 @@ positive values will draw the link bent on the right</p></li>
 
 <dl class="method">
 <dt id="stream_graph.visualize.stream_svg.Drawing.addPath">
-<code class="descname">addPath</code><span class="sig-paren">(</span><em>self</em>, <em>path</em>, <em>start</em>, <em>end</em>, <em>gamma=0</em>, <em>color='yellow'</em>, <em>opacity='0.7'</em>, <em>width=1</em>, <em>depth=51</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/3ddf02d/stream_graph/visualize/stream_svg.py#L483"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/visualize/stream_svg.html#Drawing.addPath"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.visualize.stream_svg.Drawing.addPath" title="Permalink to this definition">¶</a></dt>
+<code class="descname">addPath</code><span class="sig-paren">(</span><em>self</em>, <em>path</em>, <em>start</em>, <em>end</em>, <em>gamma=0</em>, <em>color='yellow'</em>, <em>opacity='0.7'</em>, <em>width=1</em>, <em>depth=51</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/cc1ab69/stream_graph/visualize/stream_svg.py#L483"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/visualize/stream_svg.html#Drawing.addPath"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.visualize.stream_svg.Drawing.addPath" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adds a temporal path from a sequence of (t,u,v) meaning that there was a hop from u to v at time t.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -529,7 +530,7 @@ positive values will draw the link bent on the right</p></li>
 
 <dl class="method">
 <dt id="stream_graph.visualize.stream_svg.Drawing.addRectangle">
-<code class="descname">addRectangle</code><span class="sig-paren">(</span><em>self</em>, <em>u</em>, <em>v</em>, <em>b</em>, <em>e</em>, <em>width=100</em>, <em>depth=51</em>, <em>opacity='0.5'</em>, <em>color='green'</em>, <em>border=''</em>, <em>bordercolor=None</em>, <em>borderwidth=0</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/3ddf02d/stream_graph/visualize/stream_svg.py#L541"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/visualize/stream_svg.html#Drawing.addRectangle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.visualize.stream_svg.Drawing.addRectangle" title="Permalink to this definition">¶</a></dt>
+<code class="descname">addRectangle</code><span class="sig-paren">(</span><em>self</em>, <em>u</em>, <em>v</em>, <em>b</em>, <em>e</em>, <em>width=100</em>, <em>depth=51</em>, <em>opacity='0.5'</em>, <em>color='green'</em>, <em>border=''</em>, <em>bordercolor=None</em>, <em>borderwidth=0</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/cc1ab69/stream_graph/visualize/stream_svg.py#L541"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/visualize/stream_svg.html#Drawing.addRectangle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.visualize.stream_svg.Drawing.addRectangle" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adds a rectangle from node u to node v and from time b to time e.
 The corners of the rectangle will be (u,b), (u,e), (v,b), (v,e)</p>
 <dl class="field-list simple">
@@ -562,7 +563,7 @@ The corners of the rectangle will be (u,b), (u,e), (v,b), (v,e)</p>
 
 <dl class="method">
 <dt id="stream_graph.visualize.stream_svg.Drawing.addTime">
-<code class="descname">addTime</code><span class="sig-paren">(</span><em>self</em>, <em>t</em>, <em>label=''</em>, <em>width=1</em>, <em>color='black'</em>, <em>opacity=0.5</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/3ddf02d/stream_graph/visualize/stream_svg.py#L597"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/visualize/stream_svg.html#Drawing.addTime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.visualize.stream_svg.Drawing.addTime" title="Permalink to this definition">¶</a></dt>
+<code class="descname">addTime</code><span class="sig-paren">(</span><em>self</em>, <em>t</em>, <em>label=''</em>, <em>width=1</em>, <em>color='black'</em>, <em>opacity=0.5</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/cc1ab69/stream_graph/visualize/stream_svg.py#L597"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/visualize/stream_svg.html#Drawing.addTime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.visualize.stream_svg.Drawing.addTime" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adds a vertical dotted line at a given time.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -585,7 +586,7 @@ The corners of the rectangle will be (u,b), (u,e), (v,b), (v,e)</p>
 
 <dl class="method">
 <dt id="stream_graph.visualize.stream_svg.Drawing.addTimeNodeMark">
-<code class="descname">addTimeNodeMark</code><span class="sig-paren">(</span><em>self</em>, <em>t</em>, <em>v</em>, <em>color='black'</em>, <em>width=2</em>, <em>opacity='1.0'</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/3ddf02d/stream_graph/visualize/stream_svg.py#L453"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/visualize/stream_svg.html#Drawing.addTimeNodeMark"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.visualize.stream_svg.Drawing.addTimeNodeMark" title="Permalink to this definition">¶</a></dt>
+<code class="descname">addTimeNodeMark</code><span class="sig-paren">(</span><em>self</em>, <em>t</em>, <em>v</em>, <em>color='black'</em>, <em>width=2</em>, <em>opacity='1.0'</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/cc1ab69/stream_graph/visualize/stream_svg.py#L453"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/visualize/stream_svg.html#Drawing.addTimeNodeMark"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.visualize.stream_svg.Drawing.addTimeNodeMark" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adds a mark (a cross) at a given node and time.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>

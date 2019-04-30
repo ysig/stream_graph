@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Overview: module code &mdash; Stream Graph 0.1 documentation</title>
+  <title>General Information &mdash; Stream Graph 0.1 documentation</title>
   
 
   
@@ -37,7 +37,9 @@
   <link rel="stylesheet" href="../_static/gallery.css" type="text/css" />
   <link rel="stylesheet" href="../_static/_static/css/supplementary.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" /> 
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Dependencies" href="installation.html" />
+    <link rel="prev" title="Overview" href="../index.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -88,11 +90,16 @@
               
             
             
-              <ul>
-<li class="toctree-l1"><a class="reference internal" href="../introduction/about.html">General Information</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../introduction/installation.html">Dependencies</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../introduction/installation.html#installing-dependencies">Installing Dependencies</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../introduction/installation.html#installing-the-master-version">Installing the master-version</a></li>
+              <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">General Information</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#about">About</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#authors">Authors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#license">License</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html#installing-dependencies">Installing Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html#installing-the-master-version">Installing the master-version</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../auto_examples/index.html">Getting Started</a></li>
@@ -153,10 +160,14 @@
     
       <li><a href="../index.html">Docs</a> &raquo;</li>
         
-      <li>Overview: module code</li>
+      <li>General Information</li>
     
     
       <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/introduction/about.rst.txt" rel="nofollow"> View page source</a>
+          
         
       </li>
     
@@ -168,40 +179,56 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <h1>All modules for which code is available</h1>
-<ul><li><a href="abc.html">abc</a></li>
-<li><a href="pandas/core/frame.html">pandas.core.frame</a></li>
-<li><a href="pandas/core/generic.html">pandas.core.generic</a></li>
-<li><a href="pandas/core/ops.html">pandas.core.ops</a></li>
-<li><a href="pandas/plotting/_core.html">pandas.plotting._core</a></li>
-<li><a href="stream_graph/ABC/link_set.html">stream_graph.ABC.link_set</a></li>
-<li><a href="stream_graph/ABC/node_set.html">stream_graph.ABC.node_set</a></li>
-<li><a href="stream_graph/ABC/temporal_link_set.html">stream_graph.ABC.temporal_link_set</a></li>
-<li><a href="stream_graph/ABC/temporal_node_set.html">stream_graph.ABC.temporal_node_set</a></li>
-<li><a href="stream_graph/ABC/time_set.html">stream_graph.ABC.time_set</a></li>
-<li><a href="stream_graph/base/graph.html">stream_graph.base.graph</a></li>
-<li><a href="stream_graph/base/instantaneous_df.html">stream_graph.base.instantaneous_df</a></li>
-<li><a href="stream_graph/base/interval_df.html">stream_graph.base.interval_df</a></li>
-<li><a href="stream_graph/base/itemporal_link_set_df.html">stream_graph.base.itemporal_link_set_df</a></li>
-<li><a href="stream_graph/base/itemporal_node_set_df.html">stream_graph.base.itemporal_node_set_df</a></li>
-<li><a href="stream_graph/base/itime_set_s.html">stream_graph.base.itime_set_s</a></li>
-<li><a href="stream_graph/base/link_set_df.html">stream_graph.base.link_set_df</a></li>
-<li><a href="stream_graph/base/node_set_s.html">stream_graph.base.node_set_s</a></li>
-<li><a href="stream_graph/base/stream_graph.html">stream_graph.base.stream_graph</a></li>
-<li><a href="stream_graph/base/temporal_link_set_df.html">stream_graph.base.temporal_link_set_df</a></li>
-<li><a href="stream_graph/base/temporal_node_set_b.html">stream_graph.base.temporal_node_set_b</a></li>
-<li><a href="stream_graph/base/temporal_node_set_df.html">stream_graph.base.temporal_node_set_df</a></li>
-<li><a href="stream_graph/base/time_set_df.html">stream_graph.base.time_set_df</a></li>
-<li><a href="stream_graph/exceptions.html">stream_graph.exceptions</a></li>
-<li><a href="stream_graph/visualize/stream_fig.html">stream_graph.visualize.stream_fig</a></li>
-<li><a href="stream_graph/visualize/stream_svg.html">stream_graph.visualize.stream_svg</a></li>
-<li><a href="stream_graph/visualize/visualizer.html">stream_graph.visualize.visualizer</a></li>
-</ul>
+  <div class="section" id="general-information">
+<h1>General Information<a class="headerlink" href="#general-information" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="about">
+<h2>About<a class="headerlink" href="#about" title="Permalink to this headline">¶</a></h2>
+<p>This library is an attempt for the modelization of Stream Graphs. A
+Stream Graph is a Graph whose nodes and edges (also called <em>links</em>) can
+appear and disappear throughout time. Inside this module various methods
+that facilitate the study of such graphs can be found, both simple as
+degree distibutions (over time), as well as complicated like computing
+maximal cliques, centrality-scores etc. This library is hence designed
+for the analysis of the temporal dynamics of networks, such as
+communication dynamics in social media.</p>
+<p>A Stream-Graph was first formally defined by Matthieu Latapy et al. in
+[<a class="reference external" href="https://hal.archives-ouvertes.fr/hal-01665084">1</a>], as a object
+constituted of four components: a) a set of nodes belonging to the
+graph, b) a time-set representing the graph’s lifespan, c) a
+temporal-node-set, that is a set of nodes and times representing the
+presence of node, and d) a temporal-link-set, that is a set of node
+pairs and times representing the presence of link.</p>
+</div>
+<div class="section" id="authors">
+<h2>Authors<a class="headerlink" href="#authors" title="Permalink to this headline">¶</a></h2>
+<p>This package has been developed by researchers of the <a class="reference external" href="http://www.complexnetworks.fr/">Complex
+Networks</a> team, within the <a class="reference external" href="https://www.lip6.fr/">Computer
+Science Laboratory of Paris 6</a>, for the
+<a class="reference external" href="https://www.odycceus.eu/">ODYCCEUS</a> project, founded by the
+<a class="reference external" href="https://ec.europa.eu/research/participants/portal/desktop/en/opportunities/h2020/calls/h2020-fetproact-2016-2017.html">European Commission FETPROACT 2016-2017 program</a>
+under grant 732942.</p>
+</div>
+<div class="section" id="license">
+<h2>License<a class="headerlink" href="#license" title="Permalink to this headline">¶</a></h2>
+<p>Copyright © 2019 <a class="reference external" href="http://www.complexnetworks.fr">Complex Networks - LIP6</a></p>
+<p><code class="docutils literal notranslate"><span class="pre">stream_graph</span></code> is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version. It is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GN General Public License for more details. You should have received a copy of the GNU General Public License along with this program. If not, see <a class="reference external" href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>.</p>
+</div>
+</div>
+
 
            </div>
            
           </div>
           <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="installation.html" class="btn btn-neutral float-right" title="Dependencies" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../index.html" class="btn btn-neutral float-left" title="Overview" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
   
 
   <hr/>
