@@ -3,14 +3,14 @@ import copy
 import abc
 from warnings import warn
 
-from ._utils import ABC_to_string
+from .utils import ABC_to_string
 
 # 2/3 Cross Compatibility
-ABC = abc.ABCMeta('ABC', (object,), {'__slots__': ()}) 
+ABC = abc.ABCMeta('ABC', (object,), {'__slots__': ()})
 
 class TimeSet(ABC):
     """TimeSet Object API Specification.
-    
+
     A TimeSet can be abstractly be defined as a set of intervals :code:`(ts, tf)`.
 
     """
@@ -27,11 +27,10 @@ class TimeSet(ABC):
     @abc.abstractmethod
     def discrete(self):
         """Designate if the TimeSet is on discrete Time.
-        
+
         Parameters
         ----------
         None. Property.
-        
 
         Returns
         -------
@@ -46,24 +45,23 @@ class TimeSet(ABC):
     @abc.abstractmethod
     def size(self):
         """Returns the size of the TimeSet.
-        
+
         Parameters
         ----------
         None. Property.
-        
 
         Returns
         -------
         size : Real
             The total amount of time inside the TimeSet.
-        
+
         """
         pass
 
     @abc.abstractmethod
     def __contains__(self, t):
         """Implementation of the :code:`in` operator for TimeSet.
-        
+
         Parameters
         ----------
         l : tuple or Real
@@ -73,18 +71,18 @@ class TimeSet(ABC):
         -------
         contains : Bool
             Returns true if time :code:`t` the :code:`(ts, tf)` is contained inside the :code:`TimeSet`.
-        
+
         """
         pass
 
     @abc.abstractmethod
     def __and__(self, ts):
         """Implementation of the :code:`&` operator for a TimeSet object.
-        
+
         Parameters
         ----------
         ns : TimeSet
-        
+
         Returns
         -------
         out : TimeSet
@@ -96,11 +94,11 @@ class TimeSet(ABC):
     @abc.abstractmethod
     def __or__(self, ts):
         """Implementation of the :code:`|` operator for a TimeSet object.
-        
+
         Parameters
         ----------
         ns : TimeSet
-        
+
         Returns
         -------
         out : TimeSet
@@ -112,11 +110,11 @@ class TimeSet(ABC):
     @abc.abstractmethod
     def __sub__(self, ts):
         """Implementation of the :code:`-` operator for a TimeSet object.
-        
+
         Parameters
         ----------
         ns : TimeSet
-        
+
         Returns
         -------
         out : TimeSet
@@ -128,11 +126,11 @@ class TimeSet(ABC):
     @abc.abstractmethod
     def __iter__(self):
         """Implementation of the :code:`iter` function for a TimeSet object.
-        
+
         Parameters
         ----------
         None
-        
+
         Returns
         -------
         out : Iterator of tuple
@@ -144,11 +142,11 @@ class TimeSet(ABC):
     @abc.abstractmethod
     def __bool__(self):
         """Implementation of the :code:`bool` casting of a TimeSet object.
-        
+
         Parameters
         ----------
         None.
-        
+
         Returns
         -------
         out : Bool
@@ -163,11 +161,11 @@ class TimeSet(ABC):
 
     def copy(self, deep=True):
         """Returns a deep or shallow copy of the current TimeSet.
-        
+
         Parameters
         ----------
         deep : Bool
-        
+
         Returns
         -------
         timeset_copy : TimeSet
@@ -181,17 +179,17 @@ class TimeSet(ABC):
 
     def discretize(self, bins=None, bin_size=None):
         """Returns a discrete version of the current TimeSet.
-        
+
         Parameters
         ----------
         bins : Iterable or None.
             If None, step should be provided.
             If Iterable it should contain n+1 elements that declare the start and the end of all (continuous) bins.
-        
+
         bin_size : Int or datetime
             If bins is provided this argument is ommited.
             Else declare the size of each bin.
-        
+
         Returns
         -------
         timeset_discrete : TimeSet
@@ -211,9 +209,10 @@ class TimeSet(ABC):
     def _to_discrete(self, bins, bin_size):
         pass
 
+
 class ITimeSet(TimeSet):
     """Instantaneous TimeSet Object API Specification.
-    
+
     A TimeSet can be abstractly be defined as a set of time-stamps :code:`t`.
 
     """

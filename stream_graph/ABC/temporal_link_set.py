@@ -2,22 +2,23 @@ from __future__ import absolute_import
 import copy
 import abc
 
-from six import iteritems
+from warnings import warn
+from stream_graph.collections import TimeCollection
 
-from ._utils import ABC_to_string
+from .utils import ABC_to_string
 
 # 2/3 Cross Compatibility
-ABC = abc.ABCMeta('ABC', (object,), {'__slots__': ()}) 
+ABC = abc.ABCMeta('ABC', (object,), {'__slots__': ()})
 
 class TemporalLinkSet(ABC):
     """TemporalLinkSet Object API Specification.
-    
+
     A TemporalLinkSet can be abstractly be defined as a set of links :code:`(u, v)` associated with a set of intervals :code:`(ts, tf)`.
 
     """
     def __str__(self):
         return ABC_to_string(self, ['u', 'v'])
-    
+
     @property
     def _column_signature(self):
         return ('u', 'v', 'ts', 'tf')
@@ -30,29 +31,29 @@ class TemporalLinkSet(ABC):
     @property
     def weighted(self):
         """Designate if the TemporalLinkSet is weighted.
-        
+
         Parameters
         ----------
         None. Property.
-        
+
 
         Returns
         -------
         discrete : Bool or None
             True if weighted. Returns None if empty.
 
-        """        
+        """
         pass
 
     @property
     @abc.abstractmethod
     def discrete(self):
         """Designate if the TemporalLinkSet is on discrete Time.
-        
+
         Parameters
         ----------
         None. Property.
-        
+
 
         Returns
         -------
@@ -60,31 +61,58 @@ class TemporalLinkSet(ABC):
             True if the time is discrete.
             Returns None if empty.
 
-        """        
+        """
         pass
 
     @property
     @abc.abstractmethod
     def size(self):
         """Returns the size of the TemporalLinkSet.
-        
+
         Parameters
         ----------
         None. Property.
-        
+
 
         Returns
         -------
         size : Real
             The size :math:`\sum_{uv} |T_{uv}|` of the stream_graph.
-        
+
         """
+        pass
+
+    @property
+    def weighted_size(self):
+        """Returns the size of the TemporalLinkSet.
+
+        Parameters
+        ----------
+        None. Property.
+
+
+        Returns
+        -------
+        size : Real
+            The size :math:`\sum_{uv} w_{uv}|T_{uv}|` of the stream_graph.
+
+        """
+        if not bool(self):
+            return 0
+        elif self.weighted:
+            return self._weighted_size
+        else:
+            return self.size
+
+    @property
+    @abc.abstractmethod
+    def _weighted_size(self):
         pass
 
     @abc.abstractmethod
     def __contains__(self, l):
         """Implementation of the :code:`in` operator for TemporalLinkSet.
-        
+
         Parameters
         ----------
         l : tuple, len(l) == 3
@@ -96,24 +124,24 @@ class TemporalLinkSet(ABC):
         -------
         contains : Bool
             Returns true if the link :code:`(u, v)` exists at :code:`t` or through **all** :code:`(ts, tf)`.
-        
+
         """
         pass
 
     @abc.abstractmethod
     def links_at(t=None):
         """Return the links at a certain time.
-        
+
         Parameters
         ----------
         t : Real or None
-        
+
         Returns
         -------
         links : LinkSet or TimeGenerator(LinkSet)
             Active links at time t.
             If t is None, return a continuous TimeGenerator of LinkSet
-        
+
         """
         pass
 
@@ -121,28 +149,28 @@ class TemporalLinkSet(ABC):
     @abc.abstractmethod
     def basic_temporal_nodeset(self):
         """Return the basic temporal_nodeset that contains the temporal-linkstream.
-        
+
         Parameters
         ----------
         None. Property.
-        
+
         Returns
         -------
         temporal_nodeset : TemporalNodeSet
             Returns a TemporalNodeSet covering all nodes of the TemporalLinkSet from minimum time to maximum time.
-        
+
         """
         pass
 
     @property
-    @abc.abstractmethod    
+    @abc.abstractmethod
     def minimal_temporal_nodeset(self):
         """Return the minimal temporal_nodeset that can be derived from the temporal-linkstream.
-        
+
         Parameters
         ----------
         None. Property.
-        
+
         Returns
         -------
         temporal_nodeset : TemporalNodeSet
@@ -155,11 +183,11 @@ class TemporalLinkSet(ABC):
     @abc.abstractmethod
     def linkset(self):
         """Return the linkset that can be derived from the TemporalLinkSet.
-        
+
         Parameters
         ----------
         None. Property.
-        
+
         Returns
         -------
         linkset : LinkSet
@@ -172,11 +200,11 @@ class TemporalLinkSet(ABC):
     @abc.abstractmethod
     def timeset(self):
         """Return the timeset that can be derived from the TemporalLinkSet.
-        
+
         Parameters
         ----------
         None. Property.
-        
+
         Returns
         -------
         timeset : TimeSet
@@ -189,11 +217,11 @@ class TemporalLinkSet(ABC):
     @abc.abstractmethod
     def nodeset(self):
         """Return the nodeset that can be derived from the TemporalLinkSet.
-        
+
         Parameters
         ----------
         None. Property.
-        
+
         Returns
         -------
         nodeset : NodeSet
@@ -205,13 +233,13 @@ class TemporalLinkSet(ABC):
     @abc.abstractmethod
     def times_of(self, l=None, direction='out'):
         """Return the times that a link appears.
-        
+
         Parameters
         ----------
         l : (Node_Id, Node_Id) or None
 
         direction : string={'in', 'out', 'both'}, default='both'
-        
+
         Returns
         -------
         timeset : TimeSet or LinkCollection(TimeSet)
@@ -220,11 +248,11 @@ class TemporalLinkSet(ABC):
 
         """
         pass
-    
+
     @abc.abstractmethod
     def neighbors_at(self, u=None, t=None, direction='out'):
         """Return the NodeSet of neighbors of node at a certain time.
-        
+
         Parameters
         ----------
         u : Node_Id or None
@@ -233,7 +261,7 @@ class TemporalLinkSet(ABC):
             TimeStamp or Interval.
 
         direction : string={'in', 'out', 'both'}, default='both'
-        
+
         Returns
         -------
         nodeset : NodeSet or NodeCollection or TimeGenerator or NodeCollection(TimeSparseCollection)
@@ -247,7 +275,7 @@ class TemporalLinkSet(ABC):
 
     def degree_at(self, u=None, t=None, direction='out', weights=False):
         """Return the degree of a node at a certain time.
-        
+
         Parameters
         ----------
         u : Node_Id or None
@@ -276,7 +304,7 @@ class TemporalLinkSet(ABC):
     @abc.abstractmethod
     def degree_of(self, u=None, direction='out'):
         """Return the time-degree of a node at a certain time.
-        
+
         Parameters
         ----------
         u : Node_Id
@@ -316,13 +344,13 @@ class TemporalLinkSet(ABC):
     @abc.abstractmethod
     def neighbors(self, u=None, direction='out'):
         """Return the temporal_nodeset of a neighbors of a node.
-        
+
         Parameters
         ----------
         u : Node_Id or None
 
         direction : string={'in', 'out', 'both'}, default='both'
-        
+
         Returns
         -------
         temporal_nodeset : TemporalNodeSet or NodeCollection(TemporalNodeSet)
@@ -335,7 +363,7 @@ class TemporalLinkSet(ABC):
     @abc.abstractmethod
     def substream(self, nsu=None, nsv=None, ts=None):
         """Return the subtream occuring from two nodesets and a timeset.
-        
+
         Parameters
         ----------
         nsu : NodeSet or None
@@ -343,7 +371,7 @@ class TemporalLinkSet(ABC):
         nsv : NodeSet or None
 
         ts : TimeSet or None
-        
+
         Returns
         -------
         temporal_linkstream : TemporalLinkSet
@@ -354,12 +382,12 @@ class TemporalLinkSet(ABC):
 
     def filter(self, fun):
         """Filter the link stream.
-        
+
         Parameters
         ----------
         fun : function
             A function that for each a tuple as it is defined from iter, return True or False.
-        
+
         Returns
         -------
         temporal_linkstream : TemporalLinkSet
@@ -372,11 +400,11 @@ class TemporalLinkSet(ABC):
     @abc.abstractmethod
     def __bool__(self):
         """Implementation of the :code:`bool` casting of a TemporalLinkSet object.
-        
+
         Parameters
         ----------
         None.
-        
+
         Returns
         -------
         out : Bool
@@ -388,11 +416,11 @@ class TemporalLinkSet(ABC):
     @abc.abstractmethod
     def __and__(self, ls):
         """Implementation of the :code:`&` operator of a TemporalLinkSet object.
-        
+
         Parameters
         ----------
         ls : TemporalLinkSet
-        
+
         Returns
         -------
         out : TemporalLinkSet
@@ -404,11 +432,11 @@ class TemporalLinkSet(ABC):
     @abc.abstractmethod
     def __or__(self, ls):
         """Implementation of the :code:`|` operator for a TemporalLinkSet object.
-        
+
         Parameters
         ----------
         ls : TemporalLinkSet
-        
+
         Returns
         -------
         out : TemporalLinkSet
@@ -420,11 +448,11 @@ class TemporalLinkSet(ABC):
     @abc.abstractmethod
     def __sub__(self, ls):
         """Implementation of the :code:`-` operator for a TemporalLinkSet object.
-        
+
         Parameters
         ----------
         ls : TemporalLinkSet
-        
+
         Returns
         -------
         out : TemporalLinkSet
@@ -436,11 +464,11 @@ class TemporalLinkSet(ABC):
     @abc.abstractmethod
     def __iter__(self):
         """Implementation of the :code:`iter` function for a TemporalLinkSet object.
-        
+
         Parameters
         ----------
         None
-        
+
         Returns
         -------
         out : Iterator of tuple
@@ -452,11 +480,11 @@ class TemporalLinkSet(ABC):
     @abc.abstractmethod
     def issuperset(self, ls):
         """Check if a TemporalLinkSet contains another TemporalLinkSet.
-        
+
         Parameters
         ----------
         ls : TemporalLinkSet
-        
+
         Returns
         -------
         issuperset_f : Bool
@@ -468,11 +496,11 @@ class TemporalLinkSet(ABC):
     @abc.abstractmethod
     def induced_substream(self, ns):
         """Returns the induced substream from a TemporalNodeSet.
-        
+
         Parameters
         ----------
         ns : TemporalNodeSet
-        
+
         Returns
         -------
         substream : TemporalLinkSet
@@ -484,17 +512,17 @@ class TemporalLinkSet(ABC):
     @abc.abstractmethod
     def neighborhood(self, ns, direction='out'):
         """Returns the neighborhood of a TemporalNodeSet.
-        
+
         Parameters
         ----------
         ns : TemporalNodeSet
-        
+
         direction : string={'in', 'out', 'both'}, default='both'
-        
+
         Returns
         -------
         neighborhood : TemporalNodeSet
-            Returns the temporal_nodeset of neighbors of nodes inside ns for a set amount of time.  
+            Returns the temporal_nodeset of neighbors of nodes inside ns for a set amount of time.
 
         """
         pass
@@ -502,11 +530,11 @@ class TemporalLinkSet(ABC):
     @property
     def m(self):
         """Returns number of links of the TemporalLinkSet.
-        
+
         Parameters
         ----------
         None. Property.
-        
+
         Returns
         -------
         m : Int
@@ -516,12 +544,12 @@ class TemporalLinkSet(ABC):
         return self.linkset.size
 
     def copy(self, deep=True):
-        """Returns a deep or shallow copy of the current TemporalLinkSet. 
-        
+        """Returns a deep or shallow copy of the current TemporalLinkSet.
+
         Parameters
         ----------
         deep : Bool
-        
+
         Returns
         -------
         temporal-linkstream_copy : TemporalLinkSet
@@ -535,7 +563,7 @@ class TemporalLinkSet(ABC):
 
     def m_at(self, t=None, weights=False):
         """Returns the number of links appearing at a certain time.
-        
+
         Parameters
         ----------
         t : Int
@@ -550,7 +578,7 @@ class TemporalLinkSet(ABC):
         """
         if not bool(self):
             if t is None:
-                return TimeCollection()       
+                return TimeCollection(discrete=self.discrete_)
             else:
                 return .0
         elif weights and self.weighted:
@@ -559,31 +587,31 @@ class TemporalLinkSet(ABC):
             return self._m_at_unweighted(t)
 
     def _m_at_weighted(self, t):
-        if t is None:    
+        if t is None:
             from stream_graph.collections import TimeCollection
             time_links = self.links_at()
-            return TimeCollection([(t, l.size_weighted) for t, l in time_links], time_links.instants)
+            return TimeCollection([(time, l.weighted_size) for time, l in time_links], time_links.instants)
         else:
-            return self.links_at(t).size_weighted
+            return self.links_at(t).weighted_size
 
     def _m_at_unweighted(self, t):
-        if t is None:    
+        if t is None:
             from stream_graph.collections import TimeCollection
             time_links = self.links_at()
-            return TimeCollection([(t, l.size) for t, l in time_links], time_links.instants)
+            return TimeCollection([(time, l.size) for time, l in time_links], time_links.instants)
         else:
             return self.links_at(t).size
 
 
     def duration_of(self, l=None, direction='out'):
         """Returns the total duration of a link.
-        
+
         Parameters
         ----------
         l : (Node_Id, Node_Id) or None
 
         direction : string={'in', 'out', 'both'}, default='both'
-        
+
         Returns
         -------
         time : Real or dict
@@ -601,11 +629,11 @@ class TemporalLinkSet(ABC):
     @abc.abstractmethod
     def get_maximal_cliques(self, direction='both'):
         """Returns the maximal cliques of the temporal-linkstream.
-        
+
         Parameters
         ----------
         direction : string={'in', 'out', 'both'}, default='both'
-        
+
         Returns
         -------
         maximal_cliques : set
@@ -616,11 +644,11 @@ class TemporalLinkSet(ABC):
     @property
     def as_stream_graph_basic(self):
         """Generate the basic stream graph containing this TemporalLinkSet.
-        
+
         Parameters
         ----------
         None. Property.
-        
+
         Returns
         -------
         stream_graph : StreamGraph
@@ -634,11 +662,11 @@ class TemporalLinkSet(ABC):
     @property
     def as_stream_graph_minimal(self):
         """Generate the minimal stream graph containing this TemporalNodeSet.
-        
+
         Parameters
         ----------
         None. Property.
-        
+
         Returns
         -------
         stream_graph : StreamGraph
@@ -647,24 +675,24 @@ class TemporalLinkSet(ABC):
         """
         from stream_graph.base.stream_graph import StreamGraph
         return StreamGraph(self.nodeset, self.timeset, self.minimal_temporal_nodeset, self)
-    
+
     # Python2 cross-compatibility
     def __nonzero__(self):
         return self.__bool__()
 
     def discretize(self, bins=None, bin_size=None):
         """Returns a discrete version of the current TemporalLinkSet.
-        
+
         Parameters
         ----------
         bins : Iterable or None.
             If None, step should be provided.
             If Iterable it should contain n+1 elements that declare the start and the end of all (continuous) bins.
-        
+
         bin_size : Int or datetime
             If bins is provided this argument is ommited.
             Else declare the size of each bin.
-        
+
         Returns
         -------
         timeset_discrete : TimeSet
@@ -683,10 +711,10 @@ class TemporalLinkSet(ABC):
     @abc.abstractmethod
     def _to_discrete(self, bins, bin_size):
         pass
-        
+
 class ITemporalLinkSet(TemporalLinkSet):
     """Instantaneous Temporal LinkSet Object API Specification.
-    
+
     A ITemporalLinkSet can be abstractly be defined as a set of links :code:`(u, v)` associated with a timestamp :code:`ts`.
 
     """
@@ -703,38 +731,72 @@ class ITemporalLinkSet(TemporalLinkSet):
     @property
     def size(self):
         """Returns the size of the TemporalLinkSet.
-        
+
         Parameters
         ----------
         None. Property.
-        
+
 
         Returns
         -------
         size : Int
             If discrete returns total number of interactions.
             Else returns zero.
-        
+
         """
         if self.discrete:
-            return self._size_discrete
+            return self.number_of_interactions
         else:
             return .0
 
     @property
     @abc.abstractmethod
-    def _size_discrete(self):
+    def number_of_interactions(self):
         pass
+
+    @property
+    @abc.abstractmethod
+    def _weighted_number_of_interactions(self):
+        pass
+
+    @property
+    def weighted_number_of_interactions(self):
+        if self.weighted:
+            return self._weighted_number_of_interactions
+        else:
+            return self.number_of_interactions
+
+    @property
+    def _weighted_size(self):
+        """Returns the size of the TemporalLinkSet.
+
+        Parameters
+        ----------
+        None. Property.
+
+
+        Returns
+        -------
+        size : Int
+            If discrete returns the sum of weights of all interactions.
+            Else returns zero.
+
+        """
+        if self.discrete:
+            return self.weighted_number_of_interactions
+        else:
+            return .0
+
 
     def duration_of(self, l=None, direction='out'):
         """Returns the total duration of a link.
-        
+
         Parameters
         ----------
         l : (Node_Id, Node_Id) or None
 
         direction : string={'in', 'out', 'both'}, default='both'
-        
+
         Returns
         -------
         time : Real or dict
@@ -756,7 +818,7 @@ class ITemporalLinkSet(TemporalLinkSet):
 
     def degree_of(self, u=None, direction='out'):
         """Return the time-degree of a node at a certain time.
-        
+
         Parameters
         ----------
         u : Node_Id
@@ -774,7 +836,7 @@ class ITemporalLinkSet(TemporalLinkSet):
             return self._degree_of_discrete(u=u, direction=direction)
         else:
             if u is None:
-                from stream_graph.collections import LinkCollection
+                from stream_graph.collections import NodeCollection
                 return NodeCollection({u: 0. for u in self.nodeset})
             else:
                 return .0

@@ -2,14 +2,14 @@ from __future__ import absolute_import
 import copy
 import abc
 
-from ._utils import ABC_to_string
+from .utils import ABC_to_string
 
 # 2/3 Cross Compatibility
-ABC = abc.ABCMeta('ABC', (object,), {'__slots__': ()}) 
+ABC = abc.ABCMeta('ABC', (object,), {'__slots__': ()})
 
 class LinkSet(ABC):
     """LinkSet Object API Specification.
-    
+
     A LinkSet can be abstractly be defined as a set of links :code:`(u, v)`.
 
     """
@@ -21,74 +21,74 @@ class LinkSet(ABC):
     @abc.abstractmethod
     def weighted(self):
         """Designate if the LinkSet has weights.
-        
+
         Parameters
         ----------
         None. Property.
-        
+
 
         Returns
         -------
         weights : Bool
             True if the links are weighted.
             None if the linkset is empty.
-        
+
         """
-        pass    
+        pass
 
     @property
     def size(self):
         """Returns the size of the LinkSet.
-        
+
         Parameters
         ----------
         None. Property.
-        
+
 
         Returns
         -------
         size : Real
             The number of links.
-        
+
         """
         return sum(1 for _ in iter(self))
 
     @property
-    def size_weighted(self):
+    def weighted_size(self):
         """Returns the weighted size of the LinkSet.
-        
+
         Parameters
         ----------
         None. Property.
-        
+
 
         Returns
         -------
         size : Real
             The sum of weights of links.
-        
+
         """
         weighted = self.weighted
-        if weighted is not None:
+        if bool(self):
             if weighted:
-                return self._size_weighted
+                return self._weighted_size
             else:
                 return self.mdf.shape[0]
         else:
             return .0
 
-    def _size_weighted(self):
+    def _weighted_size(self):
         return sum(k[-1] for k in iter(self))
 
 
     @abc.abstractmethod
     def __bool__(self):
         """Implementation of the :code:`bool` casting of a LinkSet object.
-        
+
         Parameters
         ----------
         None.
-        
+
         Returns
         -------
         out : Bool
@@ -104,13 +104,13 @@ class LinkSet(ABC):
     @abc.abstractmethod
     def neighbors(self, u=None, direction='out'):
         """Return the nodeset of a neighbors of a node.
-        
+
         Parameters
         ----------
         u : Node_Id or None
 
         direction : string={'in', 'out', 'both'}, default='both'
-        
+
         Returns
         -------
         nodestream : NodeSet or NodeCollection(NodeSet)
@@ -122,7 +122,7 @@ class LinkSet(ABC):
 
     def degree(self, u=None, direction='out', weights=False):
         """Return the degree of a node.
-        
+
         Parameters
         ----------
         u : Node_Id, default=None
@@ -154,7 +154,7 @@ class LinkSet(ABC):
     @abc.abstractmethod
     def __contains__(self, l):
         """Implementation of the :code:`in` operator for LinkSet.
-        
+
         Parameters
         ----------
         l : tuple, len(l) == 2
@@ -167,18 +167,18 @@ class LinkSet(ABC):
             Returns true if the (u, v) appears in the LinkSet.
             If u is None v can match with anything and if v is None the opposite.
             If both u and v is None this function should return False.
-        
+
         """
         pass
 
     @abc.abstractmethod
     def __and__(self, ls):
         """Implementation of the :code:`&` operator for a LinkSet object.
-        
+
         Parameters
         ----------
         ls : LinkSet
-        
+
         Returns
         -------
         out : LinkSet
@@ -206,11 +206,11 @@ class LinkSet(ABC):
     @abc.abstractmethod
     def __sub__(self, ls):
         """Implementation of the :code:`-` operator for a LinkSet object.
-        
+
         Parameters
         ----------
         ls : LinkSet
-        
+
         Returns
         -------
         out : LinkStream
@@ -222,11 +222,11 @@ class LinkSet(ABC):
     @abc.abstractmethod
     def __iter__(self):
         """Implementation of the :code:`iter` function for a LinkSet object.
-        
+
         Parameters
         ----------
         None
-        
+
         Returns
         -------
         out : Iterator of tuple
@@ -242,7 +242,7 @@ class LinkSet(ABC):
         Parameters
         ----------
         ls : LinkSet
-        
+
         Returns
         -------
         issuperset_f : Bool
@@ -257,7 +257,7 @@ class LinkSet(ABC):
         Parameters
         ----------
         deep : Bool
-        
+
         Returns
         -------
         linkset_copy : LinkSet

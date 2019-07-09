@@ -3,17 +3,18 @@ import abc
 import copy
 
 from itertools import combinations
-from itertools import product
+from warnings import warn
 from collections import Iterable
 from six import string_types
-from ._utils import ABC_to_string
+from .utils import ABC_to_string
 
 # 2/3 Cross Compatibility
-ABC = abc.ABCMeta('ABC', (object,), {'__slots__': ()}) 
+ABC = abc.ABCMeta('ABC', (object,), {'__slots__': ()})
+
 
 class TemporalNodeSet(ABC):
     """TemporalNodeSet Object API Specification.
-    
+
     A TemporalNodeSet can be abstractly be defined as a set of nodes :code:`u` associated with a set of time intervals :code:`(ts, tf)`.
 
     """
@@ -30,31 +31,29 @@ class TemporalNodeSet(ABC):
     @abc.abstractmethod
     def discrete(self):
         """Designate if the TemporalNodeSet is on discrete Time.
-        
+
         Parameters
         ----------
         None. Property.
-        
 
         Returns
         -------
         discrete : Bool or None
             True if the time is discrete.
             Returns None if empty.
-        
-        """        
-        pass
 
+        """
+        pass
 
     @property
     @abc.abstractmethod
     def nodeset(self):
         """Return the nodeset that can be derived from this TemporalNodeSet.
-        
+
         Parameters
         ----------
         None. Property.
-        
+
         Returns
         -------
         nodeset : NodeSet
@@ -67,11 +66,11 @@ class TemporalNodeSet(ABC):
     @abc.abstractmethod
     def timeset(self):
         """Return the timeset that can be derived from this TemporalNodeSet.
-        
+
         Parameters
         ----------
         None. Property.
-        
+
         Returns
         -------
         timeset : TimeSet
@@ -84,17 +83,17 @@ class TemporalNodeSet(ABC):
     @abc.abstractmethod
     def size(self):
         """Returns the size of the TemporalNodeSet.
-        
+
         Parameters
         ----------
         None. Property.
-        
+
 
         Returns
         -------
         size : Real
             The size :math:`\sum_{u} |T_{u}|` of the stream_graph.
-        
+
         """
         pass
 
@@ -102,28 +101,28 @@ class TemporalNodeSet(ABC):
     @abc.abstractmethod
     def total_common_time(self):
         """Returns the total time that each node shares with all the other nodes of the TemporalNodeSet.
-        
+
         Parameters
         ----------
         None. Property.
-        
+
 
         Returns
         -------
         size : Real
             The size :math:`\sum_{uv\in V\otimes V} |T_{u} \cap T_{v}|` of the stream_graph.
-        
+
         """
         pass
 
     @property
     def n(self):
         """Returns number of nodes of the TemporalNodeSet.
-        
+
         Parameters
         ----------
         None. Property.
-        
+
         Returns
         -------
         n : Int
@@ -135,24 +134,24 @@ class TemporalNodeSet(ABC):
     @property
     def total_time(self):
         """Returns the size of the derived TimeSet.
-        
+
         Parameters
         ----------
         None. Property.
-        
+
 
         Returns
         -------
         total_time : Real
             The total amount of time from the union of intervals that nodes exist.
-        
+
         """
         return self.timeset.size
 
     @abc.abstractmethod
     def __contains__(self, u):
         """Implementation of the :code:`in` operator for LinkStream.
-        
+
         Parameters
         ----------
         l : tuple, len(l) == 2
@@ -164,14 +163,14 @@ class TemporalNodeSet(ABC):
         contains : Bool
             Returns True if a node :code:`u` exists at :code:`t` or through **all** :code:`(ts, tf)`.
             If an element is :code:`None`, :code:`in` will return True if the other elements matches.
-            If both elements are :code:`None` output will be None. 
-        
+            If both elements are :code:`None` output will be None.
+
         """
         pass
 
     def node_duration(self, u=None):
         """Returns the duration of a node.
-        
+
         Parameters
         ----------
         u : Node_Id or None
@@ -181,7 +180,7 @@ class TemporalNodeSet(ABC):
         duration : Real or NodeCollection(Real)
             The total amount of time that a node exist.
             If None, returns a NodeCollection with the durations for all nodes in the temporal_nodeset.
-        
+
         """
         if u is None:
             from stream_graph.collections import NodeCollection
@@ -192,11 +191,11 @@ class TemporalNodeSet(ABC):
     @abc.abstractmethod
     def common_time(self, u=None):
         """Returns the common_time between a node and one other or all.
-        
+
         Parameters
         ----------
         u : Node_Id or set(Node_Id) or None
-        
+
         Returns
         -------
         total_time : Real or NodeCollection(Real)
@@ -211,7 +210,7 @@ class TemporalNodeSet(ABC):
     @abc.abstractmethod
     def common_time_pair(self, l=None):
         """Returns the common_time between a pair of nodes.
-        
+
         Parameters
         ----------
         l : (Node_Id, Node_Id) or set((Node_Id, Node_Id)) or None
@@ -229,11 +228,11 @@ class TemporalNodeSet(ABC):
     @abc.abstractmethod
     def nodes_at(self, t=None):
         """Return the nodes at a certain time.
-        
+
         Parameters
         ----------
         t : Real or None
-        
+
         Returns
         -------
         nodes : NodeSet or TimeGenerator(NodeSet)
@@ -246,11 +245,11 @@ class TemporalNodeSet(ABC):
     @abc.abstractmethod
     def times_of(self, u=None):
         """Returns TimeSet that a nodes appears in the TemporalNodeSet.
-        
+
         Parameters
         ----------
         u : Node_Id or None
-        
+
         Returns
         -------
         timeset : TimeSet or NodeCollection(TimeSet)
@@ -262,11 +261,11 @@ class TemporalNodeSet(ABC):
 
     def n_at(self, t=None):
         """Returns number of nodes of the TemporalNodeSet at a certain time.
-        
+
         Parameters
         ----------
         t : Real
-        
+
         Returns
         -------
         n : Int or TimeCollection(Int)
@@ -274,7 +273,7 @@ class TemporalNodeSet(ABC):
             If None returns an iterator of tuples containing a timestamp and an Int.
 
         """
-        if t is None:
+        if t is None: # Wrong
             from stream_graph.collections import TimeCollection
             time_nodes = self.nodes_at()
             return TimeCollection([(ts, ns.size) for (ts, ns) in time_nodes], time_nodes.instants)
@@ -293,11 +292,11 @@ class TemporalNodeSet(ABC):
     @abc.abstractmethod
     def issuperset(self, ns):
         """Check if a temporal_nodeset contains another temporal_nodeset.
-        
+
         Parameters
         ----------
         ns : TemporalNodeSet
-        
+
         Returns
         -------
         issuperset_f : Bool
@@ -309,11 +308,11 @@ class TemporalNodeSet(ABC):
     @abc.abstractmethod
     def __iter__(self):
         """Implementation of the :code:`iter` function for a TemporalNodeSet object.
-        
+
         Parameters
         ----------
         None
-        
+
         Returns
         -------
         out : Iterator of tuple
@@ -325,11 +324,11 @@ class TemporalNodeSet(ABC):
     @abc.abstractmethod
     def __bool__(self):
         """Implementation of the :code:`bool` casting of a TemporalNodeSet object.
-        
+
         Parameters
         ----------
         None.
-        
+
         Returns
         -------
         out : Bool
@@ -345,11 +344,11 @@ class TemporalNodeSet(ABC):
     @abc.abstractmethod
     def __and__(self, ns):
         """Implementation of the :code:`&` operator for a TemporalNodeSet object.
-        
+
         Parameters
         ----------
         ns : TemporalNodeSet
-        
+
         Returns
         -------
         out : TemporalNodeSet
@@ -361,11 +360,11 @@ class TemporalNodeSet(ABC):
     @abc.abstractmethod
     def __sub__(self, ns):
         """Implementation of the :code:`-` operator for a TemporalNodeSet object.
-        
+
         Parameters
         ----------
         ns : TemporalNodeSet
-        
+
         Returns
         -------
         out : TemporalNodeSet
@@ -378,11 +377,11 @@ class TemporalNodeSet(ABC):
     @abc.abstractmethod
     def __or__(self, ns):
         """Implementation of the :code:`|` operator for a TemporalNodeSet object.
-        
+
         Parameters
         ----------
         ns : TemporalNodeSet
-        
+
         Returns
         -------
         out : TemporalNodeSet
@@ -393,11 +392,11 @@ class TemporalNodeSet(ABC):
 
     def copy(self, deep=True):
         """Returns a deep or shallow copy of the current TemporalNodeSet.
-        
+
         Parameters
         ----------
         deep : Bool
-        
+
         Returns
         -------
         temporal_nodeset_copy : TemporalNodeSet
@@ -411,17 +410,17 @@ class TemporalNodeSet(ABC):
 
     def discretize(self, bins=None, bin_size=None):
         """Returns a discrete version of the current TemporalNodeSet.
-        
+
         Parameters
         ----------
         bins : Iterable or None.
             If None, step should be provided.
             If Iterable it should contain n+1 elements that declare the start and the end of all (continuous) bins.
-        
+
         bin_size : Int or datetime
             If bins is provided this argument is ommited.
             Else declare the size of each bin.
-        
+
         Returns
         -------
         timeset_discrete : TimeSet
@@ -444,7 +443,7 @@ class TemporalNodeSet(ABC):
 
 class ITemporalNodeSet(TemporalNodeSet):
     """ITemporalNodeSet Object API Specification.
-    
+
     A Instantaneous Temporal NodeSet can be abstractly be defined as a set of nodes :code:`u` associated with a time-stamp :code:`ts`.
 
     """
@@ -469,18 +468,13 @@ class ITemporalNodeSet(TemporalNodeSet):
     @property
     def size(self):
         if self.discrete:
-            return self._size_discrete
+            return self.number_of_instants
         else:
             return 0
 
-    @property
-    @abc.abstractmethod
-    def _size_discrete(self):
-        pass
-
     def node_duration(self, u=None):
         if self.discrete:
-            return self._node_duration_discrete(u)            
+            return self._node_duration_discrete(u)
         else:
             if u is None:
                 from stream_graph.collections import NodeCollection
@@ -523,3 +517,7 @@ class ITemporalNodeSet(TemporalNodeSet):
     def _common_time_pair_discrete(self, l=None):
         pass
 
+    @property
+    @abc.abstractmethod
+    def number_of_instants(self):
+        pass

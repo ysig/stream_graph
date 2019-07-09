@@ -2,7 +2,7 @@ from __future__ import absolute_import
 import copy
 import abc
 
-from ._utils import ABC_to_string
+from .utils import ABC_to_string
 
 # 2/3 Cross Compatibility
 ABC = abc.ABCMeta('ABC', (object,), {'__slots__': ()}) 
