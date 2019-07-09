@@ -3,17 +3,17 @@ from itertools import chain
 from itertools import permutations
 from itertools import combinations
 from collections import Iterable
+from warnings import warn
 
-from stream_graph import ABC
+from .multi_df_utils import _closed_to_tuple
 from .node_set_s import NodeSetS
 from .time_set_df import TimeSetDF
 from .temporal_node_set_df import TemporalNodeSetDF
+from stream_graph import ABC
 from stream_graph.collections import NodeCollection
 from stream_graph.collections import LinkCollection
 from stream_graph.collections import TimeCollection
 from stream_graph.collections import TimeGenerator
-from stream_graph.exceptions import UnrecognizedNodeSet
-from stream_graph.exceptions import UnrecognizedTimeSet
 from stream_graph.exceptions import UnrecognizedTemporalNodeSet
 
 
@@ -22,14 +22,14 @@ class TemporalNodeSetB(ABC.TemporalNodeSet):
     def __init__(self, nodeset=None, timeset=None, discrete=None):
         """Initialize a Temporal Node Set.
 
-        All nodes defined by a nodeset, exist in all the time domain defined by timeset. 
+        All nodes defined by a nodeset, exist in all the time domain defined by timeset.
 
         Parameters:
         -----------
         nodeset: ABC.NodeSet
 
         timeset: ABC.TimeSet
-        
+
         discrete: bool or None
 
         """
@@ -42,13 +42,13 @@ class TemporalNodeSetB(ABC.TemporalNodeSet):
 
             if isinstance(timeset, ABC.TimeSet):
                 if discrete is not None:
-                    warnings.warn('The discrete signature is the one of the given timeset')
+                    warn('The discrete signature is derived from the one of the given timeset')
                 self.timeset_ = timeset
             else:
                 if discrete is None:
-                    discrete = False
+                    discrete = True
                 self.timeset_ = TimeSetDF(timeset, discrete=discrete)
-                
+
         elif any(is_none):
             raise ValueError('All arguments should have values or be None')
 
@@ -111,12 +111,21 @@ class TemporalNodeSetB(ABC.TemporalNodeSet):
         else:
             return 0
 
-
     @property
     def total_common_time(self):
         n = self.n
         return n*(n-1)*self.timeset_.size
 
+    @property
+    def number_of_instants(self):
+        if self.timeset_.instantaneous:
+            return self.timeset_.number_of_instants * self.n
+        else:
+            raise AttributeError('Instantaneous \'TemporalNodeSetB\' has no attribute \'number_of_instants\'')
+
+    @property
+    def instantaneous(self):
+        return self.timeset_.instantaneous
 
     def __contains__(self, u):
         assert type(u) is tuple and len(u) is 2
@@ -149,19 +158,19 @@ class TemporalNodeSetB(ABC.TemporalNodeSet):
             return LinkCollection({(u, v): self.total_time for u, v in combinations(self.nodeset_, 2)})
         elif isinstance(l, Iterable) and not (isinstance(l, tuple) and len(l) == 2 and any(not isinstance(a, Iterable) for a in l)):
             nodes, links = set(self.nodeset_) & set(a for u, v in l for a in (u, v)), set(l)
-            return LinkCollection({(u, v): self.total_time for u, v in permutations(nodes, 2) if (u, v) in links}) 
+            return LinkCollection({(u, v): self.total_time for u, v in permutations(nodes, 2) if (u, v) in links})
 
         if bool(self) and l[0] in self.nodeset_ and l[1] in self.nodeset_:
             return self.total_time
         return 0.
 
-    def issuperset(self, ns):
-        if isinstance(ns, ABC.TemporalNodeSet):
-            if bool(self) or bool(ns):
-                if isinstance(ns, TemporalNodeSetB):
-                    return (self.timeset_.issuperset(ns.timeset_) and self.nodeset_.issuperset(ns.nodeset_))
+    def issuperset(self, tns):
+        if isinstance(tns, ABC.TemporalNodeSet):
+            if bool(self) or bool(tns):
+                if isinstance(tns, TemporalNodeSetB):
+                    return (self.timeset_.issuperset(tns.timeset_) and self.nodeset_.issuperset(tns.nodeset_))
                 else:
-                    return TemporalNodeSetDF(self).issuperset(ns)
+                    return TemporalNodeSetDF(self).issuperset(tns)
             else:
                 return True
         else:
@@ -171,11 +180,7 @@ class TemporalNodeSetB(ABC.TemporalNodeSet):
     def nodes_at(self, t=None):
         if t is None:
             if bool(self):
-                def generator(timeset, nodeset):
-                    for (ts, tf) in timeset:
-                        yield (ts, nodeset)
-                        yield (tf, NodeSetS())
-                return TimeGenerator(generator(self.timeset, self.nodeset))
+                return constant_time_generator(self.timeset, self.nodeset, NodeSetS(), self.discrete, self.instantaneous)
             else:
                 return TimeGenerator()
         else:
@@ -187,11 +192,7 @@ class TemporalNodeSetB(ABC.TemporalNodeSet):
     def n_at(self, t=None):
         if t is None:
             if bool(self):
-                def generator(timeset, n):
-                    for (ts, tf) in timeset:
-                        yield (ts, n)
-                        yield (tf, 0)
-                return TimeCollection(generator(self.timeset, self.n))
+                return constant_time_generator(self.timeset, self.n, 0, self.discrete, self.instantaneous)
             else:
                 return TimeCollection()
         else:
@@ -209,9 +210,14 @@ class TemporalNodeSetB(ABC.TemporalNodeSet):
             return TimeSetDF()
 
     def __iter__(self):
-        for a in self.nodeset_:
-            for b, c in self.timeset_:
-                yield (a, b, c)
+        if self.instantaneous:
+            for a in self.nodeset_:
+                for t in self.timeset_:
+                    yield (a, t)
+        else:
+            for a in self.nodeset_:
+                for key in self.timeset_:
+                    yield (a, ) + key
 
     def __bool__(self):
         return hasattr(self, 'nodeset_') and hasattr(self, 'timeset_') and bool(self.nodeset_) and bool(self.timeset_)
@@ -244,32 +250,29 @@ class TemporalNodeSetB(ABC.TemporalNodeSet):
             raise UnrecognizedTemporalNodeSet('right operand')
         return TemporalNodeSetB()
 
-    def __sub__(self, ns):
-        if isinstance(ns, ABC.TemporalNodeSet):
+    def __sub__(self, tns):
+        if isinstance(tns, ABC.TemporalNodeSet):
             if bool(self):
-                if bool(ns):
-                    assert ns.discrete == self.discrete
-                    if isinstance(ns, TemporalNodeSetB):
-                        ns_in = self.nodeset_ & ns.nodeset_
+                if bool(tns):
+                    assert tns.discrete == self.discrete
+                    if isinstance(tns, TemporalNodeSetB):
+                        ns_in = self.nodeset_ & tns.nodeset_
                         if bool(ns_in):
-                            ts_diff = self.timeset_ - ns.timeset_
+                            ts_diff = self.timeset_ - tns.timeset_
                             if bool(ts_diff):
-                                nsa = TemporalNodeSetDF(chain(
-                                    iter(TemporalNodeSetB(
-                                        nodeset=self.nodeset_ - ns.nodeset_,
-                                        timeset=self.timeset_)),
-                                    iter(TemporalNodeSetB(
-                                        nodeset=ns_in,
-                                        timeset=ts_diff))), discrete=self.discrete)
-                                return nsa 
-                        ns_diff = self.nodeset_ - ns.nodeset_
+                                tnsa_ = TemporalNodeSetB(nodeset=self.nodeset_ - tns.nodeset_, timeset=self.timeset_, discrete=self.discrete)
+                                tnsb_ = TemporalNodeSetB(nodeset=ns_in, timeset=ts_diff, discrete=self.discrete)
+                                iter_ = chain(iter(tnsa_), iter(tnsb_))
+                                nsa = TemporalNodeSetDF(iter_, disjoint_intervals=True, discrete=self.discrete)
+                                return nsa
+                        ns_diff = self.nodeset_ - tns.nodeset_
                         if bool(ns_diff):
                             return TemporalNodeSetB(nodeset=ns_diff, timeset=self.timeset_)
                     else:
                         try:
-                            return ns.__rsub__(self)
+                            return tns.__rsub__(self)
                         except (AttributeError, NotImplementedError):
-                            return TemporalNodeSetDF(self, discrete=self.discrete) - TemporalNodeSetDF(ns, discrete=self.discrete)
+                            return TemporalNodeSetDF(self, discrete=self.discrete) - TemporalNodeSetDF(tns, discrete=self.discrete)
             else:
                 return self.copy()
         else:
@@ -279,3 +282,23 @@ class TemporalNodeSetB(ABC.TemporalNodeSet):
     def _to_discrete(self, bins, bin_size):
         timeset, bins = self.timeset_.discretize(bins, bin_size)
         return self.__class__(timeset=timeset, nodeset=self.nodeset), bins
+
+
+def constant_time_generator(timeset, obj, empty_object, discrete, instantaneous):
+    if instantaneous:
+        def generate(timeset):
+            for t in timeset:
+                yield (t, obj)
+    elif discrete:
+        def generate(timeset):
+            for ts, tf in timeset:
+                yield (ts, obj)
+                yield (tf + 1, empty_object)
+    else:
+        def generate(timeset):
+            for ts, tf, it in timeset:
+                s, f = _closed_to_tuple(it)
+                yield ((ts, s), obj)
+                yield ((tf, not f), empty_object)
+
+    return TimeGenerator(generate(timeset), discrete=discrete, instantaneous=instantaneous)

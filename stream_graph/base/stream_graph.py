@@ -1,18 +1,19 @@
 from __future__ import absolute_import
 from warnings import warn
-from six import iteritems
 from stream_graph import ABC
 from stream_graph.exceptions import UnrecognizedStreamGraph
+from stream_graph.collections import DataCube
+
 
 class StreamGraph(object):
-    """StreamGraph
-    
+    """ StreamGraph
+
     A StreamGraph :math:`S=(T, V, W, E)` is a collection of four elements:
 
         - :math:`V`, a node-set
         - :math:`T`, a time-set
-        - :math:`W\subseteq T \times V`, a temporal-node-set
-        - :math:`E\subseteq T \times V \otimes V`, a temporal-link-set
+        - :math:`W\\subseteq T \\times V`, a temporal-node-set
+        - :math:`E\\subseteq T \\times V \\otimes V`, a temporal-link-set
 
     """
     def __init__(self, nodeset=None, timeset=None, temporal_nodeset=None, temporal_linkset=None, discrete=None, weighted=False):
@@ -27,7 +28,7 @@ class StreamGraph(object):
         temporal_nodeset: ABC.TemporalNodeSet or ABC.ITemporalNodeSet
 
         temporal_linkset: ABC.TemporalLinkSet or ABC.ITemporalLinkSet
-        
+
         """
         if not isinstance(nodeset, ABC.NodeSet):
             from . import NodeSetS
@@ -37,7 +38,7 @@ class StreamGraph(object):
         if not isinstance(timeset, ABC.TimeSet):
             from .time_set_df import TimeSetDF
             if discrete is None:
-                discrete=False
+                discrete = False
             self.timeset_ = TimeSetDF(timeset, discrete=discrete)
         else:
             self.timeset_ = timeset
@@ -135,7 +136,7 @@ class StreamGraph(object):
         Parameters
         ----------
         None. Property.
-        
+
         Returns
         -------
         ns_coverage : Real
@@ -151,11 +152,11 @@ class StreamGraph(object):
     @property
     def temporal_nodeset_coverage(self):
         """Calculate the coverage of the temporal-node-set.
-        
+
         Parameters
         ----------
         None. Property.
-        
+
         Returns
         -------
         ns_coverage : Real
@@ -170,11 +171,11 @@ class StreamGraph(object):
 
     def time_coverage_node(self, u=None):
         """Calculate the time coverage of a node inside the stream_graph.
-        
+
         Parameters
         ----------
         u: NodeId or None
-        
+
         Returns
         -------
         time_coverage_node : Real or NodeCollection(Real)
@@ -190,19 +191,19 @@ class StreamGraph(object):
                 else:
                     return .0
             return self.temporal_nodeset_.node_duration().map(fun)
-        else: 
+        else:
             if denom == .0:
                 return .0
             else:
                 return self.temporal_nodeset_.node_duration(u) / denom
 
-    def time_coverage_link(self, l=None, direction='out'):
+    def time_coverage_link(self, l=None, weights=False, direction='out'):
         """Calculate the time coverage of a link inside the stream_graph.
-        
+
         Parameters
         ----------
         l: (NodeId, NodeId) or None
-        
+
         direction: 'in', 'out' or 'both', default='out'
 
         Returns
@@ -213,29 +214,26 @@ class StreamGraph(object):
 
         """
         if l is None:
-            times = self.temporal_linkset_.duration_of(direction=direction)
+            times = self.temporal_linkset_.duration_of(direction=direction, weights=weights)
             active_links = set(k for k, v in times if v > .0)
             common_times = self.temporal_nodeset_.common_time_pair(l=active_links)
             def fun(k, v):
-                t = times[k]
-                if v > .0:
-                    return t/float(v)
-                return .0
+                return (times[k]/float(v) if v > .0 else .0)
             return common_times.map(fun)
         else:
             denom = float(self.temporal_nodeset_.common_time_pair(l))
             if denom == .0:
                 return .0
             else:
-                return self.temporal_linkset_.duration_of(l, direction) / denom
+                return self.temporal_linkset_.duration_of(l, direction=direction, weights=weights) / denom
 
     def node_coverage_at(self, t=None):
         """Calculate the node coverage of a time instant inside the stream_graph.
-        
+
         Parameters
         ----------
         t: time or None
-        
+
         Returns
         -------
         node_coverage : Real or TimeCollection
@@ -260,11 +258,11 @@ class StreamGraph(object):
 
     def link_coverage_at(self, t=None, weights=False):
         """Calculate the link coverage of a time instant inside the stream_graph.
-        
+
         Parameters
         ----------
         t: time or None
-        
+
         Returns
         -------
         link_coverage : Real or TimeCollection
@@ -286,13 +284,13 @@ class StreamGraph(object):
 
     def neighbor_coverage(self, u=None, direction='out'):
         """Calculate the neighbor coverage of a node inside the stream_graph.
-        
+
         Parameters
         ----------
         u: NodeId or None
-        
+
         direction: 'in', 'out' or 'both', default='out'
-        
+
         Returns
         -------
         neighbor_coverage : Real or dict
@@ -320,7 +318,7 @@ class StreamGraph(object):
 
     def neighbor_coverage_at(self, u=None, t=None, direction='out', weights=False):
         """Calculate the coverage of a node inside the stream_graph.
-        
+
         Parameters
         ----------
         u: NodeId or None
@@ -328,7 +326,7 @@ class StreamGraph(object):
         t: Time or None
 
         direction: 'in', 'out' or 'both', default='out'
-        
+
         Returns
         -------
         time_coverage : Real
@@ -363,11 +361,11 @@ class StreamGraph(object):
 
     def mean_degree_at(self, t=None, weights=False):
         """Calculate the mean degree at a give time.
-        
+
         Parameters
         ----------
         t: Time or None
-        
+
         Returns
         -------
         time_coverage : Real or TimeCollection
@@ -429,11 +427,11 @@ class StreamGraph(object):
     @property
     def n(self):
         """Calculate the number of nodes of the stream-graph.
-        
+
         Parameters
         ----------
         None. Property.
-        
+
         Returns
         -------
         n : Real
@@ -449,11 +447,11 @@ class StreamGraph(object):
     @property
     def m(self):
         """Calculate the number of edges of the stream-graph.
-        
+
         Parameters
         ----------
         None. Property.
-        
+
         Returns
         -------
         n : Real
@@ -468,35 +466,35 @@ class StreamGraph(object):
 
     def induced_substream(self, ns):
         """Calculate the induced substream of the stream-graph from a TemporalNodeSet.
-        
+
         Parameters
         ----------
         ns: TemporalNodeSet
-        
+
         Returns
         -------
         stream_graph : StreamGrpah
             Returns the induced substream.
 
         """
-        assert isinstance(ns, TemporalNodeSet)
+        assert isinstance(ns, ABC.TemporalNodeSet)
         ns_is = self.ns_ & ns
         ls_ind = self.temporal_linkset_.induced_substream(ns_is)
         return StreamGraph(self.nodeset_.copy(), self.timeset_.copy(), ns_is, ls_ind)
 
     def discretize(self, bins=None, bin_size=None):
         """Returns a discrete version of the current TemporalLinkSet.
-        
+
         Parameters
         ----------
         bins : Iterable or None.
             If None, step should be provided.
             If Iterable it should contain n+1 elements that declare the start and the end of all (continuous) bins.
-        
+
         bin_size : Int or datetime
             If bins is provided this argument is ommited.
             Else declare the size of each bin.
-        
+
         Returns
         -------
         timeset_discrete : TimeSet

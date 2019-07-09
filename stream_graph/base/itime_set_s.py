@@ -10,8 +10,8 @@ from .utils import make_discrete_bins
 class ITimeSetS(ABC.ITimeSet):
     """Set implementation of the ABC.ITimeSet"""
     def __init__(self, times=None, discrete=None):
-        """Initialize a nodeset.
-        
+        """Initialize a instantaneous timeset.
+
         Parameters
         ----------
         times: Iterable, default=None

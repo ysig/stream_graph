@@ -19,7 +19,7 @@ class LinkSetDF(ABC.LinkSet):
         Parameters
         ----------
         df: pandas.DataFrame or Iterable, default=None
-            If a DataFrame it should contain two columns for u and v. 
+            If a DataFrame it should contain two columns for u and v.
             If an Iterable it should produce :code:`(u, v)` tuples of NodeId (int or str).
 
         no_duplicates: Bool, default=False
@@ -70,7 +70,10 @@ class LinkSetDF(ABC.LinkSet):
                     print(self.df_)
                     raise ValueError('If weighted is False, input should be an iterable of exactly 2 elements.')
             self.sort_by = sort_by
-            self.merged_ = no_duplicates
+            self.weighted_ = weighted
+            if not no_duplicates:
+                self.merge_.reindex_
+        else:
             self.weighted_ = weighted
 
     @property
@@ -84,25 +87,27 @@ class LinkSetDF(ABC.LinkSet):
     @property
     def to_weighted(self):
         if self.weighted:
-            return self.copy()            
+            return self.copy()
         else:
-            dfm = self.df
-            dfm['w'] = 1
-            return LinkSetDF(dfm.reindex(columns=['u', 'v', 'w']), no_duplicates=True, weighted=True)
+            df = self.df.copy()
+            df['w'] = 1
+            return LinkSetDF(df.reindex(columns=['u', 'v', 'w']), no_duplicates=True, weighted=True)
 
     @property
     def weighted(self):
-        if bool(self):
-            return self.weighted_
-        else:
-            return None
+        return self.weighted_
 
     def __bool__(self):
         return hasattr(self, 'df_') and not self.df_.empty
 
-    @property
-    def is_merged_(self):
-        return hasattr(self, 'merged_') and self.merged_
+    def __eq__(self, obj):
+        if self.weighted == obj.weighted:
+            if self.weighted:
+                return self.df_.equals(obj if isinstance(obj, __class__) else pd.DataFrame(list(obj), columns=['u', 'v', 'w']))
+            else:
+                return self.df_.equals(obj if isinstance(obj, __class__) else pd.DataFrame(list(obj), columns=['u', 'v']))
+        else:
+            return False
 
     @property
     def is_sorted_(self):
@@ -135,36 +140,27 @@ class LinkSetDF(ABC.LinkSet):
 
     @property
     def merge_(self):
-        if not self.is_merged_:
-            if self.weighted:
-                self.df_ = merge_weights(self.df_)
-            else:
-                self.df_ = self.df_.drop_duplicates()
-            self.merged_ = True
+        if self.weighted:
+            self.df_ = merge_weights(self.df_)
+        else:
+            self.df_.drop_duplicates(inplace=True)
         return self
 
     @property
     def size(self):
         if bool(self):
-            return self.mdf.shape[0]
+            return self.df.shape[0]
         else:
             return 0
 
     @property
-    def _size_weighted(self):
-        return self.mdf.w.sum()
+    def _weighted_size(self):
+        return self.df.w.sum()
 
     @property
     def df(self):
         if bool(self):
-            return self.merge_.sort_.reindex_.df_
-        else:
-            return pd.DataFrame(columns=['u', 'v'])
-
-    @property
-    def mdf(self):
-        if bool(self):
-            return self.merge_.reindex_.df_
+            return self.df_
         else:
             return pd.DataFrame(columns=['u', 'v'])
 

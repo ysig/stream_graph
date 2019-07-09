@@ -12,4 +12,4 @@ from .itemporal_link_set_df import ITemporalLinkSetDF
 from .graph import Graph
 from .stream_graph import StreamGraph
 
-__version__ = '0.0'
+__version__ = '0.2'

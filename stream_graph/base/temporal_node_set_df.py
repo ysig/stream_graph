@@ -1,31 +1,29 @@
 from __future__ import absolute_import
 from numbers import Real
-from warnings import warn
 from collections import defaultdict
-from collections import Iterable
 from collections import Counter
 from six import iteritems
 from itertools import combinations
 from itertools import permutations
 
-import pandas as pd
-
 import stream_graph as sg
-from . import utils
-from stream_graph import ABC
+from .utils import ts_to_df, tns_to_df
 from .time_set_df import TimeSetDF
-from .interval_df import IntervalDF
 from .node_set_s import NodeSetS
-from .itime_set_s import ITimeSetS
+from .multi_df_utils import load_interval_df, itertuples_pretty, init_interval_df, build_time_generator, itertuples_raw
+from .multi_df_utils import len_set_nodes, set_nodes
+from .utils import time_discretizer_df
+from stream_graph import ABC
 from stream_graph.exceptions import UnrecognizedTemporalNodeSet
 from stream_graph.collections import TimeCollection
 from stream_graph.collections import TimeGenerator
 from stream_graph.collections import NodeCollection
 from stream_graph.collections import LinkCollection
 
+
 class TemporalNodeSetDF(ABC.TemporalNodeSet):
     """DataFrame implementation of ABC.TemporalNodeSet"""
-    def __init__(self, df=None, disjoint_intervals=True, sort_by=['u', 'ts', 'tf'], discrete=None):
+    def __init__(self, df=None, disjoint_intervals=True, sort_by=None, discrete=None, default_closed='both'):
         """Initialize a Temporal Node Set.
 
         Parameters
@@ -42,29 +40,24 @@ class TemporalNodeSetDF(ABC.TemporalNodeSet):
 
         """
         if df is not None:
-            if isinstance(df, ABC.TemporalNodeSet):
-                discrete = df.discrete
-            elif discrete is None:
-                discrete = False
-            kargs = {}
-            if not isinstance(df, (IntervalDF, pd.DataFrame)):
-                df = IntervalDF(list(iter(df)), columns=['u', 'ts', 'tf'], **kargs)
+            if isinstance(df, (TemporalNodeSetDF)):
+                if bool(df):
+                    self.df_ = df.df
+                    self.discrete_ = df.discrete
+                    self.sort_by = df.sort_by
             else:
-                df = IntervalDF(df, **kargs)
-            self.df_ = df
-            self.sort_by = sort_by
-            self.merged_ = disjoint_intervals
-            self.sorted_ = False
-            self.discrete_ = discrete
-            if discrete and self.df_['ts'].dtype.kind != 'i' and self.df_['tf'].dtype.kind != 'i':
-                warn('SemanticWarning: For a discrete instance time-instants should be an integers')
+                if isinstance(df, ABC.TemporalNodeSet):
+                    discrete = df.discrete
+                    disjoint_intervals = True
+                    df = iter(df)
+                self.sort_by = sort_by
+                self.df_, self.discrete_ = load_interval_df(df, disjoint_intervals=disjoint_intervals, default_closed=default_closed, discrete=discrete, keys=['u'])
+        else:
+            self.discrete_ = (True if discrete is None else discrete)
 
     @property
     def discrete(self):
-        if bool(self):
-            return self.discrete_
-        else:
-            return None
+        return self.discrete_
 
     @property
     def sort_by(self):
@@ -80,12 +73,17 @@ class TemporalNodeSetDF(ABC.TemporalNodeSet):
             self.sort_by_ = value
 
     @property
-    def is_merged_(self):
-        return hasattr(self, 'merged_') and self.merged_
-
-    @property
     def is_sorted_(self):
         return (hasattr(self, 'sort_by_') and hasattr(self, 'sorted_') and self.sorted_) or self.sort_by_ is None
+
+    def sort_df(self, sort_by):
+        if self.sort_by is None:
+            self.sort_by = sort_by
+            return self.sort_df(sort_by)
+        elif self.sort_by == sort_by:
+            return self.sorted_df
+        else:
+            return self.df_.sort_values(by=self.sort_by, inplace=True)
 
     @property
     def sort_df_(self):
@@ -95,25 +93,21 @@ class TemporalNodeSetDF(ABC.TemporalNodeSet):
         return self
 
     @property
-    def merge_df_(self):
-        if not self.merged_:
-            self.df_.merge(inplace=True)
-            self.merged_ = True
-        return self
+    def sorted_df(self):
+        if bool(self):
+            return self.sort_df_.df_
+        else:
+            return self._empty_base_class()
+
+    def _empty_base_class(self):
+        return init_interval_df(self.discrete_, keys=['u'])
 
     @property
     def df(self):
         if bool(self):
-            return self.sort_df_.merge_df_.df_
+            return self.df_
         else:
-            return IntervalDF(columns=['u', 'ts', 'tf'])
-
-    @property
-    def dfm(self):
-        if bool(self):
-            return self.merge_df_.df
-        else:
-            return IntervalDF(columns=['u', 'ts', 'tf'])
+            return self._empty_base_class()
 
     @property
     def n(self):
@@ -126,32 +120,32 @@ class TemporalNodeSetDF(ABC.TemporalNodeSet):
     def timeset(self):
         if not bool(self):
             return TimeSetDF(discrete=self.discrete)
-        return TimeSetDF(self.df_[['ts', 'tf']], disjoint_intervals=False, discrete=self.discrete)
+        return TimeSetDF(self.df.drop(columns=['u']), disjoint_intervals=False, discrete=self.discrete)
 
     @property
     def nodeset(self):
         if not bool(self):
             return NodeSetS()
-        return NodeSetS(self.df_.u.drop_duplicates().values.flat)
+        return NodeSetS(self.df.u.drop_duplicates().values.flat)
 
     @property
     def total_common_time(self):
         # sum of cartesian interval intersection
         if bool(self):
-            return self.df.interval_intersection_size(discrete=self.discrete)
+            return self.df.interval_intersection_size(self.df)
         else:
             return 0
 
     @property
     def size(self):
         if bool(self):
-            return self.dfm.measure_time(discrete=self.discrete)
+            return self.df.measure_time()
         else:
             return 0
 
     def __iter__(self):
         if bool(self):
-            return self.df.itertuples(index=False, name=None)
+            return itertuples_pretty(self.df, self.discrete)
         else:
             return iter([])
 
@@ -169,74 +163,72 @@ class TemporalNodeSetDF(ABC.TemporalNodeSet):
         else:
             df = self.df[self.df.u == u[0]]
 
-        if isinstance(u[1], tuple) and len(u[1]) == 2:
-            return df.index_at_interval(u[1][0], u[1][1]).any()
+        if isinstance(u[1], tuple) and len(u[1]) in [2, 3]:
+            assert len(u[1]) == 2 or u[1][2] in ['both', 'neither', 'left', 'right']
+            return df.index_at_interval(*u[1]).any()
         else:
             return df.index_at(u[1]).any()
 
-    def __and__(self, ns):
-        if isinstance(ns, ABC.TemporalNodeSet):
-            assert ns.discrete == self.discrete
-            if ns and bool(self):
-                if isinstance(ns, sg.TemporalNodeSetB):
-                    return TemporalNodeSetDF(self.df[self.df.u.isin(ns.nodeset)].intersect(utils.ts_to_df(ns.timeset_), by_key=False))
+    def __and__(self, tns):
+        if isinstance(tns, ABC.TemporalNodeSet):
+            assert self.discrete == tns.discrete
+            if tns and bool(self):
+                if isinstance(tns, sg.TemporalNodeSetB):
+                    return TemporalNodeSetDF(self.df[self.df.u.isin(tns.nodeset)].intersection(ts_to_df(tns.timeset_), by_key=False))
                 else:
-                    if not isinstance(ns, TemporalNodeSetDF):
+                    if not isinstance(tns, TemporalNodeSetDF):
                         try:
-                            return ns & self
+                            return tns & self
                         except NotImplementedError:
                             pass
-                    df = utils.ns_to_df(ns).intersect(self.df)
+                    df = tns_to_df(tns).intersection(self.df)
                 if not df.empty:
-                    if isinstance(ns, ABC.ITemporalNodeSet):
-                        return ITemporalNodeSetDF(df.drop(columns=['tf']), discrete=self.discrete)
+                    if isinstance(tns, ABC.ITemporalNodeSet):
+                        from .itemporal_node_set_df import ITemporalNodeSetDF
+                        return ITemporalNodeSetDF(df.drop(columns=['tf'] + ([] if self.discrete else ['s','f'])), discrete=self.discrete)
                     else:
                         return TemporalNodeSetDF(df, discrete=self.discrete)
         else:
             raise UnrecognizedTemporalNodeSet('second operand')
         return TemporalNodeSetDF(discrete=self.discrete)
 
-    def __or__(self, ns):
-        if isinstance(ns, ABC.TemporalNodeSet):
-            assert ns.discrete == self.discrete
+    def __or__(self, tns):
+        if isinstance(tns, ABC.TemporalNodeSet):
+            assert tns.discrete == self.discrete
             if not bool(self):
-                return ns.copy()
-            if ns:
-                if isinstance(ns, sg.TemporalNodeSetB):
-                    nst, tdf = ns.nodeset, utils.ts_to_df(ns.timeset_)
-                    df = self.df[~self.df.u.isin(nst)].append(
-                            self.df[self.df.u.isin(nst)].union(tdf, by_key=False), ignore_index=True)
-                    nstd = nst - self.nodeset
+                return tns.copy()
+            if tns:
+                if isinstance(tns, sg.TemporalNodeSetB):
+                    ns, tdf = tns.nodeset, ts_to_df(tns.timeset_)
+                    df = self.df[~self.df.u.isin(ns)].append(self.df[self.df.u.isin(ns)].union(tdf, by_key=False), ignore_index=True, merge=False)
+                    nstd = ns - self.nodeset
                     if bool(nstd):
-                        df = df.append(pd.DataFrame(
-                            list((n, ts, tf) for n in nstd for ts, tf in tdf),
-                            columns=['u', 'ts', 'tf']),
-                            ignore_index=True, sort=False)
-                    return TemporalNodeSetDF(df, discrete=self.discrete)
-                elif not isinstance(ns, TemporalNodeSetDF):
+                        plist = [(n, ) + key for n in nstd for key in itertuples_raw(tdf, tns.discrete)]
+                        dfp = init_interval_df(data=plist, discrete=tns.discrete, keys=['u'], disjoint_intervals=True)
+                        df = df.append(dfp, merge=False, ignore_index=True, sort=False)
+                    return TemporalNodeSetDF(df.merge(inplace=False), discrete=self.discrete)
+                elif not isinstance(tns, TemporalNodeSetDF):
                     try:
-                        return ns | self
+                        return tns | self
                     except NotImplementedError:
                         pass
-                return TemporalNodeSetDF(self.df.union(utils.ns_to_df(ns)), discrete=self.discrete)
+                return TemporalNodeSetDF(self.df.union(tns_to_df(tns)))
             else:
                 return self.copy()
         else:
             raise UnrecognizedTemporalNodeSet('second operand')
         return TemporalNodeSetDF(discrete=self.discrete)
 
-    def __sub__(self, ns):
-        if isinstance(ns, ABC.TemporalNodeSet):
-            assert ns.discrete == self.discrete
+    def __sub__(self, tns):
+        if isinstance(tns, ABC.TemporalNodeSet):
+            assert tns.discrete == self.discrete
             if bool(self):
-                if ns:
-                    if isinstance(ns, sg.TemporalNodeSetB):
-                        df = self.df[~self.df.u.isin(ns.nodeset)].append(
-                            self.df[self.df.u.isin(ns.nodeset)].difference(
-                                utils.ts_to_df(ns.timeset_), by_key=False),
-                            ignore_index=True, sort=False)
+                if bool(tns):
+                    if isinstance(tns, sg.TemporalNodeSetB):
+                        dfp = self.df[self.df.u.isin(tns.nodeset)].difference(ts_to_df(tns.timeset_), by_key=False)
+                        df = self.df[~self.df.u.isin(tns.nodeset)].append(dfp, ignore_index=True, sort=False)
                     else:
-                        df = self.df.difference(utils.ns_to_df(ns))
+                        df = self.df.difference(tns_to_df(tns))
                     return TemporalNodeSetDF(df, discrete=self.discrete)
                 else:
                     return self.copy()
@@ -248,12 +240,12 @@ class TemporalNodeSetDF(ABC.TemporalNodeSet):
         if u is None:
             obj = defaultdict(float)
             dc = (1 if self.discrete else 0)
-            for u, ts, tf in self.dfm.itertuples(index=False, name=None):
+            for u, ts, tf in self.df.itertuples():
                 obj[u] += tf - ts + dc
             return NodeCollection(obj)
         else:
             if bool(self):
-                return self.df[self.df.u == u].measure_time(self.discrete)
+                return self.df[self.df.u == u].measure_time()
             else:
                 return 0
 
@@ -261,9 +253,9 @@ class TemporalNodeSetDF(ABC.TemporalNodeSet):
         if u is None or self._common_time__list_input(u):
             if not bool(self):
                 return NodeCollection(dict())
-            df = self.dfm.events
+            df = self.df.events
             active_nodes, common_times = set(), Counter()
-            e = df.t.min()
+            e = df.t.iloc[0]
             if u is None:
                 def add_item(active_nodes, ct):
                     for v in (active_nodes):
@@ -285,7 +277,7 @@ class TemporalNodeSetDF(ABC.TemporalNodeSet):
                 else:
                     # finish
                     active_nodes.remove(u)
-                e = t 
+                e = t
 
             return NodeCollection(common_times)
         else:
@@ -293,16 +285,16 @@ class TemporalNodeSetDF(ABC.TemporalNodeSet):
                 idx = (self.df.u == u)
                 if idx.any():
                     a, b = self.df[idx], self.df[~idx]
-                    return a.interval_intersection_size(b, discrete=self.discrete)
+                    return a.interval_intersection_size(b)
             return 0.
 
     def common_time_pair(self, l=None):
         if l is None or self._common_time_pair__list_input(l):
             if not bool(self):
                 return LinkCollection(dict())
-            df = self.dfm.events
+            df = self.df.events
             active_nodes = set()
-            e = df.t.min()
+            e = df.t.iloc[0]
             if l is None:
                 common_times = Counter()
                 def add_item(active_nodes, ct):
@@ -335,33 +327,18 @@ class TemporalNodeSetDF(ABC.TemporalNodeSet):
             if bool(self):
                 idxa, idxb = (self.df.u == u), (self.df.u == v)
                 if idxa.any() and idxb.any():
-                    return self.df[idxa].interval_intersection_size(self.df[idxb], discrete=self.discrete)
+                    return self.df[idxa].interval_intersection_size(self.df[idxb])
             return 0.
 
-    # Return what if t not specified?
+    def _build_time_generator(self, cache_constructor, calculate, tc, df=None, **kargs):
+        if df is None:
+            df = self.df
+        return tc(build_time_generator(df, cache_constructor=cache_constructor, calculate=calculate, **kargs), discrete=self.discrete, instantaneous=False)
+
     def n_at(self, t=None):
         if bool(self):
             if t is None:
-                df = self.dfm.events
-                u, e, f = df.iloc[0]
-                active_nodes = {u}
-                nodes = list()
-                for u, t, f in df.iloc[1:].itertuples(index=False, name=None):
-                    if f:
-                        # start
-                        if t > e:
-                            nodes.append((e, len(active_nodes)))
-                        active_nodes.add(u)
-                    else:
-                        # finish
-                        if t > e:
-                            nodes.append((e, len(active_nodes)))
-                        active_nodes.remove(u)
-                    e = t
-                ef, nan = nodes[-1]
-                if e != ef or nan != len(active_nodes):
-                    nodes.append((e, len(active_nodes)))
-                return TimeCollection(nodes, False)
+                return self._build_time_generator(set, len_set_nodes, TimeCollection)
             else:
                 return self.df.count_at(t)
         else:
@@ -373,27 +350,11 @@ class TemporalNodeSetDF(ABC.TemporalNodeSet):
     def nodes_at(self, t=None):
         if bool(self):
             if t is None:
-                def generate(df):
-                    u, e, f = df.iloc[0]
-                    active_nodes = {u}
-                    for u, t, f in df.iloc[1:].itertuples(index=False, name=None):
-                        if t > e:
-                            ef, san = e, set(active_nodes)
-                            yield (ef, NodeSetS(san))
-                        if f:
-                            # start                        
-                            active_nodes.add(u)
-                        else:
-                            # finish
-                            active_nodes.remove(u)
-                        e = t
-                    if e != ef or san != active_nodes:
-                        yield (e, NodeSetS(set(active_nodes)))
+                return self._build_time_generator(set, set_nodes, TimeGenerator)
 
-                return TimeGenerator(generate(self.dfm.events))
-
-            elif isinstance(t, tuple) and len(t) is 2 and isinstance(t[0], Real) and isinstance(t[1], Real) and t[0]<=t[1]:
-                return NodeSetS(self.df.df_at_interval(t[0], t[1]).u.values.flat)
+            elif isinstance(t, tuple) and len(t) in [2, 3] and isinstance(t[0], Real) and isinstance(t[1], Real) and t[0]<=t[1]:
+                assert len(t) == 2 or t[2] in ['neither', 'both', 'left', 'right']
+                return NodeSetS(self.df.df_at_interval(*t).u.values.flat)
             elif isinstance(t, Real):
                 return NodeSetS(self.df.df_at(t).u.values.flat)
             else:
@@ -408,29 +369,29 @@ class TemporalNodeSetDF(ABC.TemporalNodeSet):
         if u is None:
             if bool(self):
                 times = defaultdict(list)
-                for u, ts, tf in iter(self):
-                    times[u].append((ts, tf))
-                return NodeCollection({u: TimeSetDF(times, discrete=self.discrete) for u, times in iteritems(times)})
+                for key in itertuples_raw(self.df, discrete=self.discrete):
+                    times[key[0]].append(key[1:])
+                return NodeCollection({u: TimeSetDF(init_interval_df(data=ts, discrete=self.discrete), discrete=self.discrete, disjoint_intervals=True) for u, ts in iteritems(times)})
             else:
                 return NodeCollection(dict())
         else:
             if bool(self):
-                return TimeSetDF(self.df[self.df.u == u].drop(columns=['u']), discrete=self.discrete)
+                return TimeSetDF(self.df[self.df.u == u].drop(columns=['u'], merge=True))
             else:
                 return TimeSetDF()
 
-    def issuperset(self, ns):
-        if isinstance(ns, ABC.TemporalNodeSet):
-            assert ns.discrete == self.discrete
+    def issuperset(self, tns):
+        if isinstance(tns, ABC.TemporalNodeSet):
+            assert self.discrete == tns.discrete
             if not bool(self):
                 return False
-            elif bool(ns):
-                if isinstance(ns, sg.TemporalNodeSetB):
-                    nst = ns.nodeset
-                    if nst.issuperset(self.nodeset):
-                        return self.df[self.df.u.isin(nst)].issuper(utils.ts_to_df(ns.timeset_), by_key=False)
+            elif bool(tns):
+                if isinstance(tns, sg.TemporalNodeSetB):
+                    ns = tns.nodeset
+                    if ns.issuperset(self.nodeset):
+                        return self.df[self.df.u.isin(ns)].issuper(ts_to_df(tns.timeset_), by_key=False)
                 else:
-                    return not ns or self.df.issuper(utils.ns_to_df(ns))
+                    return not tns or self.df.issuper(tns_to_df(tns))
         else:
             raise UnrecognizedTemporalNodeSet('ns')
         return False

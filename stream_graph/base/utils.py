@@ -1,31 +1,35 @@
 """A file containing utilities for dataframes representing intervals."""
 from __future__ import absolute_import
+from six import string_types
+
 import pandas as pd
 import numpy as np
 
-from .interval_df import IntervalDF
-from .instantaneous_df import InstantaneousDF
-from six import string_types
+from .dataframes import InstantaneousDF
+from .multi_df_utils import init_interval_df, load_interval_df
 from stream_graph import ABC
+from datetime import timedelta
+from collections import Iterable
 
-def ns_to_df(ns):
+
+def tns_to_df(ns):
     from .temporal_node_set_df import TemporalNodeSetDF
     from .itemporal_node_set_df import ITemporalNodeSetDF
+
     if ns:
         if isinstance(ns, ABC.ITemporalNodeSet):
             if isinstance(ns, ITemporalNodeSetDF):
-                df = ns.df
-                df['tf'] = df['ts']
-                return IntervalDF(df, columns=["u", "ts", "tf"])
+                return init_interval_df(data=ns.df, keys=['u'], discrete=ns.discrete)
             else:
-                return IntervalDF(list((u, ts, ts) for u, ts in ns), columns=["u", "ts", "tf"])
+                return load_interval_df(iter(ns), default_closed=None, disjoint_intervals=(not ns.discrete), keys=["u"], discrete=ns.discrete)
         else:
             if isinstance(ns, TemporalNodeSetDF):
                 return ns.df
             else:
-                return IntervalDF(list(ns), columns=["u", "ts", "tf"])
+                return load_interval_df(iter(ns), disjoint_intervals=True, default_closed=None, keys=["u"])
     else:
-        return IntervalDF(columns=["u", "ts", "tf"])
+        return init_interval_df(keys=['u'], discrete=ns.discrete)
+
 
 def ins_to_idf(ns):
     from .itemporal_node_set_df import ITemporalNodeSetDF
@@ -38,18 +42,21 @@ def ins_to_idf(ns):
     else:
         return InstantaneousDF(columns=["u", "ts"])
 
+
 def ts_to_df(ts):
     from .time_set_df import TimeSetDF
+
     if bool(ts):
         if isinstance(ts, ABC.ITimeSet):
-            return IntervalDF(list((t, t) for t in ts), columns=["ts", "tf"])
+            return load_interval_df(iter(ts), default_closed=None, disjoint_intervals=(not ts.discrete), keys=["u"], discrete=ts.discrete)
         else:
             if isinstance(ts, TimeSetDF):
                 return ts.df
             else:
-                return IntervalDF(list(ts), columns=["ts", "tf"])
+                return load_interval_df(iter(ts), disjoint_intervals=True, default_closed=None, keys=["u"])
     else:
-        return IntervalDF(columns=["ts", "tf"])
+        return init_interval_df(discrete=ts.discrete)
+
 
 def its_to_idf(ts):
     assert isinstance(ts, ABC.ITimeSet)
@@ -57,6 +64,7 @@ def its_to_idf(ts):
         return InstantaneousDF(list(ts), columns=["ts"])
     else:
         return InstantaneousDF(columns=["ts"])
+
 
 def t_in(ts, t, L, R):
     # Assumes an sorted-disjoint dataframe
@@ -69,6 +77,7 @@ def t_in(ts, t, L, R):
         elif ts[m][1] > t:
             R = m - 1
     return False
+
 
 def nsr_disjoint_union(nodes, min_time, max_time, ba, bb):
     return TemporalNodeSetDF().set_df(IntervalDF(iter((n, mn, mx)
@@ -98,6 +107,7 @@ def make_discrete_bins(bins, bin_size, time_min, time_max):
     if len(bins) <= 1:
         raise ValueError('please provide a bigger bin size')
     return bins
+
 
 def time_discretizer_df(df, bins, bin_size, columns=['ts'], write_protected=True):
     assert isinstance(df, pd.DataFrame)

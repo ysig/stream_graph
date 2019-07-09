@@ -180,6 +180,32 @@ class Graph(object):
         else:
             return 0.
 
+    def to_networkx(self, create_using=None):
+        """Convert Graph to a networkx graph.
+        
+        Parameters
+        ----------
+        create_using : (NetworkX graph constructor, optional (default=nx.Graph))
+            Graph type to create. If graph instance, then cleared before populated.
+        
+        Returns
+        -------
+        graph : nx.Graph
+        """
+        import networkx as nx
+        if create_using is None:
+            G = nx.Graph()
+        else:
+            assert isinstance(create_using, nx.Graph)
+            G = create_using()
+
+        G.add_nodes_from(self.nodeset_)
+        if linkset_.weighted:
+            G.add_weighted_edges_from(self.linkset_)
+        else:
+            G.add_edges_from(self.linkset_)    
+    
+        return G
 
     def coverage(self, u=None, direction='out', weights=False):
         """Extract the total coverage of the graph.
