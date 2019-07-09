@@ -11,7 +11,7 @@ from libcpp.pair cimport pair
 from stream_graph._c_functions.header cimport closeness, closeness_at
 from stream_graph.collections import NodeCollection, TimeCollection
 
-def closeness_c(u, t, df, both, detailed):
+def closeness_c(u, t, df, both, detailed, discrete):
     """C++ wrapped implementation of Cummulative Closeness."""
     assert list(df.columns) == ['u', 'v', 'ts']
     assert df['ts'].dtype.kind in ['i']
@@ -44,29 +44,19 @@ def closeness_c(u, t, df, both, detailed):
             return iter(vec)
 
     if t is 'max':
-        def tc(vec):
+        def tc(vec, f):
             return max(vec, key=itemgetter(1))[::-1]
         t = None
-    elif detailed:
-        def tc(vec):
-            return TimeCollection(iter_(vec), True)
     else:
-        def tc(vec):
-            def iterate(vec):
-                prev = None
-                for t, v in iter_(vec):
-                    if v == prev:
-                        continue
-                    yield (t, v)
-                    prev = v
-            return TimeCollection(iterate(vec))
+        def tc(vec, f):
+            return TimeCollection(iter_(vec), instantaneous=f, discrete=discrete)
 
     if u is None:
         if t is None:
-            return NodeCollection({u: tc(closeness(inp, m(u), both)) for u in us})
+            return NodeCollection({u: tc(closeness(inp, m(u), both), detailed) for u in us})
         else:
             return NodeCollection({u: closeness_at(inp, m(u), t, both) for u in us})
     elif t is None:
-        return tc(closeness(inp, m(u), both))
+        return tc(closeness(inp, m(u), both), detailed)
     else:
         return closeness_at(inp, m(u), t, both)
