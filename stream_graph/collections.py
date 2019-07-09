@@ -2,6 +2,7 @@ from __future__ import absolute_import
 import warnings
 from datetime import datetime, timedelta
 import pandas as pd
+import operator
 from collections import defaultdict
 from functools import reduce
 from operator import mul
@@ -29,11 +30,11 @@ class NodeCollection(object):
 
     def __bool__(self):
         """Implementation of the :code:`bool` casting of a NodeSet object.
-        
+
         Parameters
         ----------
         None.
-        
+
         Returns
         -------
         out : Bool
@@ -75,11 +76,11 @@ class LinkCollection(object):
 
     def __bool__(self):
         """Implementation of the :code:`bool` casting of a NodeSet object.
-        
+
         Parameters
         ----------
         None.
-        
+
         Returns
         -------
         out : Bool
@@ -95,25 +96,29 @@ class LinkCollection(object):
     def __nonzero__(self):
         return self.__bool__()
 
+
 class TimeGenerator(object):
-    def __init__(self, it=iter([]), instantaneous=False):
+    def __init__(self, it=iter([]), discrete=False, instantaneous=False):
         self.it = it
-        self.instantaneous=instantaneous
-        
+        self.instantaneous = instantaneous
+        self.discrete = discrete
+
     def __iter__(self):
-        return iter(self.it)
+        for i in self.it:
+            yield i
 
     @property
     def instants(self):
         return self.instantaneous
 
     def merge(self, b, measure, ignore_value=None, missing_value=None):
+        """Merge two generator objects."""
         assert isinstance(b, (TimeGenerator))
-        instants = True
+        assert self.discrete == b.discrete
+        instants = b.instants and self.instants
         if b.instants and self.instants:
             assert isinstance(b, (TimeCollection, TimeGenerator))
             def generate(a_iter, b, t_a,  measure, ignore_value, missing_value):
-                values = list()
                 t_a, v_a = next(a_iter, (None, missing_value))
                 for t_b, v_b in b:
                     while t_a is not None and t_a < t_b:
@@ -138,46 +143,22 @@ class TimeGenerator(object):
                         t_a, v_a = next(a_iter, (None, missing_value))
 
             obj = generate(iter(self), b, -1, measure, ignore_value, missing_value)
-        elif (b.instants != self.instants) :
-            # Reduce to instants
-            def generate(a_interval, b_inst, measure, ignore_value, missing_value):
-                values = list()
-                t_a_s, v_a_s = next(a_interval, (None, missing_value))
-                t_a_f, v_a_f = next(a_interval, (None, missing_value))
-                def in_interval(t_a_s, t, t_a_f):
-                    if t_a_f is not None:
-                        return t_a_s <= t and t < t_a_f
-                    else:
-                        return t_a_s <= t
-                for t_b, v_b in b_inst:
-                    while t_a_s is not None and not in_interval(t_a_s, t_b, t_a_f):
-                        t_a_s, v_a_s = t_a_f, v_a_f
-                        t_a_f, v_a_f = next(a_interval, (None, missing_value))
-                    if t_a_s is None:
-                        break
-                    m = measure(v_a_s, v_b)
-                    if m != ignore_value:
-                        yield (t_b, m)
-            if b.instants:
-                obj = generate(iter(self), iter(b), measure, ignore_value, missing_value)                
-            else:
-                def measure_yx(x, y):
-                    return measure(y, x)
-                obj = generate(iter(b), iter(self), measure_yx, ignore_value, missing_value)                 
         else:
-            def generate(a_iter, b_iter, measure, ignore_value, missing_value):
-                def addq(queue, obj):
-                    queue.append(obj)
-                    if len(queue) > 1:
-                        queue = sorted(queue, key = lambda x: x[0], reverse=True)
-                        if queue[0][0] == queue[1][0]:
-                            # Always from a different category:
-                            if queue[0][2]:
-                                queue = [(queue[0][0], (queue[0][1], queue[1][1]), None)]
-                            else:
-                                queue = [(queue[0][0], (queue[1][1], queue[0][1]), None)]
-                    return queue
+            # queue: element
+            # [(t, v, category)] or [(t, (v1, v2), None)]
+            def addq(queue, obj):
+                queue.append(obj)
+                if len(queue) > 1:
+                    queue = sorted(queue, key=operator.itemgetter(0), reverse=True)
+                    if queue[0][0] == queue[1][0]:
+                        # Always from a different category:
+                        if queue[0][2]:
+                            queue = [(queue[0][0], (queue[0][1], queue[1][1]), None)]
+                        else:
+                            queue = [(queue[0][0], (queue[1][1], queue[0][1]), None)]
+                return queue
 
+            def generate(a_iter, b_iter, measure, ignore_value, missing_value):
                 def updateq(queue, f):
                     if f is None:
                         return updateq(updateq(queue, True), False)
@@ -211,27 +192,39 @@ class TimeGenerator(object):
                     m = measure(b, a)
                     if m != m_old:
                         yield (cache[0], m)
-            obj = generate(iter(self), iter(b), measure, ignore_value, missing_value)
+                        m_old = m
+            if (b.instants != self.instants):
+                instantize = (instantize_discrete if self.discrete else instantize_continuous)
+                if b.instants:
+                    iter_a, iter_b = iter(self), instantize(b, ignore_value)
+                else:
+                    iter_a, iter_b = instantize(self, ignore_value), iter(b)
+                obj = generate(iter_a, iter_b, measure, ignore_value, missing_value)
+            else:
+                obj = generate(iter(self), iter(b), measure, ignore_value, missing_value)
         return TimeGenerator(obj, instantaneous=instants)
-
 
     def map(self, fun):
         def generator(fun):
             for t, v in self:
                 yield t, fun(t, v)
         return TimeGenerator(generator(fun), instantaneous=self.instantaneous)
-                
+
 
 class TimeCollection(TimeGenerator):
-    def __init__(self, it=[], instantaneous=False):
-        self.it = [(t, v) for t, v in it]
-        self.instantaneous=instantaneous
+    def __init__(self, it=[], discrete=False, instantaneous=False):
+        super(TimeCollection, self).__init__(it, discrete, instantaneous)
+        self.it = list(it)
 
     def __str__(self):
         if bool(self):
             return "stream_graph.TimeCollection" + ("[instantaneous]" if self.instantaneous else "") + ": " + str(list(self))
         else:
             return "stream_graph.TimeCollection: Empty"
+
+    def append(self, obj):
+        self.it.append(obj)
+
 
     def __iter__(self):
         return iter(self.it)
@@ -245,19 +238,33 @@ class TimeCollection(TimeGenerator):
     def search_time(self, t):
         if self.instantaneous:
             return self._search_time_instantaneous(t)
+        elif self.discrete:
+            return self._search_time_discrete(t)
         else:
             return self._search_time_continuous(t)
 
     def _search_time_continuous(self, t):
+        if not isinstance(t, tuple):
+            t = (t, True)
+        L, R = 0, len(self.it)
+        while L < R:
+            m = int((L + R) / 2)
+            if self.it[m][0][0] < t[0] or (self.it[m][0][0] == t[0] and self.it[m][0][1] <= t[1]):
+                L = m + 1
+            else:
+                R = m
+        return max(L - 1, 0)
+
+    def _search_time_discrete(self, t):
         L, R = 0, len(self.it)
         while L < R:
             m = int((L + R) / 2)
             if self.it[m][0] <= t:
-                L = m + 1 
+                L = m + 1
             else:
                 R = m
         return max(L - 1, 0)
-    
+
     def _search_time_instantaneous(self, t):
         L, R = 0, len(self.it) - 1
         while L <= R:
@@ -272,21 +279,23 @@ class TimeCollection(TimeGenerator):
 
     def get_at(self, t, not_found=None):
         if self.instantaneous:
-            idx = _search_time_instantaneous(self, t)
+            idx = self._search_time_instantaneous(t)
             if idx is None:
                 return not_found
             else:
                 return self[idx][1]
+        elif self.discrete:
+            return self[self._search_time_discrete(t)][1]
         else:
             return self[self._search_time_continuous(t)][1]
 
     def __bool__(self):
         """Implementation of the :code:`bool` casting of a NodeSet object.
-        
+
         Parameters
         ----------
         None.
-        
+
         Returns
         -------
         out : Bool
@@ -306,10 +315,12 @@ class TimeCollection(TimeGenerator):
     def map(self, fun):
         return TimeCollection(super(TimeCollection, self).map(fun), instantaneous=self.instantaneous)
 
+
 class TimeSparseCollection(TimeCollection):
-    def __init__(self, it=[], caster=set):
+    def __init__(self, it=[], caster=set, discrete=False):
         self.it = [(t, obj, f) for t, obj, f in it]
         self.instantaneous = False
+        self.discrete = discrete
         self.caster = caster
 
     def __str__(self):
@@ -326,10 +337,10 @@ class TimeSparseCollection(TimeCollection):
         holder = set()
         for t, obj, f in (self.it):
             if f:
-                holder -= obj
-            else:
                 holder |= obj
-            yield (t, self.caster(iter(holder)))
+            else:
+                holder -= obj
+            yield (t, self.caster(holder))
 
 
 class DataCube(object):
@@ -421,9 +432,9 @@ class DataCube(object):
 
     def poisson(self, op_id, log_overflow=1000.):
         if bool(self):
-            from scipy.stats import poisson        
+            from scipy.stats import poisson
 
-            const, measures, labeled = self._measure(op_id)        
+            const, measures, labeled = self._measure(op_id)
             out = list()
 
             with warnings.catch_warnings():
@@ -449,7 +460,7 @@ class DataCube(object):
                             val = -log_overflow
 
                     out.append(self.dump_row(row) + (val,))
-            
+
             return self._weighted_output(out)
         else:
             return self.__class__()
@@ -523,7 +534,7 @@ def _validator(op_id, columns, columns_raw):
     cols = set(columns)
     if isinstance(op_id[0], tuple) and set() == cols:
         return None
-    
+
     for i, u in enumerate(op_id):
         if isinstance(u, tuple):
             assert not len(set(u) - cols)
@@ -535,5 +546,28 @@ def _validator(op_id, columns, columns_raw):
             out.append((columns_raw.get_loc(u),))
     return out, cols
 
+
 def _map(row, col):
     return tuple(row[c] for c in col)
+
+
+def instantize_discrete(it, ignore_value):
+    t_head = None
+    for t, v in it:
+        if t_head is None:
+            t_head = [t, v, t]
+        elif t_head[0] == t-1 and v == t_prev[1]:
+            t_head[2] = t
+        else:
+            yield (t_head[0], t_head[1])
+            yield (t_head[2] + 1, ignore_value)
+            t_head = [t, v, t+1]
+    if t_prev[0] is not None:
+        yield (t_head[0], t_head[1])
+        yield (t_head[2] + 1, ignore_value)
+
+
+def instantize_continuous(it, ignore_value):
+    for t, v in it:
+        yield ((t, True), v)
+        yield ((t, False), ignore_value)
