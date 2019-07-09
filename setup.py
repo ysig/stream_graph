@@ -59,7 +59,7 @@ ext = Extension(name="stream_graph._c_functions",
                 extra_compile_args=extra_compile_args)
 
 setup(name='stream_graph',
-      version='0.1',
+      version='0.2',
       description='A library for Stream Graphs',
       author='Ioannis Siglidis [LIP6]',
       author_email='Yiannis.Siglidis@lip6.fr',

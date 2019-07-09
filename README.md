@@ -9,6 +9,15 @@ A Stream-Graph was first formally defined by Matthieu Latapy et al. in [[1]](htt
 
 **Note**: This library is currently **work in progress** and so elementary structures may change, without keeping a support for previous versions.
 
+
+Update: Version `0.2`
+---------------------
+- Changes in interval-dataframe backbone:
+  - Continuous (time) intervals.
+  - Discrete (time) Intervals are treated differently
+- TODO: Visualization, Tutorials, Verification
+
+
 Installing `stream_graph`
 -------------------------
 
