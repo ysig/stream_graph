@@ -140,7 +140,7 @@ class Graph(object):
             Returns the size of the linkset defining this graph.
 
         """
-        return self.linkset_.size_weighted
+        return self.linkset_.weighted_size
 
     @property
     def total_coverage(self):
@@ -172,7 +172,7 @@ class Graph(object):
         Returns
         -------
         total_coverage: Real
-            Returns :math:`\\frac{m}{n^{2}}`.
+            Returns :math:`\\frac{m_{w}}{n^{2}}`.
 
         """
         if bool(self):
@@ -207,8 +207,8 @@ class Graph(object):
     
         return G
 
-    def coverage(self, u=None, direction='out', weights=False):
-        """Extract the total coverage of the graph.
+    def neighbor_coverage_of(self, u=None, direction='out', weights=False):
+        """Extract the neighbor coverage of the graph.
         
         Parameters
         ----------

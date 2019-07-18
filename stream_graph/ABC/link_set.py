@@ -73,7 +73,7 @@ class LinkSet(ABC):
             if weighted:
                 return self._weighted_size
             else:
-                return self.mdf.shape[0]
+                return self.size
         else:
             return .0
 
@@ -102,7 +102,7 @@ class LinkSet(ABC):
         return self.__bool__()
 
     @abc.abstractmethod
-    def neighbors(self, u=None, direction='out'):
+    def neighbors_of(self, u=None, direction='out'):
         """Return the nodeset of a neighbors of a node.
 
         Parameters

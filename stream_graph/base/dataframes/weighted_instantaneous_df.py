@@ -18,9 +18,12 @@ from .algorithms.utils.misc import hinge_loss, noner, first, min_sumer
 class InstantaneousWDF(pd.DataFrame):
     def __init__(self, *args, **kargs):
         no_duplicates = kargs.pop('no_duplicates', None)
+        merge_function = kargs.pop('merge_function', sum)
+        assert callable(merge_function)
         super(self.__class__, self).__init__(*args, **kargs)
         assert 'ts' in self.columns
 
+        self.merge_function = merge_function
         if not self.empty:
             from .instantaneous_df import InstantaneousDF
             if len(args) and isinstance(args[0], self.__class__) or (isinstance(kargs.get('data', None), self.__class__)):
@@ -43,7 +46,7 @@ class InstantaneousWDF(pd.DataFrame):
         if isinstance(out, pd.DataFrame):
             if 'ts' in out.columns:
                 if 'w' in out.columns:
-                    out = InstantaneousWDF(out, no_duplicates=(not merge))
+                    out = InstantaneousWDF(out, no_duplicates=(not merge), merge_function=self.merge_function)
                 else:
                     from .instantaneous_df import InstantaneousDF
                     no_duplicates = set(self.columns) - {'w'} == set(out.columns)
@@ -55,9 +58,7 @@ class InstantaneousWDF(pd.DataFrame):
         out = super(self.__class__, self).append(*args, **kargs)
         if isinstance(out, pd.DataFrame):
             if 'ts' in out.columns:
-                out = self.__class__(out)
-                if merge:
-                    out.merge(inplace=True)
+                out = self.__class__(out, no_duplicates=(not merge), merge_function=self.merge_function)
         return out
 
     def itertuples(self, index=False, name=None, weights=False):
@@ -72,7 +73,7 @@ class InstantaneousWDF(pd.DataFrame):
         if isinstance(out, pd.DataFrame):
             if 'ts' in out.columns:
                 if 'w' in out.columns:
-                    out = InstantaneousWDF(out, no_duplicates=set(out.columns) == set(self.columns))
+                    out = InstantaneousWDF(out, no_duplicates=set(out.columns) == set(self.columns), merge_function=self.merge_function)
                 else:
                     from .instantaneous_df import InstantaneousDF
                     out = InstantaneousDF(out)
@@ -104,24 +105,19 @@ class InstantaneousWDF(pd.DataFrame):
 
     def _save_or_return(self, df, inplace, on_column=None, no_duplicates=True):
         if df is None:
-            df = InstantaneousWDF(columns=self.columns)
+            df = InstantaneousWDF(columns=self.columns, merge_function=self.merge_function)
         elif isinstance(df, list):
             assert on_column is not None
-            df = self.__class__(df, columns=on_column + ['ts', 'w'], no_duplicates=no_duplicates)
+            df = self.__class__(df, columns=on_column + ['ts', 'w'], no_duplicates=no_duplicates, merge_function=self.merge_function)
 
         if inplace and df is not self:
             return self._update_inplace(df._data)
         else:
             return (df.copy() if df is self else df)
 
-    def merge(self, inplace=False, merge_function=None):
+    def merge(self, inplace=False):
         if self.empty:
             return self._save_or_return(self, inplace)
-
-        if merge_function is None:
-            merge_function = sum
-        else:
-            assert callable(merge_function)
 
         on_column, _ = self.get_ni_columns(None)
         columns = on_column + ['ts', 'w']
@@ -129,7 +125,7 @@ class InstantaneousWDF(pd.DataFrame):
         for key in self[columns].itertuples(weights=True):
             data[key[:-1]].append(key[-1])
 
-        out = list(key + (merge_function(ws), ) for key, ws in iteritems(data))
+        out = list(key + (self.merge_function(ws), ) for key, ws in iteritems(data))
         return self._save_or_return(out, inplace, on_column=on_column)
 
     def union(self, df, on_column=None, by_key=True, inplace=False, union_function=None):
@@ -294,7 +290,7 @@ class InstantaneousWDF(pd.DataFrame):
     def map_intersection(self, base_df):
         return self.drop(columns='w').map_intersection(base_df)
 
-    def instants_intersection_size(self, dfb=None, discrete=True, interval_intersection_function=None):
+    def intersection_size(self, dfb=None, discrete=True, interval_intersection_function=None):
         if interval_intersection_function != 'unweighted':
             if interval_intersection_function is None:
                 interval_intersection_function = min_sumer

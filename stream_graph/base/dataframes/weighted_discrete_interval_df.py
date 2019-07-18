@@ -17,7 +17,8 @@ from .algorithms.utils.misc import hinge_loss, noner, first, truer, min_sumer, o
 class DIntervalWDF(pd.DataFrame):
     def __init__(self, *args, **kargs):
         disjoint_intervals = kargs.pop('disjoint_intervals', None)
-
+        merge_function = kargs.pop('merge_function', sum)
+        assert callable(merge_function)
         super(DIntervalWDF, self).__init__(*args, **kargs)
         assert 'ts' in self.columns
         assert self.ts.dtype.kind == 'i'
@@ -27,6 +28,7 @@ class DIntervalWDF(pd.DataFrame):
         else:
             assert self.tf.dtype.kind == 'i'
 
+        self.merge_function = merge_function
         if not self.empty:
             from .discrete_interval_df import DIntervalDF
             if len(args) and isinstance(args[0], DIntervalWDF) or (isinstance(kargs.get('data', None), DIntervalWDF)):
@@ -50,7 +52,7 @@ class DIntervalWDF(pd.DataFrame):
             if 'ts' in out.columns:
                 if 'tf' in out.columns:
                     if 'w' in out.columns:
-                        out = DIntervalWDF(out, disjoint_intervals=(not merge))
+                        out = DIntervalWDF(out, disjoint_intervals=(not merge), merge_function=self.merge_function)
                     else:
                         from .discrete_interval_df import DIntervalDF
                         out = DIntervalDF(out, disjoint_intervals=(not merge))
@@ -73,7 +75,7 @@ class DIntervalWDF(pd.DataFrame):
         if isinstance(out, pd.DataFrame):
             if 'ts' in out.columns and 'tf' in out.columns:
                 if 'w' in out.columns:
-                    out = DIntervalWDF(out, disjoint_intervals=(set(out.columns) == set(self.columns)))
+                    out = DIntervalWDF(out, disjoint_intervals=(set(out.columns) == set(self.columns)), merge_function=self.merge_function)
                 else:
                     from .discrete_interval_df import DIntervalDF
                     out = DIntervalDF(out, disjoint_intervals=False)
@@ -136,30 +138,25 @@ class DIntervalWDF(pd.DataFrame):
 
     def _save_or_return(self, df, inplace, on_column=None, disjoint_intervals=True):
         if df is None:
-            df = self.__class__(columns=self.columns)
+            df = self.__class__(columns=self.columns, merge_function=self.merge_function)
         elif isinstance(df, list):
             assert on_column is not None
-            df = self.__class__(df, columns=on_column + ['ts', 'tf', 'w'], disjoint_intervals=disjoint_intervals)
+            df = self.__class__(df, columns=on_column + ['ts', 'tf', 'w'], disjoint_intervals=disjoint_intervals, merge_function=self.merge_function)
 
         if inplace and df is not self:
             return self._update_inplace(df._data)
         else:
             return (df.copy() if df is self else df)
 
-    def merge(self, inplace=False, merge_function=None):
+    def merge(self, inplace=False):
         if self.empty:
             return self._save_or_return(self, inplace)
 
-        if merge_function is None:
-            merge_function = sum
-        else:
-            assert callable(merge_function)
-
         on_column = self.get_ni_columns(None)
         if not len(on_column):
-            df = merge_no_key(self, merge_function)
+            df = merge_no_key(self, self.merge_function)
         else:
-            df = merge_by_key(self, merge_function)
+            df = merge_by_key(self, self.merge_function)
         return self._save_or_return(df, inplace, on_column)
 
     def union(self, df, on_column=None, by_key=True, inplace=False, union_function=None):
@@ -279,7 +276,7 @@ class DIntervalWDF(pd.DataFrame):
         # Not implemented for weighted
         return self.drop(columns='w').map_intersection(base_df)
 
-    def interval_intersection_size(self, b, intersection_function=None):
+    def intersection_size(self, b, intersection_function=None):
         # cache = [Counter, Counter, None, 0]
         if intersection_function is None:
             intersection_function = min_sumer

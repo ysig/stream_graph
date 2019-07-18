@@ -322,7 +322,7 @@ class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
 
                 return NodeCollection(out)
             else:
-                return LinkSetDF(self.df.df_at(t).drop(columns=['ts']), weighted=self.weighted).neighbors(u=None, direction=direction)
+                return LinkSetDF(self.df.df_at(t).drop(columns=['ts']), weighted=self.weighted).neighbors_of(u=None, direction=direction)
         else:
             di = True
             if direction == 'out':
@@ -540,7 +540,7 @@ class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
                 raise UnrecognizedDirection()
             return ITimeSetS(df['ts'].values.flat, discrete=self.discrete)
 
-    def neighbors(self, u=None, direction='out'):
+    def neighbors_of(self, u=None, direction='out'):
         if not bool(self):
             if u is None:
                 return {}
@@ -698,7 +698,7 @@ class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
             raise UnrecognizedTemporalLinkSet('ls')
         return False
 
-    def neighborhood(self, ns, direction='out'):
+    def temporal_neighborhood(self, ns, direction='out'):
         # if df join on u / combine (intersect) and the union intervals (for union)
         # if range
         derror = False
@@ -784,8 +784,8 @@ class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
                 min_time, max_time = df.ts.min(), df.tf.max()
             df['ts'] -= delta/2.0
             df['tf'] = df['ts'] + delta
-            df['ts'].clip_lower(min_time, inplace=True)
-            df['tf'].clip_upper(max_time, inplace=True)
+            df['ts'].clip(lower=min_time, inplace=True)
+            df['tf'].clip(upper=max_time, inplace=True)
         if self.discrete:
             df = df.astype({'ts': int, 'tf': int})
         else:
@@ -800,15 +800,15 @@ class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
         df = (df.rename(columns={'u': 'v', 'v': 'u'}) if direction == 'in' else df)
         lines = list(key for key in df[['u', 'v', 'ts']].itertuples(index=False, name=None))
         if u is None:
-            neigh = {u: n.nodes_ for u, n in self.linkset.neighbors(direction=direction)}
+            neigh = {u: n.nodes_ for u, n in self.linkset.neighbors_of(direction=direction)}
             if t is None:
                 return NodeCollection({u: functions.ego(u, neigh.get(u, set()), lines, both, detailed, self.discrete) for u in self.nodeset})
             else:
                 return NodeCollection({u: functions.ego_at(u, neigh.get(u, set()), lines, t, both, detailed, self.discrete) for u in self.nodeset})
         elif t is None:
-            return functions.ego(u, self.linkset.neighbors(u, direction=direction).nodes_, lines, both, detailed, self.discrete)
+            return functions.ego(u, self.linkset.neighbors_of(u, direction=direction).nodes_, lines, both, detailed, self.discrete)
         else:
-            return functions.ego_at(u, self.linkset.neighbors(u, direction=direction).nodes_, lines, t, both, detailed, self.discrete)
+            return functions.ego_at(u, self.linkset.neighbors_of(u, direction=direction).nodes_, lines, t, both, detailed, self.discrete)
 
 
     def closeness(self, u=None, t=None, direction='both', detailed=False):

@@ -14,6 +14,8 @@ from .algorithms.weighted_continuous_interval import interval_intersection_size 
 class CIntervalWDF(pd.DataFrame):
     def __init__(self, *args, **kargs):
         disjoint_intervals = kargs.pop('disjoint_intervals', None)
+        merge_function = kargs.pop('merge_function', sum)
+        assert callable(merge_function)
         super(CIntervalWDF, self).__init__(*args, **kargs)
         assert 'ts' in self.columns
         if 'tf' not in self.columns:
@@ -24,6 +26,8 @@ class CIntervalWDF(pd.DataFrame):
             self['f'] = True
         if 'w' not in self.columns:
             self['w'] = 1
+
+        self.merge_function = merge_function
         if not self.empty:
             from .continuous_interval_df import CIntervalDF
             if len(args) and (isinstance(args[0], (CIntervalWDF, CIntervalDF)) or isinstance(kargs.get('data', None), (CIntervalWDF, CIntervalDF))):
@@ -40,7 +44,7 @@ class CIntervalWDF(pd.DataFrame):
         if isinstance(out, pd.DataFrame):
             if {'ts', 'tf', 's', 'f'}.issubset(set(out.columns)):
                 if 'w' in out.columns:
-                    out = CIntervalWDF(out, disjoint_intervals=(not merge))
+                    out = CIntervalWDF(out, disjoint_intervals=(not merge), merge_function=self.merge_function)
                 else:
                     from stream_graph.base.dataframes import CIntervalDF
                     out = CIntervalDF(out, disjoint_intervals=(not merge))
@@ -67,7 +71,7 @@ class CIntervalWDF(pd.DataFrame):
             if {'ts', 'tf', 's', 'f'}.issubset(set(out.columns)):
                 if 'w' in out.columns:
                     # do you need to transfer merge_function?
-                    out = self.__class__(out, disjoint_intervals=(set(out.columns) == set(self.columns)))
+                    out = self.__class__(out, disjoint_intervals=(set(out.columns) == set(self.columns)), merge_function=self.merge_function)
                 else:
                     from stream_graph.base.dataframe import CIntervalDF
                     out = CIntervalDF(out, disjoint_intervals=False)
@@ -124,26 +128,22 @@ class CIntervalWDF(pd.DataFrame):
 
     def _save_or_return(self, df, inplace, on_column, disjoint_intervals=True):
         if df is None:
-            df = self.__class__(columns=self.columns)
+            df = self.__class__(columns=self.columns, merge_function=self.merge_function)
         elif isinstance(df, list):
-            df = self.__class__(df, columns=on_column + ['ts', 'tf', 's', 'f', 'w'], disjoint_intervals=disjoint_intervals)
+            df = self.__class__(df, columns=on_column + ['ts', 'tf', 's', 'f', 'w'], disjoint_intervals=disjoint_intervals, merge_function=self.merge_function)
 
         if inplace and df is not self:
             return self._update_inplace(df._data)
         else:
             return (df.copy() if df is self else df)
 
-    def merge(self, inplace=False, merge_function=None):
+    def merge(self, inplace=False):
         on_column = self.get_ni_columns(None)
-        if merge_function is None:
-            def merge_function(it):
-                return sum(it)
-        else:
-            assert callable(merge_function)
+
         if not len(on_column):
-            df = merge_no_key(self, merge_function)
+            df = merge_no_key(self, self.merge_function)
         else:
-            df = merge_by_key(self, merge_function)
+            df = merge_by_key(self, self.merge_function)
 
         return self._save_or_return(df, inplace, on_column)
 
@@ -263,7 +263,7 @@ class CIntervalWDF(pd.DataFrame):
         # Not implemented for weighted
         return self.drop(columns='w').map_intersection(base_df)
 
-    def interval_intersection_size(self, df, discrete=False, interval_intersection_function=None):
+    def intersection_size(self, df, discrete=False, interval_intersection_function=None):
         # cache = [Counter, Counter, None, 0]
         if interval_intersection_function is None:
             interval_intersection_function = min_sumer

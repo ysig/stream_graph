@@ -212,7 +212,7 @@ class DIntervalDF(pd.DataFrame):
     def map_intersection(self, base_df):
         return self.__class__(map_intersection_(self, base_df), columns=['u', 'ts', 'tf'])
 
-    def interval_intersection_size(self, b):
+    def intersection_size(self, b):
         return interval_intersection_size_(self, b)
 
     @property

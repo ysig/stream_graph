@@ -31,11 +31,8 @@ class ITimeSetS(ABC.ITimeSet):
         return (self.discrete_ if bool(self) else None)
 
     @property
-    def size(self):
-        if bool(self) and self.discrete:
-            return len(self.times_)
-        else:
-            return 0
+    def number_of_instants(self):
+        return len(self.times_)
 
     def __bool__(self):
         return hasattr(self, 'times_') and (len(self.times_) > 0)

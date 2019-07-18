@@ -1,0 +1,296 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Classes implemented on top of ABC &mdash; Stream Graph 0.2 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/gallery.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/_static/css/supplementary.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Collections" href="abc3.html" />
+    <link rel="prev" title="What are the abstract base classes" href="abc1.html" /> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Stream Graph
+          
+
+          
+            
+            <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../introduction/about.html">General Information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../introduction/installation.html">Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../introduction/installation.html#installing-dependencies">Installing Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../introduction/installation.html#installing-the-master-version">Installing the master-version</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Package Walkthrough</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="index.html#theoretical-background">Theoretical Background</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#abstract-base-classes">Abstract Base Classes</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="abc1.html">What are the abstract base classes</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Classes implemented on top of ABC</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#a-static-graph">A static Graph</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#the-stream-graph">The Stream Graph</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#temporalnodesetb">TemporalNodeSetB</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="abc3.html">Collections</a></li>
+<li class="toctree-l3"><a class="reference internal" href="abc4.html">Current implementations</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#data-structures">Data Structures</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../auto_examples/index.html">Getting Started</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials.html">Tutorials</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">ABC Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html#base-classes">Base Classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html#abc-implementations">ABC Implementations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html#temporal-dataframes">Temporal-DataFrames</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html#visualizer">Visualizer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html#exceptions">Exceptions</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Stream Graph</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">Package Walkthrough</a> &raquo;</li>
+        
+      <li>Classes implemented on top of ABC</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/package_walkthrough/abc2.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="classes-implemented-on-top-of-abc">
+<h1>Classes implemented on top of ABC<a class="headerlink" href="#classes-implemented-on-top-of-abc" title="Permalink to this headline">¶</a></h1>
+<p>In this section we will examine some implementations that are based on top of ABCs.</p>
+<div class="section" id="a-static-graph">
+<h2>A static Graph<a class="headerlink" href="#a-static-graph" title="Permalink to this headline">¶</a></h2>
+<p>Given a nodeset and a linkset one can define, an elementary <code class="code docutils literal notranslate"><span class="pre">Graph</span></code>, <code class="code docutils literal notranslate"><span class="pre">g</span></code> as the one found in classic graph theory.
+This Graph can optionally be weighted and its components can be accessed through the attributes: <code class="code docutils literal notranslate"><span class="pre">sg.nodeset</span></code>, <code class="code docutils literal notranslate"><span class="pre">sg.linkset</span></code> (as these attributes return copies, if you don’t want a copy of the data add a “_” to the end).
+The number of nodes of the Graph, can be accessed through <code class="code docutils literal notranslate"><span class="pre">g.n</span></code>, where the number of edges of the Graph, can be accessed through <code class="code docutils literal notranslate"><span class="pre">g.m</span></code> (<code class="code docutils literal notranslate"><span class="pre">g.m_weighted</span></code> gives access to the weighted number of edges).
+The classic density of a graph, can be refered in this context as coverage. As so by accessing the attributes <code class="code docutils literal notranslate"><span class="pre">g.total_coverage</span></code> and <code class="code docutils literal notranslate"><span class="pre">g.total_coverage_weighted</span></code> the user can calculate the ratio <span class="math notranslate nohighlight">\(\\frac{m}{n^{2}}\)</span> and <span class="math notranslate nohighlight">\(\\frac{m_{w}}{n^{2}}\)</span>. Moreover neighbor density per-node can be calculated as <code class="code docutils literal notranslate"><span class="pre">g.neighbor_coverage</span></code>, with the option of returning it for all the nodes as a <code class="code docutils literal notranslate"><span class="pre">NodeCollection</span></code>, if a node is ommited, as well as a <code class="code docutils literal notranslate"><span class="pre">direction</span></code> for <code class="code docutils literal notranslate"><span class="pre">'in'</span></code>, <code class="code docutils literal notranslate"><span class="pre">'out'</span></code> or <code class="code docutils literal notranslate"><span class="pre">'both'</span></code> and an argument for <code class="code docutils literal notranslate"><span class="pre">weights</span></code>.
+Finally in order to be possible to apply more complicated measures on the graph, you can convert it to a <cite>networkx</cite> graph by executing: <code class="code docutils literal notranslate"><span class="pre">g.to_networkx</span></code>.</p>
+</div>
+<div class="section" id="the-stream-graph">
+<h2>The Stream Graph<a class="headerlink" href="#the-stream-graph" title="Permalink to this headline">¶</a></h2>
+<p>The most import class of the package, that finds its standard and only implementation relying only on ABCs is that of the <code class="code docutils literal notranslate"><span class="pre">StreamGraph</span></code>.
+This class is meant to properly define a Stream Graph as defined in the introduction, as a collection of a node-set, a time-set, a temporal-node-set and a temporal-link-set.</p>
+<p>The stream-graph: <code class="code docutils literal notranslate"><span class="pre">sg</span></code> is characterized by two attributes <code class="code docutils literal notranslate"><span class="pre">sg.n</span></code> and <code class="code docutils literal notranslate"><span class="pre">sg.m</span></code> as in normal graph theory, standing for the total-number of nodes and the total-number of edges, defined as the duration of all nodes inside the temporal-node-set divided by the duration of the timeset and respectively by the duration of all links inside the temporal-link-set divided by the duration of the timeset.
+All methods that were defined on a single ABC, can be accessed through the attributes: <code class="code docutils literal notranslate"><span class="pre">sg.nodeset</span></code>, <code class="code docutils literal notranslate"><span class="pre">sg.timeset</span></code>, <code class="code docutils literal notranslate"><span class="pre">sg.temporal_nodeset</span></code>, <code class="code docutils literal notranslate"><span class="pre">sg.temporal_linkset</span></code> (as these attributes return copies, if you don’t want a copy of the data add a “_” to the end).</p>
+<p>Moreover measures that combine information of different ABCs are those of coverage.
+When calculating <code class="code docutils literal notranslate"><span class="pre">ls.temporal_nodeset_coverage</span></code>, we calculate what percentage that the temporal-node-set duration covers total possible duration this set would have if all the nodes existed for all the time defined from the time-set: <span class="math notranslate nohighlight">\(\frac{|W|}{|V\times T|}\)</span>. Similarly the <code class="code docutils literal notranslate"><span class="pre">ls.temporal_linkset_coverage</span></code> evaluates the total-duration the links exist, compared to the duration that the nodes that consitute these links exist, as <span class="math notranslate nohighlight">\(\frac{|E|}{\sum_{uv \in V\\times V}|T_{u} \cap T_{v}|}\)</span> (<code class="code docutils literal notranslate"><span class="pre">ls.weighted_temporal_linkset_coverage</span></code> stands for the weighted case). In the same logic, we can calculate the <code class="code docutils literal notranslate"><span class="pre">ls.time_coverage_node</span></code> of a certain node (or the NodeCollection of it for all the nodes inside the nodeset) as ratio of its duration to the duration of the time-set: <span class="math notranslate nohighlight">\(\frac{|T_{u}|}{|T|}\)</span>, as well as the <code class="code docutils literal notranslate"><span class="pre">ls.time_coverage_link</span></code> of a certain link (or the LinkCollection of it for all the links inside the nodeset) as a ratio of its duration to the duration  of its two consisting nodes inside the temporal-node-set: <span class="math notranslate nohighlight">\(\frac{|T_{uv}|}{|T_{u} \cap T_{v}|}\)</span>. Also by calculating <code class="code docutils literal notranslate"><span class="pre">ls.neighbor_coverage</span></code>, we can calculate the durations of all temporal-neighbors of a node as <span class="math notranslate nohighlight">\(\\frac{|N(u)|}{\\sum_{v\\in V}{|T_{u}\\cap T_{v}|}}\)</span> (a generalization of neighbor-desnity in classical graphs).</p>
+<p>At any point in time the stream-graph can be represented by what is a called a <cite>snapshot graph</cite>: To access this graph, or to trace it throughout time what you can do is call the method <code class="code docutils literal notranslate"><span class="pre">sg.graph_at</span></code>.
+Next a notion of coverage of the graph time-stamp at a certain point in time (or throughout time as a <code class="code docutils literal notranslate"><span class="pre">TimeCollection</span></code>), can be calculated as <code class="code docutils literal notranslate"><span class="pre">ls.node_coverage_at</span></code>, <code class="code docutils literal notranslate"><span class="pre">ls.link_coverage_at</span></code>, as well as <code class="code docutils literal notranslate"><span class="pre">ls.neighbor_coverage_at</span></code>, as well as its <code class="code docutils literal notranslate"><span class="pre">ls.mean_degree_at</span></code>, i.e. the number of links of the snapshot graph divided by the number of neighbors <span class="math notranslate nohighlight">\(\frac{|E_{t}|}{|V_{t}|}\)</span>.
+Any of the above methods that is related with links, accepts a <code class="code docutils literal notranslate"><span class="pre">weights</span></code> argument, for calculating a weighted result (for the nominator).</p>
+<p>The binary operators of <code class="code docutils literal notranslate"><span class="pre">&amp;,</span> <span class="pre">|,</span> <span class="pre">-</span></code> as well as the <code class="code docutils literal notranslate"><span class="pre">issuperset</span></code> are defined here as the collective result of all of these operators on the lower objects.
+Additionaly the method <code class="code docutils literal notranslate"><span class="pre">induced_substream</span></code> of the temporal-link-set is advanced as a method of the <code class="code docutils literal notranslate"><span class="pre">stream-graph</span></code>, by applying an intersection, to the temporal-node-set also.
+Similarly we can discretize the whole stream-graph, through the method <code class="code docutils literal notranslate"><span class="pre">sg.descritize</span></code>.
+To conclude, a stream-graph can be also constructed through a temporal-link-set <code class="code docutils literal notranslate"><span class="pre">ls</span></code>, through the methods <code class="code docutils literal notranslate"><span class="pre">ls.as_stream_graph_basic</span></code> and <code class="code docutils literal notranslate"><span class="pre">ls.as_stream_graph_minimal</span></code> according to the type of the temporal-node-set derived from the temporal-link-set.</p>
+</div>
+<div class="section" id="temporalnodesetb">
+<h2>TemporalNodeSetB<a class="headerlink" href="#temporalnodesetb" title="Permalink to this headline">¶</a></h2>
+<p>This mixed class can combine a time-set ABC and a nodeset ABC to</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="abc3.html" class="btn btn-neutral float-right" title="Collections" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="abc1.html" class="btn btn-neutral" title="What are the abstract base classes" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, LIP6
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript">
+          var DOCUMENTATION_OPTIONS = {
+              URL_ROOT:'../',
+              VERSION:'0.2',
+              LANGUAGE:'en',
+              COLLAPSE_INDEX:false,
+              FILE_SUFFIX:'.html',
+              HAS_SOURCE:  true,
+              SOURCELINK_SUFFIX: '.txt'
+          };
+      </script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

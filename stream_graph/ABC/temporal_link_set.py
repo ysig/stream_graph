@@ -20,10 +20,6 @@ class TemporalLinkSet(ABC):
         return ABC_to_string(self, ['u', 'v'])
 
     @property
-    def _column_signature(self):
-        return ('u', 'v', 'ts', 'tf')
-
-    @property
     def instantaneous(self):
         """Defines if the Time Set is instantaneous."""
         return False
@@ -105,9 +101,8 @@ class TemporalLinkSet(ABC):
             return self.size
 
     @property
-    @abc.abstractmethod
     def _weighted_size(self):
-        pass
+        raise NotImplementedError
 
     @abc.abstractmethod
     def __contains__(self, l):
@@ -301,8 +296,7 @@ class TemporalLinkSet(ABC):
         else:
             return self._degree_at_unweighted(u, t, direction)
 
-    @abc.abstractmethod
-    def degree_of(self, u=None, direction='out'):
+    def degree_of(self, u=None, direction='out', weights=False):
         """Return the time-degree of a node at a certain time.
 
         Parameters
@@ -311,6 +305,8 @@ class TemporalLinkSet(ABC):
 
         direction : string={'in', 'out', 'both'}, default='both'
 
+        weights : bool, default=False
+
         Returns
         -------
         nodeset : NodeCollection or Real
@@ -318,15 +314,27 @@ class TemporalLinkSet(ABC):
             If u is None return the time-degree for all nodes.
 
         """
-        pass
+        if weights and self.weighted:
+            return self._degree_of_weighted(u, direction)
+        else:
+            return self._degree_of_unweighted(u, direction)
 
-    @abc.abstractmethod
-    def _degree_at_weighted(self, u, t, direction):
-        pass
+    def _degree_of_weighted(self, u, direction):
+        raise NotImplementedError
 
-    def _degree_at_unweighted(self, u, t, direction):
-        n = self.neighbors_at(u=u, t=t, direction=direction)
+    def _degree_of_unweighted(self, u, direction):
         if u is None:
+            from stream_graph.collections import NodeCollection
+            return NodeCollection({n: tns.size for n, tns in self.neighbors_of(None, direction=direction)})
+        else:
+            return self.neighbors_of(u, direction=direction).size
+
+    def _degree_at_weighted(self, u, t, direction):
+        raise NotImplementedError
+
+    def _degree_at_unweighted(self, u, t, direction):    
+        if u is None:
+            n = self.neighbors_at(u=u, t=t, direction=direction)
             def size(x, y):
                 return y.size
             if t is None:
@@ -337,12 +345,12 @@ class TemporalLinkSet(ABC):
                 return n.map(size)
         else:
             if t is None:
-                return self.neighbors(u, direction=direction).n_at()
+                return self.neighbors_of(u, direction=direction).n_at()
             else:
-                return n.size
+                return self.neighbors_at(u=u, t=t, direction=direction).size
 
     @abc.abstractmethod
-    def neighbors(self, u=None, direction='out'):
+    def neighbors_of(self, u=None, direction='out'):
         """Return the temporal_nodeset of a neighbors of a node.
 
         Parameters
@@ -510,7 +518,7 @@ class TemporalLinkSet(ABC):
         pass
 
     @abc.abstractmethod
-    def neighborhood(self, ns, direction='out'):
+    def temporal_neighborhood(self, ns, direction='out'):
         """Returns the neighborhood of a TemporalNodeSet.
 
         Parameters
@@ -603,7 +611,7 @@ class TemporalLinkSet(ABC):
             return self.links_at(t).size
 
 
-    def duration_of(self, l=None, direction='out'):
+    def duration_of(self, l=None, direction='out', weigths=False):
         """Returns the total duration of a link.
 
         Parameters
@@ -612,6 +620,8 @@ class TemporalLinkSet(ABC):
 
         direction : string={'in', 'out', 'both'}, default='both'
 
+        weights : bool, default=False
+
         Returns
         -------
         time : Real or dict
@@ -619,6 +629,15 @@ class TemporalLinkSet(ABC):
             If l is None returns a dictionary of all links with their times.
 
         """
+        if weights and self.weighted:
+            self._duration_of_weighted(l, direction)
+        else:
+            self._duration_of_unweighted(l, direction)
+
+    def _duration_of_weighted(self, l, direction):
+        raise NotImplementedError
+
+    def _duration_of_unweighted(self, l, direction):
         if l is None:
             from stream_graph.collections import LinkCollection
             times = self.times_of(None, direction=direction)
@@ -720,10 +739,6 @@ class ITemporalLinkSet(TemporalLinkSet):
     """
 
     @property
-    def _column_signature(self):
-        return ('u', 'v', 'ts')
-
-    @property
     def instantaneous(self):
         """Defines if the Time Set is instantaneous."""
         return True
@@ -788,7 +803,7 @@ class ITemporalLinkSet(TemporalLinkSet):
             return .0
 
 
-    def duration_of(self, l=None, direction='out'):
+    def duration_of(self, l=None, direction='out', weights=False):
         """Returns the total duration of a link.
 
         Parameters
@@ -816,7 +831,7 @@ class ITemporalLinkSet(TemporalLinkSet):
             else:
                 return .0
 
-    def degree_of(self, u=None, direction='out'):
+    def degree_of(self, u=None, direction='out', weigths=False):
         """Return the time-degree of a node at a certain time.
 
         Parameters
@@ -824,6 +839,8 @@ class ITemporalLinkSet(TemporalLinkSet):
         u : Node_Id
 
         direction : string={'in', 'out', 'both'}, default='both'
+
+        weights : bool, default=False
 
         Returns
         -------

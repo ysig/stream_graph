@@ -132,7 +132,7 @@ class TemporalNodeSetDF(ABC.TemporalNodeSet):
     def total_common_time(self):
         # sum of cartesian interval intersection
         if bool(self):
-            return self.df.interval_intersection_size(self.df)
+            return self.df.intersection_size(self.df)
         else:
             return 0
 
@@ -285,7 +285,7 @@ class TemporalNodeSetDF(ABC.TemporalNodeSet):
                 idx = (self.df.u == u)
                 if idx.any():
                     a, b = self.df[idx], self.df[~idx]
-                    return a.interval_intersection_size(b)
+                    return a.intersection_size(b)
             return 0.
 
     def common_time_pair(self, l=None):
@@ -327,7 +327,7 @@ class TemporalNodeSetDF(ABC.TemporalNodeSet):
             if bool(self):
                 idxa, idxb = (self.df.u == u), (self.df.u == v)
                 if idxa.any() and idxb.any():
-                    return self.df[idxa].interval_intersection_size(self.df[idxb])
+                    return self.df[idxa].intersection_size(self.df[idxb])
             return 0.
 
     def _build_time_generator(self, cache_constructor, calculate, tc, df=None, **kargs):

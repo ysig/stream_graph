@@ -50,10 +50,6 @@ class NodeCollection(object):
     def map(self, fun):
         return NodeCollection({x: fun(x, y) for x, y in self})
 
-    @property
-    def instants(self):
-        return self.instants
-
 
 class LinkCollection(object):
     def __init__(self, it={}):
@@ -204,10 +200,20 @@ class TimeGenerator(object):
                 obj = generate(iter(self), iter(b), measure, ignore_value, missing_value)
         return TimeGenerator(obj, instantaneous=instants)
 
-    def map(self, fun):
-        def generator(fun):
-            for t, v in self:
-                yield t, fun(t, v)
+    def map(self, fun, unsafe=True):
+        if unsafe:
+            def generator(fun):
+                for t, v in self:
+                    yield t, fun(t, v)
+        else:
+            def generator(fun):
+                prev = None
+                for t, v in self:
+                    val = fun(t, v)
+                    if prev is None or prev != val:
+                        yield t, val
+                        prev = val
+
         return TimeGenerator(generator(fun), instantaneous=self.instantaneous)
 
 
@@ -310,10 +316,10 @@ class TimeCollection(TimeGenerator):
 
     def merge(self, b, measure, ignore_value=None, missing_value=None):
         return TimeCollection(super(TimeCollection, self).merge(b, measure, ignore_value, missing_value),
-                              instantaneous=self.instants)
+                              instantaneous=self.instants, discrete=self.discrete)
 
     def map(self, fun):
-        return TimeCollection(super(TimeCollection, self).map(fun), instantaneous=self.instantaneous)
+        return TimeCollection(super(TimeCollection, self).map(fun), instantaneous=self.instantaneous, discrete=self.discrete)
 
 
 class TimeSparseCollection(TimeCollection):

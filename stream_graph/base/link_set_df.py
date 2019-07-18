@@ -164,7 +164,7 @@ class LinkSetDF(ABC.LinkSet):
         else:
             return pd.DataFrame(columns=['u', 'v'])
 
-    def neighbors(self, u=None, direction='out'):
+    def neighbors_of(self, u=None, direction='out'):
         if u is None:
             neighbors = defaultdict(set)
             if direction == 'out':

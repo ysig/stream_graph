@@ -215,7 +215,7 @@ class CIntervalDF(pd.DataFrame):
         out = map_intersection_(self[self.u.isin(nodes)], base_df)
         return self.__class__(out, columns=['u', 'ts', 'tf', 's', 'f'], disjoint_intervals=True)
 
-    def interval_intersection_size(self, b):
+    def intersection_size(self, b):
         return interval_intersection_size_(self, b)
 
     @property

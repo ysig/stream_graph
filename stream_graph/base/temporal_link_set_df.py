@@ -341,7 +341,7 @@ class TemporalLinkSetDF(ABC.TemporalLinkSet):
 
                 return NodeCollection(out)
             else:
-                return LinkSetDF(self.df.df_at(t)[['u', 'v'] + self._wc]).neighbors(u=None, direction=direction)
+                return LinkSetDF(self.df.df_at(t)[['u', 'v'] + self._wc]).neighbors_of(u=None, direction=direction)
         else:
             if direction == 'out':
                 df = self.df[self.df.u == u].drop(columns=['u']+self._wc, merge=False).rename(columns={'v': 'u'})
@@ -414,7 +414,7 @@ class TemporalLinkSetDF(ABC.TemporalLinkSet):
             else:
                 return len(set(df.df_at(t).u.values.flat))
 
-    def neighbors(self, u=None, direction='out'):
+    def neighbors_of(self, u=None, direction='out'):
         if not bool(self):
             if u is None:
                 return dict()
@@ -609,7 +609,7 @@ class TemporalLinkSetDF(ABC.TemporalLinkSet):
         else:
             return self.df.count_at(t, weights=True)
 
-    def neighborhood(self, tns, direction='out'):
+    def temporal_neighborhood(self, tns, direction='out'):
         # if df join on u / combine (intersect) and the union intervals (for union)
         # if range
         derror = False

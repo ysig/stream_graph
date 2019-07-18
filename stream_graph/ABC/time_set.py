@@ -221,3 +221,14 @@ class ITimeSet(TimeSet):
     def instantaneous(self):
         """Defines if the Time Set is instantaneous."""
         return True
+
+    @property
+    def size(self):
+        if self.discrete:
+            return self.number_of_instants
+        else:
+            return 0
+
+    @property
+    def number_of_instants(self):
+        pass

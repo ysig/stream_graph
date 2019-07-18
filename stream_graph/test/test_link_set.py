@@ -52,20 +52,20 @@ def test_link_set_df():
     assert_equal(dict(lsa.degree(direction='in')), {2: 1, 3: 1, 1: 1})
     assert_equal(dict(lsa.degree(direction='both')), {1: 2, 2: 2, 3: 2})
 
-    assert_equal(set(lsa.neighbors(1, 'out')), {2})
-    assert_equal(set(lsa.neighbors(1, 'in')), {3})
-    assert_equal(set(lsa.neighbors(1, 'both')), {2, 3})
-    assert_equal(sorted(list((a, set(b)) for (a, b) in lsa.neighbors(direction='out')), key=itemgetter(0)), sorted([(1, {2}), (2, {3}), (3, {1})], key=itemgetter(0)))
-    assert_equal(sorted(list((a, set(b)) for (a, b) in lsa.neighbors(direction='in')), key=itemgetter(0)), sorted([(2, {1}), (3, {2}), (1, {3})], key=itemgetter(0)))
-    assert_equal(sorted(list((a, set(b)) for (a, b) in lsa.neighbors(direction='both')), key=itemgetter(0)), sorted([(1, {2, 3}), (2, {1, 3}), (3, {1, 2})], key=itemgetter(0)))
+    assert_equal(set(lsa.neighbors_of(1, 'out')), {2})
+    assert_equal(set(lsa.neighbors_of(1, 'in')), {3})
+    assert_equal(set(lsa.neighbors_of(1, 'both')), {2, 3})
+    assert_equal(sorted(list((a, set(b)) for (a, b) in lsa.neighbors_of(direction='out')), key=itemgetter(0)), sorted([(1, {2}), (2, {3}), (3, {1})], key=itemgetter(0)))
+    assert_equal(sorted(list((a, set(b)) for (a, b) in lsa.neighbors_of(direction='in')), key=itemgetter(0)), sorted([(2, {1}), (3, {2}), (1, {3})], key=itemgetter(0)))
+    assert_equal(sorted(list((a, set(b)) for (a, b) in lsa.neighbors_of(direction='both')), key=itemgetter(0)), sorted([(1, {2, 3}), (2, {1, 3}), (3, {1, 2})], key=itemgetter(0)))
 
     try:
-        lsa.degree(1, 'tdod')
+        lsa.degree(1, 'tvod')
     except UnrecognizedDirection:
         pass
 
     try:
-        lsa.neighbors(1, 'tdod')
+        lsa.neighbors_of(1, 'tvod')
     except UnrecognizedDirection:
         pass
 
@@ -143,12 +143,12 @@ def test_link_set_weighted():
     assert_equal(dict(lsa.degree(direction='in')), {2: 1, 3: 1, 1: 1})
     assert_equal(dict(lsa.degree(direction='both')), {1: 2, 2: 2, 3: 2})
 
-    assert_equal(set(lsa.neighbors(1, 'out')), {2})
-    assert_equal(set(lsa.neighbors(1, 'in')), {3})
-    assert_equal(set(lsa.neighbors(1, 'both')), {2, 3})
-    assert_equal(sorted(list((a, set(b)) for (a, b) in lsa.neighbors(direction='out')), key=itemgetter(0)), sorted([(1, {2}), (2, {3}), (3, {1})], key=itemgetter(0)))
-    assert_equal(sorted(list((a, set(b)) for (a, b) in lsa.neighbors(direction='in')), key=itemgetter(0)), sorted([(2, {1}), (3, {2}), (1, {3})], key=itemgetter(0)))
-    assert_equal(sorted(list((a, set(b)) for (a, b) in lsa.neighbors(direction='both')), key=itemgetter(0)), sorted([(1, {2, 3}), (2, {1, 3}), (3, {1, 2})], key=itemgetter(0)))
+    assert_equal(set(lsa.neighbors_of(1, 'out')), {2})
+    assert_equal(set(lsa.neighbors_of(1, 'in')), {3})
+    assert_equal(set(lsa.neighbors_of(1, 'both')), {2, 3})
+    assert_equal(sorted(list((a, set(b)) for (a, b) in lsa.neighbors_of(direction='out')), key=itemgetter(0)), sorted([(1, {2}), (2, {3}), (3, {1})], key=itemgetter(0)))
+    assert_equal(sorted(list((a, set(b)) for (a, b) in lsa.neighbors_of(direction='in')), key=itemgetter(0)), sorted([(2, {1}), (3, {2}), (1, {3})], key=itemgetter(0)))
+    assert_equal(sorted(list((a, set(b)) for (a, b) in lsa.neighbors_of(direction='both')), key=itemgetter(0)), sorted([(1, {2, 3}), (2, {1, 3}), (3, {1, 2})], key=itemgetter(0)))
 
     links_b = {(2, 3), (3, 1), (1, 4), (2, 3)}
     lsb = LinkSetDF(links_b, no_duplicates=False)

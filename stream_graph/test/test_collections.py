@@ -32,7 +32,7 @@ def test_merge():
     tc_a = TimeCollection([(2, 4), (4, 3), (8, 5), (10, 0), (12, 1), (14, 0)], discrete=True)
     tc_b = TimeCollection([(3, 1), (4, 2), (6, 1), (11, 0), (16, 1)], discrete=True)
     assert_equal(list(tc_a.merge(tc_b, add, missing_value=0)), list(tc_b.merge(tc_a, add, missing_value=0)))
-    assert_equal(list(tc_a.merge(tc_b, add, missing_value=0)), [(2, 4), (3, 5), (4, 5), (6, 4), (8, 6), (10, 1), (11, 0), (12, 1), (14, 0), (16, 1)])
+    assert_equal(list(tc_a.merge(tc_b, add, missing_value=0)), [(2, 4), (3, 5), (6, 4), (8, 6), (10, 1), (11, 0), (12, 1), (14, 0), (16, 1)])
     assert not tc_a.merge(tc_b, add, missing_value=0).instants
 
 #    tc_a = TimeCollection([(2, 4), (3, 3), (4, 5), (10, 0), (12, 1), (14, 0)], instantaneous=True)

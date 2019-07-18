@@ -178,9 +178,9 @@ def test_temporal_node_set_df():
         tg = nsa.nodes_at()
         assert isinstance(tg, TimeGenerator)
         if d:
-            assert_equal([(t, set(ns)) for t, ns in tg], [(3, {2}), (4, set()), (5, {1}), (6, set())])
+            assert_equal([(t, set(ns)) for t, ns in tg], [(1, {2}), (2, {1, 2}), (4, {1}), (9, set())])
         else:
-            assert_equal([(t, set(ns)) for t, ns in tg], [((1, True), {2}), ((2, False), {1, 2}), ((3, False), {1}), ((5, False), set()), ((6, False), {1}), ((8, False), set())])
+            assert_equal([(t, set(ns)) for t, ns in tg], [((1, True), {2}), ((2, True), {1, 2}), ((3, False), {1}), ((5, False), set()), ((6, True), {1}), ((8, False), set())])
 
         assert not tg.instants
         assert not len([a for a in tg])
@@ -198,9 +198,9 @@ def test_temporal_node_set_df():
         tg = nsa.n_at()
         assert isinstance(tg, TimeCollection)
         if d:
-            assert_equal(list(tg), [(3, 1), (4, 0), (5, 1), (6, 0)])
+            assert_equal(list(tg), [(1, 1), (2, 2), (4, 1), (9, 0)])
         else:
-            assert_equal(list(tg), [((1, True), 1), ((2, False), 2), ((3, False), 1), ((5, False), 0), ((6, False), 1), ((8, False), 0)])
+            assert_equal(list(tg), [((1, True), 1), ((2, True), 2), ((3, False), 1), ((5, False), 0), ((6, True), 1), ((8, False), 0)])
         assert not tg.instants
         assert len(list(tg))
 

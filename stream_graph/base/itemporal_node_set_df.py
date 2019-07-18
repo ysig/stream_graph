@@ -319,7 +319,7 @@ class ITemporalNodeSetDF(ABC.ITemporalNodeSet):
                 idx = (self.df.u == u)
                 if idx.any():
                     a, b = self.df[idx], self.df[~idx]
-                    return a.interval_intersection_size(b)
+                    return a.intersection_size(b)
             return 0.
 
     def _common_time_pair_discrete(self, l=None):
@@ -335,10 +335,10 @@ class ITemporalNodeSetDF(ABC.ITemporalNodeSet):
             if bool(self):
                 idxa, idxb = (self.df.u == u), (self.df.u == v)
                 if idxa.any() and idxb.any():
-                    return self.df[idxa].interval_intersection_size(self.df[idxb])
+                    return self.df[idxa].intersection_size(self.df[idxb])
                 idxa, idxb = (self.df.u == u), (self.df.u == v)
                 if idxa.any() and idxb.any():
-                    return self.df[idxa].interval_intersection_size(self.df[idxb])
+                    return self.df[idxa].intersection_size(self.df[idxb])
             return 0.
 
     def _to_discrete(self, bins, bin_size):

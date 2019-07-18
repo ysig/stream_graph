@@ -113,19 +113,19 @@ def test_temporal_link_set_df():
         assert lsa.issuperset(lsa - lsb)
 
         if d:
-            assert_equal(set(lsa.neighbors(1)), {(2, 2, 5)})
-            assert_equal(set(lsa.neighbors(1, 'in')), {(2, 6, 8), (2, 1, 3)})
-            assert_equal(set(lsa.neighbors(1, 'both')), {(2, 1, 8)})
-            assert_equal({n: list(ns) for n, ns in lsa.neighbors(direction='out')}, {1: [(2, 2, 5)], 2: [(1, 1, 3), (1, 6, 8)]})
-            assert_equal({n: list(ns) for n, ns in lsa.neighbors(direction='in')}, {1: [(2, 1, 3), (2, 6, 8)], 2: [(1, 2, 5)]})
-            assert_equal({n: list(ns) for n, ns in lsa.neighbors(direction='both')}, {1: [(2, 1, 8)], 2: [(1, 1, 8)]})
+            assert_equal(set(lsa.neighbors_of(1)), {(2, 2, 5)})
+            assert_equal(set(lsa.neighbors_of(1, 'in')), {(2, 6, 8), (2, 1, 3)})
+            assert_equal(set(lsa.neighbors_of(1, 'both')), {(2, 1, 8)})
+            assert_equal({n: list(ns) for n, ns in lsa.neighbors_of(direction='out')}, {1: [(2, 2, 5)], 2: [(1, 1, 3), (1, 6, 8)]})
+            assert_equal({n: list(ns) for n, ns in lsa.neighbors_of(direction='in')}, {1: [(2, 1, 3), (2, 6, 8)], 2: [(1, 2, 5)]})
+            assert_equal({n: list(ns) for n, ns in lsa.neighbors_of(direction='both')}, {1: [(2, 1, 8)], 2: [(1, 1, 8)]})
         else:
-            assert_equal(set(lsa.neighbors(1)), {(2, 2, 5, 'both')})
-            assert_equal(set(lsa.neighbors(1, 'in')), {(2, 6, 8, 'both'), (2, 1, 3, 'both')})
-            assert_equal(set(lsa.neighbors(1, 'both')), {(2, 6, 8, 'both'), (2, 1, 5, 'both')})
-            assert_equal({n: list(ns) for n, ns in lsa.neighbors(direction='out')}, {1: [(2, 2, 5, 'both')], 2: [(1, 1, 3, 'both'), (1, 6, 8, 'both')]})
-            assert_equal({n: list(ns) for n, ns in lsa.neighbors(direction='in')}, {2: [(1, 2, 5, 'both')], 1: [(2, 1, 3, 'both'), (2, 6, 8, 'both')]})
-            assert_equal({n: list(ns) for n, ns in lsa.neighbors(direction='both')}, {2: [(1, 1, 5, 'both'), (1, 6, 8, 'both')], 1: [(2, 1, 5, 'both'), (2, 6, 8, 'both')]})
+            assert_equal(set(lsa.neighbors_of(1)), {(2, 2, 5, 'both')})
+            assert_equal(set(lsa.neighbors_of(1, 'in')), {(2, 6, 8, 'both'), (2, 1, 3, 'both')})
+            assert_equal(set(lsa.neighbors_of(1, 'both')), {(2, 6, 8, 'both'), (2, 1, 5, 'both')})
+            assert_equal({n: list(ns) for n, ns in lsa.neighbors_of(direction='out')}, {1: [(2, 2, 5, 'both')], 2: [(1, 1, 3, 'both'), (1, 6, 8, 'both')]})
+            assert_equal({n: list(ns) for n, ns in lsa.neighbors_of(direction='in')}, {2: [(1, 2, 5, 'both')], 1: [(2, 1, 3, 'both'), (2, 6, 8, 'both')]})
+            assert_equal({n: list(ns) for n, ns in lsa.neighbors_of(direction='both')}, {2: [(1, 1, 5, 'both'), (1, 6, 8, 'both')], 1: [(2, 1, 5, 'both'), (2, 6, 8, 'both')]})
 
         na = lsa.neighbors_at(1)
         assert isinstance(na, TimeGenerator)
@@ -172,7 +172,7 @@ def test_temporal_link_set_df():
         assert_equal(set(lsa.induced_substream(nsmb)), {a + (tuple() if d else ('both', )) for a in [(1, 2, 2, 3), (2, 1, 1, 3)]})
 
         nsma = TemporalNodeSetDF([(1, 1, 4)], discrete=d)
-        assert_equal(set(lsa.neighborhood(nsma, direction='out')), {(2, 2, 4)} if d else {(2, 2, 4, 'both')})
+        assert_equal(set(lsa.temporal_neighborhood(nsma, direction='out')), {(2, 2, 4)} if d else {(2, 2, 4, 'both')})
 
 
         try:
@@ -299,15 +299,15 @@ def test_temporal_link_set_df():
         assert lsa.issuperset(lsa - lsb)
 
         if d:
-            assert_equal(set(lsa.neighbors(1)), {(2, 2, 5)})
-            assert_equal(set(lsa.neighbors(1, direction='in')), {(2, 6, 8), (2, 1, 3)})
-            assert_equal(set(lsa.neighbors(1, direction='both')), {(2, 1, 8)})
-            assert_equal({n: list(ns) for n, ns in lsa.neighbors()}, {1: [(2, 2, 5)], 2: [(1, 1, 3), (1, 6, 8)]})
+            assert_equal(set(lsa.neighbors_of(1)), {(2, 2, 5)})
+            assert_equal(set(lsa.neighbors_of(1, direction='in')), {(2, 6, 8), (2, 1, 3)})
+            assert_equal(set(lsa.neighbors_of(1, direction='both')), {(2, 1, 8)})
+            assert_equal({n: list(ns) for n, ns in lsa.neighbors_of()}, {1: [(2, 2, 5)], 2: [(1, 1, 3), (1, 6, 8)]})
         else:
-            assert_equal(set(lsa.neighbors(1)), {(2, 2, 5, 'left')})
-            assert_equal(set(lsa.neighbors(1, direction='in')), {(2, 6, 8, 'left'), (2, 1, 3, 'left')})
-            assert_equal(set(lsa.neighbors(1, direction='both')), {(2, 6, 8, 'left'), (2, 1, 5, 'left')})
-            assert_equal({n: list(ns) for n, ns in lsa.neighbors()}, {1: [(2, 2, 5, 'left')], 2: [(1, 1, 3, 'left'), (1, 6, 8, 'left')]})
+            assert_equal(set(lsa.neighbors_of(1)), {(2, 2, 5, 'left')})
+            assert_equal(set(lsa.neighbors_of(1, direction='in')), {(2, 6, 8, 'left'), (2, 1, 3, 'left')})
+            assert_equal(set(lsa.neighbors_of(1, direction='both')), {(2, 6, 8, 'left'), (2, 1, 5, 'left')})
+            assert_equal({n: list(ns) for n, ns in lsa.neighbors_of()}, {1: [(2, 2, 5, 'left')], 2: [(1, 1, 3, 'left'), (1, 6, 8, 'left')]})
 
         na = lsa.neighbors_at(1)
         assert isinstance(na, TimeGenerator)
@@ -363,11 +363,11 @@ def test_temporal_link_set_df():
         nsmb = TemporalNodeSetDF([(1, 1, 4), (2, 1, 2)], discrete=d)
         if d:
             assert_equal(set(lsa.substream(nsa, nsb, ts)), {(1, 2, 2, 2, 1), (1, 2, 3, 3, 2), (1, 2, 4, 4, 1)})
-            assert_equal(set(lsa.neighborhood(nsma, direction='out')), {(2, 2, 4)})
+            assert_equal(set(lsa.temporal_neighborhood(nsma, direction='out')), {(2, 2, 4)})
             assert_equal(set(lsa.induced_substream(nsmb)), {(1, 2, 2, 2, 1.0), (2, 1, 1, 2, 1.0)})
         else:
             assert_equal(set(lsa.substream(nsa, nsb, ts)), {(1, 2, 2, 4, 'both', 1)})
-            assert_equal(set(lsa.neighborhood(nsma, direction='out')), {(2, 2, 4, 'both')})
+            assert_equal(set(lsa.temporal_neighborhood(nsma, direction='out')), {(2, 2, 4, 'both')})
             assert_equal(set(lsa.induced_substream(nsmb)), {(1, 2, 2, 2, 'both', 1.0), (2, 1, 1, 2, 'both', 1.0)})
 
         try:
@@ -460,12 +460,12 @@ def test_itemporal_link_set_df():
         assert (lsa | lsb).issuperset(lsb)
         assert lsa.issuperset(lsa - lsb)
 
-        assert_equal(set(lsa.neighbors(1)), {(2, 2), (2, 3)})
-        assert isinstance(lsa.neighbors(1), ITemporalNodeSetDF)
-        assert_equal(set(lsa.neighbors(1, 'in')), {(2, 6), (2, 3)})
-        assert_equal(set(lsa.neighbors(1, 'both')), {(2, 2), (2, 3), (2, 6)})
+        assert_equal(set(lsa.neighbors_of(1)), {(2, 2), (2, 3)})
+        assert isinstance(lsa.neighbors_of(1), ITemporalNodeSetDF)
+        assert_equal(set(lsa.neighbors_of(1, 'in')), {(2, 6), (2, 3)})
+        assert_equal(set(lsa.neighbors_of(1, 'both')), {(2, 2), (2, 3), (2, 6)})
 
-        assert_equal({n: set(ns) for n, ns in lsa.neighbors()}, {1: {(2, 2), (2, 3)}, 2: {(1, 3), (1, 6)}})
+        assert_equal({n: set(ns) for n, ns in lsa.neighbors_of()}, {1: {(2, 2), (2, 3)}, 2: {(1, 3), (1, 6)}})
 
         la = lsa.neighbors_at(1)
         assert isinstance(la, TimeGenerator)
@@ -492,7 +492,7 @@ def test_itemporal_link_set_df():
         assert_equal(set(lsa.substream(nsa, nsb, ts)), {(1, 2, 2)})
 
         nsma = ITemporalNodeSetDF([(1, 2), (1, 3)], discrete=d)
-        assert_equal(set(lsa.neighborhood(nsma, direction='out')), {(2, 2), (2, 3)})
+        assert_equal(set(lsa.temporal_neighborhood(nsma, direction='out')), {(2, 2), (2, 3)})
 
         nsmb = ITemporalNodeSetDF([(1, 3), (2, 3)], discrete=d)
         assert_equal(set(lsa.induced_substream(nsmb)), {(1, 2, 3), (2, 1, 3)})
@@ -586,12 +586,12 @@ def test_itemporal_link_set_df():
         assert (lsa | lsb).issuperset(lsb)
         assert lsa.issuperset(lsa - lsb)
 
-        assert_equal(set(lsa.neighbors(1)), {(2, 2), (2, 3)})
-        assert isinstance(lsa.neighbors(1), ITemporalNodeSetDF)
-        assert_equal(set(lsa.neighbors(1, 'in')), {(2, 6), (2, 3)})
-        assert_equal(set(lsa.neighbors(1, 'both')), {(2, 2), (2, 3), (2, 6)})
+        assert_equal(set(lsa.neighbors_of(1)), {(2, 2), (2, 3)})
+        assert isinstance(lsa.neighbors_of(1), ITemporalNodeSetDF)
+        assert_equal(set(lsa.neighbors_of(1, 'in')), {(2, 6), (2, 3)})
+        assert_equal(set(lsa.neighbors_of(1, 'both')), {(2, 2), (2, 3), (2, 6)})
 
-        assert_equal({n: set(ns) for n, ns in lsa.neighbors()}, {1: {(2, 3), (2, 2)}, 2: {(1, 3), (1, 6)}})
+        assert_equal({n: set(ns) for n, ns in lsa.neighbors_of()}, {1: {(2, 3), (2, 2)}, 2: {(1, 3), (1, 6)}})
 
         la = lsa.neighbors_at(1)
         assert isinstance(la, TimeGenerator)
@@ -601,7 +601,7 @@ def test_itemporal_link_set_df():
 
         assert_equal(set(lsa.neighbors_at(1, 2)), {2})
         assert_equal({i: tuple(nsa) for i, nsa in lsa.neighbors_at(None, 2, 'out')}, {1: (2,)})
-        assert_equal({i: set((t, tuple(s)) for t, s in nsa)for i, nsa in lsa.neighbors_at()}, {1: {(3, (1, 2)), (2, (2,)), (6, (1,))}})
+        assert_equal({i: set((t, tuple(s)) for t, s in nsa)for i, nsa in lsa.neighbors_at()}, {1: {(3, (2,)), (2, (2,))}, 2: {(3, (1,)), (6, (1,))}})
 
         for w in [False, True]:
             assert_equal(lsa.m_at(3, weights=w), 2)
@@ -616,7 +616,7 @@ def test_itemporal_link_set_df():
 
             assert_equal(lsa.degree_at(1, 2, weights=w), 1)
             assert_equal({i: n for i, n in lsa.degree_at(None, 2, 'out', weights=w)}, {1: 1})
-            assert_equal({i: [(t, ts) for t, ts in nsa] for i, nsa in lsa.degree_at(weights=w)}, {1: [(2, 1), (3, 2), (6, 1)]})
+            assert_equal({i: [(t, ts) for t, ts in nsa] for i, nsa in lsa.degree_at(weights=w)}, {1: [(2, 1), (3, 1)], 2: [(3, 1), (6, 1)]})
 
         nsa = NodeSetS({1})
         nsb = NodeSetS({2})
@@ -624,7 +624,7 @@ def test_itemporal_link_set_df():
         assert_equal(set(lsa.substream(nsa, nsb, ts)), {(1, 2, 2, 1)})
 
         nsma = ITemporalNodeSetDF([(1, 2), (1, 3)], discrete=d)
-        assert_equal(set(lsa.neighborhood(nsma, direction='out')), {(2, 2), (2, 3)})
+        assert_equal(set(lsa.temporal_neighborhood(nsma, direction='out')), {(2, 2), (2, 3)})
 
         nsmb = ITemporalNodeSetDF([(1, 3), (2, 3)], discrete=d)
         assert_equal(set(lsa.induced_substream(nsmb)), {(1, 2, 3, 1), (2, 1, 3, 1)})

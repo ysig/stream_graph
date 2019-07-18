@@ -114,11 +114,11 @@ class Visualizer(object):
         if len(data):
             for ls, color in zip(data, pallete):
                 if ls.instantaneous:
-                    for (u, v, ts) in iter(ls):
+                    for (u, v, ts) in ls:
                         self.dwg.addLink(u, v, ts, ts, color=color)
                 else:
-                    for (u, v, ts, tf) in iter(ls):
-                        self.dwg.addLink(u, v, ts, tf, color=color)
+                    for k in ls:
+                        self.dwg.addLink(k[0], k[1], k[2], k[3], color=color)
 
 
     def _plot_nodes(self, min_time, max_time):
@@ -130,9 +130,9 @@ class Visualizer(object):
                 if ts >= min_time and ts <= max_time:
                     nodes[u].append((ts, ts))
         else:
-            for (u, ts, tf) in self._data['node_stream']:
-                if ts != min_time or tf != max_time:
-                    nodes[u].append((ts, tf))
+            for k in self._data['node_stream']:
+                if k[1] != min_time or k[2] != max_time:
+                    nodes[k[0]].append(k[1:3])
         def takez(a):
             return a[0]
         for (u, times) in iteritems(nodes):
@@ -143,8 +143,8 @@ class Visualizer(object):
             min_time = min(self._data['time_set'])
             max_time = max(self._data['time_set'])
         else:
-            min_time = min(i for (i, _) in self._data['time_set'])
-            max_time = max(i for (_, i) in self._data['time_set'])
+            min_time = min(k[0] for k in self._data['time_set'])
+            max_time = max(k[1] for k in self._data['time_set'])
         if self._ext == 'fig':
             from .stream_fig import Drawing
         else:

@@ -127,7 +127,12 @@ class StreamGraph(object):
         return not bool(self)
 
     def graph_at(t):
-        return Graph(self.temporal_nodeset_.nodes_at(t), self.temporal_linkset_.links_at(t))
+        if t is None:
+            def fun(nodes, links):
+                return Graph(nodes, links)
+            return self.temporal_nodeset_.nodes_at(t).merge(self.temporal_linkset_.links_at(t), fun)
+        else:
+            return Graph(self.temporal_nodeset_.nodes_at(t), self.temporal_linkset_.links_at(t))
 
     @property
     def temporal_linkset_coverage(self):
@@ -146,6 +151,26 @@ class StreamGraph(object):
         denom = float(self.temporal_nodeset_.total_common_time)
         if denom > .0:
             return 2*self.temporal_linkset_.size / denom
+        else:
+            return .0
+
+    @property
+    def weighted_temporal_linkset_coverage(self):
+        """Calculate the weighted coverage of the temporal-link-set.
+
+        Parameters
+        ----------
+        None. Property.
+
+        Returns
+        -------
+        ns_coverage : Real
+            Returns :math:`\\frac{|E_{w}|}{\sum_{uv \\in V\\times V}|T_{u} \\cap T_{v}|}`
+
+        """
+        denom = float(self.temporal_nodeset_.total_common_time)
+        if denom > .0:
+            return 2*self.temporal_linkset_.weighted_size / denom
         else:
             return .0
 
@@ -282,7 +307,7 @@ class StreamGraph(object):
             else:
                 return .0
 
-    def neighbor_coverage(self, u=None, direction='out'):
+    def neighbor_coverage(self, u=None, direction='out', weights=False):
         """Calculate the neighbor coverage of a node inside the stream_graph.
 
         Parameters
@@ -290,6 +315,8 @@ class StreamGraph(object):
         u: NodeId or None
 
         direction: 'in', 'out' or 'both', default='out'
+
+        weigths: bool, default=False
 
         Returns
         -------
@@ -299,7 +326,7 @@ class StreamGraph(object):
 
         """
         if u is None:
-            m = self.temporal_linkset_.degree_of(direction=direction)
+            m = self.temporal_linkset_.degree_of(direction=direction, weights=weights)
             active_nodes = set(k for k, v in m if v > .0)
             common_times = dict(self.temporal_nodeset_.common_time(u=active_nodes))
             # maybe add a u = nodes argument in temporal_nodeset_common_times
@@ -314,7 +341,7 @@ class StreamGraph(object):
             if denom == .0:
                 return .0
             else:
-                return self.temporal_linkset_.degree_of(u, direction) / denom
+                return self.temporal_linkset_.degree_of(u, direction, weights=weights) / denom
 
     def neighbor_coverage_at(self, u=None, t=None, direction='out', weights=False):
         """Calculate the coverage of a node inside the stream_graph.
@@ -369,7 +396,7 @@ class StreamGraph(object):
         Returns
         -------
         time_coverage : Real or TimeCollection
-            Returns :math:`\\frac{|E_{t}|}{|W_{t}|}`
+            Returns :math:`\\frac{|E_{t}|}{|V_{t}|}`
             Returns mean degree at each time t.
 
         """
@@ -464,12 +491,12 @@ class StreamGraph(object):
         else:
             return .0
 
-    def induced_substream(self, ns):
+    def induced_substream(self, tns):
         """Calculate the induced substream of the stream-graph from a TemporalNodeSet.
 
         Parameters
         ----------
-        ns: TemporalNodeSet
+        tns: TemporalNodeSet
 
         Returns
         -------
@@ -478,9 +505,9 @@ class StreamGraph(object):
 
         """
         assert isinstance(ns, ABC.TemporalNodeSet)
-        ns_is = self.ns_ & ns
-        ls_ind = self.temporal_linkset_.induced_substream(ns_is)
-        return StreamGraph(self.nodeset_.copy(), self.timeset_.copy(), ns_is, ls_ind)
+        tns_is = self.temporal_nodeset_ & tns
+        tls_ind = self.temporal_linkset_.induced_substream(tns_is)
+        return StreamGraph(self.nodeset, self.timeset, tns_is, tls_ind)
 
     def discretize(self, bins=None, bin_size=None):
         """Returns a discrete version of the current TemporalLinkSet.

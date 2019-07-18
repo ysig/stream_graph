@@ -221,7 +221,7 @@ class InstantaneousDF(pd.DataFrame):
 
         return self._save_or_return(df, inplace=False, on_column=['u'])
 
-    def instants_intersection_size(self, b=None):
+    def intersection_size(self, b=None):
         ca, cb = Counter(self.ts), Counter(b.ts)
         return sum(v*cb[k] for k, v in iteritems(ca))
 
