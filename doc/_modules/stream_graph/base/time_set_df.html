@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>stream_graph.base.time_set_df &mdash; Stream Graph 0.1 documentation</title>
+  <title>stream_graph.base.time_set_df &mdash; Stream Graph 0.2 documentation</title>
   
 
   
@@ -64,7 +64,7 @@
             
             
               <div class="version">
-                0.1
+                0.2
               </div>
             
           
@@ -95,11 +95,13 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../introduction/installation.html#installing-the-master-version">Installing the master-version</a></li>
 </ul>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../package_walkthrough/index.html">Package Walkthrough</a></li>
+</ul>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../auto_examples/index.html">Getting Started</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../tutorials.html">1. EmailEu</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../tutorials.html#id2">2. bitcoin-alpha</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials.html">Tutorials</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../api.html">ABC Reference</a></li>
@@ -174,57 +176,48 @@
 <span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
 <span class="kn">from</span> <span class="nn">warnings</span> <span class="k">import</span> <span class="n">warn</span>
 <span class="kn">from</span> <span class="nn">numbers</span> <span class="k">import</span> <span class="n">Real</span>
-
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-
-<span class="kn">from</span> <span class="nn">.interval_df</span> <span class="k">import</span> <span class="n">IntervalDF</span>
+<span class="kn">from</span> <span class="nn">.utils</span> <span class="k">import</span> <span class="n">time_discretizer_df</span>
+<span class="kn">from</span> <span class="nn">.multi_df_utils</span> <span class="k">import</span> <span class="n">load_interval_df</span><span class="p">,</span> <span class="n">itertuples_pretty</span><span class="p">,</span> <span class="n">init_interval_df</span>
 <span class="kn">from</span> <span class="nn">stream_graph</span> <span class="k">import</span> <span class="n">ABC</span>
 <span class="kn">from</span> <span class="nn">stream_graph.exceptions</span> <span class="k">import</span> <span class="n">UnrecognizedTimeSet</span>
+<span class="kn">from</span> <span class="nn">stream_graph.exceptions</span> <span class="k">import</span> <span class="n">UnrecognizedTemporalNodeSet</span>
 
 
 <div class="viewcode-block" id="TimeSetDF"><a class="viewcode-back" href="../../../generated/stream_graph.TimeSetDF.html#stream_graph.TimeSetDF">[docs]</a><span class="k">class</span> <span class="nc">TimeSetDF</span><span class="p">(</span><span class="n">ABC</span><span class="o">.</span><span class="n">TimeSet</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;A DataFrame implementation of a TimeSet.&quot;&quot;&quot;</span>
-<div class="viewcode-block" id="TimeSetDF.__init__"><a class="viewcode-back" href="../../../generated/stream_graph.TimeSetDF.html#stream_graph.TimeSetDF.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">disjoint_intervals</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">discrete</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="TimeSetDF.__init__"><a class="viewcode-back" href="../../../generated/stream_graph.TimeSetDF.html#stream_graph.TimeSetDF.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">disjoint_intervals</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">discrete</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">default_closed</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize a TimeSetDF.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        df: pandas.DataFrame or Iterable, default=None</span>
-<span class="sd">            If a DataFrame it should contain four columns for u and v and ts, tf.</span>
-<span class="sd">            If an Iterable it should produce :code:`(ts, tf)` tuples of two timestamps (Real) with :code:`ts &lt; tf`.</span>
+<span class="sd">            If a DataFrame it should contain two columns `ts`, `tf` and optionally a column `itype` of elements &#39;right&#39;, &#39;left&#39;, &#39;both&#39;, &#39;neither&#39; that indicate.</span>
+<span class="sd">            If an Iterable it should produce :code:`(ts, tf)` tuples of two timestamps (Real) with :code:`ts &lt; tf` and optionally a third element &#39;right&#39;, &#39;left&#39;, &#39;both&#39;, &#39;neither&#39; that indicates the interval-type.</span>
 
 <span class="sd">        disjoint_intervals: Bool, default=False</span>
 <span class="sd">            Defines if all intervals are disjoint.</span>
 
 <span class="sd">        discrete : Bool or None, default=None</span>
 
+<span class="sd">        default_closed : &#39;right&#39;, &#39;left&#39;, &#39;both&#39;, &#39;neither&#39;, default=&#39;left&#39;</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Add a check for dataframe style</span>
         <span class="k">if</span> <span class="n">df</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="p">(</span><span class="n">ABC</span><span class="o">.</span><span class="n">TimeSet</span><span class="p">,</span> <span class="n">ABC</span><span class="o">.</span><span class="n">ITimeSet</span><span class="p">)):</span>
-                <span class="n">discrete</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">discrete</span>
-            <span class="k">elif</span> <span class="n">discrete</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">discrete</span> <span class="o">=</span> <span class="kc">False</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">discrete_</span> <span class="o">=</span> <span class="n">discrete</span>
-            <span class="n">kargs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;columns&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;ts&#39;</span><span class="p">,</span> <span class="s1">&#39;tf&#39;</span><span class="p">]}</span> 
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">ABC</span><span class="o">.</span><span class="n">ITimeSet</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">df_</span> <span class="o">=</span> <span class="n">IntervalDF</span><span class="p">(</span><span class="nb">list</span><span class="p">((</span><span class="n">ts</span><span class="p">,</span> <span class="n">ts</span><span class="p">)</span> <span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="n">df</span><span class="p">),</span> <span class="o">**</span><span class="n">kargs</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="p">(</span><span class="n">IntervalDF</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">df_</span> <span class="o">=</span> <span class="n">IntervalDF</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="o">**</span><span class="n">kargs</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s1">&#39;__iter__&#39;</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">df_</span> <span class="o">=</span> <span class="n">IntervalDF</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">df</span><span class="p">),</span> <span class="o">**</span><span class="n">kargs</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">ABC</span><span class="o">.</span><span class="n">TimeSet</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">df_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">discrete_</span> <span class="o">=</span> <span class="n">df</span><span class="p">,</span> <span class="n">df</span><span class="o">.</span><span class="n">discrete</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Input must be an iterable&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">ABC</span><span class="o">.</span><span class="n">ITimeSet</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">discrete</span> <span class="o">=</span> <span class="n">discrete</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">df_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">discrete_</span> <span class="o">=</span> <span class="n">load_interval_df</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">discrete</span><span class="o">=</span><span class="n">discrete</span><span class="p">,</span> <span class="n">default_closed</span><span class="o">=</span><span class="n">default_closed</span><span class="p">,</span> <span class="n">disjoint_intervals</span><span class="o">=</span><span class="n">disjoint_intervals</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">discrete</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_</span><span class="p">[</span><span class="s1">&#39;ts&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">kind</span> <span class="o">!=</span> <span class="s1">&#39;i&#39;</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_</span><span class="p">[</span><span class="s1">&#39;tf&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">kind</span> <span class="o">!=</span> <span class="s1">&#39;i&#39;</span><span class="p">:</span>
                 <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;SemanticWarning: For a discrete instance time-instants should be an integers&#39;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">merged_</span> <span class="o">=</span> <span class="n">disjoint_intervals</span></div>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">discrete_</span> <span class="o">=</span> <span class="p">(</span><span class="kc">True</span> <span class="k">if</span> <span class="n">discrete</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">discrete</span><span class="p">)</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">discrete</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">discrete_</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">discrete_</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">is_sorted_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -241,15 +234,31 @@
     <span class="k">def</span> <span class="nf">is_merged_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;merged_&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">merged_</span>
 
+    <span class="k">def</span> <span class="nf">_empty_base_class</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">init_interval_df</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">discrete</span><span class="p">,</span> <span class="n">keys</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">])</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">sorted_df</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sort_df_</span><span class="o">.</span><span class="n">df_</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_empty_base_class</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">sort_df</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sort_by</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sort_by</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sort_by</span> <span class="o">=</span> <span class="n">sort_by</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sort_df</span><span class="p">(</span><span class="n">sort_by</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">sort_by</span> <span class="o">==</span> <span class="n">sort_by</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sorted_df</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sort_by</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">df</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_merged_</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">df_</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">merged_</span> <span class="o">=</span> <span class="kc">True</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sort_df_</span><span class="o">.</span><span class="n">df_</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">IntervalDF</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;ts&#39;</span><span class="p">,</span> <span class="s1">&#39;tf&#39;</span><span class="p">])</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_empty_base_class</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">__bool__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;df_&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_</span><span class="o">.</span><span class="n">empty</span>
@@ -257,15 +266,14 @@
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">measure_time</span><span class="p">(</span><span class="n">discrete</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">discrete_</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">measure_time</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="mi">0</span>
 
     <span class="k">def</span> <span class="nf">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">Real</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">Real</span><span class="p">)</span> <span class="ow">and</span> <span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">&lt;=</span><span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
-                <span class="n">ts</span><span class="p">,</span> <span class="n">tf</span> <span class="o">=</span> <span class="n">t</span>
-                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_</span><span class="o">.</span><span class="n">index_at_interval</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">tf</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">()</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_</span><span class="o">.</span><span class="n">index_at_interval</span><span class="p">(</span><span class="o">*</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">()</span>
             <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">Real</span><span class="p">):</span>
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_</span><span class="o">.</span><span class="n">index_at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">()</span>
             <span class="k">else</span><span class="p">:</span>
@@ -275,21 +283,21 @@
 
     <span class="k">def</span> <span class="nf">__and__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">ABC</span><span class="o">.</span><span class="n">TimeSet</span><span class="p">):</span>
-            <span class="k">assert</span> <span class="n">ts</span><span class="o">.</span><span class="n">discrete</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">discrete</span>
+            <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">discrete</span> <span class="o">==</span> <span class="n">ts</span><span class="o">.</span><span class="n">discrete</span>
             <span class="k">if</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">bool</span><span class="p">(</span><span class="n">ts</span><span class="p">):</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">TimeSetDF</span><span class="p">):</span>
                     <span class="k">try</span><span class="p">:</span>
                         <span class="k">return</span> <span class="n">ts</span> <span class="o">&amp;</span> <span class="bp">self</span>
                     <span class="k">except</span> <span class="ne">NotImplementedError</span><span class="p">:</span>
                         <span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
-                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">intersect</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">df</span><span class="p">),</span> <span class="n">discrete</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">discrete</span><span class="p">)</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">df</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">UnrecognizedTimeSet</span><span class="p">(</span><span class="s1">&#39;right operand&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">__or__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">ABC</span><span class="o">.</span><span class="n">TimeSet</span><span class="p">):</span>
-            <span class="k">assert</span> <span class="n">ts</span><span class="o">.</span><span class="n">discrete</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">discrete</span>
+            <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">discrete</span> <span class="o">==</span> <span class="n">ts</span><span class="o">.</span><span class="n">discrete</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
                 <span class="k">return</span> <span class="n">ts</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
             <span class="k">if</span> <span class="nb">bool</span><span class="p">(</span><span class="n">ts</span><span class="p">):</span>
@@ -298,7 +306,7 @@
                         <span class="k">return</span> <span class="n">ts</span> <span class="o">|</span> <span class="bp">self</span>
                     <span class="k">except</span> <span class="ne">NotImplementedError</span><span class="p">:</span>
                         <span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
-                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">df</span><span class="p">),</span> <span class="n">discrete</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">discrete</span><span class="p">)</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">df</span><span class="p">))</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
@@ -306,20 +314,23 @@
 
     <span class="k">def</span> <span class="nf">__sub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">ABC</span><span class="o">.</span><span class="n">TimeSet</span><span class="p">):</span>
-            <span class="k">assert</span> <span class="n">ts</span><span class="o">.</span><span class="n">discrete</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">discrete</span>
+            <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">discrete</span> <span class="o">==</span> <span class="n">ts</span><span class="o">.</span><span class="n">discrete</span>
             <span class="k">if</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">bool</span><span class="p">(</span><span class="n">ts</span><span class="p">):</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">TimeSetDF</span><span class="p">):</span>
                     <span class="k">try</span><span class="p">:</span>
                         <span class="k">return</span> <span class="n">ts</span><span class="o">.</span><span class="fm">__rsub__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
                     <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="ne">NotImplementedError</span><span class="p">):</span>
-                        <span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">discrete</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">discrete</span><span class="p">)</span>
-                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">df</span><span class="p">),</span> <span class="n">discrete</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">discrete</span><span class="p">)</span>
+                        <span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">df</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">UnrecognizedTimeSet</span><span class="p">(</span><span class="s1">&#39;right operand&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">itertuples</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">itertuples_pretty</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">discrete</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">iter</span><span class="p">([])</span>
 
     <span class="k">def</span> <span class="nf">issuperset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">ABC</span><span class="o">.</span><span class="n">TimeSet</span><span class="p">):</span>

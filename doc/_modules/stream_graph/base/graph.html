@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>stream_graph.base.graph &mdash; Stream Graph 0.1 documentation</title>
+  <title>stream_graph.base.graph &mdash; Stream Graph 0.2 documentation</title>
   
 
   
@@ -64,7 +64,7 @@
             
             
               <div class="version">
-                0.1
+                0.2
               </div>
             
           
@@ -95,11 +95,13 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../introduction/installation.html#installing-the-master-version">Installing the master-version</a></li>
 </ul>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../package_walkthrough/index.html">Package Walkthrough</a></li>
+</ul>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../auto_examples/index.html">Getting Started</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../tutorials.html">1. EmailEu</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../tutorials.html#id2">2. bitcoin-alpha</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials.html">Tutorials</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../api.html">ABC Reference</a></li>
@@ -313,7 +315,7 @@
 <span class="sd">            Returns the size of the linkset defining this graph.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">linkset_</span><span class="o">.</span><span class="n">size_weighted</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">linkset_</span><span class="o">.</span><span class="n">weighted_size</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">total_coverage</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -345,7 +347,7 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        total_coverage: Real</span>
-<span class="sd">            Returns :math:`\\frac{m}{n^{2}}`.</span>
+<span class="sd">            Returns :math:`\\frac{m_{w}}{n^{2}}`.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -353,9 +355,35 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="mf">0.</span>
 
+<div class="viewcode-block" id="Graph.to_networkx"><a class="viewcode-back" href="../../../generated/stream_graph.Graph.html#stream_graph.Graph.to_networkx">[docs]</a>    <span class="k">def</span> <span class="nf">to_networkx</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">create_using</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Convert Graph to a networkx graph.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        create_using : (NetworkX graph constructor, optional (default=nx.Graph))</span>
+<span class="sd">            Graph type to create. If graph instance, then cleared before populated.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        graph : nx.Graph</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+        <span class="k">if</span> <span class="n">create_using</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">Graph</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">create_using</span><span class="p">,</span> <span class="n">nx</span><span class="o">.</span><span class="n">Graph</span><span class="p">)</span>
+            <span class="n">G</span> <span class="o">=</span> <span class="n">create_using</span><span class="p">()</span>
 
-<div class="viewcode-block" id="Graph.coverage"><a class="viewcode-back" href="../../../generated/stream_graph.Graph.html#stream_graph.Graph.coverage">[docs]</a>    <span class="k">def</span> <span class="nf">coverage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="s1">&#39;out&#39;</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Extract the total coverage of the graph.</span>
+        <span class="n">G</span><span class="o">.</span><span class="n">add_nodes_from</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nodeset_</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">linkset_</span><span class="o">.</span><span class="n">weighted</span><span class="p">:</span>
+            <span class="n">G</span><span class="o">.</span><span class="n">add_weighted_edges_from</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">linkset_</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">G</span><span class="o">.</span><span class="n">add_edges_from</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">linkset_</span><span class="p">)</span>    
+    
+        <span class="k">return</span> <span class="n">G</span></div>
+
+<div class="viewcode-block" id="Graph.neighbor_coverage_of"><a class="viewcode-back" href="../../../generated/stream_graph.Graph.html#stream_graph.Graph.neighbor_coverage_of">[docs]</a>    <span class="k">def</span> <span class="nf">neighbor_coverage_of</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="s1">&#39;out&#39;</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Extract the neighbor coverage of the graph.</span>
 <span class="sd">        </span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>

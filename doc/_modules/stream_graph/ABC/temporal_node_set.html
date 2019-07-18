@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>stream_graph.ABC.temporal_node_set &mdash; Stream Graph 0.1 documentation</title>
+  <title>stream_graph.ABC.temporal_node_set &mdash; Stream Graph 0.2 documentation</title>
   
 
   
@@ -64,7 +64,7 @@
             
             
               <div class="version">
-                0.1
+                0.2
               </div>
             
           
@@ -95,11 +95,13 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../introduction/installation.html#installing-the-master-version">Installing the master-version</a></li>
 </ul>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../package_walkthrough/index.html">Package Walkthrough</a></li>
+</ul>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../auto_examples/index.html">Getting Started</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../tutorials.html">1. EmailEu</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../tutorials.html#id2">2. bitcoin-alpha</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials.html">Tutorials</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../api.html">ABC Reference</a></li>
@@ -176,17 +178,18 @@
 <span class="kn">import</span> <span class="nn">copy</span>
 
 <span class="kn">from</span> <span class="nn">itertools</span> <span class="k">import</span> <span class="n">combinations</span>
-<span class="kn">from</span> <span class="nn">itertools</span> <span class="k">import</span> <span class="n">product</span>
+<span class="kn">from</span> <span class="nn">warnings</span> <span class="k">import</span> <span class="n">warn</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">Iterable</span>
 <span class="kn">from</span> <span class="nn">six</span> <span class="k">import</span> <span class="n">string_types</span>
-<span class="kn">from</span> <span class="nn">._utils</span> <span class="k">import</span> <span class="n">ABC_to_string</span>
+<span class="kn">from</span> <span class="nn">.utils</span> <span class="k">import</span> <span class="n">ABC_to_string</span>
 
 <span class="c1"># 2/3 Cross Compatibility</span>
-<span class="n">ABC</span> <span class="o">=</span> <span class="n">abc</span><span class="o">.</span><span class="n">ABCMeta</span><span class="p">(</span><span class="s1">&#39;ABC&#39;</span><span class="p">,</span> <span class="p">(</span><span class="nb">object</span><span class="p">,),</span> <span class="p">{</span><span class="s1">&#39;__slots__&#39;</span><span class="p">:</span> <span class="p">()})</span> 
+<span class="n">ABC</span> <span class="o">=</span> <span class="n">abc</span><span class="o">.</span><span class="n">ABCMeta</span><span class="p">(</span><span class="s1">&#39;ABC&#39;</span><span class="p">,</span> <span class="p">(</span><span class="nb">object</span><span class="p">,),</span> <span class="p">{</span><span class="s1">&#39;__slots__&#39;</span><span class="p">:</span> <span class="p">()})</span>
+
 
 <div class="viewcode-block" id="TemporalNodeSet"><a class="viewcode-back" href="../../../generated/stream_graph.ABC.TemporalNodeSet.html#stream_graph.ABC.TemporalNodeSet">[docs]</a><span class="k">class</span> <span class="nc">TemporalNodeSet</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;TemporalNodeSet Object API Specification.</span>
-<span class="sd">    </span>
+
 <span class="sd">    A TemporalNodeSet can be abstractly be defined as a set of nodes :code:`u` associated with a set of time intervals :code:`(ts, tf)`.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -203,31 +206,29 @@
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">discrete</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Designate if the TemporalNodeSet is on discrete Time.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        None. Property.</span>
-<span class="sd">        </span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        discrete : Bool or None</span>
 <span class="sd">            True if the time is discrete.</span>
 <span class="sd">            Returns None if empty.</span>
-<span class="sd">        </span>
-<span class="sd">        &quot;&quot;&quot;</span>        
-        <span class="k">pass</span>
 
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span>
 
     <span class="nd">@property</span>
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">nodeset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return the nodeset that can be derived from this TemporalNodeSet.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        None. Property.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        nodeset : NodeSet</span>
@@ -240,11 +241,11 @@
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">timeset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return the timeset that can be derived from this TemporalNodeSet.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        None. Property.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        timeset : TimeSet</span>
@@ -257,17 +258,17 @@
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Returns the size of the TemporalNodeSet.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        None. Property.</span>
-<span class="sd">        </span>
+
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        size : Real</span>
 <span class="sd">            The size :math:`\sum_{u} |T_{u}|` of the stream_graph.</span>
-<span class="sd">        </span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span>
 
@@ -275,28 +276,28 @@
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">total_common_time</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Returns the total time that each node shares with all the other nodes of the TemporalNodeSet.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        None. Property.</span>
-<span class="sd">        </span>
+
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        size : Real</span>
 <span class="sd">            The size :math:`\sum_{uv\in V\otimes V} |T_{u} \cap T_{v}|` of the stream_graph.</span>
-<span class="sd">        </span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">n</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Returns number of nodes of the TemporalNodeSet.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        None. Property.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        n : Int</span>
@@ -308,24 +309,24 @@
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">total_time</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Returns the size of the derived TimeSet.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        None. Property.</span>
-<span class="sd">        </span>
+
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        total_time : Real</span>
 <span class="sd">            The total amount of time from the union of intervals that nodes exist.</span>
-<span class="sd">        </span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">timeset</span><span class="o">.</span><span class="n">size</span>
 
 <div class="viewcode-block" id="TemporalNodeSet.__contains__"><a class="viewcode-back" href="../../../generated/stream_graph.ABC.TemporalNodeSet.html#stream_graph.ABC.TemporalNodeSet.__contains__">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Implementation of the :code:`in` operator for LinkStream.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        l : tuple, len(l) == 2</span>
@@ -337,14 +338,14 @@
 <span class="sd">        contains : Bool</span>
 <span class="sd">            Returns True if a node :code:`u` exists at :code:`t` or through **all** :code:`(ts, tf)`.</span>
 <span class="sd">            If an element is :code:`None`, :code:`in` will return True if the other elements matches.</span>
-<span class="sd">            If both elements are :code:`None` output will be None. </span>
-<span class="sd">        </span>
+<span class="sd">            If both elements are :code:`None` output will be None.</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
 <div class="viewcode-block" id="TemporalNodeSet.node_duration"><a class="viewcode-back" href="../../../generated/stream_graph.ABC.TemporalNodeSet.html#stream_graph.ABC.TemporalNodeSet.node_duration">[docs]</a>    <span class="k">def</span> <span class="nf">node_duration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Returns the duration of a node.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        u : Node_Id or None</span>
@@ -354,7 +355,7 @@
 <span class="sd">        duration : Real or NodeCollection(Real)</span>
 <span class="sd">            The total amount of time that a node exist.</span>
 <span class="sd">            If None, returns a NodeCollection with the durations for all nodes in the temporal_nodeset.</span>
-<span class="sd">        </span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">u</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">stream_graph.collections</span> <span class="k">import</span> <span class="n">NodeCollection</span>
@@ -365,11 +366,11 @@
 <div class="viewcode-block" id="TemporalNodeSet.common_time"><a class="viewcode-back" href="../../../generated/stream_graph.ABC.TemporalNodeSet.html#stream_graph.ABC.TemporalNodeSet.common_time">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">common_time</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Returns the common_time between a node and one other or all.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        u : Node_Id or set(Node_Id) or None</span>
-<span class="sd">        </span>
+
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        total_time : Real or NodeCollection(Real)</span>
@@ -384,7 +385,7 @@
 <div class="viewcode-block" id="TemporalNodeSet.common_time_pair"><a class="viewcode-back" href="../../../generated/stream_graph.ABC.TemporalNodeSet.html#stream_graph.ABC.TemporalNodeSet.common_time_pair">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">common_time_pair</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">l</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Returns the common_time between a pair of nodes.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        l : (Node_Id, Node_Id) or set((Node_Id, Node_Id)) or None</span>
@@ -402,11 +403,11 @@
 <div class="viewcode-block" id="TemporalNodeSet.nodes_at"><a class="viewcode-back" href="../../../generated/stream_graph.ABC.TemporalNodeSet.html#stream_graph.ABC.TemporalNodeSet.nodes_at">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">nodes_at</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return the nodes at a certain time.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        t : Real or None</span>
-<span class="sd">        </span>
+
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        nodes : NodeSet or TimeGenerator(NodeSet)</span>
@@ -419,11 +420,11 @@
 <div class="viewcode-block" id="TemporalNodeSet.times_of"><a class="viewcode-back" href="../../../generated/stream_graph.ABC.TemporalNodeSet.html#stream_graph.ABC.TemporalNodeSet.times_of">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">times_of</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Returns TimeSet that a nodes appears in the TemporalNodeSet.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        u : Node_Id or None</span>
-<span class="sd">        </span>
+
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        timeset : TimeSet or NodeCollection(TimeSet)</span>
@@ -435,11 +436,11 @@
 
 <div class="viewcode-block" id="TemporalNodeSet.n_at"><a class="viewcode-back" href="../../../generated/stream_graph.ABC.TemporalNodeSet.html#stream_graph.ABC.TemporalNodeSet.n_at">[docs]</a>    <span class="k">def</span> <span class="nf">n_at</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Returns number of nodes of the TemporalNodeSet at a certain time.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        t : Real</span>
-<span class="sd">        </span>
+
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        n : Int or TimeCollection(Int)</span>
@@ -447,7 +448,7 @@
 <span class="sd">            If None returns an iterator of tuples containing a timestamp and an Int.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">t</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">t</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="c1"># Wrong</span>
             <span class="kn">from</span> <span class="nn">stream_graph.collections</span> <span class="k">import</span> <span class="n">TimeCollection</span>
             <span class="n">time_nodes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes_at</span><span class="p">()</span>
             <span class="k">return</span> <span class="n">TimeCollection</span><span class="p">([(</span><span class="n">ts</span><span class="p">,</span> <span class="n">ns</span><span class="o">.</span><span class="n">size</span><span class="p">)</span> <span class="k">for</span> <span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">ns</span><span class="p">)</span> <span class="ow">in</span> <span class="n">time_nodes</span><span class="p">],</span> <span class="n">time_nodes</span><span class="o">.</span><span class="n">instants</span><span class="p">)</span>
@@ -466,11 +467,11 @@
 <div class="viewcode-block" id="TemporalNodeSet.issuperset"><a class="viewcode-back" href="../../../generated/stream_graph.ABC.TemporalNodeSet.html#stream_graph.ABC.TemporalNodeSet.issuperset">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">issuperset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ns</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Check if a temporal_nodeset contains another temporal_nodeset.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        ns : TemporalNodeSet</span>
-<span class="sd">        </span>
+
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        issuperset_f : Bool</span>
@@ -482,11 +483,11 @@
 <div class="viewcode-block" id="TemporalNodeSet.__iter__"><a class="viewcode-back" href="../../../generated/stream_graph.ABC.TemporalNodeSet.html#stream_graph.ABC.TemporalNodeSet.__iter__">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Implementation of the :code:`iter` function for a TemporalNodeSet object.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        None</span>
-<span class="sd">        </span>
+
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        out : Iterator of tuple</span>
@@ -498,11 +499,11 @@
 <div class="viewcode-block" id="TemporalNodeSet.__bool__"><a class="viewcode-back" href="../../../generated/stream_graph.ABC.TemporalNodeSet.html#stream_graph.ABC.TemporalNodeSet.__bool__">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">__bool__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Implementation of the :code:`bool` casting of a TemporalNodeSet object.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        None.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        out : Bool</span>
@@ -518,11 +519,11 @@
 <div class="viewcode-block" id="TemporalNodeSet.__and__"><a class="viewcode-back" href="../../../generated/stream_graph.ABC.TemporalNodeSet.html#stream_graph.ABC.TemporalNodeSet.__and__">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">__and__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ns</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Implementation of the :code:`&amp;` operator for a TemporalNodeSet object.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        ns : TemporalNodeSet</span>
-<span class="sd">        </span>
+
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        out : TemporalNodeSet</span>
@@ -534,11 +535,11 @@
 <div class="viewcode-block" id="TemporalNodeSet.__sub__"><a class="viewcode-back" href="../../../generated/stream_graph.ABC.TemporalNodeSet.html#stream_graph.ABC.TemporalNodeSet.__sub__">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">__sub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ns</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Implementation of the :code:`-` operator for a TemporalNodeSet object.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        ns : TemporalNodeSet</span>
-<span class="sd">        </span>
+
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        out : TemporalNodeSet</span>
@@ -551,11 +552,11 @@
 <div class="viewcode-block" id="TemporalNodeSet.__or__"><a class="viewcode-back" href="../../../generated/stream_graph.ABC.TemporalNodeSet.html#stream_graph.ABC.TemporalNodeSet.__or__">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">__or__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ns</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Implementation of the :code:`|` operator for a TemporalNodeSet object.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        ns : TemporalNodeSet</span>
-<span class="sd">        </span>
+
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        out : TemporalNodeSet</span>
@@ -566,11 +567,11 @@
 
 <div class="viewcode-block" id="TemporalNodeSet.copy"><a class="viewcode-back" href="../../../generated/stream_graph.ABC.TemporalNodeSet.html#stream_graph.ABC.TemporalNodeSet.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">deep</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Returns a deep or shallow copy of the current TemporalNodeSet.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        deep : Bool</span>
-<span class="sd">        </span>
+
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        temporal_nodeset_copy : TemporalNodeSet</span>
@@ -584,17 +585,17 @@
 
 <div class="viewcode-block" id="TemporalNodeSet.discretize"><a class="viewcode-back" href="../../../generated/stream_graph.ABC.TemporalNodeSet.html#stream_graph.ABC.TemporalNodeSet.discretize">[docs]</a>    <span class="k">def</span> <span class="nf">discretize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bin_size</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Returns a discrete version of the current TemporalNodeSet.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        bins : Iterable or None.</span>
 <span class="sd">            If None, step should be provided.</span>
 <span class="sd">            If Iterable it should contain n+1 elements that declare the start and the end of all (continuous) bins.</span>
-<span class="sd">        </span>
+
 <span class="sd">        bin_size : Int or datetime</span>
 <span class="sd">            If bins is provided this argument is ommited.</span>
 <span class="sd">            Else declare the size of each bin.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        timeset_discrete : TimeSet</span>
@@ -617,7 +618,7 @@
 
 <div class="viewcode-block" id="ITemporalNodeSet"><a class="viewcode-back" href="../../../generated/stream_graph.ABC.ITemporalNodeSet.html#stream_graph.ABC.ITemporalNodeSet">[docs]</a><span class="k">class</span> <span class="nc">ITemporalNodeSet</span><span class="p">(</span><span class="n">TemporalNodeSet</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;ITemporalNodeSet Object API Specification.</span>
-<span class="sd">    </span>
+
 <span class="sd">    A Instantaneous Temporal NodeSet can be abstractly be defined as a set of nodes :code:`u` associated with a time-stamp :code:`ts`.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -642,18 +643,13 @@
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">discrete</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_size_discrete</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">number_of_instants</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="mi">0</span>
 
-    <span class="nd">@property</span>
-    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">_size_discrete</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">pass</span>
-
     <span class="k">def</span> <span class="nf">node_duration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">discrete</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_node_duration_discrete</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>            
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_node_duration_discrete</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">u</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="kn">from</span> <span class="nn">stream_graph.collections</span> <span class="k">import</span> <span class="n">NodeCollection</span>
@@ -694,8 +690,12 @@
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">_common_time_pair_discrete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">l</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="k">pass</span></div>
+        <span class="k">pass</span>
 
+    <span class="nd">@property</span>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">number_of_instants</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span></div>
 </pre></div>
 
            </div>

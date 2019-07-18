@@ -25,7 +25,8 @@ using the :class:`stream_graph.Visualizer`.
 
 
 
-.. code-block:: default
+
+.. code-block:: python
 
     from __future__ import print_function
     print(__doc__)
@@ -34,7 +35,7 @@ using the :class:`stream_graph.Visualizer`.
 
     nodeset = NodeSetS({1, 2, 3})
     timeset = TimeSetDF([(0, 10)])
-    temporal_nodeset = TemporalNodeSetDF([(1, 1, 9), (2, 2, 5), (2, 5.5, 8.5)])
+    temporal_nodeset = TemporalNodeSetDF([(1, 1, 9), (2, 2, 5), (2, 7, 9)])
     temporal_linkset = TemporalLinkSetDF([(1, 2, 2, 4), (1, 2, 3, 5), (1, 2, 6, 8)] , disjoint_intervals=False)
     stream_graph = StreamGraph(nodeset, timeset, temporal_nodeset, temporal_linkset)
 
@@ -51,10 +52,7 @@ using the :class:`stream_graph.Visualizer`.
     from os import remove
     remove('plot_intro.svg')
 
-
-.. rst-class:: sphx-glr-timing
-
-   **Total running time of the script:** ( 0 minutes  0.107 seconds)
+**Total running time of the script:** ( 0 minutes  0.394 seconds)
 
 
 .. _sphx_glr_download_auto_examples_plot_intro.py:

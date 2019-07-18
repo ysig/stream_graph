@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>stream_graph.base.temporal_node_set_b &mdash; Stream Graph 0.1 documentation</title>
+  <title>stream_graph.base.temporal_node_set_b &mdash; Stream Graph 0.2 documentation</title>
   
 
   
@@ -64,7 +64,7 @@
             
             
               <div class="version">
-                0.1
+                0.2
               </div>
             
           
@@ -95,11 +95,13 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../introduction/installation.html#installing-the-master-version">Installing the master-version</a></li>
 </ul>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../package_walkthrough/index.html">Package Walkthrough</a></li>
+</ul>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../auto_examples/index.html">Getting Started</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../tutorials.html">1. EmailEu</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../tutorials.html#id2">2. bitcoin-alpha</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials.html">Tutorials</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../api.html">ABC Reference</a></li>
@@ -176,17 +178,17 @@
 <span class="kn">from</span> <span class="nn">itertools</span> <span class="k">import</span> <span class="n">permutations</span>
 <span class="kn">from</span> <span class="nn">itertools</span> <span class="k">import</span> <span class="n">combinations</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">Iterable</span>
+<span class="kn">from</span> <span class="nn">warnings</span> <span class="k">import</span> <span class="n">warn</span>
 
-<span class="kn">from</span> <span class="nn">stream_graph</span> <span class="k">import</span> <span class="n">ABC</span>
+<span class="kn">from</span> <span class="nn">.multi_df_utils</span> <span class="k">import</span> <span class="n">_closed_to_tuple</span>
 <span class="kn">from</span> <span class="nn">.node_set_s</span> <span class="k">import</span> <span class="n">NodeSetS</span>
 <span class="kn">from</span> <span class="nn">.time_set_df</span> <span class="k">import</span> <span class="n">TimeSetDF</span>
 <span class="kn">from</span> <span class="nn">.temporal_node_set_df</span> <span class="k">import</span> <span class="n">TemporalNodeSetDF</span>
+<span class="kn">from</span> <span class="nn">stream_graph</span> <span class="k">import</span> <span class="n">ABC</span>
 <span class="kn">from</span> <span class="nn">stream_graph.collections</span> <span class="k">import</span> <span class="n">NodeCollection</span>
 <span class="kn">from</span> <span class="nn">stream_graph.collections</span> <span class="k">import</span> <span class="n">LinkCollection</span>
 <span class="kn">from</span> <span class="nn">stream_graph.collections</span> <span class="k">import</span> <span class="n">TimeCollection</span>
 <span class="kn">from</span> <span class="nn">stream_graph.collections</span> <span class="k">import</span> <span class="n">TimeGenerator</span>
-<span class="kn">from</span> <span class="nn">stream_graph.exceptions</span> <span class="k">import</span> <span class="n">UnrecognizedNodeSet</span>
-<span class="kn">from</span> <span class="nn">stream_graph.exceptions</span> <span class="k">import</span> <span class="n">UnrecognizedTimeSet</span>
 <span class="kn">from</span> <span class="nn">stream_graph.exceptions</span> <span class="k">import</span> <span class="n">UnrecognizedTemporalNodeSet</span>
 
 
@@ -195,14 +197,14 @@
 <div class="viewcode-block" id="TemporalNodeSetB.__init__"><a class="viewcode-back" href="../../../generated/stream_graph.TemporalNodeSetB.html#stream_graph.TemporalNodeSetB.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nodeset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">timeset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">discrete</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize a Temporal Node Set.</span>
 
-<span class="sd">        All nodes defined by a nodeset, exist in all the time domain defined by timeset. </span>
+<span class="sd">        All nodes defined by a nodeset, exist in all the time domain defined by timeset.</span>
 
 <span class="sd">        Parameters:</span>
 <span class="sd">        -----------</span>
 <span class="sd">        nodeset: ABC.NodeSet</span>
 
 <span class="sd">        timeset: ABC.TimeSet</span>
-<span class="sd">        </span>
+
 <span class="sd">        discrete: bool or None</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -215,13 +217,13 @@
 
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">timeset</span><span class="p">,</span> <span class="n">ABC</span><span class="o">.</span><span class="n">TimeSet</span><span class="p">):</span>
                 <span class="k">if</span> <span class="n">discrete</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;The discrete signature is the one of the given timeset&#39;</span><span class="p">)</span>
+                    <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;The discrete signature is derived from the one of the given timeset&#39;</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">timeset_</span> <span class="o">=</span> <span class="n">timeset</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">discrete</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="n">discrete</span> <span class="o">=</span> <span class="kc">False</span>
+                    <span class="n">discrete</span> <span class="o">=</span> <span class="kc">True</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">timeset_</span> <span class="o">=</span> <span class="n">TimeSetDF</span><span class="p">(</span><span class="n">timeset</span><span class="p">,</span> <span class="n">discrete</span><span class="o">=</span><span class="n">discrete</span><span class="p">)</span>
-                
+
         <span class="k">elif</span> <span class="nb">any</span><span class="p">(</span><span class="n">is_none</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;All arguments should have values or be None&#39;</span><span class="p">)</span></div>
 
@@ -284,12 +286,21 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="mi">0</span>
 
-
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">total_common_time</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span>
         <span class="k">return</span> <span class="n">n</span><span class="o">*</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">timeset_</span><span class="o">.</span><span class="n">size</span>
 
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">number_of_instants</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">timeset_</span><span class="o">.</span><span class="n">instantaneous</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">timeset_</span><span class="o">.</span><span class="n">number_of_instants</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s1">&#39;Instantaneous </span><span class="se">\&#39;</span><span class="s1">TemporalNodeSetB</span><span class="se">\&#39;</span><span class="s1"> has no attribute </span><span class="se">\&#39;</span><span class="s1">number_of_instants</span><span class="se">\&#39;</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">instantaneous</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">timeset_</span><span class="o">.</span><span class="n">instantaneous</span>
 
     <span class="k">def</span> <span class="nf">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">):</span>
         <span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="n">u</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">tuple</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">u</span><span class="p">)</span> <span class="ow">is</span> <span class="mi">2</span>
@@ -322,19 +333,19 @@
             <span class="k">return</span> <span class="n">LinkCollection</span><span class="p">({(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_time</span> <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">combinations</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nodeset_</span><span class="p">,</span> <span class="mi">2</span><span class="p">)})</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="nb">any</span><span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">l</span><span class="p">)):</span>
             <span class="n">nodes</span><span class="p">,</span> <span class="n">links</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nodeset_</span><span class="p">)</span> <span class="o">&amp;</span> <span class="nb">set</span><span class="p">(</span><span class="n">a</span> <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">l</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">)),</span> <span class="nb">set</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">LinkCollection</span><span class="p">({(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_time</span> <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">permutations</span><span class="p">(</span><span class="n">nodes</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="k">if</span> <span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="ow">in</span> <span class="n">links</span><span class="p">})</span> 
+            <span class="k">return</span> <span class="n">LinkCollection</span><span class="p">({(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_time</span> <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">permutations</span><span class="p">(</span><span class="n">nodes</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="k">if</span> <span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="ow">in</span> <span class="n">links</span><span class="p">})</span>
 
         <span class="k">if</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="ow">and</span> <span class="n">l</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodeset_</span> <span class="ow">and</span> <span class="n">l</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodeset_</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_time</span>
         <span class="k">return</span> <span class="mf">0.</span>
 
-    <span class="k">def</span> <span class="nf">issuperset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ns</span><span class="p">):</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ns</span><span class="p">,</span> <span class="n">ABC</span><span class="o">.</span><span class="n">TemporalNodeSet</span><span class="p">):</span>
-            <span class="k">if</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">bool</span><span class="p">(</span><span class="n">ns</span><span class="p">):</span>
-                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ns</span><span class="p">,</span> <span class="n">TemporalNodeSetB</span><span class="p">):</span>
-                    <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">timeset_</span><span class="o">.</span><span class="n">issuperset</span><span class="p">(</span><span class="n">ns</span><span class="o">.</span><span class="n">timeset_</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodeset_</span><span class="o">.</span><span class="n">issuperset</span><span class="p">(</span><span class="n">ns</span><span class="o">.</span><span class="n">nodeset_</span><span class="p">))</span>
+    <span class="k">def</span> <span class="nf">issuperset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tns</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tns</span><span class="p">,</span> <span class="n">ABC</span><span class="o">.</span><span class="n">TemporalNodeSet</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">bool</span><span class="p">(</span><span class="n">tns</span><span class="p">):</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tns</span><span class="p">,</span> <span class="n">TemporalNodeSetB</span><span class="p">):</span>
+                    <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">timeset_</span><span class="o">.</span><span class="n">issuperset</span><span class="p">(</span><span class="n">tns</span><span class="o">.</span><span class="n">timeset_</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodeset_</span><span class="o">.</span><span class="n">issuperset</span><span class="p">(</span><span class="n">tns</span><span class="o">.</span><span class="n">nodeset_</span><span class="p">))</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="k">return</span> <span class="n">TemporalNodeSetDF</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">issuperset</span><span class="p">(</span><span class="n">ns</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="n">TemporalNodeSetDF</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">issuperset</span><span class="p">(</span><span class="n">tns</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">return</span> <span class="kc">True</span>
         <span class="k">else</span><span class="p">:</span>
@@ -344,11 +355,7 @@
     <span class="k">def</span> <span class="nf">nodes_at</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">t</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-                <span class="k">def</span> <span class="nf">generator</span><span class="p">(</span><span class="n">timeset</span><span class="p">,</span> <span class="n">nodeset</span><span class="p">):</span>
-                    <span class="k">for</span> <span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">tf</span><span class="p">)</span> <span class="ow">in</span> <span class="n">timeset</span><span class="p">:</span>
-                        <span class="k">yield</span> <span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">nodeset</span><span class="p">)</span>
-                        <span class="k">yield</span> <span class="p">(</span><span class="n">tf</span><span class="p">,</span> <span class="n">NodeSetS</span><span class="p">())</span>
-                <span class="k">return</span> <span class="n">TimeGenerator</span><span class="p">(</span><span class="n">generator</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">timeset</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodeset</span><span class="p">))</span>
+                <span class="k">return</span> <span class="n">constant_time_generator</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">timeset</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodeset</span><span class="p">,</span> <span class="n">NodeSetS</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">discrete</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">instantaneous</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">TimeGenerator</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
@@ -360,11 +367,7 @@
     <span class="k">def</span> <span class="nf">n_at</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">t</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-                <span class="k">def</span> <span class="nf">generator</span><span class="p">(</span><span class="n">timeset</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
-                    <span class="k">for</span> <span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">tf</span><span class="p">)</span> <span class="ow">in</span> <span class="n">timeset</span><span class="p">:</span>
-                        <span class="k">yield</span> <span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
-                        <span class="k">yield</span> <span class="p">(</span><span class="n">tf</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-                <span class="k">return</span> <span class="n">TimeCollection</span><span class="p">(</span><span class="n">generator</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">timeset</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">))</span>
+                <span class="k">return</span> <span class="n">constant_time_generator</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">timeset</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">discrete</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">instantaneous</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">TimeCollection</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
@@ -382,9 +385,14 @@
             <span class="k">return</span> <span class="n">TimeSetDF</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodeset_</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">timeset_</span><span class="p">:</span>
-                <span class="k">yield</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">instantaneous</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodeset_</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">timeset_</span><span class="p">:</span>
+                    <span class="k">yield</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodeset_</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">timeset_</span><span class="p">:</span>
+                    <span class="k">yield</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="p">)</span> <span class="o">+</span> <span class="n">key</span>
 
     <span class="k">def</span> <span class="nf">__bool__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;nodeset_&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;timeset_&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nodeset_</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">timeset_</span><span class="p">)</span>
@@ -417,32 +425,29 @@
             <span class="k">raise</span> <span class="n">UnrecognizedTemporalNodeSet</span><span class="p">(</span><span class="s1">&#39;right operand&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">TemporalNodeSetB</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">__sub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ns</span><span class="p">):</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ns</span><span class="p">,</span> <span class="n">ABC</span><span class="o">.</span><span class="n">TemporalNodeSet</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__sub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tns</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tns</span><span class="p">,</span> <span class="n">ABC</span><span class="o">.</span><span class="n">TemporalNodeSet</span><span class="p">):</span>
             <span class="k">if</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-                <span class="k">if</span> <span class="nb">bool</span><span class="p">(</span><span class="n">ns</span><span class="p">):</span>
-                    <span class="k">assert</span> <span class="n">ns</span><span class="o">.</span><span class="n">discrete</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">discrete</span>
-                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ns</span><span class="p">,</span> <span class="n">TemporalNodeSetB</span><span class="p">):</span>
-                        <span class="n">ns_in</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodeset_</span> <span class="o">&amp;</span> <span class="n">ns</span><span class="o">.</span><span class="n">nodeset_</span>
+                <span class="k">if</span> <span class="nb">bool</span><span class="p">(</span><span class="n">tns</span><span class="p">):</span>
+                    <span class="k">assert</span> <span class="n">tns</span><span class="o">.</span><span class="n">discrete</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">discrete</span>
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tns</span><span class="p">,</span> <span class="n">TemporalNodeSetB</span><span class="p">):</span>
+                        <span class="n">ns_in</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodeset_</span> <span class="o">&amp;</span> <span class="n">tns</span><span class="o">.</span><span class="n">nodeset_</span>
                         <span class="k">if</span> <span class="nb">bool</span><span class="p">(</span><span class="n">ns_in</span><span class="p">):</span>
-                            <span class="n">ts_diff</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">timeset_</span> <span class="o">-</span> <span class="n">ns</span><span class="o">.</span><span class="n">timeset_</span>
+                            <span class="n">ts_diff</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">timeset_</span> <span class="o">-</span> <span class="n">tns</span><span class="o">.</span><span class="n">timeset_</span>
                             <span class="k">if</span> <span class="nb">bool</span><span class="p">(</span><span class="n">ts_diff</span><span class="p">):</span>
-                                <span class="n">nsa</span> <span class="o">=</span> <span class="n">TemporalNodeSetDF</span><span class="p">(</span><span class="n">chain</span><span class="p">(</span>
-                                    <span class="nb">iter</span><span class="p">(</span><span class="n">TemporalNodeSetB</span><span class="p">(</span>
-                                        <span class="n">nodeset</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">nodeset_</span> <span class="o">-</span> <span class="n">ns</span><span class="o">.</span><span class="n">nodeset_</span><span class="p">,</span>
-                                        <span class="n">timeset</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">timeset_</span><span class="p">)),</span>
-                                    <span class="nb">iter</span><span class="p">(</span><span class="n">TemporalNodeSetB</span><span class="p">(</span>
-                                        <span class="n">nodeset</span><span class="o">=</span><span class="n">ns_in</span><span class="p">,</span>
-                                        <span class="n">timeset</span><span class="o">=</span><span class="n">ts_diff</span><span class="p">))),</span> <span class="n">discrete</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">discrete</span><span class="p">)</span>
-                                <span class="k">return</span> <span class="n">nsa</span> 
-                        <span class="n">ns_diff</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodeset_</span> <span class="o">-</span> <span class="n">ns</span><span class="o">.</span><span class="n">nodeset_</span>
+                                <span class="n">tnsa_</span> <span class="o">=</span> <span class="n">TemporalNodeSetB</span><span class="p">(</span><span class="n">nodeset</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">nodeset_</span> <span class="o">-</span> <span class="n">tns</span><span class="o">.</span><span class="n">nodeset_</span><span class="p">,</span> <span class="n">timeset</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">timeset_</span><span class="p">,</span> <span class="n">discrete</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">discrete</span><span class="p">)</span>
+                                <span class="n">tnsb_</span> <span class="o">=</span> <span class="n">TemporalNodeSetB</span><span class="p">(</span><span class="n">nodeset</span><span class="o">=</span><span class="n">ns_in</span><span class="p">,</span> <span class="n">timeset</span><span class="o">=</span><span class="n">ts_diff</span><span class="p">,</span> <span class="n">discrete</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">discrete</span><span class="p">)</span>
+                                <span class="n">iter_</span> <span class="o">=</span> <span class="n">chain</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">tnsa_</span><span class="p">),</span> <span class="nb">iter</span><span class="p">(</span><span class="n">tnsb_</span><span class="p">))</span>
+                                <span class="n">nsa</span> <span class="o">=</span> <span class="n">TemporalNodeSetDF</span><span class="p">(</span><span class="n">iter_</span><span class="p">,</span> <span class="n">disjoint_intervals</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">discrete</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">discrete</span><span class="p">)</span>
+                                <span class="k">return</span> <span class="n">nsa</span>
+                        <span class="n">ns_diff</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodeset_</span> <span class="o">-</span> <span class="n">tns</span><span class="o">.</span><span class="n">nodeset_</span>
                         <span class="k">if</span> <span class="nb">bool</span><span class="p">(</span><span class="n">ns_diff</span><span class="p">):</span>
                             <span class="k">return</span> <span class="n">TemporalNodeSetB</span><span class="p">(</span><span class="n">nodeset</span><span class="o">=</span><span class="n">ns_diff</span><span class="p">,</span> <span class="n">timeset</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">timeset_</span><span class="p">)</span>
                     <span class="k">else</span><span class="p">:</span>
                         <span class="k">try</span><span class="p">:</span>
-                            <span class="k">return</span> <span class="n">ns</span><span class="o">.</span><span class="fm">__rsub__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+                            <span class="k">return</span> <span class="n">tns</span><span class="o">.</span><span class="fm">__rsub__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
                         <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="ne">NotImplementedError</span><span class="p">):</span>
-                            <span class="k">return</span> <span class="n">TemporalNodeSetDF</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">discrete</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">discrete</span><span class="p">)</span> <span class="o">-</span> <span class="n">TemporalNodeSetDF</span><span class="p">(</span><span class="n">ns</span><span class="p">,</span> <span class="n">discrete</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">discrete</span><span class="p">)</span>
+                            <span class="k">return</span> <span class="n">TemporalNodeSetDF</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">discrete</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">discrete</span><span class="p">)</span> <span class="o">-</span> <span class="n">TemporalNodeSetDF</span><span class="p">(</span><span class="n">tns</span><span class="p">,</span> <span class="n">discrete</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">discrete</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
@@ -452,6 +457,26 @@
     <span class="k">def</span> <span class="nf">_to_discrete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bins</span><span class="p">,</span> <span class="n">bin_size</span><span class="p">):</span>
         <span class="n">timeset</span><span class="p">,</span> <span class="n">bins</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">timeset_</span><span class="o">.</span><span class="n">discretize</span><span class="p">(</span><span class="n">bins</span><span class="p">,</span> <span class="n">bin_size</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">timeset</span><span class="o">=</span><span class="n">timeset</span><span class="p">,</span> <span class="n">nodeset</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">nodeset</span><span class="p">),</span> <span class="n">bins</span></div>
+
+
+<span class="k">def</span> <span class="nf">constant_time_generator</span><span class="p">(</span><span class="n">timeset</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">empty_object</span><span class="p">,</span> <span class="n">discrete</span><span class="p">,</span> <span class="n">instantaneous</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">instantaneous</span><span class="p">:</span>
+        <span class="k">def</span> <span class="nf">generate</span><span class="p">(</span><span class="n">timeset</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">timeset</span><span class="p">:</span>
+                <span class="k">yield</span> <span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">obj</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">discrete</span><span class="p">:</span>
+        <span class="k">def</span> <span class="nf">generate</span><span class="p">(</span><span class="n">timeset</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">ts</span><span class="p">,</span> <span class="n">tf</span> <span class="ow">in</span> <span class="n">timeset</span><span class="p">:</span>
+                <span class="k">yield</span> <span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">obj</span><span class="p">)</span>
+                <span class="k">yield</span> <span class="p">(</span><span class="n">tf</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">empty_object</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">def</span> <span class="nf">generate</span><span class="p">(</span><span class="n">timeset</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">ts</span><span class="p">,</span> <span class="n">tf</span><span class="p">,</span> <span class="n">it</span> <span class="ow">in</span> <span class="n">timeset</span><span class="p">:</span>
+                <span class="n">s</span><span class="p">,</span> <span class="n">f</span> <span class="o">=</span> <span class="n">_closed_to_tuple</span><span class="p">(</span><span class="n">it</span><span class="p">)</span>
+                <span class="k">yield</span> <span class="p">((</span><span class="n">ts</span><span class="p">,</span> <span class="n">s</span><span class="p">),</span> <span class="n">obj</span><span class="p">)</span>
+                <span class="k">yield</span> <span class="p">((</span><span class="n">tf</span><span class="p">,</span> <span class="ow">not</span> <span class="n">f</span><span class="p">),</span> <span class="n">empty_object</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">TimeGenerator</span><span class="p">(</span><span class="n">generate</span><span class="p">(</span><span class="n">timeset</span><span class="p">),</span> <span class="n">discrete</span><span class="o">=</span><span class="n">discrete</span><span class="p">,</span> <span class="n">instantaneous</span><span class="o">=</span><span class="n">instantaneous</span><span class="p">)</span>
 </pre></div>
 
            </div>

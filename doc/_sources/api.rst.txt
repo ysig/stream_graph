@@ -131,21 +131,19 @@ ITemporalLinkSet
 Temporal-DataFrames
 ===================
 
-.. currentmodule:: stream_graph.base.interval_df
+
+.. currentmodule:: stream_graph.base.dataframes
 
 .. autosummary::
    :toctree: generated/
    :template: class.rst
 
-   IntervalDF
-   
-.. currentmodule:: stream_graph.base.instantaneous_df
-
-.. autosummary::
-   :toctree: generated/
-   :template: class.rst
-
+   CIntervalDF
+   DIntervalDF
+   CIntervalWDF
+   DIntervalWDF
    InstantaneousDF
+   InstantaneousWDF
 
 
 ==========

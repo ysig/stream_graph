@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>stream_graph.ABC.time_set &mdash; Stream Graph 0.1 documentation</title>
+  <title>stream_graph.ABC.time_set &mdash; Stream Graph 0.2 documentation</title>
   
 
   
@@ -64,7 +64,7 @@
             
             
               <div class="version">
-                0.1
+                0.2
               </div>
             
           
@@ -95,11 +95,13 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../introduction/installation.html#installing-the-master-version">Installing the master-version</a></li>
 </ul>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../package_walkthrough/index.html">Package Walkthrough</a></li>
+</ul>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../auto_examples/index.html">Getting Started</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../tutorials.html">1. EmailEu</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../tutorials.html#id2">2. bitcoin-alpha</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials.html">Tutorials</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../api.html">ABC Reference</a></li>
@@ -176,14 +178,14 @@
 <span class="kn">import</span> <span class="nn">abc</span>
 <span class="kn">from</span> <span class="nn">warnings</span> <span class="k">import</span> <span class="n">warn</span>
 
-<span class="kn">from</span> <span class="nn">._utils</span> <span class="k">import</span> <span class="n">ABC_to_string</span>
+<span class="kn">from</span> <span class="nn">.utils</span> <span class="k">import</span> <span class="n">ABC_to_string</span>
 
 <span class="c1"># 2/3 Cross Compatibility</span>
-<span class="n">ABC</span> <span class="o">=</span> <span class="n">abc</span><span class="o">.</span><span class="n">ABCMeta</span><span class="p">(</span><span class="s1">&#39;ABC&#39;</span><span class="p">,</span> <span class="p">(</span><span class="nb">object</span><span class="p">,),</span> <span class="p">{</span><span class="s1">&#39;__slots__&#39;</span><span class="p">:</span> <span class="p">()})</span> 
+<span class="n">ABC</span> <span class="o">=</span> <span class="n">abc</span><span class="o">.</span><span class="n">ABCMeta</span><span class="p">(</span><span class="s1">&#39;ABC&#39;</span><span class="p">,</span> <span class="p">(</span><span class="nb">object</span><span class="p">,),</span> <span class="p">{</span><span class="s1">&#39;__slots__&#39;</span><span class="p">:</span> <span class="p">()})</span>
 
 <div class="viewcode-block" id="TimeSet"><a class="viewcode-back" href="../../../generated/stream_graph.ABC.TimeSet.html#stream_graph.ABC.TimeSet">[docs]</a><span class="k">class</span> <span class="nc">TimeSet</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;TimeSet Object API Specification.</span>
-<span class="sd">    </span>
+
 <span class="sd">    A TimeSet can be abstractly be defined as a set of intervals :code:`(ts, tf)`.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -200,11 +202,10 @@
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">discrete</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Designate if the TimeSet is on discrete Time.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        None. Property.</span>
-<span class="sd">        </span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -219,24 +220,23 @@
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Returns the size of the TimeSet.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        None. Property.</span>
-<span class="sd">        </span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        size : Real</span>
 <span class="sd">            The total amount of time inside the TimeSet.</span>
-<span class="sd">        </span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span>
 
 <div class="viewcode-block" id="TimeSet.__contains__"><a class="viewcode-back" href="../../../generated/stream_graph.ABC.TimeSet.html#stream_graph.ABC.TimeSet.__contains__">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Implementation of the :code:`in` operator for TimeSet.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        l : tuple or Real</span>
@@ -246,18 +246,18 @@
 <span class="sd">        -------</span>
 <span class="sd">        contains : Bool</span>
 <span class="sd">            Returns true if time :code:`t` the :code:`(ts, tf)` is contained inside the :code:`TimeSet`.</span>
-<span class="sd">        </span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
 <div class="viewcode-block" id="TimeSet.__and__"><a class="viewcode-back" href="../../../generated/stream_graph.ABC.TimeSet.html#stream_graph.ABC.TimeSet.__and__">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">__and__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Implementation of the :code:`&amp;` operator for a TimeSet object.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        ns : TimeSet</span>
-<span class="sd">        </span>
+
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        out : TimeSet</span>
@@ -269,11 +269,11 @@
 <div class="viewcode-block" id="TimeSet.__or__"><a class="viewcode-back" href="../../../generated/stream_graph.ABC.TimeSet.html#stream_graph.ABC.TimeSet.__or__">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">__or__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Implementation of the :code:`|` operator for a TimeSet object.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        ns : TimeSet</span>
-<span class="sd">        </span>
+
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        out : TimeSet</span>
@@ -285,11 +285,11 @@
 <div class="viewcode-block" id="TimeSet.__sub__"><a class="viewcode-back" href="../../../generated/stream_graph.ABC.TimeSet.html#stream_graph.ABC.TimeSet.__sub__">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">__sub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Implementation of the :code:`-` operator for a TimeSet object.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        ns : TimeSet</span>
-<span class="sd">        </span>
+
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        out : TimeSet</span>
@@ -301,11 +301,11 @@
 <div class="viewcode-block" id="TimeSet.__iter__"><a class="viewcode-back" href="../../../generated/stream_graph.ABC.TimeSet.html#stream_graph.ABC.TimeSet.__iter__">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Implementation of the :code:`iter` function for a TimeSet object.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        None</span>
-<span class="sd">        </span>
+
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        out : Iterator of tuple</span>
@@ -317,11 +317,11 @@
 <div class="viewcode-block" id="TimeSet.__bool__"><a class="viewcode-back" href="../../../generated/stream_graph.ABC.TimeSet.html#stream_graph.ABC.TimeSet.__bool__">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">__bool__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Implementation of the :code:`bool` casting of a TimeSet object.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        None.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        out : Bool</span>
@@ -336,11 +336,11 @@
 
 <div class="viewcode-block" id="TimeSet.copy"><a class="viewcode-back" href="../../../generated/stream_graph.ABC.TimeSet.html#stream_graph.ABC.TimeSet.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">deep</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Returns a deep or shallow copy of the current TimeSet.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        deep : Bool</span>
-<span class="sd">        </span>
+
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        timeset_copy : TimeSet</span>
@@ -354,17 +354,17 @@
 
 <div class="viewcode-block" id="TimeSet.discretize"><a class="viewcode-back" href="../../../generated/stream_graph.ABC.TimeSet.html#stream_graph.ABC.TimeSet.discretize">[docs]</a>    <span class="k">def</span> <span class="nf">discretize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bin_size</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Returns a discrete version of the current TimeSet.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        bins : Iterable or None.</span>
 <span class="sd">            If None, step should be provided.</span>
 <span class="sd">            If Iterable it should contain n+1 elements that declare the start and the end of all (continuous) bins.</span>
-<span class="sd">        </span>
+
 <span class="sd">        bin_size : Int or datetime</span>
 <span class="sd">            If bins is provided this argument is ommited.</span>
 <span class="sd">            Else declare the size of each bin.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        timeset_discrete : TimeSet</span>
@@ -384,9 +384,10 @@
     <span class="k">def</span> <span class="nf">_to_discrete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bins</span><span class="p">,</span> <span class="n">bin_size</span><span class="p">):</span>
         <span class="k">pass</span></div>
 
+
 <div class="viewcode-block" id="ITimeSet"><a class="viewcode-back" href="../../../generated/stream_graph.ABC.ITimeSet.html#stream_graph.ABC.ITimeSet">[docs]</a><span class="k">class</span> <span class="nc">ITimeSet</span><span class="p">(</span><span class="n">TimeSet</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Instantaneous TimeSet Object API Specification.</span>
-<span class="sd">    </span>
+
 <span class="sd">    A TimeSet can be abstractly be defined as a set of time-stamps :code:`t`.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -394,7 +395,18 @@
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">instantaneous</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Defines if the Time Set is instantaneous.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="kc">True</span></div>
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">discrete</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">number_of_instants</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">number_of_instants</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span></div>
 </pre></div>
 
            </div>

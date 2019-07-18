@@ -1,0 +1,361 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Choosing the optimal data-structure &mdash; Stream Graph 0.2 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/gallery.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/_static/css/supplementary.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="The stream_graph.base.dataframes subpackage" href="ds2.html" />
+    <link rel="prev" title="Current implementations" href="abc4.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Stream Graph
+          
+
+          
+            
+            <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../introduction/about.html">General Information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../introduction/installation.html">Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../introduction/installation.html#installing-dependencies">Installing Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../introduction/installation.html#installing-the-master-version">Installing the master-version</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Package Walkthrough</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="index.html#theoretical-background">Theoretical Background</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#abstract-base-classes">Abstract Base Classes</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#data-structures">Data Structures</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Choosing the optimal data-structure</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#constraints-for-choosing-the-optimal-data-structure">Constraints for choosing the optimal data-structure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#the-optimal-data-structure">The optimal data-structure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#why-pandas">Why Pandas?</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ds2.html">The <code class="code docutils literal notranslate"><span class="pre">stream_graph.base.dataframes</span></code> subpackage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ds2.html#the-dataframe-operations">The dataframe operations</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../auto_examples/index.html">Getting Started</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials.html">Tutorials</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">ABC Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html#base-classes">Base Classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html#abc-implementations">ABC Implementations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html#temporal-dataframes">Temporal-DataFrames</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html#visualizer">Visualizer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html#exceptions">Exceptions</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Stream Graph</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">Package Walkthrough</a> &raquo;</li>
+        
+      <li>Choosing the optimal data-structure</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/package_walkthrough/ds1.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="choosing-the-optimal-data-structure">
+<h1>Choosing the optimal data-structure<a class="headerlink" href="#choosing-the-optimal-data-structure" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="constraints-for-choosing-the-optimal-data-structure">
+<h2>Constraints for choosing the optimal data-structure<a class="headerlink" href="#constraints-for-choosing-the-optimal-data-structure" title="Permalink to this headline">¶</a></h2>
+<p>The first question that someone should ask when starting to implement a library is what is the main data-structure that should represent my base objects.
+In order to answer to that question, you should consider a couple of constraints.</p>
+<p>Firstly, what is the main data-type the objects suppose and how they connected in our theoretical context. This is important both for the comprehension of the library, as well as the requirements defined by the I/O of the library, in the context of the user program.
+For example the library should support <em>time</em> as a real number (float or Integer) to be user-friendly, while the greatest majority of datasets it is represented as a unix-timestamp, which corresponds to an Integer.
+Now concerning our objects, as defined previously each one of those is a cartesian product of vertex sets (which I will refer to as “keys”), that is distinct elements such as string or integer identifiers and a Time-Set (wich I will be refering to as “times” or “intervals”), such as a set of discrete or continuous time-stamps for instantaneous objects or discrete or continuous time-intervals. Discrete time, thus concerns natural numbers whereas continuous real-numbers. Also in order for our library to be as consistent as possible, we would like our continuous intervals to have <em>bounds</em>. Note here that discrete intervals can be represented as Instantaneous, where this is not true for continuous intervals. Additionally I would like to include and handle weights for</p>
+<p>So our next constraint, is the type of operations that the data-structures should handle. All our prereferenced objects, should handle binary operation between cartesian products of sets, such as union, intersection, difference, checking if one set is the superset of the other and more, as well as allowing an iteration of the data and an extraction of a subset of them as a new object.
+As our objects are interconnected we also want operations that map temporal-link-sets to temporal-node-sets, or temporal-node-sets to time-sets, or operations that combine such objects, to be possible without a big overhead, that is a conversion from one type of data-structure to another.
+In addition to that, we should take into consideration how often will each operation be used.
+For example the classical question about representing your data as a binary tree is always how much times you will call operations that are executed faster in binary-trees than in sorted data. Initializing a binary tree is computationally expensive and memory consuming. As so it can be less scalable and inefficient if the number of operation that exploit this property are not significantly many.</p>
+<p>Moreover in a bit higher level we need to envision from the standpoint of simple measures defined on stream-graphs (such as size, degree, coverage) how they could be deduced from basic methods and attributes of our data-structures and reassure that they remain simple.
+Ofcourse this leads to considering existing implementations of simple and more advanced algorithms from shortest-paths to maximal-cliques.
+As the area of research around Stream-Graphs is still not mature there is no standard implementation.
+At their most general approach stream-graphs are considered as ordered streams of information. This is similar with representing graphs with edge-lists.
+Considering the fact that events are distributed more through time and less between vertices (huge static graph structures do not appear really often - in which case we go more to the field of dynamic graphs), allows this basic data-structure to be optimal for most approaches, calculating on the fly data, that will not be used by another one, or such that their time-overhead is not important compaired to their memory-one.
+A final constraint also goes with the programming language each implementation uses, as well as the convenience that its programming language allows.
+It was from the project’s initial to be built in Python as it is user-friendly and allows fast</p>
+</div>
+<div class="section" id="the-optimal-data-structure">
+<h2>The optimal data-structure<a class="headerlink" href="#the-optimal-data-structure" title="Permalink to this headline">¶</a></h2>
+<p>According to the following we first, searched what was the optimal data-structure.
+One proposal was called the <a class="reference external" href="https://en.wikipedia.org/wiki/Interval_tree">interval-tree</a>.
+Interval-trees are trees similar to binary trees defined in order to store intervals.
+Similarly with binary trees creation cost is in the order of <span class="math notranslate nohighlight">\(O(n \log n)\)</span> and memory cost is in the same order as the input <span class="math notranslate nohighlight">\(O(n)\)</span>.
+In case of timesets, this could be considered as a reasonable approach. But in order to include all other objects that have keys, i.e. the TemporalLinkSet and the TemporalNodeSet, we would have an interval tree for each key. As so operation from building an object to such as union or intersection, would be split to operations between a lot of interval-trees. For example quering something in time would mean merge the set of all queries on the interval-trees associated with each-key. Although, this was easier to formulate a dependency on keys was not preferable.
+Another approach could be the following. Let’s say we have an interval-tree, where each interval contains all the keys that exist at that time.
+As so an binary operation, such as union between two objects would be the result of taking the union of two interval trees with the exception that if we don’t have common values at common intervals an new interval-should be defined and if two intervals turn out to contain the same elements they should be merged to a common one.
+In this formulation, we have a dependency on time and as so searching for a key means searching all the elements of the interval sets. This idea, though is closer to what is called dynamic graphs, which consider temporal graphs, as static graphs that change through time.
+Ofcourse, by constructing both objects upon initialization we would have both dependencies covered at the same-time, but taking twice the space, the development and the operations between elementary objects. Generally, non-monolithic approaches, i.e. mixed objects, have this problem that when updating them a consistent update should be made between all parts of the object.
+Also smaller libraries already existed in Python (only for linkstreams - stream-graphs without a temporal-nodeset) and in C++ code wrapped in Python code namely the one of Leo Ranou and the one of Noe Gaumont <a class="reference external" href="https://bitbucket.org/nGaumont/liblinkstream/src/master/">https://bitbucket.org/nGaumont/liblinkstream/src/master/</a>, where the first considered a mixed approach like the one discussed before (map of interval trees and interval tree of keys and the second) for an interval-linkstream and the second an ordered-set of <code class="code docutils literal notranslate"><span class="pre">(u,</span> <span class="pre">v,</span> <span class="pre">t)</span></code> links and a map/view between edges and the associated links where this edges appear inside a queue of pointers, for an instantaneous link-stream.</p>
+<p>As so the ideal data-structure would be a multi-dimensional ordering of keys (distinct elements) and intervals.
+The two closest such data-structures where the <a class="reference external" href="https://en.wikipedia.org/wiki/R-tree">R-Trees</a> and the <a class="reference external" href="https://en.wikipedia.org/wiki/B-tree">B-Trees</a>.
+An initial approach to defines Stream-Graphs using <a class="reference external" href="https://www.boost.org/doc/libs/1_65_1/libs/geometry/doc/html/geometry/reference/spatial_indexes/boost__geometry__index__rtree.html">C++ Boost library R-Trees</a> failed as R-trees are spatial objects, which meant that distinct objects would be mapped into a continuous space where their distance (derived from their ordering position), would have have a meaning, although in our case it wouldn’t mean anything (node ‘a’ and node ‘b’ are not closer with each other than node ‘z’). Moreover defining more complex operations on our R-trees such as taking the temporal-neighborhood of a temporal-link-set through a temporal-node-set, prooved nearly impossible (a lot of approaches where considered: for the temporal-link-set we could have as space the <code class="code docutils literal notranslate"><span class="pre">u,</span> <span class="pre">v,</span> <span class="pre">t</span></code> and no-value (or a weight) or as a space the <code class="code docutils literal notranslate"><span class="pre">u,</span> <span class="pre">t</span></code> and as a value the <code class="code docutils literal notranslate"><span class="pre">v</span></code>. Also as mentioned <em>boxes</em> in the <code class="code docutils literal notranslate"><span class="pre">u,v</span></code> are not useful.).
+The idea of a spatial embedding i.e. of a Temporal-Link-Set in an R-tree space, was rejected as beeing in really complicated in a fundamental level. As far as B-trees are concerned the idea was derived from multi-level queries of SQL, that sometimes contain datetime and users. We later found out, that in order do such queries an index should be made on which a binary search is later applied. This index on the other hand doesn’t allow binary operations on such objects.</p>
+<p>At that time we had less than nine-months to code the entire library, so designing our own data-structure from scratch didn’t become our main-objective.
+As a result we approached the problem in a different way. We defined our abstract base-classes, which is another name for java-interfaces in python, providing space for someone who would tackle this problem in a more efficient way in the future, to implement her own version in the future.
+Also developing and using complicated c++ libraries for the core of our package, not already wrapped succesfully in python packages, was not our first candidate, as interfacing with Cython, multi-machine support and user-friendly IO becomes a bit more complicated.</p>
+</div>
+<div class="section" id="why-pandas">
+<h2>Why Pandas?<a class="headerlink" href="#why-pandas" title="Permalink to this headline">¶</a></h2>
+<p>As a result of immaturity of the area of Stream-Graphs, the lack of standard data-structures between implementations and the fact that we decided to represent our data in the most simplistic and easy-to-handle way, we figured out that a pandas DataFrame, was good starting point.
+This approach was as similar with having an edge list for a graph.
+Pandas uses numpy as a backbone, which has a very good performance in a huge variety of systems and which is already installed in almost all computers that use Python.
+From primary experiments it had a really good module for reading fast huge datasets
+Moreover data-frames are very well known inside a big-range of disciplines that intersect with data-science, from stasticians to sociologists.</p>
+<p>Combining all the information that we had by posing the above questions we reached the conclusion of creating 6 separate but similar in design data-structures.
+We first separated instantaneous-data-frames with interval-data-frames, as everyone emphasized us the performance gain of making this distinction both in higher and in lower level. Secondly concerning interval-data-frames we made the distinction between continuous and discrete data-frames, as in its case there is different information in relation with intervals (bounds), instants are treated represented in a different way and operations such as union and difference act in a different way (e.g. in discrete intervals union of <code class="code docutils literal notranslate"><span class="pre">[1,</span> <span class="pre">5]</span></code> and <code class="code docutils literal notranslate"><span class="pre">[6,</span> <span class="pre">8]</span></code> equals <code class="code docutils literal notranslate"><span class="pre">[1,</span> <span class="pre">8]</span></code>, where in continuous this is not the case). Finally a weighted .</p>
+<p>So after following this formulation case our objects would look something like:</p>
+<p><strong>TimeSet</strong></p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 100%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Time-related-columns</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>instants, discrete/continuous intervals</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>TemporalNodeSet</strong></p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 18%" />
+<col style="width: 82%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>u</p></th>
+<th class="head"><p>Time-related-columns</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Node-id</p></td>
+<td><p>instants, discrete/continuous intervals</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>TemporalLinkSet</strong></p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 13%" />
+<col style="width: 13%" />
+<col style="width: 62%" />
+<col style="width: 12%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>u</p></th>
+<th class="head"><p>v</p></th>
+<th class="head"><p>Time-related-columns</p></th>
+<th class="head"><p>w*</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Node-id</p></td>
+<td><p>Node-id</p></td>
+<td><p>instants, discrete/continuous intervals</p></td>
+<td><p>weight</p></td>
+</tr>
+</tbody>
+</table>
+<p>Time-reated columns are:</p>
+<ul class="simple">
+<li><p><code class="code docutils literal notranslate"><span class="pre">ts</span></code> for instantaneous objects</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">ts,</span> <span class="pre">tf</span></code> for objects with discrete intervals</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">ts,</span> <span class="pre">tf,</span> <span class="pre">s,</span> <span class="pre">f</span></code> for objects with continuous intervals where <code class="code docutils literal notranslate"><span class="pre">s,</span> <span class="pre">f</span></code> are flags that are true if the start and the finish is closed or <code class="code docutils literal notranslate"><span class="pre">ts,</span> <span class="pre">tf,</span> <span class="pre">itype</span></code> where <code class="code docutils literal notranslate"><span class="pre">itype</span></code> is for IO and takes values as the <code class="code docutils literal notranslate"><span class="pre">closed</span></code> parameter of the <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Interval.html">pandas Interval</a></p></li>
+</ul>
+<p>Finally * in the weight on TemporalLinksSet stands for optional.</p>
+<p>So for more information in how this was made possible please see the next section, to learn more about our interval-data-frames.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="ds2.html" class="btn btn-neutral float-right" title="The stream_graph.base.dataframes subpackage" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="abc4.html" class="btn btn-neutral float-left" title="Current implementations" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, LIP6
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

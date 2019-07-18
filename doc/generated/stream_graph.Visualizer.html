@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>stream_graph.Visualizer &mdash; Stream Graph 0.1 documentation</title>
+  <title>stream_graph.Visualizer &mdash; Stream Graph 0.2 documentation</title>
   
 
   
@@ -39,7 +39,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="stream_graph.visualize.stream_fig.Drawing" href="stream_graph.visualize.stream_fig.Drawing.html" />
-    <link rel="prev" title="stream_graph.base.instantaneous_df.InstantaneousDF" href="stream_graph.base.instantaneous_df.InstantaneousDF.html" /> 
+    <link rel="prev" title="stream_graph.base.dataframes.InstantaneousWDF" href="stream_graph.base.dataframes.InstantaneousWDF.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                0.1
+                0.2
               </div>
             
           
@@ -97,11 +97,13 @@
 <li class="toctree-l1"><a class="reference internal" href="../introduction/installation.html#installing-the-master-version">Installing the master-version</a></li>
 </ul>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../package_walkthrough/index.html">Package Walkthrough</a></li>
+</ul>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../auto_examples/index.html">Getting Started</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials.html">1. EmailEu</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials.html#id2">2. bitcoin-alpha</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials.html">Tutorials</a></li>
 </ul>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../api.html">ABC Reference</a></li>
@@ -187,7 +189,7 @@
 <h1><code class="xref py py-mod docutils literal notranslate"><span class="pre">stream_graph</span></code>.Visualizer<a class="headerlink" href="#stream-graph-visualizer" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="stream_graph.Visualizer">
-<em class="property">class </em><code class="descclassname">stream_graph.</code><code class="descname">Visualizer</code><span class="sig-paren">(</span><em>items=None</em>, <em>filename=None</em>, <em>image_type='fig'</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/c907a17/stream_graph/visualize/visualizer.py#L5"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/visualize/visualizer.html#Visualizer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.Visualizer" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">stream_graph.</code><code class="sig-name descname">Visualizer</code><span class="sig-paren">(</span><em class="sig-param">items=None</em>, <em class="sig-param">filename=None</em>, <em class="sig-param">image_type='fig'</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/6acc789/stream_graph/visualize/visualizer.py#L5"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/visualize/visualizer.html#Visualizer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.Visualizer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Visualization objects for a stream-graph.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Attributes</dt>
@@ -198,7 +200,7 @@
 </dd>
 </dl>
 <p class="rubric">Methods</p>
-<table class="docutils align-center">
+<table class="docutils align-default">
 <colgroup>
 <col style="width: 52%" />
 <col style="width: 48%" />
@@ -209,125 +211,125 @@
 </tr>
 </tbody>
 </table>
-<dl class="attribute">
+<dl class="method">
 <dt id="stream_graph.Visualizer.__delattr__">
-<code class="descname">__delattr__</code><span class="sig-paren">(</span><em>self</em>, <em>name</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.Visualizer.__delattr__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__delattr__</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">name</em>, <em class="sig-param">/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.Visualizer.__delattr__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Implement delattr(self, name).</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="stream_graph.Visualizer.__dir__">
-<code class="descname">__dir__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.Visualizer.__dir__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__dir__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.Visualizer.__dir__" title="Permalink to this definition">¶</a></dt>
 <dd><p>default dir() implementation</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="stream_graph.Visualizer.__eq__">
-<code class="descname">__eq__</code><span class="sig-paren">(</span><em>self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.Visualizer.__eq__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__eq__</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">value</em>, <em class="sig-param">/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.Visualizer.__eq__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return self==value.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="stream_graph.Visualizer.__format__">
-<code class="descname">__format__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.Visualizer.__format__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__format__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.Visualizer.__format__" title="Permalink to this definition">¶</a></dt>
 <dd><p>default object formatter</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="stream_graph.Visualizer.__ge__">
-<code class="descname">__ge__</code><span class="sig-paren">(</span><em>self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.Visualizer.__ge__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__ge__</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">value</em>, <em class="sig-param">/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.Visualizer.__ge__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return self&gt;=value.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="stream_graph.Visualizer.__getattribute__">
-<code class="descname">__getattribute__</code><span class="sig-paren">(</span><em>self</em>, <em>name</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.Visualizer.__getattribute__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__getattribute__</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">name</em>, <em class="sig-param">/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.Visualizer.__getattribute__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return getattr(self, name).</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="stream_graph.Visualizer.__gt__">
-<code class="descname">__gt__</code><span class="sig-paren">(</span><em>self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.Visualizer.__gt__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__gt__</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">value</em>, <em class="sig-param">/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.Visualizer.__gt__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return self&gt;value.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="stream_graph.Visualizer.__hash__">
-<code class="descname">__hash__</code><span class="sig-paren">(</span><em>self</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.Visualizer.__hash__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__hash__</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.Visualizer.__hash__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return hash(self).</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="stream_graph.Visualizer.__init_subclass__">
-<code class="descname">__init_subclass__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.Visualizer.__init_subclass__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__init_subclass__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.Visualizer.__init_subclass__" title="Permalink to this definition">¶</a></dt>
 <dd><p>This method is called when a class is subclassed.</p>
 <p>The default implementation does nothing. It may be
 overridden to extend subclasses.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="stream_graph.Visualizer.__le__">
-<code class="descname">__le__</code><span class="sig-paren">(</span><em>self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.Visualizer.__le__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__le__</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">value</em>, <em class="sig-param">/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.Visualizer.__le__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return self&lt;=value.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="stream_graph.Visualizer.__lt__">
-<code class="descname">__lt__</code><span class="sig-paren">(</span><em>self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.Visualizer.__lt__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__lt__</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">value</em>, <em class="sig-param">/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.Visualizer.__lt__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return self&lt;value.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="stream_graph.Visualizer.__ne__">
-<code class="descname">__ne__</code><span class="sig-paren">(</span><em>self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.Visualizer.__ne__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__ne__</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">value</em>, <em class="sig-param">/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.Visualizer.__ne__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return self!=value.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="stream_graph.Visualizer.__new__">
-<code class="descname">__new__</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.Visualizer.__new__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__new__</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.Visualizer.__new__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create and return a new object.  See help(type) for accurate signature.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="stream_graph.Visualizer.__reduce__">
-<code class="descname">__reduce__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.Visualizer.__reduce__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__reduce__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.Visualizer.__reduce__" title="Permalink to this definition">¶</a></dt>
 <dd><p>helper for pickle</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="stream_graph.Visualizer.__reduce_ex__">
-<code class="descname">__reduce_ex__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.Visualizer.__reduce_ex__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__reduce_ex__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.Visualizer.__reduce_ex__" title="Permalink to this definition">¶</a></dt>
 <dd><p>helper for pickle</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="stream_graph.Visualizer.__repr__">
-<code class="descname">__repr__</code><span class="sig-paren">(</span><em>self</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.Visualizer.__repr__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__repr__</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.Visualizer.__repr__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return repr(self).</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="stream_graph.Visualizer.__setattr__">
-<code class="descname">__setattr__</code><span class="sig-paren">(</span><em>self</em>, <em>name</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.Visualizer.__setattr__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__setattr__</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">name</em>, <em class="sig-param">value</em>, <em class="sig-param">/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.Visualizer.__setattr__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Implement setattr(self, name, value).</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="stream_graph.Visualizer.__sizeof__">
-<code class="descname">__sizeof__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.Visualizer.__sizeof__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__sizeof__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.Visualizer.__sizeof__" title="Permalink to this definition">¶</a></dt>
 <dd><p>size of object in memory, in bytes</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="stream_graph.Visualizer.__str__">
-<code class="descname">__str__</code><span class="sig-paren">(</span><em>self</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.Visualizer.__str__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__str__</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.Visualizer.__str__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return str(self).</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="stream_graph.Visualizer.__subclasshook__">
-<code class="descname">__subclasshook__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.Visualizer.__subclasshook__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__subclasshook__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.Visualizer.__subclasshook__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Abstract classes can override this to customize issubclass().</p>
 <p>This is invoked early on by abc.ABCMeta.__subclasscheck__().
 It should return True, False or NotImplemented.  If it returns
@@ -337,7 +339,7 @@ overrides the normal algorithm (and the outcome is cached).</p>
 
 <dl class="attribute">
 <dt id="stream_graph.Visualizer.__weakref__">
-<code class="descname">__weakref__</code><a class="headerlink" href="#stream_graph.Visualizer.__weakref__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__weakref__</code><a class="headerlink" href="#stream_graph.Visualizer.__weakref__" title="Permalink to this definition">¶</a></dt>
 <dd><p>list of weak references to the object (if defined)</p>
 </dd></dl>
 
@@ -345,7 +347,7 @@ overrides the normal algorithm (and the outcome is cached).</p>
 
 <div class="section" id="examples-using-stream-graph-visualizer">
 <h2>Examples using <code class="docutils literal notranslate"><span class="pre">stream_graph.Visualizer</span></code><a class="headerlink" href="#examples-using-stream-graph-visualizer" title="Permalink to this headline">¶</a></h2>
-<div class="sphx-glr-thumbcontainer" tooltip="An example plot of a :class:`stream_graph.StreamGraph` made from a combination of :class:`strea..."><div class="figure align-center" id="id1">
+<div class="sphx-glr-thumbcontainer" tooltip="An example plot of a stream_graph.StreamGraph made from a combination of stream_graph.NodeSetS,..."><div class="figure align-default" id="id1">
 <img alt="../_images/sphx_glr_plot_intro_thumb.png" src="../_images/sphx_glr_plot_intro_thumb.png" />
 <p class="caption"><span class="caption-text"><a class="reference internal" href="../auto_examples/plot_intro.html#sphx-glr-auto-examples-plot-intro-py"><span class="std std-ref">Initialize and print a simple stream-graph</span></a></span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
 </div>
@@ -363,7 +365,7 @@ overrides the normal algorithm (and the outcome is cached).</p>
         <a href="stream_graph.visualize.stream_fig.Drawing.html" class="btn btn-neutral float-right" title="stream_graph.visualize.stream_fig.Drawing" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="stream_graph.base.instantaneous_df.InstantaneousDF.html" class="btn btn-neutral float-left" title="stream_graph.base.instantaneous_df.InstantaneousDF" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="stream_graph.base.dataframes.InstantaneousWDF.html" class="btn btn-neutral float-left" title="stream_graph.base.dataframes.InstantaneousWDF" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>stream_graph.ABC.temporal_link_set &mdash; Stream Graph 0.1 documentation</title>
+  <title>stream_graph.ABC.temporal_link_set &mdash; Stream Graph 0.2 documentation</title>
   
 
   
@@ -64,7 +64,7 @@
             
             
               <div class="version">
-                0.1
+                0.2
               </div>
             
           
@@ -95,11 +95,13 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../introduction/installation.html#installing-the-master-version">Installing the master-version</a></li>
 </ul>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../package_walkthrough/index.html">Package Walkthrough</a></li>
+</ul>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../auto_examples/index.html">Getting Started</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../tutorials.html">1. EmailEu</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../tutorials.html#id2">2. bitcoin-alpha</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials.html">Tutorials</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../api.html">ABC Reference</a></li>
@@ -175,25 +177,22 @@
 <span class="kn">import</span> <span class="nn">copy</span>
 <span class="kn">import</span> <span class="nn">abc</span>
 
-<span class="kn">from</span> <span class="nn">six</span> <span class="k">import</span> <span class="n">iteritems</span>
+<span class="kn">from</span> <span class="nn">warnings</span> <span class="k">import</span> <span class="n">warn</span>
+<span class="kn">from</span> <span class="nn">stream_graph.collections</span> <span class="k">import</span> <span class="n">TimeCollection</span>
 
-<span class="kn">from</span> <span class="nn">._utils</span> <span class="k">import</span> <span class="n">ABC_to_string</span>
+<span class="kn">from</span> <span class="nn">.utils</span> <span class="k">import</span> <span class="n">ABC_to_string</span>
 
 <span class="c1"># 2/3 Cross Compatibility</span>
-<span class="n">ABC</span> <span class="o">=</span> <span class="n">abc</span><span class="o">.</span><span class="n">ABCMeta</span><span class="p">(</span><span class="s1">&#39;ABC&#39;</span><span class="p">,</span> <span class="p">(</span><span class="nb">object</span><span class="p">,),</span> <span class="p">{</span><span class="s1">&#39;__slots__&#39;</span><span class="p">:</span> <span class="p">()})</span> 
+<span class="n">ABC</span> <span class="o">=</span> <span class="n">abc</span><span class="o">.</span><span class="n">ABCMeta</span><span class="p">(</span><span class="s1">&#39;ABC&#39;</span><span class="p">,</span> <span class="p">(</span><span class="nb">object</span><span class="p">,),</span> <span class="p">{</span><span class="s1">&#39;__slots__&#39;</span><span class="p">:</span> <span class="p">()})</span>
 
 <div class="viewcode-block" id="TemporalLinkSet"><a class="viewcode-back" href="../../../generated/stream_graph.ABC.TemporalLinkSet.html#stream_graph.ABC.TemporalLinkSet">[docs]</a><span class="k">class</span> <span class="nc">TemporalLinkSet</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;TemporalLinkSet Object API Specification.</span>
-<span class="sd">    </span>
+
 <span class="sd">    A TemporalLinkSet can be abstractly be defined as a set of links :code:`(u, v)` associated with a set of intervals :code:`(ts, tf)`.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">ABC_to_string</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;u&#39;</span><span class="p">,</span> <span class="s1">&#39;v&#39;</span><span class="p">])</span>
-    
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">_column_signature</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">(</span><span class="s1">&#39;u&#39;</span><span class="p">,</span> <span class="s1">&#39;v&#39;</span><span class="p">,</span> <span class="s1">&#39;ts&#39;</span><span class="p">,</span> <span class="s1">&#39;tf&#39;</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">instantaneous</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -203,29 +202,29 @@
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">weighted</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Designate if the TemporalLinkSet is weighted.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        None. Property.</span>
-<span class="sd">        </span>
+
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        discrete : Bool or None</span>
 <span class="sd">            True if weighted. Returns None if empty.</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>        
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span>
 
     <span class="nd">@property</span>
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">discrete</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Designate if the TemporalLinkSet is on discrete Time.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        None. Property.</span>
-<span class="sd">        </span>
+
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -233,31 +232,57 @@
 <span class="sd">            True if the time is discrete.</span>
 <span class="sd">            Returns None if empty.</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>        
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span>
 
     <span class="nd">@property</span>
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Returns the size of the TemporalLinkSet.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        None. Property.</span>
-<span class="sd">        </span>
+
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        size : Real</span>
 <span class="sd">            The size :math:`\sum_{uv} |T_{uv}|` of the stream_graph.</span>
-<span class="sd">        </span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">weighted_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns the size of the TemporalLinkSet.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        None. Property.</span>
+
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        size : Real</span>
+<span class="sd">            The size :math:`\sum_{uv} w_{uv}|T_{uv}|` of the stream_graph.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">return</span> <span class="mi">0</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">weighted</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_weighted_size</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">_weighted_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
 <div class="viewcode-block" id="TemporalLinkSet.__contains__"><a class="viewcode-back" href="../../../generated/stream_graph.ABC.TemporalLinkSet.html#stream_graph.ABC.TemporalLinkSet.__contains__">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">l</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Implementation of the :code:`in` operator for TemporalLinkSet.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        l : tuple, len(l) == 3</span>
@@ -269,24 +294,24 @@
 <span class="sd">        -------</span>
 <span class="sd">        contains : Bool</span>
 <span class="sd">            Returns true if the link :code:`(u, v)` exists at :code:`t` or through **all** :code:`(ts, tf)`.</span>
-<span class="sd">        </span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
 <div class="viewcode-block" id="TemporalLinkSet.links_at"><a class="viewcode-back" href="../../../generated/stream_graph.ABC.TemporalLinkSet.html#stream_graph.ABC.TemporalLinkSet.links_at">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">links_at</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return the links at a certain time.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        t : Real or None</span>
-<span class="sd">        </span>
+
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        links : LinkSet or TimeGenerator(LinkSet)</span>
 <span class="sd">            Active links at time t.</span>
 <span class="sd">            If t is None, return a continuous TimeGenerator of LinkSet</span>
-<span class="sd">        </span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
@@ -294,28 +319,28 @@
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">basic_temporal_nodeset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return the basic temporal_nodeset that contains the temporal-linkstream.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        None. Property.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        temporal_nodeset : TemporalNodeSet</span>
 <span class="sd">            Returns a TemporalNodeSet covering all nodes of the TemporalLinkSet from minimum time to maximum time.</span>
-<span class="sd">        </span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span>
 
     <span class="nd">@property</span>
-    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>    
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">minimal_temporal_nodeset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return the minimal temporal_nodeset that can be derived from the temporal-linkstream.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        None. Property.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        temporal_nodeset : TemporalNodeSet</span>
@@ -328,11 +353,11 @@
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">linkset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return the linkset that can be derived from the TemporalLinkSet.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        None. Property.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        linkset : LinkSet</span>
@@ -345,11 +370,11 @@
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">timeset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return the timeset that can be derived from the TemporalLinkSet.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        None. Property.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        timeset : TimeSet</span>
@@ -362,11 +387,11 @@
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">nodeset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return the nodeset that can be derived from the TemporalLinkSet.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        None. Property.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        nodeset : NodeSet</span>
@@ -378,13 +403,13 @@
 <div class="viewcode-block" id="TemporalLinkSet.times_of"><a class="viewcode-back" href="../../../generated/stream_graph.ABC.TemporalLinkSet.html#stream_graph.ABC.TemporalLinkSet.times_of">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">times_of</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">l</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="s1">&#39;out&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return the times that a link appears.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        l : (Node_Id, Node_Id) or None</span>
 
 <span class="sd">        direction : string={&#39;in&#39;, &#39;out&#39;, &#39;both&#39;}, default=&#39;both&#39;</span>
-<span class="sd">        </span>
+
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        timeset : TimeSet or LinkCollection(TimeSet)</span>
@@ -393,11 +418,11 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
-    
+
 <div class="viewcode-block" id="TemporalLinkSet.neighbors_at"><a class="viewcode-back" href="../../../generated/stream_graph.ABC.TemporalLinkSet.html#stream_graph.ABC.TemporalLinkSet.neighbors_at">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">neighbors_at</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="s1">&#39;out&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return the NodeSet of neighbors of node at a certain time.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        u : Node_Id or None</span>
@@ -406,7 +431,7 @@
 <span class="sd">            TimeStamp or Interval.</span>
 
 <span class="sd">        direction : string={&#39;in&#39;, &#39;out&#39;, &#39;both&#39;}, default=&#39;both&#39;</span>
-<span class="sd">        </span>
+
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        nodeset : NodeSet or NodeCollection or TimeGenerator or NodeCollection(TimeSparseCollection)</span>
@@ -420,7 +445,7 @@
 
 <div class="viewcode-block" id="TemporalLinkSet.degree_at"><a class="viewcode-back" href="../../../generated/stream_graph.ABC.TemporalLinkSet.html#stream_graph.ABC.TemporalLinkSet.degree_at">[docs]</a>    <span class="k">def</span> <span class="nf">degree_at</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="s1">&#39;out&#39;</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return the degree of a node at a certain time.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        u : Node_Id or None</span>
@@ -446,15 +471,16 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_degree_at_unweighted</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">direction</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="TemporalLinkSet.degree_of"><a class="viewcode-back" href="../../../generated/stream_graph.ABC.TemporalLinkSet.html#stream_graph.ABC.TemporalLinkSet.degree_of">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">degree_of</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="s1">&#39;out&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="TemporalLinkSet.degree_of"><a class="viewcode-back" href="../../../generated/stream_graph.ABC.TemporalLinkSet.html#stream_graph.ABC.TemporalLinkSet.degree_of">[docs]</a>    <span class="k">def</span> <span class="nf">degree_of</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="s1">&#39;out&#39;</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return the time-degree of a node at a certain time.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        u : Node_Id</span>
 
 <span class="sd">        direction : string={&#39;in&#39;, &#39;out&#39;, &#39;both&#39;}, default=&#39;both&#39;</span>
+
+<span class="sd">        weights : bool, default=False</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -463,15 +489,27 @@
 <span class="sd">            If u is None return the time-degree for all nodes.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">pass</span></div>
+        <span class="k">if</span> <span class="n">weights</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">weighted</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_degree_of_weighted</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">direction</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_degree_of_unweighted</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">direction</span><span class="p">)</span></div>
 
-    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">_degree_at_weighted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">direction</span><span class="p">):</span>
-        <span class="k">pass</span>
+    <span class="k">def</span> <span class="nf">_degree_of_weighted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">direction</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
-    <span class="k">def</span> <span class="nf">_degree_at_unweighted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">direction</span><span class="p">):</span>
-        <span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">neighbors_at</span><span class="p">(</span><span class="n">u</span><span class="o">=</span><span class="n">u</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="n">t</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="n">direction</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_degree_of_unweighted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">direction</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">u</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">stream_graph.collections</span> <span class="k">import</span> <span class="n">NodeCollection</span>
+            <span class="k">return</span> <span class="n">NodeCollection</span><span class="p">({</span><span class="n">n</span><span class="p">:</span> <span class="n">tns</span><span class="o">.</span><span class="n">size</span> <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">tns</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">neighbors_of</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="n">direction</span><span class="p">)})</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">neighbors_of</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="n">direction</span><span class="p">)</span><span class="o">.</span><span class="n">size</span>
+
+    <span class="k">def</span> <span class="nf">_degree_at_weighted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">direction</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="k">def</span> <span class="nf">_degree_at_unweighted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">direction</span><span class="p">):</span>    
+        <span class="k">if</span> <span class="n">u</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">neighbors_at</span><span class="p">(</span><span class="n">u</span><span class="o">=</span><span class="n">u</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="n">t</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="n">direction</span><span class="p">)</span>
             <span class="k">def</span> <span class="nf">size</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
                 <span class="k">return</span> <span class="n">y</span><span class="o">.</span><span class="n">size</span>
             <span class="k">if</span> <span class="n">t</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -482,20 +520,20 @@
                 <span class="k">return</span> <span class="n">n</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">size</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">t</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">neighbors</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="n">direction</span><span class="p">)</span><span class="o">.</span><span class="n">n_at</span><span class="p">()</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">neighbors_of</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="n">direction</span><span class="p">)</span><span class="o">.</span><span class="n">n_at</span><span class="p">()</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">n</span><span class="o">.</span><span class="n">size</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">neighbors_at</span><span class="p">(</span><span class="n">u</span><span class="o">=</span><span class="n">u</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="n">t</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="n">direction</span><span class="p">)</span><span class="o">.</span><span class="n">size</span>
 
-<div class="viewcode-block" id="TemporalLinkSet.neighbors"><a class="viewcode-back" href="../../../generated/stream_graph.ABC.TemporalLinkSet.html#stream_graph.ABC.TemporalLinkSet.neighbors">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">neighbors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="s1">&#39;out&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="TemporalLinkSet.neighbors_of"><a class="viewcode-back" href="../../../generated/stream_graph.ABC.TemporalLinkSet.html#stream_graph.ABC.TemporalLinkSet.neighbors_of">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">neighbors_of</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="s1">&#39;out&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return the temporal_nodeset of a neighbors of a node.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        u : Node_Id or None</span>
 
 <span class="sd">        direction : string={&#39;in&#39;, &#39;out&#39;, &#39;both&#39;}, default=&#39;both&#39;</span>
-<span class="sd">        </span>
+
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        temporal_nodeset : TemporalNodeSet or NodeCollection(TemporalNodeSet)</span>
@@ -508,7 +546,7 @@
 <div class="viewcode-block" id="TemporalLinkSet.substream"><a class="viewcode-back" href="../../../generated/stream_graph.ABC.TemporalLinkSet.html#stream_graph.ABC.TemporalLinkSet.substream">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">substream</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nsu</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nsv</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ts</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return the subtream occuring from two nodesets and a timeset.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        nsu : NodeSet or None</span>
@@ -516,7 +554,7 @@
 <span class="sd">        nsv : NodeSet or None</span>
 
 <span class="sd">        ts : TimeSet or None</span>
-<span class="sd">        </span>
+
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        temporal_linkstream : TemporalLinkSet</span>
@@ -527,12 +565,12 @@
 
 <div class="viewcode-block" id="TemporalLinkSet.filter"><a class="viewcode-back" href="../../../generated/stream_graph.ABC.TemporalLinkSet.html#stream_graph.ABC.TemporalLinkSet.filter">[docs]</a>    <span class="k">def</span> <span class="nf">filter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fun</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Filter the link stream.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        fun : function</span>
 <span class="sd">            A function that for each a tuple as it is defined from iter, return True or False.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        temporal_linkstream : TemporalLinkSet</span>
@@ -545,11 +583,11 @@
 <div class="viewcode-block" id="TemporalLinkSet.__bool__"><a class="viewcode-back" href="../../../generated/stream_graph.ABC.TemporalLinkSet.html#stream_graph.ABC.TemporalLinkSet.__bool__">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">__bool__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Implementation of the :code:`bool` casting of a TemporalLinkSet object.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        None.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        out : Bool</span>
@@ -561,11 +599,11 @@
 <div class="viewcode-block" id="TemporalLinkSet.__and__"><a class="viewcode-back" href="../../../generated/stream_graph.ABC.TemporalLinkSet.html#stream_graph.ABC.TemporalLinkSet.__and__">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">__and__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ls</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Implementation of the :code:`&amp;` operator of a TemporalLinkSet object.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        ls : TemporalLinkSet</span>
-<span class="sd">        </span>
+
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        out : TemporalLinkSet</span>
@@ -577,11 +615,11 @@
 <div class="viewcode-block" id="TemporalLinkSet.__or__"><a class="viewcode-back" href="../../../generated/stream_graph.ABC.TemporalLinkSet.html#stream_graph.ABC.TemporalLinkSet.__or__">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">__or__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ls</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Implementation of the :code:`|` operator for a TemporalLinkSet object.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        ls : TemporalLinkSet</span>
-<span class="sd">        </span>
+
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        out : TemporalLinkSet</span>
@@ -593,11 +631,11 @@
 <div class="viewcode-block" id="TemporalLinkSet.__sub__"><a class="viewcode-back" href="../../../generated/stream_graph.ABC.TemporalLinkSet.html#stream_graph.ABC.TemporalLinkSet.__sub__">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">__sub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ls</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Implementation of the :code:`-` operator for a TemporalLinkSet object.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        ls : TemporalLinkSet</span>
-<span class="sd">        </span>
+
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        out : TemporalLinkSet</span>
@@ -609,11 +647,11 @@
 <div class="viewcode-block" id="TemporalLinkSet.__iter__"><a class="viewcode-back" href="../../../generated/stream_graph.ABC.TemporalLinkSet.html#stream_graph.ABC.TemporalLinkSet.__iter__">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Implementation of the :code:`iter` function for a TemporalLinkSet object.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        None</span>
-<span class="sd">        </span>
+
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        out : Iterator of tuple</span>
@@ -625,11 +663,11 @@
 <div class="viewcode-block" id="TemporalLinkSet.issuperset"><a class="viewcode-back" href="../../../generated/stream_graph.ABC.TemporalLinkSet.html#stream_graph.ABC.TemporalLinkSet.issuperset">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">issuperset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ls</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Check if a TemporalLinkSet contains another TemporalLinkSet.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        ls : TemporalLinkSet</span>
-<span class="sd">        </span>
+
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        issuperset_f : Bool</span>
@@ -641,11 +679,11 @@
 <div class="viewcode-block" id="TemporalLinkSet.induced_substream"><a class="viewcode-back" href="../../../generated/stream_graph.ABC.TemporalLinkSet.html#stream_graph.ABC.TemporalLinkSet.induced_substream">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">induced_substream</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ns</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Returns the induced substream from a TemporalNodeSet.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        ns : TemporalNodeSet</span>
-<span class="sd">        </span>
+
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        substream : TemporalLinkSet</span>
@@ -654,20 +692,20 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
-<div class="viewcode-block" id="TemporalLinkSet.neighborhood"><a class="viewcode-back" href="../../../generated/stream_graph.ABC.TemporalLinkSet.html#stream_graph.ABC.TemporalLinkSet.neighborhood">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">neighborhood</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ns</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="s1">&#39;out&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="TemporalLinkSet.temporal_neighborhood"><a class="viewcode-back" href="../../../generated/stream_graph.ABC.TemporalLinkSet.html#stream_graph.ABC.TemporalLinkSet.temporal_neighborhood">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">temporal_neighborhood</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ns</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="s1">&#39;out&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Returns the neighborhood of a TemporalNodeSet.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        ns : TemporalNodeSet</span>
-<span class="sd">        </span>
+
 <span class="sd">        direction : string={&#39;in&#39;, &#39;out&#39;, &#39;both&#39;}, default=&#39;both&#39;</span>
-<span class="sd">        </span>
+
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        neighborhood : TemporalNodeSet</span>
-<span class="sd">            Returns the temporal_nodeset of neighbors of nodes inside ns for a set amount of time.  </span>
+<span class="sd">            Returns the temporal_nodeset of neighbors of nodes inside ns for a set amount of time.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
@@ -675,11 +713,11 @@
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">m</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Returns number of links of the TemporalLinkSet.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        None. Property.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        m : Int</span>
@@ -689,12 +727,12 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">linkset</span><span class="o">.</span><span class="n">size</span>
 
 <div class="viewcode-block" id="TemporalLinkSet.copy"><a class="viewcode-back" href="../../../generated/stream_graph.ABC.TemporalLinkSet.html#stream_graph.ABC.TemporalLinkSet.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">deep</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Returns a deep or shallow copy of the current TemporalLinkSet. </span>
-<span class="sd">        </span>
+        <span class="sd">&quot;&quot;&quot;Returns a deep or shallow copy of the current TemporalLinkSet.</span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        deep : Bool</span>
-<span class="sd">        </span>
+
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        temporal-linkstream_copy : TemporalLinkSet</span>
@@ -708,7 +746,7 @@
 
 <div class="viewcode-block" id="TemporalLinkSet.m_at"><a class="viewcode-back" href="../../../generated/stream_graph.ABC.TemporalLinkSet.html#stream_graph.ABC.TemporalLinkSet.m_at">[docs]</a>    <span class="k">def</span> <span class="nf">m_at</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Returns the number of links appearing at a certain time.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        t : Int</span>
@@ -723,7 +761,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">t</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">TimeCollection</span><span class="p">()</span>       
+                <span class="k">return</span> <span class="n">TimeCollection</span><span class="p">(</span><span class="n">discrete</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">discrete_</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">return</span> <span class="o">.</span><span class="mi">0</span>
         <span class="k">elif</span> <span class="n">weights</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">weighted</span><span class="p">:</span>
@@ -732,31 +770,33 @@
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_m_at_unweighted</span><span class="p">(</span><span class="n">t</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">_m_at_weighted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">t</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>    
+        <span class="k">if</span> <span class="n">t</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">stream_graph.collections</span> <span class="k">import</span> <span class="n">TimeCollection</span>
             <span class="n">time_links</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">links_at</span><span class="p">()</span>
-            <span class="k">return</span> <span class="n">TimeCollection</span><span class="p">([(</span><span class="n">t</span><span class="p">,</span> <span class="n">l</span><span class="o">.</span><span class="n">size_weighted</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span><span class="p">,</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">time_links</span><span class="p">],</span> <span class="n">time_links</span><span class="o">.</span><span class="n">instants</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">TimeCollection</span><span class="p">([(</span><span class="n">time</span><span class="p">,</span> <span class="n">l</span><span class="o">.</span><span class="n">weighted_size</span><span class="p">)</span> <span class="k">for</span> <span class="n">time</span><span class="p">,</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">time_links</span><span class="p">],</span> <span class="n">time_links</span><span class="o">.</span><span class="n">instants</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">links_at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">size_weighted</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">links_at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">weighted_size</span>
 
     <span class="k">def</span> <span class="nf">_m_at_unweighted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">t</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>    
+        <span class="k">if</span> <span class="n">t</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">stream_graph.collections</span> <span class="k">import</span> <span class="n">TimeCollection</span>
             <span class="n">time_links</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">links_at</span><span class="p">()</span>
-            <span class="k">return</span> <span class="n">TimeCollection</span><span class="p">([(</span><span class="n">t</span><span class="p">,</span> <span class="n">l</span><span class="o">.</span><span class="n">size</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span><span class="p">,</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">time_links</span><span class="p">],</span> <span class="n">time_links</span><span class="o">.</span><span class="n">instants</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">TimeCollection</span><span class="p">([(</span><span class="n">time</span><span class="p">,</span> <span class="n">l</span><span class="o">.</span><span class="n">size</span><span class="p">)</span> <span class="k">for</span> <span class="n">time</span><span class="p">,</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">time_links</span><span class="p">],</span> <span class="n">time_links</span><span class="o">.</span><span class="n">instants</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">links_at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">size</span>
 
 
-<div class="viewcode-block" id="TemporalLinkSet.duration_of"><a class="viewcode-back" href="../../../generated/stream_graph.ABC.TemporalLinkSet.html#stream_graph.ABC.TemporalLinkSet.duration_of">[docs]</a>    <span class="k">def</span> <span class="nf">duration_of</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">l</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="s1">&#39;out&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="TemporalLinkSet.duration_of"><a class="viewcode-back" href="../../../generated/stream_graph.ABC.TemporalLinkSet.html#stream_graph.ABC.TemporalLinkSet.duration_of">[docs]</a>    <span class="k">def</span> <span class="nf">duration_of</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">l</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="s1">&#39;out&#39;</span><span class="p">,</span> <span class="n">weigths</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Returns the total duration of a link.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        l : (Node_Id, Node_Id) or None</span>
 
 <span class="sd">        direction : string={&#39;in&#39;, &#39;out&#39;, &#39;both&#39;}, default=&#39;both&#39;</span>
-<span class="sd">        </span>
+
+<span class="sd">        weights : bool, default=False</span>
+
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        time : Real or dict</span>
@@ -764,21 +804,30 @@
 <span class="sd">            If l is None returns a dictionary of all links with their times.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">weights</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">weighted</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_duration_of_weighted</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">direction</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_duration_of_unweighted</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">direction</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_duration_of_weighted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">direction</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="k">def</span> <span class="nf">_duration_of_unweighted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">direction</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">l</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">stream_graph.collections</span> <span class="k">import</span> <span class="n">LinkCollection</span>
             <span class="n">times</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">times_of</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="n">direction</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">LinkCollection</span><span class="p">({</span><span class="n">l</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">size</span> <span class="k">for</span> <span class="n">l</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">times</span><span class="p">})</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">times_of</span><span class="p">(</span><span class="n">l</span><span class="o">=</span><span class="n">l</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="n">direction</span><span class="p">)</span><span class="o">.</span><span class="n">size</span></div>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">times_of</span><span class="p">(</span><span class="n">l</span><span class="o">=</span><span class="n">l</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="n">direction</span><span class="p">)</span><span class="o">.</span><span class="n">size</span>
 
 <div class="viewcode-block" id="TemporalLinkSet.get_maximal_cliques"><a class="viewcode-back" href="../../../generated/stream_graph.ABC.TemporalLinkSet.html#stream_graph.ABC.TemporalLinkSet.get_maximal_cliques">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">get_maximal_cliques</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Returns the maximal cliques of the temporal-linkstream.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        direction : string={&#39;in&#39;, &#39;out&#39;, &#39;both&#39;}, default=&#39;both&#39;</span>
-<span class="sd">        </span>
+
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        maximal_cliques : set</span>
@@ -789,11 +838,11 @@
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">as_stream_graph_basic</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Generate the basic stream graph containing this TemporalLinkSet.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        None. Property.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        stream_graph : StreamGraph</span>
@@ -807,11 +856,11 @@
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">as_stream_graph_minimal</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Generate the minimal stream graph containing this TemporalNodeSet.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        None. Property.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        stream_graph : StreamGraph</span>
@@ -820,24 +869,24 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">stream_graph.base.stream_graph</span> <span class="k">import</span> <span class="n">StreamGraph</span>
         <span class="k">return</span> <span class="n">StreamGraph</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nodeset</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">timeset</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">minimal_temporal_nodeset</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
-    
+
     <span class="c1"># Python2 cross-compatibility</span>
     <span class="k">def</span> <span class="nf">__nonzero__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__bool__</span><span class="p">()</span>
 
 <div class="viewcode-block" id="TemporalLinkSet.discretize"><a class="viewcode-back" href="../../../generated/stream_graph.ABC.TemporalLinkSet.html#stream_graph.ABC.TemporalLinkSet.discretize">[docs]</a>    <span class="k">def</span> <span class="nf">discretize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bin_size</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Returns a discrete version of the current TemporalLinkSet.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        bins : Iterable or None.</span>
 <span class="sd">            If None, step should be provided.</span>
 <span class="sd">            If Iterable it should contain n+1 elements that declare the start and the end of all (continuous) bins.</span>
-<span class="sd">        </span>
+
 <span class="sd">        bin_size : Int or datetime</span>
 <span class="sd">            If bins is provided this argument is ommited.</span>
 <span class="sd">            Else declare the size of each bin.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        timeset_discrete : TimeSet</span>
@@ -856,17 +905,13 @@
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">_to_discrete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bins</span><span class="p">,</span> <span class="n">bin_size</span><span class="p">):</span>
         <span class="k">pass</span></div>
-        
+
 <div class="viewcode-block" id="ITemporalLinkSet"><a class="viewcode-back" href="../../../generated/stream_graph.ABC.ITemporalLinkSet.html#stream_graph.ABC.ITemporalLinkSet">[docs]</a><span class="k">class</span> <span class="nc">ITemporalLinkSet</span><span class="p">(</span><span class="n">TemporalLinkSet</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Instantaneous Temporal LinkSet Object API Specification.</span>
-<span class="sd">    </span>
+
 <span class="sd">    A ITemporalLinkSet can be abstractly be defined as a set of links :code:`(u, v)` associated with a timestamp :code:`ts`.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">_column_signature</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">(</span><span class="s1">&#39;u&#39;</span><span class="p">,</span> <span class="s1">&#39;v&#39;</span><span class="p">,</span> <span class="s1">&#39;ts&#39;</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">instantaneous</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -876,38 +921,72 @@
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Returns the size of the TemporalLinkSet.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        None. Property.</span>
-<span class="sd">        </span>
+
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        size : Int</span>
 <span class="sd">            If discrete returns total number of interactions.</span>
 <span class="sd">            Else returns zero.</span>
-<span class="sd">        </span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">discrete</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_size_discrete</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">number_of_interactions</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="o">.</span><span class="mi">0</span>
 
     <span class="nd">@property</span>
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">_size_discrete</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">number_of_interactions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">pass</span>
 
-<div class="viewcode-block" id="ITemporalLinkSet.duration_of"><a class="viewcode-back" href="../../../generated/stream_graph.ABC.ITemporalLinkSet.html#stream_graph.ABC.ITemporalLinkSet.duration_of">[docs]</a>    <span class="k">def</span> <span class="nf">duration_of</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">l</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="s1">&#39;out&#39;</span><span class="p">):</span>
+    <span class="nd">@property</span>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">_weighted_number_of_interactions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">weighted_number_of_interactions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">weighted</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_weighted_number_of_interactions</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">number_of_interactions</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">_weighted_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns the size of the TemporalLinkSet.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        None. Property.</span>
+
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        size : Int</span>
+<span class="sd">            If discrete returns the sum of weights of all interactions.</span>
+<span class="sd">            Else returns zero.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">discrete</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">weighted_number_of_interactions</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="o">.</span><span class="mi">0</span>
+
+
+<div class="viewcode-block" id="ITemporalLinkSet.duration_of"><a class="viewcode-back" href="../../../generated/stream_graph.ABC.ITemporalLinkSet.html#stream_graph.ABC.ITemporalLinkSet.duration_of">[docs]</a>    <span class="k">def</span> <span class="nf">duration_of</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">l</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="s1">&#39;out&#39;</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Returns the total duration of a link.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        l : (Node_Id, Node_Id) or None</span>
 
 <span class="sd">        direction : string={&#39;in&#39;, &#39;out&#39;, &#39;both&#39;}, default=&#39;both&#39;</span>
-<span class="sd">        </span>
+
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        time : Real or dict</span>
@@ -927,14 +1006,16 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">return</span> <span class="o">.</span><span class="mi">0</span></div>
 
-<div class="viewcode-block" id="ITemporalLinkSet.degree_of"><a class="viewcode-back" href="../../../generated/stream_graph.ABC.ITemporalLinkSet.html#stream_graph.ABC.ITemporalLinkSet.degree_of">[docs]</a>    <span class="k">def</span> <span class="nf">degree_of</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="s1">&#39;out&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="ITemporalLinkSet.degree_of"><a class="viewcode-back" href="../../../generated/stream_graph.ABC.ITemporalLinkSet.html#stream_graph.ABC.ITemporalLinkSet.degree_of">[docs]</a>    <span class="k">def</span> <span class="nf">degree_of</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="s1">&#39;out&#39;</span><span class="p">,</span> <span class="n">weigths</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return the time-degree of a node at a certain time.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        u : Node_Id</span>
 
 <span class="sd">        direction : string={&#39;in&#39;, &#39;out&#39;, &#39;both&#39;}, default=&#39;both&#39;</span>
+
+<span class="sd">        weights : bool, default=False</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -947,7 +1028,7 @@
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_degree_of_discrete</span><span class="p">(</span><span class="n">u</span><span class="o">=</span><span class="n">u</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="n">direction</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">u</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="kn">from</span> <span class="nn">stream_graph.collections</span> <span class="k">import</span> <span class="n">LinkCollection</span>
+                <span class="kn">from</span> <span class="nn">stream_graph.collections</span> <span class="k">import</span> <span class="n">NodeCollection</span>
                 <span class="k">return</span> <span class="n">NodeCollection</span><span class="p">({</span><span class="n">u</span><span class="p">:</span> <span class="mf">0.</span> <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodeset</span><span class="p">})</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">return</span> <span class="o">.</span><span class="mi">0</span></div>
