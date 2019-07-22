@@ -266,7 +266,7 @@ def test_temporal_link_set_df():
         assert_equal(set(lsb & lsa), set(lsa & lsb))
         assert isinstance(lsa & lsb, TemporalLinkSetDF)
         if d:
-            assert_equal(set(lsa & lsb), {(2, 1, 2, 3, 1), (1, 2, 4, 4, 1), (1, 2, 3, 3, 2), (1, 2, 2, 2, 1)})
+            assert_equal(set(lsa & lsb), {(2, 1, 2, 3, 1), (1, 2, 2, 4, 1)})
         else:
             assert_equal(set(lsa & lsb), {(2, 1, 2.5, 2.6, 'left', 1), (1, 2, 2.0, 4.0, 'left', 1)})
         assert_equal((lsa & lsb).size, 2.1 + 2.9*int(d))
@@ -293,7 +293,7 @@ def test_temporal_link_set_df():
         assert_equal((lsa - lsb).size, 4.9 + 1.1*int(d))
 
         assert lsa.issuperset(lsa & lsb)
-        assert lsb.issuperset(lsa & lsb) != d
+        assert lsb.issuperset(lsa & lsb)
         assert (lsa | lsb).issuperset(lsa)
         assert (lsa | lsb).issuperset(lsb)
         assert lsa.issuperset(lsa - lsb)
@@ -536,7 +536,6 @@ def test_itemporal_link_set_df():
 
         df = [(1, 2, 2, 1), (1, 2, 3, 1), (2, 1, 6, 1), (2, 1, 3, 1)]
         lsa = ITemporalLinkSetDF(df, no_duplicates=False, weighted=True, discrete=d)
-
         assert bool(lsa)
         assert_equal(set(lsa), {(1, 2, 2, 1), (1, 2, 3, 1), (2, 1, 6, 1), (2, 1, 3, 1)})
 

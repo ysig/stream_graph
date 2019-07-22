@@ -4,16 +4,15 @@ from stream_graph.exceptions import UnrecognizedNodeSet
 
 
 class NodeSetS(ABC.NodeSet):
-    """Set implementation of the ABC.NodeSet"""
-    def __init__(self, nodes=None):
-        """Initialize a nodeset.
-        
-        Parameters
-        ----------
-        nodes: Iterable, default=None
-            The Iterable should contain a valid NodeId (int or str).
+    """Set implementation of the ABC.NodeSet
 
-        """
+    Parameters
+    ----------
+    nodes: Iterable, default=None
+        The Iterable should contain a valid NodeId (int or str).
+
+    """
+    def __init__(self, nodes=None):
         if nodes is not None:
             self.nodes_ = set(nodes)
 

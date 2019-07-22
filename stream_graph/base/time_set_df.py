@@ -9,24 +9,23 @@ from stream_graph.exceptions import UnrecognizedTemporalNodeSet
 
 
 class TimeSetDF(ABC.TimeSet):
-    """A DataFrame implementation of a TimeSet."""
+    """A DataFrame implementation of a TimeSet.
+
+    Parameters
+    ----------
+    df: pandas.DataFrame or Iterable, default=None
+        If a DataFrame it should contain two columns `ts`, `tf` and optionally a column `itype` of elements 'right', 'left', 'both', 'neither' that indicate.
+        If an Iterable it should produce :code:`(ts, tf)` tuples of two timestamps (Real) with :code:`ts < tf` and optionally a third element 'right', 'left', 'both', 'neither' that indicates the interval-type.
+
+    disjoint_intervals: Bool, default=False
+        Defines if all intervals are disjoint.
+
+    discrete : Bool or None, default=None
+
+    default_closed : 'right', 'left', 'both', 'neither', default='left'
+
+    """
     def __init__(self, df=None, disjoint_intervals=True, discrete=None, default_closed='both'):
-        """Initialize a TimeSetDF.
-
-        Parameters
-        ----------
-        df: pandas.DataFrame or Iterable, default=None
-            If a DataFrame it should contain two columns `ts`, `tf` and optionally a column `itype` of elements 'right', 'left', 'both', 'neither' that indicate.
-            If an Iterable it should produce :code:`(ts, tf)` tuples of two timestamps (Real) with :code:`ts < tf` and optionally a third element 'right', 'left', 'both', 'neither' that indicates the interval-type.
-
-        disjoint_intervals: Bool, default=False
-            Defines if all intervals are disjoint.
-
-        discrete : Bool or None, default=None
-
-        default_closed : 'right', 'left', 'both', 'neither', default='left'
-
-        """
         # Add a check for dataframe style
         if df is not None:
             if isinstance(df, ABC.TimeSet):
@@ -35,7 +34,7 @@ class TimeSetDF(ABC.TimeSet):
                 if isinstance(df, ABC.ITimeSet):
                     self.discrete = discrete
                 self.df_, self.discrete_ = load_interval_df(df, discrete=discrete, default_closed=default_closed, disjoint_intervals=disjoint_intervals)
-            if discrete and self.df_['ts'].dtype.kind != 'i' and self.df_['tf'].dtype.kind != 'i':
+            if not self.df_.empty and discrete and self.df_['ts'].dtype.kind != 'i' and self.df_['tf'].dtype.kind != 'i':
                 warn('SemanticWarning: For a discrete instance time-instants should be an integers')
         else:
             self.discrete_ = (True if discrete is None else discrete)

@@ -8,23 +8,32 @@ from stream_graph.exceptions import UnrecognizedTimeSet
 from .utils import make_discrete_bins
 
 class ITimeSetS(ABC.ITimeSet):
-    """Set implementation of the ABC.ITimeSet"""
+    """Set implementation of the ABC.ITimeSet
+
+    Parameters
+    ----------
+    times: Iterable, default=None
+        The Iterable should contain a valid Time (Int or Real).
+
+    """
     def __init__(self, times=None, discrete=None):
-        """Initialize a instantaneous timeset.
-
-        Parameters
-        ----------
-        times: Iterable, default=None
-            The Iterable should contain a valid Time (Int or Real).
-
-        """
         if times is not None:
             self.times_ = set(t for t in times)
             if isinstance(times, ABC.ITimeSet):
                 discrete = times.discrete
             elif discrete is None:
-                discrete = False
+                if all(isinstance(t, int) for t in self.times_):
+                    discrete=True
+                else:
+                    discrete = False
             self.discrete_ = discrete
+
+    @property
+    def times(self):
+        if hasattr(self, 'times_'):
+            return self.times_.copy()
+        else:
+            return set()
 
     @property
     def discrete(self):

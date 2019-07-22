@@ -11,7 +11,7 @@ from six import itervalues
 
 import pandas as pd
 
-from .utils import ts_to_df, tns_to_df
+from .utils import ts_to_df, tns_to_df, make_algebra
 from .multi_df_utils import load_interval_wdf, init_interval_df, build_time_generator, itertuples_pretty, itertuples_raw
 from .multi_df_utils import set_unweighted_n_sparse, set_weighted_links_, set_unweighted_links_, get_key_first, len_set_n, len_set_, sum_counter_, sum_counter_n
 from .functions import get_maximal_cliques as get_maximal_cliques_
@@ -35,26 +35,38 @@ from stream_graph.exceptions import UnrecognizedDirection
 
 
 class TemporalLinkSetDF(ABC.TemporalLinkSet):
-    """DataFrame implementation of ABC.TemporalLinkSet"""
-    def __init__(self, df=None, disjoint_intervals=True, sort_by=None, discrete=None, weighted=False, default_closed=None):
-        """Initialize a Temporal Link Set.
+    """DataFrame implementation of ABC.TemporalLinkSet
 
-        Parameters
-        ----------
-        df: pandas.DataFrame or Iterable, default=None
-            If a DataFrame it should contain four columns for u and v and ts, tf.
-            If an Iterable it should produce :code:`(u, v, ts, tf)` tuples of two NodeId (int or str) and two timestamps (Real) with :code:`ts < tf`.
+    Parameters
+    ----------
+    df: pandas.DataFrame or Iterable, default=None
+        If a DataFrame it should contain four columns for u and v and ts, tf.
+        If an Iterable it should produce :code:`(u, v, ts, tf)` tuples of two NodeId (int or str) and two timestamps (Real) with :code:`ts < tf`.
 
-        disjoint_intervals: Bool, default=False
-            Defines if for each link all intervals are disjoint.
+    disjoint_intervals: Bool, default=False
+        Defines if for each link all intervals are disjoint.
 
-        sort_by: Any non-empty subset of ['u', 'v', 'ts', 'tf'].
-            The order of the DataFrame elements by which they will be produced when iterated.
+    sort_by: Any non-empty subset of ['u', 'v', 'ts', 'tf'].
+        The order of the DataFrame elements by which they will be produced when iterated.
 
-        """
+    discrete : bool, or default=None.
+
+    weighted : bool, or default=None.
+
+    default_closed : {'left', 'right', 'both', 'neither'}, default=None 
+
+    merge_function : A function applied to a list of arguments.
+
+    operation_functions: dict {str: fun}
+        A dictionary of names of operations, i.e. :code:`union/u`, :code:`intersection/i`, :code:`difference/d`, :code:`issuperset/s'.
+        All function should be applicable between two weights.
+        Default: +, min, hinge_loss (ignoring an interval on zero), operator.ge (ignoring an interval on zero)
+
+    """
+    def __init__(self, df=None, disjoint_intervals=True, sort_by=None, discrete=None, weighted=False, default_closed=None, merge_function=None, operation_functions=None):
         if isinstance(df, self.__class__):
             if bool(df):
-                self.df_, self.discrete_, self.weighted_, self.sort_by = df.df, df.discrete, df.weighted, df.sort_by
+                self.df_, self.discrete_, self.weighted_, self.sort_by, self.algebra = df.df, df.discrete, df.weighted, df.sort_by, df.algebra
         elif df is not None:
             if isinstance(df, ABC.TemporalLinkSet):
                 from .itemporal_link_set_df import ITemporalLinkSetDF
@@ -62,8 +74,10 @@ class TemporalLinkSetDF(ABC.TemporalLinkSet):
                     df = df.df
                 else:
                     weighted, discrete = df.weighted, df.discrete
-            self.df_, self.discrete_, self.weighted_ = load_interval_wdf(df, discrete, weighted, disjoint_intervals, default_closed, keys=['u', 'v'])
+            self.df_, self.discrete_, self.weighted_ = load_interval_wdf(df, discrete, weighted, disjoint_intervals, default_closed, keys=['u', 'v'], merge_function=merge_function)
             self.sort_by = sort_by
+            if self.weighted_:
+                self.algebra = make_algebra(operation_functions)
         else:
             self.discrete_, self.weighted_ = (True if discrete is None else discrete), weighted
 
@@ -545,10 +559,11 @@ class TemporalLinkSetDF(ABC.TemporalLinkSet):
                         return tls & self
                     except NotImplementedError:
                         tls = TemporalLinkSetDF(tls, discrete=self.discrete, weighted=self.weighted)
-                return TemporalLinkSetDF(self.df.intersection(tls.df), discrete=self.discrete, weighted=self.weighted)
+                out = (self.df.intersection(tls.df, intersection_function=self.algebra['i']) if self.weighted else self.df.intersection(tls.df))
+                return TemporalLinkSetDF(out, discrete=self.discrete, weighted=self.weighted)
         else:
             raise UnrecognizedTemporalLinkSet('right operand')
-        return TemporalLinkSetDF()
+        return TemporalLinkSetDF(discrete=self.discrete, weighted=self.weighted)
 
     def __or__(self, tls):
         if isinstance(tls, ABC.TemporalLinkSet):
@@ -561,7 +576,8 @@ class TemporalLinkSetDF(ABC.TemporalLinkSet):
                         return tls | self
                     except NotImplementedError:
                         tls = TemporalLinkSetDF(tls, discrete=self.discrete, weighted=self.weighted)
-                return TemporalLinkSetDF(self.df.union(tls.df), discrete=self.discrete, weighted=self.weighted)
+                out = (self.df.union(tls.df, union_function=self.algebra['u']) if self.weighted else self.df.union(tls.df))
+                return TemporalLinkSetDF(out, discrete=self.discrete, weighted=self.weighted)
             else:
                 return self.copy()
         else:
@@ -576,7 +592,8 @@ class TemporalLinkSetDF(ABC.TemporalLinkSet):
                         return tls.__rsub__(self)
                     except (AttributeError, NotImplementedError):
                         tls = LinkSetDF(tls, discrete=self.discrete, weighted=self.weighted)
-                return TemporalLinkSetDF(self.df.difference(tls.df), discrete=self.discrete, weighted=self.weighted)
+                out = (self.df.difference(tls.df, difference_function=self.algebra['d']) if self.weighted else self.df.difference(tls.df))
+                return TemporalLinkSetDF(out, discrete=self.discrete, weighted=self.weighted)
         else:
             raise UnrecognizedTemporalLinkSet('right operand')
         return self.copy()
@@ -590,7 +607,7 @@ class TemporalLinkSetDF(ABC.TemporalLinkSet):
                         return tls.__issubset__(self)
                     except (AttributeError, NotImplementedError):
                         tls = TemporalLinkSetDF(tls, discrete=self.discrete)
-                return self.df.issuper(tls.df)
+                return (self.df.issuper(tls.df, issuper_function=self.algebra['s']) if self.weighted else self.df.issuper(tls.df))
             else:
                 return not bool(tls)
         else:
@@ -650,15 +667,19 @@ class TemporalLinkSetDF(ABC.TemporalLinkSet):
                 assert tns.discrete == self.discrete
                 if isinstance(tns, TemporalNodeSetB):
                     tdf = self.df_[self.df_['v'].isin(tns.nodeset_) & self.df_['u'].isin(tns.nodeset_)]
-                    tdf = tdf.intersection(ts_to_df(tns.timeset_), on_columns=['u', 'v'], by_key=False)
+                    if self.weighted:
+                        tdf = tdf.intersection(ts_to_df(tns.timeset_), on_columns=['u', 'v'], by_key=False)
+                    else:
+                        tdf = tdf.intersection(ts_to_df(tns.timeset_), on_columns=['u', 'v'], by_key=False, intersection='unweighted')
                     if not tdf.empty:
                         return TemporalLinkSetDF(tdf, discrete=self.discrete, weighted=self.weighted)
                 else:
                     base_df = tns_to_df(tns)
-                    return TemporalLinkSetDF(self.df_.cartesian_intersection(base_df), discrete=self.discrete, weighted=self.weighted)
+                    out = (self.df_.cartesian_intersection(base_df, cartesian_intersection_function='unweighted') if self.weighted else self.df_.cartesian_intersection(base_df))
+                    return TemporalLinkSetDF(out, discrete=self.discrete, weighted=self.weighted)
         else:
             raise UnrecognizedTemporalNodeSet('ns')
-        return TemporalLinkSetDF()
+        return TemporalLinkSetDF(discrete=self.discrete, weighted=self.weighted)
 
     @property
     def m(self):

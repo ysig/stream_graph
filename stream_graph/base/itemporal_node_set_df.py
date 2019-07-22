@@ -20,23 +20,22 @@ from stream_graph.collections import LinkCollection
 
 
 class ITemporalNodeSetDF(ABC.ITemporalNodeSet):
-    """DataFrame implementation of ABC.ITemporalNodeSet"""
+    """DataFrame implementation of ABC.ITemporalNodeSet
+
+    Parameters
+    ----------
+    df: pandas.DataFrame or Iterable, default=None
+        If a DataFrame it should contain two columns for u and ts.
+        If an Iterable it should produce :code:`(u, ts)` tuples of one NodeId (int or str) and a timestamp (Real).
+
+    no_duplicates: Bool, default=True
+        Defines if for each node all intervals are disjoint.
+
+    sort_by: Any non-empty subset of ['u', 'ts'], default=['u', 'ts'].
+        The order of the DataFrame elements by which they will be produced when iterated.
+
+    """
     def __init__(self, df=None, no_duplicates=True, sort_by=['u', 'ts'], discrete=None):
-        """Initialize a Temporal Node Set.
-
-        Parameters
-        ----------
-        df: pandas.DataFrame or Iterable, default=None
-            If a DataFrame it should contain two columns for u and ts.
-            If an Iterable it should produce :code:`(u, ts)` tuples of one NodeId (int or str) and a timestamp (Real).
-
-        no_duplicates: Bool, default=True
-            Defines if for each node all intervals are disjoint.
-
-        sort_by: Any non-empty subset of ['u', 'ts'], default=['u', 'ts'].
-            The order of the DataFrame elements by which they will be produced when iterated.
-
-        """
         if isinstance(df, self.__class__):
             discrete = df.discrete_
             self.df_ = df.df
@@ -203,14 +202,14 @@ class ITemporalNodeSetDF(ABC.ITemporalNodeSet):
     def n_at(self, t=None):
         if bool(self):
             if t is None:
-                return TimeCollection(sorted(list(iteritems(Counter(t for t in self.df.ts)))), True)
+                return TimeCollection(sorted(list(iteritems(Counter(t for t in self.df.ts)))), instantaneous=True, discrete=self.discrete)
             elif isinstance(t, Real):
                 return len(set(self.df.df_at(t).u.values.flat))
             else:
                 raise ValueError('Input can either be a real number or an ascending interval of two real numbers')
         else:
             if t is None:
-                return TimeCollection(iter(), True)
+                return TimeCollection(iter(), instantaneous=True, discrete=self.discrete)
             else:
                 return NodeSetS()
 
@@ -229,14 +228,14 @@ class ITemporalNodeSetDF(ABC.ITemporalNodeSet):
                             active_set.add(u)
                     if len(active_set):
                         yield (prev, NodeSetS(set(active_set)))
-                return TimeGenerator(generate(self.df_.sort_values(by='ts').itertuples(name=None, index=False)), instantaneous=True)
+                return TimeGenerator(generate(self.df_.sort_values(by='ts').itertuples(name=None, index=False)), instantaneous=True, discrete=self.discrete)
             elif isinstance(t, Real):
                 return NodeSetS(self.df.df_at(t).u.values.flat)
             else:
                 raise ValueError('Input can either be a real number or an ascending interval of two real numbers')
         else:
             if t is None:
-                return TimeCollection(iter(), True)
+                return TimeCollection(iter(), instantaneous=True, discrete=self.discrete)
             else:
                 return NodeSetS()
 

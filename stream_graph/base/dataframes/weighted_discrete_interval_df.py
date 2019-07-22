@@ -17,8 +17,8 @@ from .algorithms.utils.misc import hinge_loss, noner, first, truer, min_sumer, o
 class DIntervalWDF(pd.DataFrame):
     def __init__(self, *args, **kargs):
         disjoint_intervals = kargs.pop('disjoint_intervals', None)
-        merge_function = kargs.pop('merge_function', sum)
-        assert callable(merge_function)
+        merge_function = kargs.pop('merge_function', None)
+        assert merge_function is None or callable(merge_function)
         super(DIntervalWDF, self).__init__(*args, **kargs)
         assert 'ts' in self.columns
         assert self.ts.dtype.kind == 'i'
@@ -28,11 +28,16 @@ class DIntervalWDF(pd.DataFrame):
         else:
             assert self.tf.dtype.kind == 'i'
 
-        self.merge_function = merge_function
+        self.merge_function = (sum if merge_function is None else merge_function)
         if not self.empty:
             from .discrete_interval_df import DIntervalDF
-            if len(args) and isinstance(args[0], DIntervalWDF) or (isinstance(kargs.get('data', None), DIntervalWDF)):
-                if disjoint_intervals:
+            if len(args) and isinstance(args[0], DIntervalWDF):
+                self.merge_function = args[0].merge_function
+                if not disjoint_intervals is False:
+                    self.merge(inplace=True)
+            elif isinstance(kargs.get('data', None), DIntervalWDF):
+                self.merge_function = kargs['data'].merge_function
+                if not disjoint_intervals is False:
                     self.merge(inplace=True)
             elif len(args) and isinstance(args[0], DIntervalDF) or (isinstance(kargs.get('data', None), DIntervalDF)):
                 self['w'] = 1
@@ -184,7 +189,7 @@ class DIntervalWDF(pd.DataFrame):
             return self._save_or_return(None, inplace)
 
         if intersection_function is None:
-            intersection_function = max
+            intersection_function = min
         elif intersection_function == 'unweighted':
             intersection_function = first
         else:

@@ -132,7 +132,6 @@ def test_temporal_node_set_b():
 
 def test_temporal_node_set_df():
     for d in [False, True]:
-        print(d)
         df = [(1, 2, 3), (1, 3, 5), (1, 6, 8), (2, 1, 3)]
         nsa = TemporalNodeSetDF(df, disjoint_intervals=False, discrete=d)
 

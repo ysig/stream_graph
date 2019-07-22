@@ -12,23 +12,22 @@ from collections import defaultdict
 from six import iteritems
 
 class LinkSetDF(ABC.LinkSet):
-    """DataFrame implementation of the ABC.LinkSet"""
+    """DataFrame implementation of the ABC.LinkSet
+
+    Parameters
+    ----------
+    df: pandas.DataFrame or Iterable, default=None
+        If a DataFrame it should contain two columns for u and v.
+        If an Iterable it should produce :code:`(u, v)` tuples of NodeId (int or str).
+
+    no_duplicates: Bool, default=False
+        Defines if the input could contain duplicate tuples.
+
+    sort_by: A non-empty subset of ['u', 'v'], default=['u', 'v']
+        The order of the DataFrame elements by which they will be produced when iterated.
+
+    """
     def __init__(self, df=None, no_duplicates=False, sort_by=None, weighted=False):
-        """Initialize a LinkSet.
-
-        Parameters
-        ----------
-        df: pandas.DataFrame or Iterable, default=None
-            If a DataFrame it should contain two columns for u and v.
-            If an Iterable it should produce :code:`(u, v)` tuples of NodeId (int or str).
-
-        no_duplicates: Bool, default=False
-            Defines if the input could contain duplicate tuples.
-
-        sort_by: A non-empty subset of ['u', 'v'], default=['u', 'v']
-            The order of the DataFrame elements by which they will be produced when iterated.
-
-        """
         # Add a check for dataframe style
         if df is None:
             not_empty = False

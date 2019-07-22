@@ -15,21 +15,19 @@ class StreamGraph(object):
         - :math:`W\\subseteq T \\times V`, a temporal-node-set
         - :math:`E\\subseteq T \\times V \\otimes V`, a temporal-link-set
 
+
+    Parameters:
+    -----------
+    nodeset: ABC.NodeSet
+
+    timeset: ABC.TimeSet or ABC.ITimeSet
+
+    temporal_nodeset: ABC.TemporalNodeSet or ABC.ITemporalNodeSet
+
+    temporal_linkset: ABC.TemporalLinkSet or ABC.ITemporalLinkSet
+
     """
     def __init__(self, nodeset=None, timeset=None, temporal_nodeset=None, temporal_linkset=None, discrete=None, weighted=False):
-        """Initialize a StreamGraph.
-
-        Parameters:
-        -----------
-        nodeset: ABC.NodeSet
-
-        timeset: ABC.TimeSet or ABC.ITimeSet
-
-        temporal_nodeset: ABC.TemporalNodeSet or ABC.ITemporalNodeSet
-
-        temporal_linkset: ABC.TemporalLinkSet or ABC.ITemporalLinkSet
-
-        """
         if not isinstance(nodeset, ABC.NodeSet):
             from . import NodeSetS
             self.nodeset_ = NodeSetS(nodeset)

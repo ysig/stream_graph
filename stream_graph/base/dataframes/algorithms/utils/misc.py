@@ -19,11 +19,11 @@ def hinge_loss(a, b):
         return v
 
 
-def first(a, b):
-    return a
+def first(*args):
+    return args[0]
 
 
-def truer(a, b):
+def truer(*args):
     return True
 
 

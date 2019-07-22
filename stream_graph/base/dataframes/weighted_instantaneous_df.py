@@ -18,16 +18,21 @@ from .algorithms.utils.misc import hinge_loss, noner, first, min_sumer
 class InstantaneousWDF(pd.DataFrame):
     def __init__(self, *args, **kargs):
         no_duplicates = kargs.pop('no_duplicates', None)
-        merge_function = kargs.pop('merge_function', sum)
-        assert callable(merge_function)
+        merge_function = kargs.pop('merge_function', None)
+        assert merge_function is None or callable(merge_function)
         super(self.__class__, self).__init__(*args, **kargs)
         assert 'ts' in self.columns
 
-        self.merge_function = merge_function
+        self.merge_function = (sum if merge_function is None else merge_function)
         if not self.empty:
             from .instantaneous_df import InstantaneousDF
-            if len(args) and isinstance(args[0], self.__class__) or (isinstance(kargs.get('data', None), self.__class__)):
-                if no_duplicates:
+            if len(args) and isinstance(args[0], self.__class__):
+                self.merge_function = args[0].merge_function
+                if no_duplicates is not False:
+                    self.merge(inplace=True)
+            elif isinstance(kargs.get('data', None), self.__class__):
+                self.merge_function = kargs['data'].merge_function
+                if no_duplicates is not False:
                     self.merge(inplace=True)
             elif len(args) and isinstance(args[0], InstantaneousDF) or (isinstance(kargs.get('data', None), InstantaneousDF)):
                 self['w'] = 1

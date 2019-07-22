@@ -9,7 +9,7 @@ from collections import Iterable
 from warnings import warn
 from six import iteritems
 
-from .utils import tns_to_df, ts_to_df, t_in, its_to_idf, ins_to_idf, time_discretizer_df
+from .utils import tns_to_df, ts_to_df, t_in, its_to_idf, ins_to_idf, time_discretizer_df, make_algebra
 from . import functions
 from stream_graph import ABC
 from .itemporal_node_set_df import ITemporalNodeSetDF
@@ -31,41 +31,59 @@ from stream_graph.exceptions import UnrecognizedTimeSet
 from stream_graph.exceptions import UnrecognizedDirection
 
 class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
-    """DataFrame implementation of ABC.ITemporalLinkSet"""
-    def __init__(self, df=None, no_duplicates=True, sort_by=None, discrete=None, weighted=None):
-        """Initialize an instantaneous Temporal Link Set.
+    """DataFrame implementation of ABC.ITemporalLinkSet.
 
-        Parameters
-        ----------
-        df: pandas.DataFrame or Iterable, default=None
-            If a DataFrame it should contain three columns for u and v and ts.
-            If an Iterable it should produce :code:`(u, v, ts)` tuples of two NodeId (int or str) and one timestamps (Real) with :code:`ts`.
+    Parameters
+    ----------
+    df: pandas.DataFrame or Iterable, default=None
+        If a DataFrame it should contain three columns for u and v and ts.
+        If an Iterable it should produce :code:`(u, v, ts)` tuples of two NodeId (int or str) and one timestamps (Real) with :code:`ts`.
 
-        no_duplicates: Bool, default=False
-            Defines if for each link there are no duplicate timestamps.
+    no_duplicates: Bool, default=False
+        Defines if for each link there are no duplicate timestamps.
 
-        sort_by: Any non-empty subset of ['u', 'v', 'ts'].
-            The order of the DataFrame elements by which they will be produced when iterated.
+    sort_by: Any non-empty subset of ['u', 'v', 'ts'].
+        The order of the DataFrame elements by which they will be produced when iterated.
 
-        """
-        df, self.weighted_ = load_instantaneous_df(df, no_duplicates=no_duplicates, weighted=weighted, keys=['u', 'v'])
-        if df is not None:
-            self.df_ = df
-            self.sort_by = sort_by
-            if isinstance(df, self.__class__):
-                discrete = df.discrete
+    discrete : bool, or default=None.
 
-            if self.df_['ts'].dtype.kind != 'i' and self.df_['tf'].dtype.kind != 'i':
-                if discrete is None:
-                    discrete = (True if self.df_.empty else False)
-                elif discrete:
-                    warn('SemanticWarning: For a discrete instance time-instants should be an integers')
-            elif discrete is None:
-                discrete = True
-            self.discrete_ = True if discrete is None else discrete
+    weighted : bool, or default=None.
+
+    merge_function : A function applied to a list of arguments.
+
+    operation_functions: dict {str: fun}
+        A dictionary of names of operations, i.e. :code:`union/u`, :code:`intersection/i`, :code:`difference/d`, :code:`issuperset/s'.
+        All function should be applicable between two weights.
+        Default: +, min, hinge_loss (ignoring an interval on zero), operator.ge (ignoring an interval on zero)
+
+    """
+    def __init__(self, df=None, no_duplicates=True, sort_by=None, discrete=None, weighted=None, merge_function=None, operation_functions=None):
+
+        if isinstance(df, self.__class__):
+            self.discrete_ = df.discrete
+            self.weighted_ = df.weighted
+            if self.weighted_:
+                algebra = df.algebra
+            if bool(df):
+                self.df_ = df.df
         else:
-            self.discrete_ = True if discrete is None else discrete
-
+            df, self.weighted_ = load_instantaneous_df(df, no_duplicates=no_duplicates, weighted=weighted, keys=['u', 'v'], merge_function=merge_function)
+            if df is not None:
+                self.df_ = df
+                self.sort_by = sort_by
+                    
+                if self.df_['ts'].dtype.kind != 'i' and self.df_['tf'].dtype.kind != 'i':
+                    if discrete is None:
+                        discrete = (True if self.df_.empty else False)
+                    elif discrete:
+                        warn('SemanticWarning: For a discrete instance time-instants should be an integers')
+                elif discrete is None:
+                    discrete = True
+                self.discrete_ = True if discrete is None else discrete
+                if self.weighted_:
+                    self.algebra = make_algebra(operation_functions)
+            else:
+                self.discrete_ = True if discrete is None else discrete
 
 
     def __bool__(self):
@@ -102,15 +120,21 @@ class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
             self.df_.sort_values(by=self.sort_by, inplace=True)
         return self
 
-    def _empty_base_class(self):
-        return init_instantaneous_df(keys=['u'])
+    def _init_base_class(self, df=None):
+        if df is None:
+            return self.__class__(weighted=self.weighted, discrete=self.discrete)
+        else:
+            if self.weighted:
+                return self.__class__(df, weighted=self.weighted, discrete=self.discrete, operation_functions=self.algebra, merge_function=df.merge_function)
+            else:
+                return self.__class__(df, weighted=self.weighted, discrete=self.discrete)
 
     @property
     def sorted_df(self):
         if bool(self):
             return self.sort_.df_
         else:
-            return self._empty_base_class()
+            return self._init_base_class()
 
     def sort_df(self, sort_by):
         if self.sort_by is None:
@@ -126,7 +150,7 @@ class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
         if bool(self):
             return self.df_
         else:
-            return init_instantaneous_df(weighted=self.weighted, keys=['u', 'v'])
+            return self._init_base_class()
 
     @property
     def linkset(self):
@@ -151,7 +175,7 @@ class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
         if bool(self):
             return TemporalNodeSetB(self.nodeset, TimeSetDF([(self.df_.ts.min(), self.df_.ts.max())], discrete=self.discrete))
         else:
-            return TemporalNodeSetB()
+            return TemporalNodeSetB(discrete=self.discrete)
 
     @property
     def minimal_temporal_nodeset(self):
@@ -160,18 +184,21 @@ class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
             mdf = self.df_[['v', 'ts']].rename(columns={'v': 'u'}).append(self.df_[['u', 'ts']])
             return ITemporalNodeSetDF(mdf, discrete=self.discrete)
         else:
-            return ITemporalNodeSetDF()
+            return ITemporalNodeSetDF(discrete=self.discrete)
 
     @property
     def timeset(self):
         if bool(self):
             return ITimeSetS(self.df.ts, discrete=self.discrete)
         else:
-            return ITimeSetS()
+            return ITimeSetS(discrete=self.discrete)
 
     @property
     def number_of_interactions(self):
-        return self.df.shape[0]
+        if bool(self):
+            return self.df.shape[0]
+        else:
+            return 0
 
     @property
     def _weighted_number_of_interactions(self):
@@ -620,9 +647,9 @@ class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
                 else:
                     ts = list(ts_to_df(ts).sort_values(by='ts').itertuples(index=False, name=None))
                     df = [key for key in iter(self) if t_in(ts, key[2], 0, len(ts) - 1)]
-            return self.__class__(df, discrete=self.discrete, weighted=self.weighted)
+            return self._init_base_class(df)
         else:
-            return self.__class__()
+            return self._init_base_class()
 
     def __and__(self, ls):
         if isinstance(ls, ABC.TemporalLinkSet):
@@ -633,11 +660,15 @@ class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
                         try:
                             return ls & self
                         except NotImplementedError:
-                            ls = self.__class__(ls, discrete=self.discrete, weighted=self.weighted)
-                    return self.__class__(self.df.intersection(ls.df), weighted=self.weighted, discrete=self.discrete)
+                            ls = self._init_base_class(ls)
+                    out = (self.df.intersection(ls.df, intersection_function=self.algebra['i']) if self.weighted else self.df.intersection(ls.df))
+                    return self._init_base_class(out)
                 else:
-                    df = TemporalLinkSetDF(self, discrete=self.discrete, weighted=self.weighted) & ls
-                    return self.__class__(df.drop(columns=['tf']), no_duplicates=False, discrete=df.discrete, weighted=df.weighted)
+                    if self.weighted:
+                        df = TemporalLinkSetDF(self, discrete=self.discrete, weighted=self.weighted, operation_functions=self.algebra) & ls
+                    else:
+                        df = TemporalLinkSetDF(self, discrete=self.discrete, weighted=self.weighted) & ls
+                    return self._init_base_class(df.df.drop(columns=['tf']))
         else:
             raise UnrecognizedTemporalLinkSet('right operand')
         return TemporalLinkSetDF()
@@ -653,10 +684,18 @@ class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
                         try:
                             return ls | self
                         except NotImplementedError:
-                            ls = self.__class__(ls, discrete=self.discrete, weighted=self.weighted)
-                    return self.__class__(self.df.union(ls.df), discrete=self.discrete, weighted=self.weighted)
+                            ls = self._init_base_class(ls)
+                    if self.weighted:
+                        out = self._init_base_class(self.df.union(ls.df, union_function=self.algebra['u']))
+                    else:
+                        out = self._init_base_class(self.df.union(ls.df))
+                    return self.__class__(out)
                 else:
-                    return TemporalLinkSetDF(self, discrete=self.discrete, weighted=self.weighted) | ls
+                    if self.weighted:
+                        df = TemporalLinkSetDF(self, discrete=self.discrete, weighted=self.weighted, operation_functions=self.algebra) | ls
+                    else:
+                        df = TemporalLinkSetDF(self, discrete=self.discrete, weighted=self.weighted)
+                    return df
             else:
                 return self.copy()
         else:
@@ -671,8 +710,11 @@ class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
                         try:
                             return ls.__rsub__(self)
                         except (AttributeError, NotImplementedError):
-                            ls = self.__class__(ls, discrete=self.discrete, weighted=self.weighted)
-                    return self.__class__(self.df.difference(ls.df), discrete=self.discrete, weighted=self.weighted)
+                            ls = self._init_base_class(ls)
+                    if self.weighted:
+                        return self._init_base_class(self.df.difference(ls.df, difference_function=self.algebra['d']))
+                    else:
+                        return self._init_base_class(self.df.difference(ls.df))
                 else:
                     return TemporalLinkSetDF(self) - ls
         else:

@@ -17,12 +17,11 @@ from .dataframes import InstantaneousWDF
 from stream_graph.exceptions import UnrecognizedDirection
 
 
-def load_instantaneous_df(df, no_duplicates, weighted, keys=[]):
+def load_instantaneous_df(df, no_duplicates, weighted, keys=[], merge_function=None):
     is_df = isinstance(df, pd.DataFrame)
     if not ((df is None) or (is_df and df.empty) or (not is_df and not bool(df))):
         is_idf, is_iwdf = isinstance(df, InstantaneousDF), isinstance(df, InstantaneousWDF)
         if not (is_idf or is_iwdf):
-            class_ = (InstantaneousWDF if weighted is True else InstantaneousDF)
             try:
                 an = True
                 if is_df:
@@ -42,11 +41,11 @@ def load_instantaneous_df(df, no_duplicates, weighted, keys=[]):
                     df.columns = keys + ec
             except Exception:
                 raise ValueError('An Iterable input should consist of either 3 or 4 elements')
-            return class_(df, no_duplicates=no_duplicates), weighted
+            return init_instantaneous_df(data=df, weighted=weighted, no_duplicates=no_duplicates, keys=keys, merge_function=merge_function), weighted
         elif weighted is None or (weighted is True and is_iwdf):
             df = df.copy()
         elif weighted is True and is_idf:
-            df = InstantaneousWDF(df, no_duplicates=no_duplicates)
+            df = init_instantaneous_df(data=df, weighted=True, no_duplicates=no_duplicates, keys=keys, merge_function=merge_function)
         else:
             df = df[keys + ['ts']]
         return df, isinstance(df, InstantaneousWDF)
@@ -54,7 +53,7 @@ def load_instantaneous_df(df, no_duplicates, weighted, keys=[]):
         return None, None
 
 
-def load_interval_wdf(df, discrete, weighted, disjoint_intervals, default_closed, keys=[]):
+def load_interval_wdf(df, discrete, weighted, disjoint_intervals, default_closed, keys=[], merge_function=None):
     if isinstance(df, (CIntervalDF, CIntervalWDF, DIntervalDF, DIntervalWDF)):
         obj = (df if disjoint_intervals else df.merge(inplace=False))
     else:
@@ -78,17 +77,17 @@ def load_interval_wdf(df, discrete, weighted, disjoint_intervals, default_closed
                     df['s'] = s
                 else:
                     df['s'], df['f'] = s, f
-                obj = init_interval_df(data=df, discrete=False, weighted=weighted, keys=keys)
+                obj = init_interval_df(data=df, discrete=False, weighted=weighted, keys=keys, merge_function=merge_function)
         elif hasattr(df, '__iter__'):
             if discrete:
                 if weighted:
-                    obj = _load_dinterval_wdf_iterable(df, keys, disjoint_intervals)
+                    obj = _load_dinterval_wdf_iterable(df, keys, disjoint_intervals, merge_function)
                 else:
                     obj = _load_dinterval_df_iterable(df, keys, disjoint_intervals)
             else:
                 if weighted:
                     s, f = ((True, False) if default_closed is None else _closed_to_tuple(default_closed))
-                    obj = _load_cinterval_wdf_iterable(df, keys, s, f, disjoint_intervals)
+                    obj = _load_cinterval_wdf_iterable(df, keys, s, f, disjoint_intervals, merge_function)
                 else:
                     s, f = ((True, True) if default_closed is None else _closed_to_tuple(default_closed))
                     obj = _load_cinterval_df_iterable(df, keys, s, f, disjoint_intervals)
@@ -97,7 +96,7 @@ def load_interval_wdf(df, discrete, weighted, disjoint_intervals, default_closed
     return obj, isinstance(obj, (DIntervalDF, DIntervalWDF)), isinstance(obj, (CIntervalWDF, DIntervalWDF))
 
 
-def _load_dinterval_wdf_iterable(df, keys, disjoint_intervals):
+def _load_dinterval_wdf_iterable(df, keys, disjoint_intervals, merge_function):
     l, lks = list(), len(keys)
     for k in df:
         lk = len(k)
@@ -108,9 +107,9 @@ def _load_dinterval_wdf_iterable(df, keys, disjoint_intervals):
             l.append(k[:-1] + (k[-2], k[-1]))
         else:
             raise ValueError('Invalid input ')
-    return DIntervalWDF(l, disjoint_intervals=disjoint_intervals, columns=keys+['ts', 'tf', 'w'])
+    return DIntervalWDF(l, disjoint_intervals=disjoint_intervals, columns=keys+['ts', 'tf', 'w'], merge_function=merge_function)
 
-def _load_cinterval_wdf_iterable(df, keys, s, f, disjoint_intervals):
+def _load_cinterval_wdf_iterable(df, keys, s, f, disjoint_intervals, merge_function):
     inp = list()
     len_keys = len(keys)
     for k in df:
@@ -130,7 +129,7 @@ def _load_cinterval_wdf_iterable(df, keys, s, f, disjoint_intervals):
             inp.append(k[:-1] + (k[-2], True, True, k[-1]))
         else:
             raise ValueError('Invalid input ')
-    return CIntervalWDF(inp, columns=keys + ['ts', 'tf', 's', 'f', 'w'], disjoint_intervals=disjoint_intervals)
+    return CIntervalWDF(inp, columns=keys + ['ts', 'tf', 's', 'f', 'w'], disjoint_intervals=disjoint_intervals, merge_function=merge_function)
 
 
 def weighted_iter(df):
@@ -257,8 +256,14 @@ def class_interval_df(discrete=False, weighted=False):
     return ((DIntervalWDF if discrete else CIntervalWDF) if weighted else (DIntervalDF if discrete else CIntervalDF))
 
 
-def init_interval_df(data=[], discrete=False, weighted=False, disjoint_intervals=True, keys=[]):
-    return class_interval_df(discrete=discrete, weighted=weighted)(data, columns=columns_interval_df(discrete=discrete, weighted=weighted, keys=keys), disjoint_intervals=disjoint_intervals)
+def init_interval_df(data=[], discrete=False, weighted=False, disjoint_intervals=True, keys=[], merge_function=None):
+    cols = columns_interval_df(discrete=discrete, weighted=weighted, keys=keys)
+    class_ = class_interval_df(discrete=discrete, weighted=weighted)
+    if weighted:
+        return class_(data, columns=cols, disjoint_intervals=disjoint_intervals, merge_function=merge_function)
+    else:
+        return class_(data, columns=cols, disjoint_intervals=disjoint_intervals)
+
 
 
 def class_instantaneous_df(weighted=False):
@@ -272,8 +277,11 @@ def columns_instantaneous_df(weighted, keys=[]):
     return keys + cols
 
 
-def init_instantaneous_df(data=[], weighted=False, keys=[]):
-    return class_instantaneous_df(weighted)(data, columns=columns_instantaneous_df(weighted, keys))
+def init_instantaneous_df(data=[], weighted=False, no_duplicates=True, keys=[], merge_function=None):
+    if weighted:
+        return class_instantaneous_df(weighted)(data, columns=columns_instantaneous_df(weighted, keys), no_duplicates=no_duplicates, merge_function=merge_function)
+    else:
+        return class_instantaneous_df(weighted)(data, columns=columns_instantaneous_df(weighted, keys), no_duplicates=no_duplicates)
 
 
 def _closed_to_tuple(cl):

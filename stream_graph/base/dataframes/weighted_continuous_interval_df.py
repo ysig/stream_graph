@@ -14,8 +14,8 @@ from .algorithms.weighted_continuous_interval import interval_intersection_size 
 class CIntervalWDF(pd.DataFrame):
     def __init__(self, *args, **kargs):
         disjoint_intervals = kargs.pop('disjoint_intervals', None)
-        merge_function = kargs.pop('merge_function', sum)
-        assert callable(merge_function)
+        merge_function = kargs.pop('merge_function', None)
+        assert merge_function is None or callable(merge_function)   
         super(CIntervalWDF, self).__init__(*args, **kargs)
         assert 'ts' in self.columns
         if 'tf' not in self.columns:
@@ -27,10 +27,18 @@ class CIntervalWDF(pd.DataFrame):
         if 'w' not in self.columns:
             self['w'] = 1
 
-        self.merge_function = merge_function
+        self.merge_function = (sum if merge_function is None else merge_function)
         if not self.empty:
             from .continuous_interval_df import CIntervalDF
-            if len(args) and (isinstance(args[0], (CIntervalWDF, CIntervalDF)) or isinstance(kargs.get('data', None), (CIntervalWDF, CIntervalDF))):
+            if len(args) and isinstance(args[0], CIntervalWDF):
+                self.merge_function = args[0].merge_function
+                if not disjoint_intervals is False:
+                    self.merge(inplace=True)
+            elif isinstance(kargs.get('data', None), CIntervalWDF):
+                self.merge_function = kargs['data'].merge_function
+                if not disjoint_intervals is False:
+                    self.merge(inplace=True)
+            elif len(args) and (isinstance(args[0], CIntervalDF) or isinstance(kargs.get('data', None), CIntervalDF)):
                 self.merge(inplace=True)
             elif disjoint_intervals is False:
                 self.merge(inplace=True)
@@ -175,7 +183,7 @@ class CIntervalWDF(pd.DataFrame):
         assert not (not by_key and dfb is None)
 
         if intersection_function is None:
-            intersection_function = max
+            intersection_function = min
         elif intersection_function == 'unweighted':
             intersection_function = first
         else:
@@ -249,7 +257,7 @@ class CIntervalWDF(pd.DataFrame):
         assert set(self.columns) == {'u', 'v', 'ts', 'tf', 's', 'f', 'w'}
 
         if cartesian_intersection_function is None:
-            cartesian_intersection_function = max
+            cartesian_intersection_function = min
         elif cartesian_intersection_function == 'unweighted':
             cartesian_intersection_function = oner
         else:

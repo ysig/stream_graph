@@ -22,23 +22,22 @@ from stream_graph.collections import LinkCollection
 
 
 class TemporalNodeSetDF(ABC.TemporalNodeSet):
-    """DataFrame implementation of ABC.TemporalNodeSet"""
+    """DataFrame implementation of ABC.TemporalNodeSet
+
+    Parameters
+    ----------
+    df: pandas.DataFrame or Iterable, default=None
+        If a DataFrame it should contain four columns for u and ts, tf.
+        If an Iterable it should produce :code:`(u, ts, tf)` tuples of one NodeId (int or str) and two timestamps (Real) with :code:`ts < tf`.
+
+    disjoint_intervals: Bool, default=False
+        Defines if for each node all intervals are disjoint.
+
+    sort_by: Any non-empty subset of ['u', 'ts', 'tf'].
+        The order of the DataFrame elements by which they will be produced when iterated.
+
+    """
     def __init__(self, df=None, disjoint_intervals=True, sort_by=None, discrete=None, default_closed='both'):
-        """Initialize a Temporal Node Set.
-
-        Parameters
-        ----------
-        df: pandas.DataFrame or Iterable, default=None
-            If a DataFrame it should contain four columns for u and ts, tf.
-            If an Iterable it should produce :code:`(u, ts, tf)` tuples of one NodeId (int or str) and two timestamps (Real) with :code:`ts < tf`.
-
-        disjoint_intervals: Bool, default=False
-            Defines if for each node all intervals are disjoint.
-
-        sort_by: Any non-empty subset of ['u', 'ts', 'tf'].
-            The order of the DataFrame elements by which they will be produced when iterated.
-
-        """
         if df is not None:
             if isinstance(df, (TemporalNodeSetDF)):
                 if bool(df):

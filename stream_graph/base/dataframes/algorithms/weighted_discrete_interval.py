@@ -130,7 +130,7 @@ def union_on_key(df, kdf, union_function):
 # Intersection [assumes merged interval-df]
 # cache = [w_a, w_b, break]
 def intersection_cache_constructor():
-    return [None, None, None]
+    return [None, None, None, None]
 
 
 def update_cache_intersection(key, cache, event, out, intersection_function):
@@ -142,7 +142,7 @@ def update_cache_intersection(key, cache, event, out, intersection_function):
             if cache[2] <= t:
                 w = intersection_function(cache[0], cache[1])
                 if w is not None:
-                    out.append(key + (cache[2], t, w))
+                    add_prev(key, cache, out, (cache[2], t, w))
         cache[int(r)] = None
 
 

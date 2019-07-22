@@ -18,21 +18,20 @@ from stream_graph.exceptions import UnrecognizedTemporalNodeSet
 
 
 class TemporalNodeSetB(ABC.TemporalNodeSet):
-    """Implementation of ABC.TemporalNodeSet using class combination."""
+    """Implementation of ABC.TemporalNodeSet using class combination.
+
+    All nodes defined by a nodeset, exist in all the time domain defined by timeset.
+
+    Parameters:
+    -----------
+    nodeset: ABC.NodeSet
+
+    timeset: ABC.TimeSet
+
+    discrete: bool or None
+
+    """
     def __init__(self, nodeset=None, timeset=None, discrete=None):
-        """Initialize a Temporal Node Set.
-
-        All nodes defined by a nodeset, exist in all the time domain defined by timeset.
-
-        Parameters:
-        -----------
-        nodeset: ABC.NodeSet
-
-        timeset: ABC.TimeSet
-
-        discrete: bool or None
-
-        """
         is_none = [a is not None for a in [timeset, nodeset]]
         if all(is_none):
             if isinstance(nodeset, ABC.NodeSet):
@@ -260,8 +259,8 @@ class TemporalNodeSetB(ABC.TemporalNodeSet):
                         if bool(ns_in):
                             ts_diff = self.timeset_ - tns.timeset_
                             if bool(ts_diff):
-                                tnsa_ = TemporalNodeSetB(nodeset=self.nodeset_ - tns.nodeset_, timeset=self.timeset_, discrete=self.discrete)
-                                tnsb_ = TemporalNodeSetB(nodeset=ns_in, timeset=ts_diff, discrete=self.discrete)
+                                tnsa_ = TemporalNodeSetB(nodeset=self.nodeset_ - tns.nodeset_, timeset=self.timeset_)
+                                tnsb_ = TemporalNodeSetB(nodeset=ns_in, timeset=ts_diff)
                                 iter_ = chain(iter(tnsa_), iter(tnsb_))
                                 nsa = TemporalNodeSetDF(iter_, disjoint_intervals=True, discrete=self.discrete)
                                 return nsa
