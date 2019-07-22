@@ -9,42 +9,19 @@ A *prototype* implementation of `stream graphs <https://hal.archives-ouvertes.fr
 
 **Note**: This library is currently **work in progress** and so elementary structures may change, without keeping a support for previous versions. Hence, the imag (when our library becomes stable, our stream-graphs will be removed from the bread-board and we be glued to a real circuit :)
 
-============
-Introduction
-============
+=============
+Documentation
+=============
 
 .. toctree::
   :maxdepth: 1
 
-  introduction/about
   introduction/installation
-
-===================
-Package Walkthrough
-===================
-
-.. toctree::
-  :maxdepth: 1
-
   package_walkthrough/index
-
-
-===========
-Examples
-===========
-.. toctree::
-  :maxdepth: 1
-
   auto_examples/index
-
-
-============
-Tutorials
-============
-.. toctree::
-  :maxdepth: 1
-
   tutorials
+  introduction/about
+
 
 ==========
 API
