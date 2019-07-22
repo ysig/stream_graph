@@ -91,19 +91,11 @@
             
             
               <ul>
-<li class="toctree-l1"><a class="reference internal" href="../introduction/about.html">General Information</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../introduction/installation.html">Dependencies</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../introduction/installation.html#installing-dependencies">Installing Dependencies</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../introduction/installation.html#installing-the-master-version">Installing the master-version</a></li>
-</ul>
-<ul>
+<li class="toctree-l1"><a class="reference internal" href="../introduction/installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../package_walkthrough/index.html">Package Walkthrough</a></li>
-</ul>
-<ul>
 <li class="toctree-l1"><a class="reference internal" href="../auto_examples/index.html">Getting Started</a></li>
-</ul>
-<ul>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../introduction/about.html">General Information</a></li>
 </ul>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../api.html">ABC Reference</a></li>
@@ -195,49 +187,8 @@
 <h1><code class="xref py py-mod docutils literal notranslate"><span class="pre">stream_graph</span></code>.ITimeSetS<a class="headerlink" href="#stream-graph-itimesets" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="stream_graph.ITimeSetS">
-<em class="property">class </em><code class="sig-prename descclassname">stream_graph.</code><code class="sig-name descname">ITimeSetS</code><span class="sig-paren">(</span><em class="sig-param">times=None</em>, <em class="sig-param">discrete=None</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/6acc789/stream_graph/base/itime_set_s.py#L10"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/base/itime_set_s.html#ITimeSetS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.ITimeSetS" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">stream_graph.</code><code class="sig-name descname">ITimeSetS</code><span class="sig-paren">(</span><em class="sig-param">times=None</em>, <em class="sig-param">discrete=None</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/61c86b3/stream_graph/base/itime_set_s.py#L10"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/base/itime_set_s.html#ITimeSetS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.ITimeSetS" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set implementation of the ABC.ITimeSet</p>
-<dl class="field-list simple">
-<dt class="field-odd">Attributes</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">discrete</span></code></dt><dd><p>Designate if the TimeSet is on discrete Time.</p>
-</dd>
-<dt><a class="reference internal" href="#stream_graph.ITimeSetS.instantaneous" title="stream_graph.ITimeSetS.instantaneous"><code class="xref py py-obj docutils literal notranslate"><span class="pre">instantaneous</span></code></a></dt><dd><p>Defines if the Time Set is instantaneous.</p>
-</dd>
-<dt><strong>number_of_instants</strong></dt><dd></dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">size</span></code></dt><dd><p>Returns the size of the TimeSet.</p>
-</dd>
-<dt><strong>timeset_df</strong></dt><dd></dd>
-</dl>
-</dd>
-</dl>
-<p class="rubric">Methods</p>
-<table class="longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#stream_graph.ITimeSetS.copy" title="stream_graph.ITimeSetS.copy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code></a>(self[, deep])</p></td>
-<td><p>Returns a deep or shallow copy of the current TimeSet.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#stream_graph.ITimeSetS.discretize" title="stream_graph.ITimeSetS.discretize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">discretize</span></code></a>(self[, bins, bin_size])</p></td>
-<td><p>Returns a discrete version of the current TimeSet.</p></td>
-</tr>
-</tbody>
-</table>
-<table class="docutils align-default">
-<colgroup>
-<col style="width: 58%" />
-<col style="width: 42%" />
-</colgroup>
-<tbody>
-<tr class="row-odd"><td><p><strong>issuperset</strong></p></td>
-<td></td>
-</tr>
-</tbody>
-</table>
-<p>Initialize a instantaneous timeset.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
@@ -254,6 +205,7 @@
 <dt><strong>number_of_instants</strong></dt><dd></dd>
 <dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">size</span></code></dt><dd><p>Returns the size of the TimeSet.</p>
 </dd>
+<dt><strong>times</strong></dt><dd></dd>
 <dt><strong>timeset_df</strong></dt><dd></dd>
 </dl>
 </dd>
@@ -286,7 +238,7 @@
 </table>
 <dl class="attribute">
 <dt id="stream_graph.ITimeSetS.__class__">
-<code class="sig-name descname">__class__</code><a class="reference external" href="https://github.com/ysig/stream_graph/blob/6acc789/stream_graph/../../../../usr/local/lib/python3.6/abc.py#L109"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.ITimeSetS.__class__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__class__</code><a class="reference external" href="https://github.com/ysig/stream_graph/blob/61c86b3/stream_graph/../../../../usr/local/lib/python3.6/abc.py#L109"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.ITimeSetS.__class__" title="Permalink to this definition">¶</a></dt>
 <dd><p>alias of <a class="reference external" href="https://docs.python.org/3/library/abc.html#abc.ABCMeta" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABCMeta</span></code></a></p>
 </dd></dl>
 
@@ -336,20 +288,6 @@
 <dt id="stream_graph.ITimeSetS.__hash__">
 <code class="sig-name descname">__hash__</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.ITimeSetS.__hash__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return hash(self).</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="stream_graph.ITimeSetS.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">times=None</em>, <em class="sig-param">discrete=None</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/6acc789/stream_graph/base/itime_set_s.py#L12"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/base/itime_set_s.html#ITimeSetS.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.ITimeSetS.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initialize a instantaneous timeset.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>times: Iterable, default=None</strong></dt><dd><p>The Iterable should contain a valid Time (Int or Real).</p>
-</dd>
-</dl>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="method">
@@ -432,7 +370,7 @@ overrides the normal algorithm (and the outcome is cached).</p>
 
 <dl class="method">
 <dt id="stream_graph.ITimeSetS.copy">
-<code class="sig-name descname">copy</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">deep=True</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/6acc789/stream_graph/ABC/time_set.py#L162"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.ITimeSetS.copy" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">copy</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">deep=True</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/61c86b3/stream_graph/ABC/time_set.py#L162"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.ITimeSetS.copy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a deep or shallow copy of the current TimeSet.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -451,7 +389,7 @@ overrides the normal algorithm (and the outcome is cached).</p>
 
 <dl class="method">
 <dt id="stream_graph.ITimeSetS.discretize">
-<code class="sig-name descname">discretize</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">bins=None</em>, <em class="sig-param">bin_size=None</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/6acc789/stream_graph/ABC/time_set.py#L180"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.ITimeSetS.discretize" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">discretize</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">bins=None</em>, <em class="sig-param">bin_size=None</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/61c86b3/stream_graph/ABC/time_set.py#L180"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.ITimeSetS.discretize" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a discrete version of the current TimeSet.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>

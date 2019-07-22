@@ -90,23 +90,15 @@
               
             
             
-              <ul>
-<li class="toctree-l1"><a class="reference internal" href="../introduction/about.html">General Information</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../introduction/installation.html">Dependencies</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../introduction/installation.html#installing-dependencies">Installing Dependencies</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../introduction/installation.html#installing-the-master-version">Installing the master-version</a></li>
-</ul>
-<ul>
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../introduction/installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../package_walkthrough/index.html">Package Walkthrough</a></li>
-</ul>
-<ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Getting Started</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Initialize and print a simple stream-graph</a></li>
 </ul>
 </li>
-</ul>
-<ul>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../introduction/about.html">General Information</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../api.html">ABC Reference</a></li>
@@ -190,32 +182,39 @@
 <p>An example plot of a <a class="reference internal" href="../generated/stream_graph.StreamGraph.html#stream_graph.StreamGraph" title="stream_graph.StreamGraph"><code class="xref py py-class docutils literal notranslate"><span class="pre">stream_graph.StreamGraph</span></code></a> made from a combination of <a class="reference internal" href="../generated/stream_graph.NodeSetS.html#stream_graph.NodeSetS" title="stream_graph.NodeSetS"><code class="xref py py-class docutils literal notranslate"><span class="pre">stream_graph.NodeSetS</span></code></a>, <a class="reference internal" href="../generated/stream_graph.TimeSetDF.html#stream_graph.TimeSetDF" title="stream_graph.TimeSetDF"><code class="xref py py-class docutils literal notranslate"><span class="pre">stream_graph.TimeSetDF</span></code></a> , <a class="reference internal" href="../generated/stream_graph.TemporalNodeSetDF.html#stream_graph.TemporalNodeSetDF" title="stream_graph.TemporalNodeSetDF"><code class="xref py py-class docutils literal notranslate"><span class="pre">stream_graph.TemporalNodeSetDF</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">stream_graph.LinkStreamDF</span></code>:</p>
 <img alt="../_images/sphx_glr_plot_intro_001.png" class="align-center" src="../_images/sphx_glr_plot_intro_001.png" />
 <p>using the <a class="reference internal" href="../generated/stream_graph.Visualizer.html#stream_graph.Visualizer" title="stream_graph.Visualizer"><code class="xref py py-class docutils literal notranslate"><span class="pre">stream_graph.Visualizer</span></code></a>.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
-<span class="k">print</span><span class="p">(</span><span class="vm">__doc__</span><span class="p">)</span>
+<p class="sphx-glr-script-out">Out:</p>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+<span class="nb">print</span><span class="p">(</span><span class="vm">__doc__</span><span class="p">)</span>
 
-<span class="kn">from</span> <span class="nn">stream_graph</span> <span class="kn">import</span> <a href="../generated/stream_graph.Visualizer.html#stream_graph.Visualizer" title="View documentation for stream_graph.Visualizer"><span class="n">Visualizer</span></a><span class="p">,</span> <a href="../generated/stream_graph.TemporalLinkSetDF.html#stream_graph.TemporalLinkSetDF" title="View documentation for stream_graph.TemporalLinkSetDF"><span class="n">TemporalLinkSetDF</span></a><span class="p">,</span> <a href="../generated/stream_graph.NodeSetS.html#stream_graph.NodeSetS" title="View documentation for stream_graph.NodeSetS"><span class="n">NodeSetS</span></a><span class="p">,</span> <a href="../generated/stream_graph.TemporalNodeSetDF.html#stream_graph.TemporalNodeSetDF" title="View documentation for stream_graph.TemporalNodeSetDF"><span class="n">TemporalNodeSetDF</span></a><span class="p">,</span> <a href="../generated/stream_graph.TimeSetDF.html#stream_graph.TimeSetDF" title="View documentation for stream_graph.TimeSetDF"><span class="n">TimeSetDF</span></a><span class="p">,</span> <a href="../generated/stream_graph.StreamGraph.html#stream_graph.StreamGraph" title="View documentation for stream_graph.StreamGraph"><span class="n">StreamGraph</span></a>
+<span class="kn">from</span> <span class="nn">stream_graph</span> <span class="k">import</span> <a href="../generated/stream_graph.Visualizer.html#stream_graph.Visualizer" title="View documentation for stream_graph.Visualizer"><span class="n">Visualizer</span></a><span class="p">,</span> <a href="../generated/stream_graph.TemporalLinkSetDF.html#stream_graph.TemporalLinkSetDF" title="View documentation for stream_graph.TemporalLinkSetDF"><span class="n">TemporalLinkSetDF</span></a><span class="p">,</span> <a href="../generated/stream_graph.NodeSetS.html#stream_graph.NodeSetS" title="View documentation for stream_graph.NodeSetS"><span class="n">NodeSetS</span></a><span class="p">,</span> <a href="../generated/stream_graph.TemporalNodeSetDF.html#stream_graph.TemporalNodeSetDF" title="View documentation for stream_graph.TemporalNodeSetDF"><span class="n">TemporalNodeSetDF</span></a><span class="p">,</span> <a href="../generated/stream_graph.TimeSetDF.html#stream_graph.TimeSetDF" title="View documentation for stream_graph.TimeSetDF"><span class="n">TimeSetDF</span></a><span class="p">,</span> <a href="../generated/stream_graph.StreamGraph.html#stream_graph.StreamGraph" title="View documentation for stream_graph.StreamGraph"><span class="n">StreamGraph</span></a>
 
 <span class="n">nodeset</span> <span class="o">=</span> <a href="../generated/stream_graph.NodeSetS.html#stream_graph.NodeSetS" title="View documentation for stream_graph.NodeSetS"><span class="n">NodeSetS</span></a><span class="p">({</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">})</span>
 <span class="n">timeset</span> <span class="o">=</span> <a href="../generated/stream_graph.TimeSetDF.html#stream_graph.TimeSetDF" title="View documentation for stream_graph.TimeSetDF"><span class="n">TimeSetDF</span></a><span class="p">([(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">)])</span>
 <span class="n">temporal_nodeset</span> <span class="o">=</span> <a href="../generated/stream_graph.TemporalNodeSetDF.html#stream_graph.TemporalNodeSetDF" title="View documentation for stream_graph.TemporalNodeSetDF"><span class="n">TemporalNodeSetDF</span></a><span class="p">([(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">9</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">9</span><span class="p">)])</span>
-<span class="n">temporal_linkset</span> <span class="o">=</span> <a href="../generated/stream_graph.TemporalLinkSetDF.html#stream_graph.TemporalLinkSetDF" title="View documentation for stream_graph.TemporalLinkSetDF"><span class="n">TemporalLinkSetDF</span></a><span class="p">([(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">8</span><span class="p">)]</span> <span class="p">,</span> <span class="n">disjoint_intervals</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+<span class="n">temporal_linkset</span> <span class="o">=</span> <a href="../generated/stream_graph.TemporalLinkSetDF.html#stream_graph.TemporalLinkSetDF" title="View documentation for stream_graph.TemporalLinkSetDF"><span class="n">TemporalLinkSetDF</span></a><span class="p">([(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">8</span><span class="p">)]</span> <span class="p">,</span> <span class="n">disjoint_intervals</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">stream_graph</span> <span class="o">=</span> <a href="../generated/stream_graph.StreamGraph.html#stream_graph.StreamGraph" title="View documentation for stream_graph.StreamGraph"><span class="n">StreamGraph</span></a><span class="p">(</span><span class="n">nodeset</span><span class="p">,</span> <span class="n">timeset</span><span class="p">,</span> <span class="n">temporal_nodeset</span><span class="p">,</span> <span class="n">temporal_linkset</span><span class="p">)</span>
 
 <span class="c1"># Visualize svg</span>
 <a href="../generated/stream_graph.Visualizer.html#stream_graph.Visualizer" title="View documentation for stream_graph.Visualizer"><span class="n">Visualizer</span></a><span class="p">(</span><span class="n">stream_graph</span><span class="p">,</span> <span class="s1">&#39;plot_intro.svg&#39;</span><span class="p">,</span> <span class="n">image_type</span><span class="o">=</span><span class="s1">&#39;svg&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">produce</span><span class="p">()</span>
 
 <span class="c1"># Convert to PNG</span>
-<span class="kn">from</span> <span class="nn">cairosvg</span> <span class="kn">import</span> <span class="n">svg2png</span>
-<span class="kn">from</span> <span class="nn">shutil</span> <span class="kn">import</span> <span class="n">move</span>
+<span class="kn">from</span> <span class="nn">cairosvg</span> <span class="k">import</span> <span class="n">svg2png</span>
+<span class="kn">from</span> <span class="nn">shutil</span> <span class="k">import</span> <span class="n">move</span>
 <span class="n">filename</span> <span class="o">=</span> <span class="s1">&#39;../doc/auto_examples/images/sphx_glr_plot_intro_001.png&#39;</span>
 <span class="n">svg2png</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="s1">&#39;plot_intro.svg&#39;</span><span class="p">,</span> <span class="n">write_to</span><span class="o">=</span><span class="n">filename</span><span class="p">,</span> <span class="n">parent_height</span><span class="o">=</span><span class="mi">160</span><span class="p">,</span> <span class="n">parent_width</span><span class="o">=</span><span class="mi">453</span><span class="p">)</span>
 
 <span class="c1"># Remove svg</span>
-<span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">remove</span>
+<span class="kn">from</span> <span class="nn">os</span> <span class="k">import</span> <span class="n">remove</span>
 <span class="n">remove</span><span class="p">(</span><span class="s1">&#39;plot_intro.svg&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><strong>Total running time of the script:</strong> ( 0 minutes  0.394 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  0.120 seconds)</p>
 <div class="sphx-glr-footer class sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-plot-intro-py">
 <div class="sphx-glr-download docutils container">
 <p><a class="reference download internal" download="" href="../_downloads/411e5fb678d87d5d2db3b55ab0ca6297/plot_intro.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">plot_intro.py</span></code></a></p>
@@ -224,7 +223,7 @@
 <p><a class="reference download internal" download="" href="../_downloads/fad161a08101bfad232995c6d59cbeda/plot_intro.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">plot_intro.ipynb</span></code></a></p>
 </div>
 </div>
-<p class="sphx-glr-signature"><a class="reference external" href="https://sphinx-gallery.readthedocs.io">Gallery generated by Sphinx-Gallery</a></p>
+<p class="sphx-glr-signature"><a class="reference external" href="https://sphinx-gallery.github.io">Gallery generated by Sphinx-Gallery</a></p>
 </div>
 
 

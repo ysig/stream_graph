@@ -89,19 +89,11 @@
             
             
               <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../introduction/about.html">General Information</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../introduction/installation.html">Dependencies</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../introduction/installation.html#installing-dependencies">Installing Dependencies</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../introduction/installation.html#installing-the-master-version">Installing the master-version</a></li>
-</ul>
-<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../introduction/installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../package_walkthrough/index.html">Package Walkthrough</a></li>
-</ul>
-<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../auto_examples/index.html">Getting Started</a></li>
-</ul>
-<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../introduction/about.html">General Information</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../api.html">ABC Reference</a></li>
@@ -193,21 +185,20 @@
 
 
 <div class="viewcode-block" id="TemporalNodeSetB"><a class="viewcode-back" href="../../../generated/stream_graph.TemporalNodeSetB.html#stream_graph.TemporalNodeSetB">[docs]</a><span class="k">class</span> <span class="nc">TemporalNodeSetB</span><span class="p">(</span><span class="n">ABC</span><span class="o">.</span><span class="n">TemporalNodeSet</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Implementation of ABC.TemporalNodeSet using class combination.&quot;&quot;&quot;</span>
-<div class="viewcode-block" id="TemporalNodeSetB.__init__"><a class="viewcode-back" href="../../../generated/stream_graph.TemporalNodeSetB.html#stream_graph.TemporalNodeSetB.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nodeset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">timeset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">discrete</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Initialize a Temporal Node Set.</span>
+    <span class="sd">&quot;&quot;&quot;Implementation of ABC.TemporalNodeSet using class combination.</span>
 
-<span class="sd">        All nodes defined by a nodeset, exist in all the time domain defined by timeset.</span>
+<span class="sd">    All nodes defined by a nodeset, exist in all the time domain defined by timeset.</span>
 
-<span class="sd">        Parameters:</span>
-<span class="sd">        -----------</span>
-<span class="sd">        nodeset: ABC.NodeSet</span>
+<span class="sd">    Parameters:</span>
+<span class="sd">    -----------</span>
+<span class="sd">    nodeset: ABC.NodeSet</span>
 
-<span class="sd">        timeset: ABC.TimeSet</span>
+<span class="sd">    timeset: ABC.TimeSet</span>
 
-<span class="sd">        discrete: bool or None</span>
+<span class="sd">    discrete: bool or None</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nodeset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">timeset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">discrete</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="n">is_none</span> <span class="o">=</span> <span class="p">[</span><span class="n">a</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="p">[</span><span class="n">timeset</span><span class="p">,</span> <span class="n">nodeset</span><span class="p">]]</span>
         <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">is_none</span><span class="p">):</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">nodeset</span><span class="p">,</span> <span class="n">ABC</span><span class="o">.</span><span class="n">NodeSet</span><span class="p">):</span>
@@ -225,7 +216,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">timeset_</span> <span class="o">=</span> <span class="n">TimeSetDF</span><span class="p">(</span><span class="n">timeset</span><span class="p">,</span> <span class="n">discrete</span><span class="o">=</span><span class="n">discrete</span><span class="p">)</span>
 
         <span class="k">elif</span> <span class="nb">any</span><span class="p">(</span><span class="n">is_none</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;All arguments should have values or be None&#39;</span><span class="p">)</span></div>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;All arguments should have values or be None&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -435,8 +426,8 @@
                         <span class="k">if</span> <span class="nb">bool</span><span class="p">(</span><span class="n">ns_in</span><span class="p">):</span>
                             <span class="n">ts_diff</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">timeset_</span> <span class="o">-</span> <span class="n">tns</span><span class="o">.</span><span class="n">timeset_</span>
                             <span class="k">if</span> <span class="nb">bool</span><span class="p">(</span><span class="n">ts_diff</span><span class="p">):</span>
-                                <span class="n">tnsa_</span> <span class="o">=</span> <span class="n">TemporalNodeSetB</span><span class="p">(</span><span class="n">nodeset</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">nodeset_</span> <span class="o">-</span> <span class="n">tns</span><span class="o">.</span><span class="n">nodeset_</span><span class="p">,</span> <span class="n">timeset</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">timeset_</span><span class="p">,</span> <span class="n">discrete</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">discrete</span><span class="p">)</span>
-                                <span class="n">tnsb_</span> <span class="o">=</span> <span class="n">TemporalNodeSetB</span><span class="p">(</span><span class="n">nodeset</span><span class="o">=</span><span class="n">ns_in</span><span class="p">,</span> <span class="n">timeset</span><span class="o">=</span><span class="n">ts_diff</span><span class="p">,</span> <span class="n">discrete</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">discrete</span><span class="p">)</span>
+                                <span class="n">tnsa_</span> <span class="o">=</span> <span class="n">TemporalNodeSetB</span><span class="p">(</span><span class="n">nodeset</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">nodeset_</span> <span class="o">-</span> <span class="n">tns</span><span class="o">.</span><span class="n">nodeset_</span><span class="p">,</span> <span class="n">timeset</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">timeset_</span><span class="p">)</span>
+                                <span class="n">tnsb_</span> <span class="o">=</span> <span class="n">TemporalNodeSetB</span><span class="p">(</span><span class="n">nodeset</span><span class="o">=</span><span class="n">ns_in</span><span class="p">,</span> <span class="n">timeset</span><span class="o">=</span><span class="n">ts_diff</span><span class="p">)</span>
                                 <span class="n">iter_</span> <span class="o">=</span> <span class="n">chain</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">tnsa_</span><span class="p">),</span> <span class="nb">iter</span><span class="p">(</span><span class="n">tnsb_</span><span class="p">))</span>
                                 <span class="n">nsa</span> <span class="o">=</span> <span class="n">TemporalNodeSetDF</span><span class="p">(</span><span class="n">iter_</span><span class="p">,</span> <span class="n">disjoint_intervals</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">discrete</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">discrete</span><span class="p">)</span>
                                 <span class="k">return</span> <span class="n">nsa</span>

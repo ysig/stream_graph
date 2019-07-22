@@ -89,19 +89,11 @@
             
             
               <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../introduction/about.html">General Information</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../introduction/installation.html">Dependencies</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../introduction/installation.html#installing-dependencies">Installing Dependencies</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../introduction/installation.html#installing-the-master-version">Installing the master-version</a></li>
-</ul>
-<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../introduction/installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../package_walkthrough/index.html">Package Walkthrough</a></li>
-</ul>
-<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../auto_examples/index.html">Getting Started</a></li>
-</ul>
-<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../introduction/about.html">General Information</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../api.html">ABC Reference</a></li>
@@ -187,23 +179,22 @@
 <span class="kn">from</span> <span class="nn">six</span> <span class="k">import</span> <span class="n">iteritems</span>
 
 <div class="viewcode-block" id="LinkSetDF"><a class="viewcode-back" href="../../../generated/stream_graph.LinkSetDF.html#stream_graph.LinkSetDF">[docs]</a><span class="k">class</span> <span class="nc">LinkSetDF</span><span class="p">(</span><span class="n">ABC</span><span class="o">.</span><span class="n">LinkSet</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;DataFrame implementation of the ABC.LinkSet&quot;&quot;&quot;</span>
-<div class="viewcode-block" id="LinkSetDF.__init__"><a class="viewcode-back" href="../../../generated/stream_graph.LinkSetDF.html#stream_graph.LinkSetDF.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">no_duplicates</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">sort_by</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">weighted</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Initialize a LinkSet.</span>
+    <span class="sd">&quot;&quot;&quot;DataFrame implementation of the ABC.LinkSet</span>
 
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        df: pandas.DataFrame or Iterable, default=None</span>
-<span class="sd">            If a DataFrame it should contain two columns for u and v.</span>
-<span class="sd">            If an Iterable it should produce :code:`(u, v)` tuples of NodeId (int or str).</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    df: pandas.DataFrame or Iterable, default=None</span>
+<span class="sd">        If a DataFrame it should contain two columns for u and v.</span>
+<span class="sd">        If an Iterable it should produce :code:`(u, v)` tuples of NodeId (int or str).</span>
 
-<span class="sd">        no_duplicates: Bool, default=False</span>
-<span class="sd">            Defines if the input could contain duplicate tuples.</span>
+<span class="sd">    no_duplicates: Bool, default=False</span>
+<span class="sd">        Defines if the input could contain duplicate tuples.</span>
 
-<span class="sd">        sort_by: A non-empty subset of [&#39;u&#39;, &#39;v&#39;], default=[&#39;u&#39;, &#39;v&#39;]</span>
-<span class="sd">            The order of the DataFrame elements by which they will be produced when iterated.</span>
+<span class="sd">    sort_by: A non-empty subset of [&#39;u&#39;, &#39;v&#39;], default=[&#39;u&#39;, &#39;v&#39;]</span>
+<span class="sd">        The order of the DataFrame elements by which they will be produced when iterated.</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">no_duplicates</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">sort_by</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">weighted</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="c1"># Add a check for dataframe style</span>
         <span class="k">if</span> <span class="n">df</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">not_empty</span> <span class="o">=</span> <span class="kc">False</span>
@@ -249,7 +240,7 @@
             <span class="k">if</span> <span class="ow">not</span> <span class="n">no_duplicates</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">merge_</span><span class="o">.</span><span class="n">reindex_</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">weighted_</span> <span class="o">=</span> <span class="n">weighted</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">weighted_</span> <span class="o">=</span> <span class="n">weighted</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">to_unweighted</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>

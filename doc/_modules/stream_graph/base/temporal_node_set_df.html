@@ -89,19 +89,11 @@
             
             
               <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../introduction/about.html">General Information</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../introduction/installation.html">Dependencies</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../introduction/installation.html#installing-dependencies">Installing Dependencies</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../introduction/installation.html#installing-the-master-version">Installing the master-version</a></li>
-</ul>
-<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../introduction/installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../package_walkthrough/index.html">Package Walkthrough</a></li>
-</ul>
-<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../auto_examples/index.html">Getting Started</a></li>
-</ul>
-<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../introduction/about.html">General Information</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../api.html">ABC Reference</a></li>
@@ -197,23 +189,22 @@
 
 
 <div class="viewcode-block" id="TemporalNodeSetDF"><a class="viewcode-back" href="../../../generated/stream_graph.TemporalNodeSetDF.html#stream_graph.TemporalNodeSetDF">[docs]</a><span class="k">class</span> <span class="nc">TemporalNodeSetDF</span><span class="p">(</span><span class="n">ABC</span><span class="o">.</span><span class="n">TemporalNodeSet</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;DataFrame implementation of ABC.TemporalNodeSet&quot;&quot;&quot;</span>
-<div class="viewcode-block" id="TemporalNodeSetDF.__init__"><a class="viewcode-back" href="../../../generated/stream_graph.TemporalNodeSetDF.html#stream_graph.TemporalNodeSetDF.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">disjoint_intervals</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sort_by</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">discrete</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">default_closed</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Initialize a Temporal Node Set.</span>
+    <span class="sd">&quot;&quot;&quot;DataFrame implementation of ABC.TemporalNodeSet</span>
 
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        df: pandas.DataFrame or Iterable, default=None</span>
-<span class="sd">            If a DataFrame it should contain four columns for u and ts, tf.</span>
-<span class="sd">            If an Iterable it should produce :code:`(u, ts, tf)` tuples of one NodeId (int or str) and two timestamps (Real) with :code:`ts &lt; tf`.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    df: pandas.DataFrame or Iterable, default=None</span>
+<span class="sd">        If a DataFrame it should contain four columns for u and ts, tf.</span>
+<span class="sd">        If an Iterable it should produce :code:`(u, ts, tf)` tuples of one NodeId (int or str) and two timestamps (Real) with :code:`ts &lt; tf`.</span>
 
-<span class="sd">        disjoint_intervals: Bool, default=False</span>
-<span class="sd">            Defines if for each node all intervals are disjoint.</span>
+<span class="sd">    disjoint_intervals: Bool, default=False</span>
+<span class="sd">        Defines if for each node all intervals are disjoint.</span>
 
-<span class="sd">        sort_by: Any non-empty subset of [&#39;u&#39;, &#39;ts&#39;, &#39;tf&#39;].</span>
-<span class="sd">            The order of the DataFrame elements by which they will be produced when iterated.</span>
+<span class="sd">    sort_by: Any non-empty subset of [&#39;u&#39;, &#39;ts&#39;, &#39;tf&#39;].</span>
+<span class="sd">        The order of the DataFrame elements by which they will be produced when iterated.</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">disjoint_intervals</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sort_by</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">discrete</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">default_closed</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">df</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="p">(</span><span class="n">TemporalNodeSetDF</span><span class="p">)):</span>
                 <span class="k">if</span> <span class="nb">bool</span><span class="p">(</span><span class="n">df</span><span class="p">):</span>
@@ -228,7 +219,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">sort_by</span> <span class="o">=</span> <span class="n">sort_by</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">df_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">discrete_</span> <span class="o">=</span> <span class="n">load_interval_df</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">disjoint_intervals</span><span class="o">=</span><span class="n">disjoint_intervals</span><span class="p">,</span> <span class="n">default_closed</span><span class="o">=</span><span class="n">default_closed</span><span class="p">,</span> <span class="n">discrete</span><span class="o">=</span><span class="n">discrete</span><span class="p">,</span> <span class="n">keys</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;u&#39;</span><span class="p">])</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">discrete_</span> <span class="o">=</span> <span class="p">(</span><span class="kc">True</span> <span class="k">if</span> <span class="n">discrete</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">discrete</span><span class="p">)</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">discrete_</span> <span class="o">=</span> <span class="p">(</span><span class="kc">True</span> <span class="k">if</span> <span class="n">discrete</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">discrete</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">discrete</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>

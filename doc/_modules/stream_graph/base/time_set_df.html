@@ -89,19 +89,11 @@
             
             
               <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../introduction/about.html">General Information</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../introduction/installation.html">Dependencies</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../introduction/installation.html#installing-dependencies">Installing Dependencies</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../introduction/installation.html#installing-the-master-version">Installing the master-version</a></li>
-</ul>
-<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../introduction/installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../package_walkthrough/index.html">Package Walkthrough</a></li>
-</ul>
-<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../auto_examples/index.html">Getting Started</a></li>
-</ul>
-<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../introduction/about.html">General Information</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../api.html">ABC Reference</a></li>
@@ -184,24 +176,23 @@
 
 
 <div class="viewcode-block" id="TimeSetDF"><a class="viewcode-back" href="../../../generated/stream_graph.TimeSetDF.html#stream_graph.TimeSetDF">[docs]</a><span class="k">class</span> <span class="nc">TimeSetDF</span><span class="p">(</span><span class="n">ABC</span><span class="o">.</span><span class="n">TimeSet</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A DataFrame implementation of a TimeSet.&quot;&quot;&quot;</span>
-<div class="viewcode-block" id="TimeSetDF.__init__"><a class="viewcode-back" href="../../../generated/stream_graph.TimeSetDF.html#stream_graph.TimeSetDF.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">disjoint_intervals</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">discrete</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">default_closed</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Initialize a TimeSetDF.</span>
+    <span class="sd">&quot;&quot;&quot;A DataFrame implementation of a TimeSet.</span>
 
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        df: pandas.DataFrame or Iterable, default=None</span>
-<span class="sd">            If a DataFrame it should contain two columns `ts`, `tf` and optionally a column `itype` of elements &#39;right&#39;, &#39;left&#39;, &#39;both&#39;, &#39;neither&#39; that indicate.</span>
-<span class="sd">            If an Iterable it should produce :code:`(ts, tf)` tuples of two timestamps (Real) with :code:`ts &lt; tf` and optionally a third element &#39;right&#39;, &#39;left&#39;, &#39;both&#39;, &#39;neither&#39; that indicates the interval-type.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    df: pandas.DataFrame or Iterable, default=None</span>
+<span class="sd">        If a DataFrame it should contain two columns `ts`, `tf` and optionally a column `itype` of elements &#39;right&#39;, &#39;left&#39;, &#39;both&#39;, &#39;neither&#39; that indicate.</span>
+<span class="sd">        If an Iterable it should produce :code:`(ts, tf)` tuples of two timestamps (Real) with :code:`ts &lt; tf` and optionally a third element &#39;right&#39;, &#39;left&#39;, &#39;both&#39;, &#39;neither&#39; that indicates the interval-type.</span>
 
-<span class="sd">        disjoint_intervals: Bool, default=False</span>
-<span class="sd">            Defines if all intervals are disjoint.</span>
+<span class="sd">    disjoint_intervals: Bool, default=False</span>
+<span class="sd">        Defines if all intervals are disjoint.</span>
 
-<span class="sd">        discrete : Bool or None, default=None</span>
+<span class="sd">    discrete : Bool or None, default=None</span>
 
-<span class="sd">        default_closed : &#39;right&#39;, &#39;left&#39;, &#39;both&#39;, &#39;neither&#39;, default=&#39;left&#39;</span>
+<span class="sd">    default_closed : &#39;right&#39;, &#39;left&#39;, &#39;both&#39;, &#39;neither&#39;, default=&#39;left&#39;</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">disjoint_intervals</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">discrete</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">default_closed</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">):</span>
         <span class="c1"># Add a check for dataframe style</span>
         <span class="k">if</span> <span class="n">df</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">ABC</span><span class="o">.</span><span class="n">TimeSet</span><span class="p">):</span>
@@ -210,10 +201,10 @@
                 <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">ABC</span><span class="o">.</span><span class="n">ITimeSet</span><span class="p">):</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">discrete</span> <span class="o">=</span> <span class="n">discrete</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">df_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">discrete_</span> <span class="o">=</span> <span class="n">load_interval_df</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">discrete</span><span class="o">=</span><span class="n">discrete</span><span class="p">,</span> <span class="n">default_closed</span><span class="o">=</span><span class="n">default_closed</span><span class="p">,</span> <span class="n">disjoint_intervals</span><span class="o">=</span><span class="n">disjoint_intervals</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">discrete</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_</span><span class="p">[</span><span class="s1">&#39;ts&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">kind</span> <span class="o">!=</span> <span class="s1">&#39;i&#39;</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_</span><span class="p">[</span><span class="s1">&#39;tf&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">kind</span> <span class="o">!=</span> <span class="s1">&#39;i&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_</span><span class="o">.</span><span class="n">empty</span> <span class="ow">and</span> <span class="n">discrete</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_</span><span class="p">[</span><span class="s1">&#39;ts&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">kind</span> <span class="o">!=</span> <span class="s1">&#39;i&#39;</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_</span><span class="p">[</span><span class="s1">&#39;tf&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">kind</span> <span class="o">!=</span> <span class="s1">&#39;i&#39;</span><span class="p">:</span>
                 <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;SemanticWarning: For a discrete instance time-instants should be an integers&#39;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">discrete_</span> <span class="o">=</span> <span class="p">(</span><span class="kc">True</span> <span class="k">if</span> <span class="n">discrete</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">discrete</span><span class="p">)</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">discrete_</span> <span class="o">=</span> <span class="p">(</span><span class="kc">True</span> <span class="k">if</span> <span class="n">discrete</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">discrete</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">discrete</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>

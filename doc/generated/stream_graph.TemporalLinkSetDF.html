@@ -91,19 +91,11 @@
             
             
               <ul>
-<li class="toctree-l1"><a class="reference internal" href="../introduction/about.html">General Information</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../introduction/installation.html">Dependencies</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../introduction/installation.html#installing-dependencies">Installing Dependencies</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../introduction/installation.html#installing-the-master-version">Installing the master-version</a></li>
-</ul>
-<ul>
+<li class="toctree-l1"><a class="reference internal" href="../introduction/installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../package_walkthrough/index.html">Package Walkthrough</a></li>
-</ul>
-<ul>
 <li class="toctree-l1"><a class="reference internal" href="../auto_examples/index.html">Getting Started</a></li>
-</ul>
-<ul>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../introduction/about.html">General Information</a></li>
 </ul>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../api.html">ABC Reference</a></li>
@@ -198,114 +190,8 @@
 <h1><code class="xref py py-mod docutils literal notranslate"><span class="pre">stream_graph</span></code>.TemporalLinkSetDF<a class="headerlink" href="#stream-graph-temporallinksetdf" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="stream_graph.TemporalLinkSetDF">
-<em class="property">class </em><code class="sig-prename descclassname">stream_graph.</code><code class="sig-name descname">TemporalLinkSetDF</code><span class="sig-paren">(</span><em class="sig-param">df=None</em>, <em class="sig-param">disjoint_intervals=True</em>, <em class="sig-param">sort_by=None</em>, <em class="sig-param">discrete=None</em>, <em class="sig-param">weighted=False</em>, <em class="sig-param">default_closed=None</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/6acc789/stream_graph/base/temporal_link_set_df.py#L37"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/base/temporal_link_set_df.html#TemporalLinkSetDF"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.TemporalLinkSetDF" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">stream_graph.</code><code class="sig-name descname">TemporalLinkSetDF</code><span class="sig-paren">(</span><em class="sig-param">df=None</em>, <em class="sig-param">disjoint_intervals=True</em>, <em class="sig-param">sort_by=None</em>, <em class="sig-param">discrete=None</em>, <em class="sig-param">weighted=False</em>, <em class="sig-param">default_closed=None</em>, <em class="sig-param">merge_function=None</em>, <em class="sig-param">operation_functions=None</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/61c86b3/stream_graph/base/temporal_link_set_df.py#L37"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/base/temporal_link_set_df.html#TemporalLinkSetDF"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.TemporalLinkSetDF" title="Permalink to this definition">¶</a></dt>
 <dd><p>DataFrame implementation of ABC.TemporalLinkSet</p>
-<dl class="field-list simple">
-<dt class="field-odd">Attributes</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><a class="reference internal" href="#stream_graph.TemporalLinkSetDF.as_stream_graph_basic" title="stream_graph.TemporalLinkSetDF.as_stream_graph_basic"><code class="xref py py-obj docutils literal notranslate"><span class="pre">as_stream_graph_basic</span></code></a></dt><dd><p>Generate the basic stream graph containing this TemporalLinkSet.</p>
-</dd>
-<dt><a class="reference internal" href="#stream_graph.TemporalLinkSetDF.as_stream_graph_minimal" title="stream_graph.TemporalLinkSetDF.as_stream_graph_minimal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">as_stream_graph_minimal</span></code></a></dt><dd><p>Generate the minimal stream graph containing this TemporalNodeSet.</p>
-</dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">basic_temporal_nodeset</span></code></dt><dd><p>Return the basic temporal_nodeset that contains the temporal-linkstream.</p>
-</dd>
-<dt><strong>df</strong></dt><dd></dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">discrete</span></code></dt><dd><p>Designate if the TemporalLinkSet is on discrete Time.</p>
-</dd>
-<dt><a class="reference internal" href="#stream_graph.TemporalLinkSetDF.instantaneous" title="stream_graph.TemporalLinkSetDF.instantaneous"><code class="xref py py-obj docutils literal notranslate"><span class="pre">instantaneous</span></code></a></dt><dd><p>Defines if the Time Set is instantaneous.</p>
-</dd>
-<dt><strong>is_sorted_</strong></dt><dd></dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">linkset</span></code></dt><dd><p>Return the linkset that can be derived from the TemporalLinkSet.</p>
-</dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">m</span></code></dt><dd><p>Returns number of links of the TemporalLinkSet.</p>
-</dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">minimal_temporal_nodeset</span></code></dt><dd><p>Return the minimal temporal_nodeset that can be derived from the temporal-linkstream.</p>
-</dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">nodeset</span></code></dt><dd><p>Return the nodeset that can be derived from the TemporalLinkSet.</p>
-</dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">size</span></code></dt><dd><p>Returns the size of the TemporalLinkSet.</p>
-</dd>
-<dt><strong>sort_</strong></dt><dd></dd>
-<dt><strong>sort_by</strong></dt><dd></dd>
-<dt><strong>sorted_df</strong></dt><dd></dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">timeset</span></code></dt><dd><p>Return the timeset that can be derived from the TemporalLinkSet.</p>
-</dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">weighted</span></code></dt><dd><p>Designate if the TemporalLinkSet is weighted.</p>
-</dd>
-<dt><a class="reference internal" href="#stream_graph.TemporalLinkSetDF.weighted_size" title="stream_graph.TemporalLinkSetDF.weighted_size"><code class="xref py py-obj docutils literal notranslate"><span class="pre">weighted_size</span></code></a></dt><dd><p>Returns the size of the TemporalLinkSet.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<p class="rubric">Methods</p>
-<table class="longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#stream_graph.TemporalLinkSetDF.copy" title="stream_graph.TemporalLinkSetDF.copy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code></a>(self[, deep])</p></td>
-<td><p>Returns a deep or shallow copy of the current TemporalLinkSet.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#stream_graph.TemporalLinkSetDF.degree_at" title="stream_graph.TemporalLinkSetDF.degree_at"><code class="xref py py-obj docutils literal notranslate"><span class="pre">degree_at</span></code></a>(self[, u, t, direction, weights])</p></td>
-<td><p>Return the degree of a node at a certain time.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">degree_of</span></code>(self[, u, direction, weights])</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#stream_graph.TemporalLinkSetDF.discretize" title="stream_graph.TemporalLinkSetDF.discretize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">discretize</span></code></a>(self[, bins, bin_size])</p></td>
-<td><p>Returns a discrete version of the current TemporalLinkSet.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">duration_of</span></code>(self[, l, weights, direction])</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#stream_graph.TemporalLinkSetDF.filter" title="stream_graph.TemporalLinkSetDF.filter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">filter</span></code></a>(self, fun)</p></td>
-<td><p>Filter the link stream.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_maximal_cliques</span></code>(self[, direction])</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">induced_substream</span></code>(self, tns)</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">issuperset</span></code>(self, tls)</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">links_at</span></code>(self[, t])</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#stream_graph.TemporalLinkSetDF.m_at" title="stream_graph.TemporalLinkSetDF.m_at"><code class="xref py py-obj docutils literal notranslate"><span class="pre">m_at</span></code></a>(self[, t, weights])</p></td>
-<td><p>Returns the number of links appearing at a certain time.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">neighbors_at</span></code>(self[, u, t, direction])</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">neighbors_of</span></code>(self[, u, direction])</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">substream</span></code>(self, nsu, nsv, ts)</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">temporal_neighborhood</span></code>(self, tns[, direction])</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">times_of</span></code>(self[, l, direction])</p></td>
-<td><p></p></td>
-</tr>
-</tbody>
-</table>
-<table class="docutils align-default">
-<colgroup>
-<col style="width: 52%" />
-<col style="width: 48%" />
-</colgroup>
-<tbody>
-<tr class="row-odd"><td><p><strong>sort_df</strong></p></td>
-<td></td>
-</tr>
-</tbody>
-</table>
-<p>Initialize a Temporal Link Set.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
@@ -315,6 +201,14 @@ If an Iterable it should produce <code class="code docutils literal notranslate"
 <dt><strong>disjoint_intervals: Bool, default=False</strong></dt><dd><p>Defines if for each link all intervals are disjoint.</p>
 </dd>
 <dt><strong>sort_by: Any non-empty subset of [‘u’, ‘v’, ‘ts’, ‘tf’].</strong></dt><dd><p>The order of the DataFrame elements by which they will be produced when iterated.</p>
+</dd>
+<dt><strong>discrete</strong><span class="classifier">bool, or default=None.</span></dt><dd></dd>
+<dt><strong>weighted</strong><span class="classifier">bool, or default=None.</span></dt><dd></dd>
+<dt><strong>default_closed</strong><span class="classifier">{‘left’, ‘right’, ‘both’, ‘neither’}, default=None</span></dt><dd></dd>
+<dt><strong>merge_function</strong><span class="classifier">A function applied to a list of arguments.</span></dt><dd></dd>
+<dt><strong>operation_functions: dict {str: fun}</strong></dt><dd><p>A dictionary of names of operations, i.e. <code class="code docutils literal notranslate"><span class="pre">union/u</span></code>, <code class="code docutils literal notranslate"><span class="pre">intersection/i</span></code>, <code class="code docutils literal notranslate"><span class="pre">difference/d</span></code>, :code:<a href="#id1"><span class="problematic" id="id2">`</span></a>issuperset/s’.
+All function should be applicable between two weights.
+Default: +, min, hinge_loss (ignoring an interval on zero), operator.ge (ignoring an interval on zero)</p>
 </dd>
 </dl>
 </dd>
@@ -424,7 +318,7 @@ If an Iterable it should produce <code class="code docutils literal notranslate"
 </table>
 <dl class="attribute">
 <dt id="stream_graph.TemporalLinkSetDF.__class__">
-<code class="sig-name descname">__class__</code><a class="reference external" href="https://github.com/ysig/stream_graph/blob/6acc789/stream_graph/../../../../usr/local/lib/python3.6/abc.py#L109"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.TemporalLinkSetDF.__class__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__class__</code><a class="reference external" href="https://github.com/ysig/stream_graph/blob/61c86b3/stream_graph/../../../../usr/local/lib/python3.6/abc.py#L109"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.TemporalLinkSetDF.__class__" title="Permalink to this definition">¶</a></dt>
 <dd><p>alias of <a class="reference external" href="https://docs.python.org/3/library/abc.html#abc.ABCMeta" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABCMeta</span></code></a></p>
 </dd></dl>
 
@@ -474,25 +368,6 @@ If an Iterable it should produce <code class="code docutils literal notranslate"
 <dt id="stream_graph.TemporalLinkSetDF.__hash__">
 <code class="sig-name descname">__hash__</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.TemporalLinkSetDF.__hash__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return hash(self).</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="stream_graph.TemporalLinkSetDF.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">df=None</em>, <em class="sig-param">disjoint_intervals=True</em>, <em class="sig-param">sort_by=None</em>, <em class="sig-param">discrete=None</em>, <em class="sig-param">weighted=False</em>, <em class="sig-param">default_closed=None</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/6acc789/stream_graph/base/temporal_link_set_df.py#L39"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/base/temporal_link_set_df.html#TemporalLinkSetDF.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.TemporalLinkSetDF.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initialize a Temporal Link Set.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>df: pandas.DataFrame or Iterable, default=None</strong></dt><dd><p>If a DataFrame it should contain four columns for u and v and ts, tf.
-If an Iterable it should produce <code class="code docutils literal notranslate"><span class="pre">(u,</span> <span class="pre">v,</span> <span class="pre">ts,</span> <span class="pre">tf)</span></code> tuples of two NodeId (int or str) and two timestamps (Real) with <code class="code docutils literal notranslate"><span class="pre">ts</span> <span class="pre">&lt;</span> <span class="pre">tf</span></code>.</p>
-</dd>
-<dt><strong>disjoint_intervals: Bool, default=False</strong></dt><dd><p>Defines if for each link all intervals are disjoint.</p>
-</dd>
-<dt><strong>sort_by: Any non-empty subset of [‘u’, ‘v’, ‘ts’, ‘tf’].</strong></dt><dd><p>The order of the DataFrame elements by which they will be produced when iterated.</p>
-</dd>
-</dl>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="method">
@@ -613,7 +488,7 @@ overrides the normal algorithm (and the outcome is cached).</p>
 
 <dl class="method">
 <dt id="stream_graph.TemporalLinkSetDF.copy">
-<code class="sig-name descname">copy</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">deep=True</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/6acc789/stream_graph/ABC/temporal_link_set.py#L554"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.TemporalLinkSetDF.copy" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">copy</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">deep=True</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/61c86b3/stream_graph/ABC/temporal_link_set.py#L554"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.TemporalLinkSetDF.copy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a deep or shallow copy of the current TemporalLinkSet.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -632,7 +507,7 @@ overrides the normal algorithm (and the outcome is cached).</p>
 
 <dl class="method">
 <dt id="stream_graph.TemporalLinkSetDF.degree_at">
-<code class="sig-name descname">degree_at</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">u=None</em>, <em class="sig-param">t=None</em>, <em class="sig-param">direction='out'</em>, <em class="sig-param">weights=False</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/6acc789/stream_graph/ABC/temporal_link_set.py#L271"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.TemporalLinkSetDF.degree_at" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">degree_at</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">u=None</em>, <em class="sig-param">t=None</em>, <em class="sig-param">direction='out'</em>, <em class="sig-param">weights=False</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/61c86b3/stream_graph/ABC/temporal_link_set.py#L271"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.TemporalLinkSetDF.degree_at" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the degree of a node at a certain time.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -658,7 +533,7 @@ If u and t are None return the degree for each node at its time instant.</p>
 
 <dl class="method">
 <dt id="stream_graph.TemporalLinkSetDF.discretize">
-<code class="sig-name descname">discretize</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">bins=None</em>, <em class="sig-param">bin_size=None</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/6acc789/stream_graph/ABC/temporal_link_set.py#L702"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.TemporalLinkSetDF.discretize" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">discretize</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">bins=None</em>, <em class="sig-param">bin_size=None</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/61c86b3/stream_graph/ABC/temporal_link_set.py#L702"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.TemporalLinkSetDF.discretize" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a discrete version of the current TemporalLinkSet.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -684,7 +559,7 @@ Else declare the size of each bin.</p>
 
 <dl class="method">
 <dt id="stream_graph.TemporalLinkSetDF.filter">
-<code class="sig-name descname">filter</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">fun</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/6acc789/stream_graph/ABC/temporal_link_set.py#L391"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.TemporalLinkSetDF.filter" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">filter</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">fun</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/61c86b3/stream_graph/ABC/temporal_link_set.py#L391"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.TemporalLinkSetDF.filter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Filter the link stream.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -710,7 +585,7 @@ Else declare the size of each bin.</p>
 
 <dl class="method">
 <dt id="stream_graph.TemporalLinkSetDF.m_at">
-<code class="sig-name descname">m_at</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">t=None</em>, <em class="sig-param">weights=False</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/6acc789/stream_graph/ABC/temporal_link_set.py#L572"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.TemporalLinkSetDF.m_at" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">m_at</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">t=None</em>, <em class="sig-param">weights=False</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/61c86b3/stream_graph/ABC/temporal_link_set.py#L572"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.TemporalLinkSetDF.m_at" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the number of links appearing at a certain time.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -751,9 +626,9 @@ Else declare the size of each bin.</p>
 
 <div class="section" id="examples-using-stream-graph-temporallinksetdf">
 <h2>Examples using <code class="docutils literal notranslate"><span class="pre">stream_graph.TemporalLinkSetDF</span></code><a class="headerlink" href="#examples-using-stream-graph-temporallinksetdf" title="Permalink to this headline">¶</a></h2>
-<div class="sphx-glr-thumbcontainer" tooltip="An example plot of a stream_graph.StreamGraph made from a combination of stream_graph.NodeSetS,..."><div class="figure align-default" id="id1">
+<div class="sphx-glr-thumbcontainer" tooltip="An example plot of a stream_graph.StreamGraph made from a combination of stream_graph.NodeSetS,..."><div class="figure align-default" id="id3">
 <img alt="../_images/sphx_glr_plot_intro_thumb.png" src="../_images/sphx_glr_plot_intro_thumb.png" />
-<p class="caption"><span class="caption-text"><a class="reference internal" href="../auto_examples/plot_intro.html#sphx-glr-auto-examples-plot-intro-py"><span class="std std-ref">Initialize and print a simple stream-graph</span></a></span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-text"><a class="reference internal" href="../auto_examples/plot_intro.html#sphx-glr-auto-examples-plot-intro-py"><span class="std std-ref">Initialize and print a simple stream-graph</span></a></span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
 </div>
 </div><div class="clearer"></div></div>
 </div>

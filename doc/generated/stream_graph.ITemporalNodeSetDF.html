@@ -91,19 +91,11 @@
             
             
               <ul>
-<li class="toctree-l1"><a class="reference internal" href="../introduction/about.html">General Information</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../introduction/installation.html">Dependencies</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../introduction/installation.html#installing-dependencies">Installing Dependencies</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../introduction/installation.html#installing-the-master-version">Installing the master-version</a></li>
-</ul>
-<ul>
+<li class="toctree-l1"><a class="reference internal" href="../introduction/installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../package_walkthrough/index.html">Package Walkthrough</a></li>
-</ul>
-<ul>
 <li class="toctree-l1"><a class="reference internal" href="../auto_examples/index.html">Getting Started</a></li>
-</ul>
-<ul>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../introduction/about.html">General Information</a></li>
 </ul>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../api.html">ABC Reference</a></li>
@@ -195,85 +187,8 @@
 <h1><code class="xref py py-mod docutils literal notranslate"><span class="pre">stream_graph</span></code>.ITemporalNodeSetDF<a class="headerlink" href="#stream-graph-itemporalnodesetdf" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="stream_graph.ITemporalNodeSetDF">
-<em class="property">class </em><code class="sig-prename descclassname">stream_graph.</code><code class="sig-name descname">ITemporalNodeSetDF</code><span class="sig-paren">(</span><em class="sig-param">df=None, no_duplicates=True, sort_by=['u', 'ts'], discrete=None</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/6acc789/stream_graph/base/itemporal_node_set_df.py#L22"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/base/itemporal_node_set_df.html#ITemporalNodeSetDF"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.ITemporalNodeSetDF" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">stream_graph.</code><code class="sig-name descname">ITemporalNodeSetDF</code><span class="sig-paren">(</span><em class="sig-param">df=None, no_duplicates=True, sort_by=['u', 'ts'], discrete=None</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/61c86b3/stream_graph/base/itemporal_node_set_df.py#L22"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/base/itemporal_node_set_df.html#ITemporalNodeSetDF"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.ITemporalNodeSetDF" title="Permalink to this definition">¶</a></dt>
 <dd><p>DataFrame implementation of ABC.ITemporalNodeSet</p>
-<dl class="field-list simple">
-<dt class="field-odd">Attributes</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>df</strong></dt><dd></dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">discrete</span></code></dt><dd><p>Designate if the TemporalNodeSet is on discrete Time.</p>
-</dd>
-<dt><a class="reference internal" href="#stream_graph.ITemporalNodeSetDF.instantaneous" title="stream_graph.ITemporalNodeSetDF.instantaneous"><code class="xref py py-obj docutils literal notranslate"><span class="pre">instantaneous</span></code></a></dt><dd><p>Defines if the Time Set is instantaneous.</p>
-</dd>
-<dt><strong>is_merged_</strong></dt><dd></dd>
-<dt><strong>is_sorted_</strong></dt><dd></dd>
-<dt><a class="reference internal" href="#stream_graph.ITemporalNodeSetDF.n" title="stream_graph.ITemporalNodeSetDF.n"><code class="xref py py-obj docutils literal notranslate"><span class="pre">n</span></code></a></dt><dd><p>Returns number of nodes of the TemporalNodeSet.</p>
-</dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">nodeset</span></code></dt><dd><p>Return the nodeset that can be derived from this TemporalNodeSet.</p>
-</dd>
-<dt><strong>number_of_instants</strong></dt><dd></dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">size</span></code></dt><dd><p>Returns the size of the TemporalNodeSet.</p>
-</dd>
-<dt><strong>sort_</strong></dt><dd></dd>
-<dt><strong>sort_by</strong></dt><dd></dd>
-<dt><strong>sorted_df</strong></dt><dd></dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">timeset</span></code></dt><dd><p>Return the timeset that can be derived from this TemporalNodeSet.</p>
-</dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">total_common_time</span></code></dt><dd><p>Returns the total time that each node shares with all the other nodes of the TemporalNodeSet.</p>
-</dd>
-<dt><a class="reference internal" href="#stream_graph.ITemporalNodeSetDF.total_time" title="stream_graph.ITemporalNodeSetDF.total_time"><code class="xref py py-obj docutils literal notranslate"><span class="pre">total_time</span></code></a></dt><dd><p>Returns the size of the derived TimeSet.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<p class="rubric">Methods</p>
-<table class="longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
-<tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">common_time</span></code>(self[, u])</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">common_time_pair</span></code>(self[, l])</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#stream_graph.ITemporalNodeSetDF.copy" title="stream_graph.ITemporalNodeSetDF.copy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code></a>(self[, deep])</p></td>
-<td><p>Returns a deep or shallow copy of the current TemporalNodeSet.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#stream_graph.ITemporalNodeSetDF.discretize" title="stream_graph.ITemporalNodeSetDF.discretize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">discretize</span></code></a>(self[, bins, bin_size])</p></td>
-<td><p>Returns a discrete version of the current TemporalNodeSet.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">issuperset</span></code>(self, ns)</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">n_at</span></code>(self[, t])</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">node_duration</span></code>(self[, u])</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">nodes_at</span></code>(self[, t])</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">times_of</span></code>(self[, u])</p></td>
-<td><p></p></td>
-</tr>
-</tbody>
-</table>
-<table class="docutils align-default">
-<colgroup>
-<col style="width: 52%" />
-<col style="width: 48%" />
-</colgroup>
-<tbody>
-<tr class="row-odd"><td><p><strong>sort_df</strong></p></td>
-<td></td>
-</tr>
-</tbody>
-</table>
-<p>Initialize a Temporal Node Set.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
@@ -363,7 +278,7 @@ If an Iterable it should produce <code class="code docutils literal notranslate"
 </table>
 <dl class="attribute">
 <dt id="stream_graph.ITemporalNodeSetDF.__class__">
-<code class="sig-name descname">__class__</code><a class="reference external" href="https://github.com/ysig/stream_graph/blob/6acc789/stream_graph/../../../../usr/local/lib/python3.6/abc.py#L109"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.ITemporalNodeSetDF.__class__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__class__</code><a class="reference external" href="https://github.com/ysig/stream_graph/blob/61c86b3/stream_graph/../../../../usr/local/lib/python3.6/abc.py#L109"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.ITemporalNodeSetDF.__class__" title="Permalink to this definition">¶</a></dt>
 <dd><p>alias of <a class="reference external" href="https://docs.python.org/3/library/abc.html#abc.ABCMeta" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABCMeta</span></code></a></p>
 </dd></dl>
 
@@ -413,25 +328,6 @@ If an Iterable it should produce <code class="code docutils literal notranslate"
 <dt id="stream_graph.ITemporalNodeSetDF.__hash__">
 <code class="sig-name descname">__hash__</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.ITemporalNodeSetDF.__hash__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return hash(self).</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="stream_graph.ITemporalNodeSetDF.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">self, df=None, no_duplicates=True, sort_by=['u', 'ts'], discrete=None</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/6acc789/stream_graph/base/itemporal_node_set_df.py#L24"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/base/itemporal_node_set_df.html#ITemporalNodeSetDF.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.ITemporalNodeSetDF.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initialize a Temporal Node Set.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>df: pandas.DataFrame or Iterable, default=None</strong></dt><dd><p>If a DataFrame it should contain two columns for u and ts.
-If an Iterable it should produce <code class="code docutils literal notranslate"><span class="pre">(u,</span> <span class="pre">ts)</span></code> tuples of one NodeId (int or str) and a timestamp (Real).</p>
-</dd>
-<dt><strong>no_duplicates: Bool, default=True</strong></dt><dd><p>Defines if for each node all intervals are disjoint.</p>
-</dd>
-<dt><strong>sort_by: Any non-empty subset of [‘u’, ‘ts’], default=[‘u’, ‘ts’].</strong></dt><dd><p>The order of the DataFrame elements by which they will be produced when iterated.</p>
-</dd>
-</dl>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="method">
@@ -514,7 +410,7 @@ overrides the normal algorithm (and the outcome is cached).</p>
 
 <dl class="method">
 <dt id="stream_graph.ITemporalNodeSetDF.copy">
-<code class="sig-name descname">copy</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">deep=True</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/6acc789/stream_graph/ABC/temporal_node_set.py#L393"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.ITemporalNodeSetDF.copy" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">copy</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">deep=True</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/61c86b3/stream_graph/ABC/temporal_node_set.py#L393"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.ITemporalNodeSetDF.copy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a deep or shallow copy of the current TemporalNodeSet.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -533,7 +429,7 @@ overrides the normal algorithm (and the outcome is cached).</p>
 
 <dl class="method">
 <dt id="stream_graph.ITemporalNodeSetDF.discretize">
-<code class="sig-name descname">discretize</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">bins=None</em>, <em class="sig-param">bin_size=None</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/6acc789/stream_graph/ABC/temporal_node_set.py#L411"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.ITemporalNodeSetDF.discretize" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">discretize</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">bins=None</em>, <em class="sig-param">bin_size=None</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/61c86b3/stream_graph/ABC/temporal_node_set.py#L411"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.ITemporalNodeSetDF.discretize" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a discrete version of the current TemporalNodeSet.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
