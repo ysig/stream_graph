@@ -385,11 +385,11 @@ class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
     def _degree_of_discrete(self, u, direction):
         if u is None:
             if direction == 'out':
-                iter_ = (u for u, v, ts in self.dfm.itertuples())
+                iter_ = (u for u, v, ts in self.df.itertuples())
             elif direction == 'in':
-                iter_ = (v for u, v, ts in self.dfm.itertuples())
+                iter_ = (v for u, v, ts in self.df.itertuples())
             elif direction == 'both':
-                iter_ = (u for a, b, c in self.dfm.itertuples() for u in [a, b])
+                iter_ = (u for a, b, c in self.df.itertuples() for u in [a, b])
             else:
                 raise UnrecognizedDirection()
             return NodeCollection(Counter(iter_))
@@ -404,6 +404,37 @@ class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
             else:
                 raise UnrecognizedDirection()
             return ITemporalNodeSetDF(df, disjoint_intervals=False, discrete=self.discrete).number_of_interactions
+
+
+    def _degree_of_discrete_weighted(self, u, direction):
+        if u is None:
+            out = Counter()
+            if direction == 'out':
+                for u, v, ts, w in self.df.itertuples(weights=True):
+                    out[u] += w
+            elif direction == 'in':
+                for u, v, ts, w in self.df.itertuples(weights=True):
+                    out[v] += w
+            elif direction == 'both':
+                for u, v, ts, w in self.df.itertuples(weights=True):
+                    out[u] += w
+                    out[v] += w
+            else:
+                raise UnrecognizedDirection()
+            return NodeCollection(Counter(iter_))
+        else:
+            if direction == 'out':
+                df = self.df[self.df.u == u].drop(columns=['u']).rename(columns={'v': 'u'})
+            elif direction == 'in':
+                df = self.df[self.df.v == u].drop(columns=['v'])
+            elif direction == 'both':
+                df = self.df[self.df.u == u].drop(columns=['u']).rename(columns={'v': 'u'})
+                df = df.append(self.df[self.df.v == u].drop(columns=['v']), ignore_index=True)
+            else:
+                raise UnrecognizedDirection()
+            return df.w.sum()
+
+
 
     def _degree_at_unweighted(self, u=None, t=None, direction='out'):
         if not bool(self):
@@ -619,10 +650,12 @@ class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
         if ts is not None:
             if not isinstance(ts, ABC.TimeSet):
                 try:
-                    if isinstance(ts, Iterable) and any(isinstance(t, Iterable) for t in ts):
-                        ts = TimeSetDF(ts)
+                    ts = list(ts)
+                    print(ts)
+                    if any(isinstance(t, Iterable) for t in ts):
+                        ts = TimeSetDF(ts, discrete=self.discrete)
                     else:
-                        ts = ITimeSetS(ts)
+                        ts = ITimeSetS(ts, discrete=self.discrete)
                 except Exception:
                     raise UnrecognizedTimeSet('ts')
 

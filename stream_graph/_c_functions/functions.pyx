@@ -41,15 +41,22 @@ def closeness_c(u, t, df, both, detailed, discrete):
         t = None
     else:
         def iter_(vec):
-            return iter(vec)
+            return iter(vec)                    
 
     if t is 'max':
         def tc(vec, f):
             return max(vec, key=itemgetter(1))[::-1]
         t = None
     else:
-        def tc(vec, f):
-            return TimeCollection(iter_(vec), instantaneous=f, discrete=discrete)
+        if discrete:
+            def tc(vec, f):
+                return TimeCollection(iter_(vec), instantaneous=f, discrete=True)
+        else:
+            def tc(vec, f):
+                if f:
+                    return TimeCollection(continuous_tc(iter_(vec)), instantaneous=True, discrete=False)
+                else:    
+                    return TimeCollection(continuous_tc(iter_(vec)), instantaneous=False, discrete=False)
 
     if u is None:
         if t is None:
@@ -60,3 +67,7 @@ def closeness_c(u, t, df, both, detailed, discrete):
         return tc(closeness(inp, m(u), both), detailed)
     else:
         return closeness_at(inp, m(u), t, both)
+
+def continuous_tc(vec):
+    for t, v in vec:
+        yield ((t, True), v)

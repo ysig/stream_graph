@@ -125,7 +125,8 @@ class DIntervalWDF(pd.DataFrame):
         return self[self.index_at(t)]
 
     def df_at_interval(self, ts, tf):
-        return self[self.index_at_interval(ts, tf)]
+        dfb = self.__class__([(ts, tf, 1)], columns=['ts', 'tf', 'w'])
+        return self._save_or_return(self.intersection(dfb, by_key=False, intersection_function='unweighted'), inplace=False)
 
     def count_at(self, t, weights=False):
         if weights:
@@ -138,8 +139,8 @@ class DIntervalWDF(pd.DataFrame):
         return (self.ts <= t) & (self.tf >= t)
 
     def index_at_interval(self, ts, tf):
-        assert ts <= tf and type(ts) is int and type(tf) is int
-        return (self.ts <= ts) & (self.tf >= tf)
+        assert ts <= tf and type(ts) is int and type(tf) is int      
+        raise NotImplementedError
 
     def _save_or_return(self, df, inplace, on_column=None, disjoint_intervals=True):
         if df is None:

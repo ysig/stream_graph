@@ -174,7 +174,7 @@ def intersection_by_key(dfa, dfb, intersection_function):
 def intersection_on_key(dfa, dfb, intersection_function):
     t_max = min(dfa.tf.max(), dfb.tf.max())
 
-    out, cache, active_weight = [], dict(), None
+    out, cache, active_weight, prev = [], dict(), None, defaultdict(issuper_cache_constructor)
     for event in events(dfa, dfb, difference_order, weights=True, reference=True):
         r, t, s, w, k = event[0], event[1], event[2], event[3], event[4:]
         if r:
@@ -186,7 +186,7 @@ def intersection_on_key(dfa, dfb, intersection_function):
                     e, wa = c
                     wc = intersection_function(wa, active_weight)
                     if wc is not None:
-                        out.append(k + (e, t, wc))
+                        add_prev(k, prev[k], out, (e, t, wc))
         else:
             if s:
                 for key in cache.keys():
@@ -196,7 +196,7 @@ def intersection_on_key(dfa, dfb, intersection_function):
                 for key, val in iteritems(cache):
                     wc = intersection_function(val[1], active_weight)
                     if wc is not None:
-                        out.append(key + (val[0], t, wc))
+                        add_prev(key, prev[key], out, (val[0], t, wc))
                 active_weight = None
         if t > t_max:
             break

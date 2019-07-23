@@ -831,7 +831,7 @@ class ITemporalLinkSet(TemporalLinkSet):
             else:
                 return .0
 
-    def degree_of(self, u=None, direction='out', weigths=False):
+    def degree_of(self, u=None, direction='out', weights=False):
         """Return the time-degree of a node at a certain time.
 
         Parameters
@@ -850,7 +850,10 @@ class ITemporalLinkSet(TemporalLinkSet):
 
         """
         if self.discrete:
-            return self._degree_of_discrete(u=u, direction=direction)
+            if self.weighted and weights:
+                return self._degree_of_discrete_weights(u=u, direction=direction)
+            else:
+                return self._degree_of_discrete(u=u, direction=direction)
         else:
             if u is None:
                 from stream_graph.collections import NodeCollection

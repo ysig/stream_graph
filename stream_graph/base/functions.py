@@ -29,10 +29,16 @@ def ego(e, ne, l, both, detailed, discrete):
         def take(times, prev, val):
             times.append((time, val))
     else:
-        def take(times, prev, val):
-            if prev[0] is None or prev[0] != val:
-                times.append((time, val))
-                prev[0] = val
+        if discrete:
+            def take(times, prev, val):
+                if prev[0] is None or prev[0] != val:
+                    times.append((time, val))
+                    prev[0] = val
+        else:
+            def take(times, prev, val):
+                if prev[0] is None or prev[0] != val:
+                    times.append(((time, True), val))
+                    prev[0] = val
 
     prev = [None]
     while(index < len(l) -1):

@@ -526,7 +526,7 @@ class TemporalLinkSetDF(ABC.TemporalLinkSet):
         if ts is not None:
             if not isinstance(ts, ABC.TimeSet):
                 try:
-                    ts = TimeSetDF(ts)
+                    ts = TimeSetDF(ts, discrete=self.discrete)
                 except Exception:
                     raise UnrecognizedTimeSet('ts')
         if all(o is None for o in [nsu, nsv, ts]):
