@@ -998,7 +998,7 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">return</span> <span class="o">.</span><span class="mi">0</span></div>
 
-<div class="viewcode-block" id="ITemporalLinkSet.degree_of"><a class="viewcode-back" href="../../../generated/stream_graph.ABC.ITemporalLinkSet.html#stream_graph.ABC.ITemporalLinkSet.degree_of">[docs]</a>    <span class="k">def</span> <span class="nf">degree_of</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="s1">&#39;out&#39;</span><span class="p">,</span> <span class="n">weigths</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="ITemporalLinkSet.degree_of"><a class="viewcode-back" href="../../../generated/stream_graph.ABC.ITemporalLinkSet.html#stream_graph.ABC.ITemporalLinkSet.degree_of">[docs]</a>    <span class="k">def</span> <span class="nf">degree_of</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="s1">&#39;out&#39;</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return the time-degree of a node at a certain time.</span>
 
 <span class="sd">        Parameters</span>
@@ -1017,7 +1017,10 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">discrete</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_degree_of_discrete</span><span class="p">(</span><span class="n">u</span><span class="o">=</span><span class="n">u</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="n">direction</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">weighted</span> <span class="ow">and</span> <span class="n">weights</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_degree_of_discrete_weights</span><span class="p">(</span><span class="n">u</span><span class="o">=</span><span class="n">u</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="n">direction</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_degree_of_discrete</span><span class="p">(</span><span class="n">u</span><span class="o">=</span><span class="n">u</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="n">direction</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">u</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="kn">from</span> <span class="nn">stream_graph.collections</span> <span class="k">import</span> <span class="n">NodeCollection</span>
