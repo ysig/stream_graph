@@ -20,7 +20,7 @@ Update: Version `0.2`
 - Changes in interval-dataframe backbone:
   - Continuous (time) intervals.
   - Discrete (time) Intervals are treated differently
-- TODO: Visualization, Tutorials, Verification
+- TODO: More Verification (add continuous bounds for maximal_cliques)
 
 
 Installing `stream_graph`
