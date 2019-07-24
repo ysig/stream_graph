@@ -178,7 +178,7 @@
 <h1><code class="xref py py-mod docutils literal notranslate"><span class="pre">stream_graph</span></code>.Graph<a class="headerlink" href="#stream-graph-graph" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="stream_graph.Graph">
-<em class="property">class </em><code class="sig-prename descclassname">stream_graph.</code><code class="sig-name descname">Graph</code><span class="sig-paren">(</span><em class="sig-param">nodeset=None</em>, <em class="sig-param">linkset=None</em>, <em class="sig-param">weighted=False</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/68ea6a2/stream_graph/base/graph.py#L8"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/base/graph.html#Graph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.Graph" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">stream_graph.</code><code class="sig-name descname">Graph</code><span class="sig-paren">(</span><em class="sig-param">nodeset=None</em>, <em class="sig-param">linkset=None</em>, <em class="sig-param">weighted=False</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/c028b71/stream_graph/base/graph.py#L8"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/base/graph.html#Graph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.Graph" title="Permalink to this definition">¶</a></dt>
 <dd><p>A Graph <span class="math notranslate nohighlight">\(S=(V, E)\)</span> is a collection of two elements:</p>
 <blockquote>
 <div><ul class="simple">
@@ -193,17 +193,17 @@
 </dd>
 <dt><a class="reference internal" href="#stream_graph.Graph.m" title="stream_graph.Graph.m"><code class="xref py py-obj docutils literal notranslate"><span class="pre">m</span></code></a></dt><dd><p>Extract the number of links.</p>
 </dd>
-<dt><a class="reference internal" href="#stream_graph.Graph.m_weighted" title="stream_graph.Graph.m_weighted"><code class="xref py py-obj docutils literal notranslate"><span class="pre">m_weighted</span></code></a></dt><dd><p>Extract the weighted number of links.</p>
-</dd>
 <dt><a class="reference internal" href="#stream_graph.Graph.n" title="stream_graph.Graph.n"><code class="xref py py-obj docutils literal notranslate"><span class="pre">n</span></code></a></dt><dd><p>Extract the number of nodes.</p>
 </dd>
 <dt><a class="reference internal" href="#stream_graph.Graph.nodeset" title="stream_graph.Graph.nodeset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nodeset</span></code></a></dt><dd><p>Extract the nodeset.</p>
 </dd>
 <dt><a class="reference internal" href="#stream_graph.Graph.total_coverage" title="stream_graph.Graph.total_coverage"><code class="xref py py-obj docutils literal notranslate"><span class="pre">total_coverage</span></code></a></dt><dd><p>Extract the total coverage of the graph.</p>
 </dd>
-<dt><a class="reference internal" href="#stream_graph.Graph.total_coverage_weighted" title="stream_graph.Graph.total_coverage_weighted"><code class="xref py py-obj docutils literal notranslate"><span class="pre">total_coverage_weighted</span></code></a></dt><dd><p>Extract the weighted total coverage of the graph.</p>
-</dd>
 <dt><strong>weighted</strong></dt><dd></dd>
+<dt><a class="reference internal" href="#stream_graph.Graph.weighted_total_coverage" title="stream_graph.Graph.weighted_total_coverage"><code class="xref py py-obj docutils literal notranslate"><span class="pre">weighted_total_coverage</span></code></a></dt><dd><p>Extract the weighted total coverage of the graph.</p>
+</dd>
+<dt><a class="reference internal" href="#stream_graph.Graph.wm" title="stream_graph.Graph.wm"><code class="xref py py-obj docutils literal notranslate"><span class="pre">wm</span></code></a></dt><dd><p>Extract the weighted number of links.</p>
+</dd>
 </dl>
 </dd>
 </dl>
@@ -235,7 +235,7 @@
 </table>
 <dl class="method">
 <dt id="stream_graph.Graph.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">nodeset=None</em>, <em class="sig-param">linkset=None</em>, <em class="sig-param">weighted=False</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/68ea6a2/stream_graph/base/graph.py#L17"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/base/graph.html#Graph.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.Graph.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">nodeset=None</em>, <em class="sig-param">linkset=None</em>, <em class="sig-param">weighted=False</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/c028b71/stream_graph/base/graph.py#L17"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/base/graph.html#Graph.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.Graph.__init__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -277,25 +277,6 @@
 </dd></dl>
 
 <dl class="method">
-<dt id="stream_graph.Graph.m_weighted">
-<em class="property">property </em><code class="sig-name descname">m_weighted</code><a class="headerlink" href="#stream_graph.Graph.m_weighted" title="Permalink to this definition">¶</a></dt>
-<dd><p>Extract the weighted number of links.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>None. Property</strong></dt><dd></dd>
-</dl>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><dl class="simple">
-<dt>m: Int</dt><dd><p>Returns the size of the linkset defining this graph.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
 <dt id="stream_graph.Graph.n">
 <em class="property">property </em><code class="sig-name descname">n</code><a class="headerlink" href="#stream_graph.Graph.n" title="Permalink to this definition">¶</a></dt>
 <dd><p>Extract the number of nodes.</p>
@@ -316,7 +297,7 @@
 
 <dl class="method">
 <dt id="stream_graph.Graph.neighbor_coverage_of">
-<code class="sig-name descname">neighbor_coverage_of</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">u=None</em>, <em class="sig-param">direction='out'</em>, <em class="sig-param">weights=False</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/68ea6a2/stream_graph/base/graph.py#L210"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/base/graph.html#Graph.neighbor_coverage_of"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.Graph.neighbor_coverage_of" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">neighbor_coverage_of</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">u=None</em>, <em class="sig-param">direction='out'</em>, <em class="sig-param">weights=False</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/c028b71/stream_graph/base/graph.py#L210"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/base/graph.html#Graph.neighbor_coverage_of"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.Graph.neighbor_coverage_of" title="Permalink to this definition">¶</a></dt>
 <dd><p>Extract the neighbor coverage of the graph.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -357,7 +338,7 @@ Otherwise returns the coverage of each node.</p>
 
 <dl class="method">
 <dt id="stream_graph.Graph.to_networkx">
-<code class="sig-name descname">to_networkx</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">create_using=None</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/68ea6a2/stream_graph/base/graph.py#L183"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/base/graph.html#Graph.to_networkx"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.Graph.to_networkx" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">to_networkx</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">create_using=None</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/c028b71/stream_graph/base/graph.py#L183"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/base/graph.html#Graph.to_networkx"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.Graph.to_networkx" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert Graph to a networkx graph.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -394,8 +375,8 @@ Otherwise returns the coverage of each node.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="stream_graph.Graph.total_coverage_weighted">
-<em class="property">property </em><code class="sig-name descname">total_coverage_weighted</code><a class="headerlink" href="#stream_graph.Graph.total_coverage_weighted" title="Permalink to this definition">¶</a></dt>
+<dt id="stream_graph.Graph.weighted_total_coverage">
+<em class="property">property </em><code class="sig-name descname">weighted_total_coverage</code><a class="headerlink" href="#stream_graph.Graph.weighted_total_coverage" title="Permalink to this definition">¶</a></dt>
 <dd><p>Extract the weighted total coverage of the graph.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -406,6 +387,25 @@ Otherwise returns the coverage of each node.</p>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><dl class="simple">
 <dt>total_coverage: Real</dt><dd><p>Returns <span class="math notranslate nohighlight">\(\frac{m_{w}}{n^{2}}\)</span>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="stream_graph.Graph.wm">
+<em class="property">property </em><code class="sig-name descname">wm</code><a class="headerlink" href="#stream_graph.Graph.wm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extract the weighted number of links.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>None. Property</strong></dt><dd></dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>m: Int</dt><dd><p>Returns the size of the linkset defining this graph.</p>
 </dd>
 </dl>
 </dd>
