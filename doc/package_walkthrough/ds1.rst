@@ -100,4 +100,4 @@ Time-reated columns are:
 
 Finally the asterisk (*) in the weight on TemporalLinksSet stands for optional.
 
-To understand these common desing princliples, please proceed to the next section, to learn more about our interval-data-frames.
+To understand these common desing princliples, please proceed to the next section, to learn more about our instantaneous/interval-data-frames.
