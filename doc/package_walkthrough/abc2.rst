@@ -32,4 +32,6 @@ To conclude, a stream-graph can be also constructed through a temporal-link-set 
 
 TemporalNodeSetB
 ----------------
-This mixed class can combine a time-set ABC and a nodeset ABC to 
+This mixed class can combine a time-set ABC and a node-set ABC, to define a TemporalNodeSetB. By doing so, it is implied that all the nodes inside the node-set exist for all the time of the time-set (accessed as :code:`tns.nodeset_`, :code:`tns.timeset_`).
+By building this class on top of that assumption, most of methods defined on a general ABC, can be simplified.
+Finally by iterating on this object, all the possible pairs are produced an idea which should be avoid, except if needed.
