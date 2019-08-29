@@ -50,7 +50,7 @@ class CIntervalDF(pd.DataFrame):
         merge = kargs.pop('merge', False)
         out = super(CIntervalDF, self).append(*args, **kargs)
         if merge:
-            self.merge(inplace=True)
+            out.merge(inplace=True)
         return out
 
     def itertuples(self, index=False, name=None, bounds=False):

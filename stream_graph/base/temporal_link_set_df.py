@@ -510,7 +510,7 @@ class TemporalLinkSetDF(ABC.TemporalLinkSet):
                 df = (df.drop(columns=['w'], merge=False) if self.weighted else df)
                 return TemporalNodeSetDF(df, disjoint_intervals=False, discrete=self.discrete).size
 
-    def substream(self, nsu, nsv, ts):
+    def substream(self, nsu=None, nsv=None, ts=None):
         if nsu is not None:
             if not isinstance(nsu, ABC.NodeSet):
                 try:
@@ -539,7 +539,7 @@ class TemporalLinkSetDF(ABC.TemporalLinkSet):
             elif nsv is not None:
                 df = self.df[self.df.v.isin(nsv)]
             else:
-                df = self
+                df = self.df
 
             if ts is not None:
                 if self.weighted:

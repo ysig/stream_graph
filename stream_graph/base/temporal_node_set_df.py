@@ -304,9 +304,18 @@ class TemporalNodeSetDF(ABC.TemporalNodeSet):
                 common_times = {l: 0 for l in links}
                 allowed_nodes = set(c for a, b in links for c in [a, b])
                 def add_item(active_nodes, ct):
-                    for u, v in permutations(active_nodes & allowed_nodes, 2):
-                        if (u, v) in common_times:
-                            common_times[(u, v)] += ct
+                    active_set = active_nodes & allowed_nodes
+                    if len(common_times) <= len(active_set)*(len(active_set) - 1)/2:
+                        for (u, v) in common_times.keys():
+                            if u in active_set and v in active_set:
+                                common_times[(u, v)] += ct
+                    else:
+                        for u, v in combinations(active_set, 2):
+                            if (u, v) in common_times:
+                                common_times[(u, v)] += ct
+                            if (v, u) in common_times:
+                                common_times[(v, u)] += ct
+                            
 
             dc = (1 if self.discrete else 0)
             for u, t, f in df.itertuples(index=False, name=None):

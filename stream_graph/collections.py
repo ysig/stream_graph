@@ -178,17 +178,40 @@ class TimeGenerator(object):
                 queue = []
                 m_old = ignore_value
                 a, b = missing_value, missing_value
+                fa, fb = False, False
                 queue = updateq(queue, None)
 
                 # Sequence of events
                 while len(queue):
                     cache = queue.pop()
                     queue = updateq(queue, cache[2])
-                    a, b = ab(a, b, cache)
+                    if cache[2] is None:
+                        a, b = cache[1]
+                        fa, fb = True, True
+                    elif cache[2]:
+                        a, fa = cache[1], True
+                    else:
+                        b, fb = cache[1], True
+                    if fa and fb:
+                        break
+
+                while True:
                     m = measure(b, a)
                     if m != m_old:
                         yield (cache[0], m)
                         m_old = m
+                    if len(queue):
+                        cache = queue.pop()
+                        queue = updateq(queue, cache[2])
+                        if cache[2] is None:
+                            a, b = cache[1]
+                        elif cache[2]:
+                            a = cache[1]
+                        else:
+                            b = cache[1]
+                    else:
+                        break
+
             if (b.instants != self.instants):
                 instantize = (instantize_discrete if self.discrete else instantize_continuous)
                 if b.instants:
