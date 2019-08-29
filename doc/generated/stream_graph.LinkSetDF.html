@@ -187,7 +187,7 @@
 <h1><code class="xref py py-mod docutils literal notranslate"><span class="pre">stream_graph</span></code>.LinkSetDF<a class="headerlink" href="#stream-graph-linksetdf" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="stream_graph.LinkSetDF">
-<em class="property">class </em><code class="sig-prename descclassname">stream_graph.</code><code class="sig-name descname">LinkSetDF</code><span class="sig-paren">(</span><em class="sig-param">df=None</em>, <em class="sig-param">no_duplicates=False</em>, <em class="sig-param">sort_by=None</em>, <em class="sig-param">weighted=False</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/6f22743/stream_graph/base/link_set_df.py#L14"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/base/link_set_df.html#LinkSetDF"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.LinkSetDF" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">stream_graph.</code><code class="sig-name descname">LinkSetDF</code><span class="sig-paren">(</span><em class="sig-param">df=None</em>, <em class="sig-param">no_duplicates=False</em>, <em class="sig-param">sort_by=None</em>, <em class="sig-param">weighted=False</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/475f70f/stream_graph/base/link_set_df.py#L14"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/base/link_set_df.html#LinkSetDF"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.LinkSetDF" title="Permalink to this definition">¶</a></dt>
 <dd><p>DataFrame implementation of the ABC.LinkSet</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -211,9 +211,11 @@ If an Iterable it should produce <code class="code docutils literal notranslate"
 </dd>
 <dt><strong>sort_</strong></dt><dd></dd>
 <dt><strong>sort_by</strong></dt><dd></dd>
-<dt><strong>to_unweighted</strong></dt><dd></dd>
-<dt><strong>to_weighted</strong></dt><dd></dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">weighted</span></code></dt><dd><p>Designate if the LinkSet has weights.</p>
+<dt><a class="reference internal" href="#stream_graph.LinkSetDF.to_unweighted" title="stream_graph.LinkSetDF.to_unweighted"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_unweighted</span></code></a></dt><dd><p>Return an unweighted version of this LinkSetDF.</p>
+</dd>
+<dt><a class="reference internal" href="#stream_graph.LinkSetDF.to_weighted" title="stream_graph.LinkSetDF.to_weighted"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_weighted</span></code></a></dt><dd><p>Return an weighted version of this LinkSetDF.</p>
+</dd>
+<dt><a class="reference internal" href="#stream_graph.LinkSetDF.weighted" title="stream_graph.LinkSetDF.weighted"><code class="xref py py-obj docutils literal notranslate"><span class="pre">weighted</span></code></a></dt><dd><p>Defines if the object is weighted.</p>
 </dd>
 <dt><a class="reference internal" href="#stream_graph.LinkSetDF.weighted_size" title="stream_graph.LinkSetDF.weighted_size"><code class="xref py py-obj docutils literal notranslate"><span class="pre">weighted_size</span></code></a></dt><dd><p>Returns the weighted size of the LinkSet.</p>
 </dd>
@@ -243,7 +245,7 @@ If an Iterable it should produce <code class="code docutils literal notranslate"
 </table>
 <dl class="attribute">
 <dt id="stream_graph.LinkSetDF.__class__">
-<code class="sig-name descname">__class__</code><a class="reference external" href="https://github.com/ysig/stream_graph/blob/6f22743/stream_graph/../../../../usr/local/lib/python3.6/abc.py#L109"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.LinkSetDF.__class__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__class__</code><a class="reference external" href="https://github.com/ysig/stream_graph/blob/475f70f/stream_graph/../../../../usr/local/lib/python3.6/abc.py#L109"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.LinkSetDF.__class__" title="Permalink to this definition">¶</a></dt>
 <dd><p>alias of <a class="reference external" href="https://docs.python.org/3/library/abc.html#abc.ABCMeta" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABCMeta</span></code></a></p>
 </dd></dl>
 
@@ -257,6 +259,12 @@ If an Iterable it should produce <code class="code docutils literal notranslate"
 <dt id="stream_graph.LinkSetDF.__dir__">
 <code class="sig-name descname">__dir__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.LinkSetDF.__dir__" title="Permalink to this definition">¶</a></dt>
 <dd><p>default dir() implementation</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="stream_graph.LinkSetDF.__eq__">
+<code class="sig-name descname">__eq__</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">obj</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/475f70f/stream_graph/base/link_set_df.py#L115"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/base/link_set_df.html#LinkSetDF.__eq__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.LinkSetDF.__eq__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compare equality in the level of data.</p>
 </dd></dl>
 
 <dl class="method">
@@ -363,7 +371,7 @@ overrides the normal algorithm (and the outcome is cached).</p>
 
 <dl class="method">
 <dt id="stream_graph.LinkSetDF.copy">
-<code class="sig-name descname">copy</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">deep=True</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/6f22743/stream_graph/ABC/link_set.py#L254"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.LinkSetDF.copy" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">copy</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">deep=True</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/475f70f/stream_graph/ABC/link_set.py#L254"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.LinkSetDF.copy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a deep or shallow copy of the current LinkSet.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -382,7 +390,7 @@ overrides the normal algorithm (and the outcome is cached).</p>
 
 <dl class="method">
 <dt id="stream_graph.LinkSetDF.degree">
-<code class="sig-name descname">degree</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">u=None</em>, <em class="sig-param">direction='out'</em>, <em class="sig-param">weights=False</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/6f22743/stream_graph/ABC/link_set.py#L123"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.LinkSetDF.degree" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">degree</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">u=None</em>, <em class="sig-param">direction='out'</em>, <em class="sig-param">weights=False</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/475f70f/stream_graph/ABC/link_set.py#L123"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.LinkSetDF.degree" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the degree of a node.</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters</dt>
@@ -403,6 +411,24 @@ If None returns a NodeCollection with the degree for each Node.</p>
 </dl>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="stream_graph.LinkSetDF.to_unweighted">
+<em class="property">property </em><code class="sig-name descname">to_unweighted</code><a class="headerlink" href="#stream_graph.LinkSetDF.to_unweighted" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an unweighted version of this LinkSetDF.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="stream_graph.LinkSetDF.to_weighted">
+<em class="property">property </em><code class="sig-name descname">to_weighted</code><a class="headerlink" href="#stream_graph.LinkSetDF.to_weighted" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an weighted version of this LinkSetDF.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="stream_graph.LinkSetDF.weighted">
+<em class="property">property </em><code class="sig-name descname">weighted</code><a class="headerlink" href="#stream_graph.LinkSetDF.weighted" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines if the object is weighted.</p>
 </dd></dl>
 
 <dl class="method">

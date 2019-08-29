@@ -208,42 +208,52 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">df_</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">weighted</span><span class="p">:</span>
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df_</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+                    <span class="c1"># If weighted with 3 columns </span>
                     <span class="k">try</span><span class="p">:</span>
+                        <span class="c1"># See if the dataframe already contains the valid columns names.</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">df_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_</span><span class="p">[[</span><span class="s1">&#39;u&#39;</span><span class="p">,</span> <span class="s1">&#39;v&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">]]</span>
                     <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                        <span class="c1"># In a different case just set the column names in the expected order</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">df_</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;u&#39;</span><span class="p">,</span> <span class="s1">&#39;v&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">]</span>
                 <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df_</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                    <span class="c1"># If weighted, but has only two columns (has not weights)</span>
                     <span class="k">try</span><span class="p">:</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">df_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_</span><span class="p">[[</span><span class="s1">&#39;u&#39;</span><span class="p">,</span> <span class="s1">&#39;v&#39;</span><span class="p">]]</span>
                     <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">df_</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;u&#39;</span><span class="p">,</span> <span class="s1">&#39;v&#39;</span><span class="p">]</span>
+                    <span class="c1"># Set all weights to 1.</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">df_</span><span class="p">[</span><span class="s1">&#39;w&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;If weighted is True, input should be an iterable of at least 2 and at most 3 elements.&#39;</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df_</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                    <span class="c1"># If not weighted and we have exactly 2 columns</span>
                     <span class="k">try</span><span class="p">:</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">df_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_</span><span class="p">[[</span><span class="s1">&#39;u&#39;</span><span class="p">,</span> <span class="s1">&#39;v&#39;</span><span class="p">]]</span>
                     <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                        <span class="c1"># In a different case just set the column names in the expected order</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">df_</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;u&#39;</span><span class="p">,</span> <span class="s1">&#39;v&#39;</span><span class="p">]</span>
                 <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df_</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+                    <span class="c1"># If not weighted and we have more than 2 columns</span>
                     <span class="k">try</span><span class="p">:</span>
+                        <span class="c1"># we have to keep only the column associated with links</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">df_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_</span><span class="p">[[</span><span class="s1">&#39;u&#39;</span><span class="p">,</span> <span class="s1">&#39;v&#39;</span><span class="p">]]</span>
                     <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">df_</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">df_</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">df_</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;u&#39;</span><span class="p">,</span> <span class="s1">&#39;v&#39;</span><span class="p">]</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df_</span><span class="p">)</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;If weighted is False, input should be an iterable of exactly 2 elements.&#39;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">sort_by</span> <span class="o">=</span> <span class="n">sort_by</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">weighted_</span> <span class="o">=</span> <span class="n">weighted</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">no_duplicates</span><span class="p">:</span>
+                <span class="c1"># Handle duplicates in case the user signifies that we may have</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">merge_</span><span class="o">.</span><span class="n">reindex_</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">weighted_</span> <span class="o">=</span> <span class="n">weighted</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">to_unweighted</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return an unweighted version of this LinkSetDF.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">weighted</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">LinkSetDF</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;w&#39;</span><span class="p">]),</span>
                              <span class="n">no_duplicates</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">weighted</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -252,28 +262,32 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">to_weighted</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return an weighted version of this LinkSetDF.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">weighted</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="c1"># If there are no weights set them to 1.</span>
             <span class="n">df</span><span class="p">[</span><span class="s1">&#39;w&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
             <span class="k">return</span> <span class="n">LinkSetDF</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">reindex</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;u&#39;</span><span class="p">,</span> <span class="s1">&#39;v&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">]),</span> <span class="n">no_duplicates</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">weighted</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">weighted</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Defines if the object is weighted.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">weighted_</span>
 
     <span class="k">def</span> <span class="nf">__bool__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;df_&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_</span><span class="o">.</span><span class="n">empty</span>
 
-    <span class="k">def</span> <span class="nf">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+<div class="viewcode-block" id="LinkSetDF.__eq__"><a class="viewcode-back" href="../../../generated/stream_graph.LinkSetDF.html#stream_graph.LinkSetDF.__eq__">[docs]</a>    <span class="k">def</span> <span class="nf">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Compare equality in the level of data.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">weighted</span> <span class="o">==</span> <span class="n">obj</span><span class="o">.</span><span class="n">weighted</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">weighted</span><span class="p">:</span>
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_</span><span class="o">.</span><span class="n">equals</span><span class="p">(</span><span class="n">obj</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="vm">__class__</span><span class="p">)</span> <span class="k">else</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">obj</span><span class="p">),</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;u&#39;</span><span class="p">,</span> <span class="s1">&#39;v&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">]))</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_</span><span class="o">.</span><span class="n">equals</span><span class="p">(</span><span class="n">obj</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="vm">__class__</span><span class="p">)</span> <span class="k">else</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">obj</span><span class="p">),</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;u&#39;</span><span class="p">,</span> <span class="s1">&#39;v&#39;</span><span class="p">]))</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">False</span>
+            <span class="k">return</span> <span class="kc">False</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">is_sorted_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -332,7 +346,9 @@
 
     <span class="k">def</span> <span class="nf">neighbors_of</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="s1">&#39;out&#39;</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">u</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># A dictionary containing for its node it&#39;s set of neighbors</span>
             <span class="n">neighbors</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">set</span><span class="p">)</span>
+            <span class="c1"># Define a function for adding for its node it&#39;s neighbor.</span>
             <span class="k">if</span> <span class="n">direction</span> <span class="o">==</span> <span class="s1">&#39;out&#39;</span><span class="p">:</span>
                 <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
                     <span class="n">neighbors</span><span class="p">[</span><span class="n">u</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
@@ -346,50 +362,53 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="n">UnrecognizedDirection</span><span class="p">()</span>
             <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+                <span class="c1"># Parse all elements.</span>
                 <span class="n">add</span><span class="p">(</span><span class="n">key</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">key</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="c1"># Return a node-collection of nodesets.</span>
             <span class="k">return</span> <span class="n">NodeCollection</span><span class="p">({</span><span class="n">u</span><span class="p">:</span> <span class="n">NodeSetS</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">iteritems</span><span class="p">(</span><span class="n">neighbors</span><span class="p">)})</span>
         <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># In case we want only one element</span>
             <span class="k">if</span> <span class="n">direction</span> <span class="o">==</span> <span class="s1">&#39;out&#39;</span><span class="p">:</span>
-                <span class="n">s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">u</span> <span class="o">==</span> <span class="n">u</span><span class="p">]</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">flat</span>
+                <span class="c1"># Extract the series of elements.</span>
+                <span class="n">s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">u</span> <span class="o">==</span> <span class="n">u</span><span class="p">]</span><span class="o">.</span><span class="n">v</span>
             <span class="k">elif</span> <span class="n">direction</span> <span class="o">==</span> <span class="s1">&#39;in&#39;</span><span class="p">:</span>
-                <span class="n">s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">v</span> <span class="o">==</span> <span class="n">u</span><span class="p">]</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">flat</span>
+                <span class="n">s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">v</span> <span class="o">==</span> <span class="n">u</span><span class="p">]</span><span class="o">.</span><span class="n">u</span>
             <span class="k">elif</span> <span class="n">direction</span> <span class="o">==</span> <span class="s1">&#39;both&#39;</span><span class="p">:</span>
-                <span class="n">s</span> <span class="o">=</span> <span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">u</span> <span class="o">==</span> <span class="n">u</span><span class="p">]</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">flat</span><span class="p">,</span>
-                                    <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">v</span> <span class="o">==</span> <span class="n">u</span><span class="p">]</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">flat</span><span class="p">)</span>
+                <span class="n">s</span> <span class="o">=</span> <span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">u</span> <span class="o">==</span> <span class="n">u</span><span class="p">]</span><span class="o">.</span><span class="n">v</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">v</span> <span class="o">==</span> <span class="n">u</span><span class="p">]</span><span class="o">.</span><span class="n">u</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="n">UnrecognizedDirection</span><span class="p">()</span>
+            <span class="c1"># Return a Nodeset.</span>
             <span class="k">return</span> <span class="n">NodeSetS</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_degree_unweighted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="s1">&#39;out&#39;</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">u</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">degrees</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">()</span>
+            <span class="c1"># Initialize iterators</span>
             <span class="k">if</span> <span class="n">direction</span> <span class="o">==</span> <span class="s1">&#39;out&#39;</span><span class="p">:</span>
-                <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="n">key</span><span class="p">):</span>
-                    <span class="n">degrees</span><span class="p">[</span><span class="n">key</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">iter_</span> <span class="o">=</span> <span class="p">(</span><span class="n">k</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">direction</span> <span class="o">==</span> <span class="s1">&#39;in&#39;</span><span class="p">:</span>
-                <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="n">key</span><span class="p">):</span>
-                    <span class="n">degrees</span><span class="p">[</span><span class="n">key</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">iter_</span> <span class="o">=</span> <span class="p">(</span><span class="n">k</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">direction</span> <span class="o">==</span> <span class="s1">&#39;both&#39;</span><span class="p">:</span>
-                <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="n">key</span><span class="p">):</span>
-                    <span class="n">degrees</span><span class="p">[</span><span class="n">key</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">+=</span> <span class="mi">1</span>
-                    <span class="n">degrees</span><span class="p">[</span><span class="n">key</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="c1"># Avoid double occurencies for degree i.e. (2, 1), (1, 2)</span>
+                <span class="n">iter_</span> <span class="o">=</span> <span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">ks</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span> <span class="k">for</span> <span class="n">ks</span> <span class="ow">in</span> <span class="p">[</span><span class="n">k</span><span class="p">[:</span><span class="mi">2</span><span class="p">],</span> <span class="p">(</span><span class="n">k</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">k</span><span class="p">[</span><span class="mi">0</span><span class="p">])]))</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="n">UnrecognizedDirection</span><span class="p">()</span>
-            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-                <span class="n">add</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">NodeCollection</span><span class="p">(</span><span class="n">degrees</span><span class="p">)</span>
+            
+            <span class="c1"># Count how many times each node appears, as an indicator of how many neighbors it has.</span>
+            <span class="k">return</span> <span class="n">NodeCollection</span><span class="p">(</span><span class="n">Counter</span><span class="p">(</span><span class="n">iter_</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">direction</span> <span class="o">==</span> <span class="s1">&#39;out&#39;</span><span class="p">:</span>
                 <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">u</span> <span class="o">==</span> <span class="n">u</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
             <span class="k">elif</span> <span class="n">direction</span> <span class="o">==</span> <span class="s1">&#39;in&#39;</span><span class="p">:</span>
                 <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">v</span> <span class="o">==</span> <span class="n">u</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
             <span class="k">elif</span> <span class="n">direction</span> <span class="o">==</span> <span class="s1">&#39;both&#39;</span><span class="p">:</span>
-                <span class="k">return</span> <span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">u</span> <span class="o">==</span> <span class="n">u</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">v</span> <span class="o">==</span> <span class="n">u</span><span class="p">))</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+                <span class="c1"># Avoid double occurencies for degree i.e. (2, 1), (1, 2)</span>
+                <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">u</span> <span class="o">==</span> <span class="n">u</span><span class="p">]</span><span class="o">.</span><span class="n">v</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">v</span> <span class="o">==</span> <span class="n">u</span><span class="p">]</span><span class="o">.</span><span class="n">u</span><span class="p">)))</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="n">UnrecognizedDirection</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">_degree_weighted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="s1">&#39;out&#39;</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">u</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># Use a Counter to count the total weight sum.</span>
             <span class="n">degrees</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">()</span>
             <span class="k">if</span> <span class="n">direction</span> <span class="o">==</span> <span class="s1">&#39;out&#39;</span><span class="p">:</span>
                 <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="n">key</span><span class="p">):</span>
@@ -398,6 +417,7 @@
                 <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="n">key</span><span class="p">):</span>
                     <span class="n">degrees</span><span class="p">[</span><span class="n">key</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">+=</span> <span class="n">key</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
             <span class="k">elif</span> <span class="n">direction</span> <span class="o">==</span> <span class="s1">&#39;both&#39;</span><span class="p">:</span>
+                <span class="c1"># Double occorencies do not matter here</span>
                 <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="n">key</span><span class="p">):</span>
                     <span class="n">degrees</span><span class="p">[</span><span class="n">key</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">+=</span> <span class="n">key</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
                     <span class="n">degrees</span><span class="p">[</span><span class="n">key</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">+=</span> <span class="n">key</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
@@ -407,6 +427,7 @@
                 <span class="n">add</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">NodeCollection</span><span class="p">(</span><span class="n">degrees</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Cast funciton to return the appropriate weigth series.</span>
             <span class="k">def</span> <span class="nf">cast</span><span class="p">(</span><span class="n">index</span><span class="p">):</span>
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">w</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
             <span class="k">if</span> <span class="n">direction</span> <span class="o">==</span> <span class="s1">&#39;out&#39;</span><span class="p">:</span>
