@@ -19,10 +19,13 @@ class Graph(object):
             if isinstance(nodeset, ABC.NodeSet):
                 self.nodeset_ = nodeset
             else:
+                # If the nodeset is not an instance of the ABC, cast it.
                 self.nodeset_ = NodeSetS(nodeset)
             if isinstance(linkset, ABC.LinkSet):
                 self.linkset_ = linkset
             else:
+                # If the linkset is not an instance of the ABC, cast it.
+                # `weighted` is only applied here.
                 self.linkset_ = LinkSetDF(linkset, weighted=weighted)
 
     def __bool__(self):
