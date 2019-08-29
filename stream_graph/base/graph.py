@@ -127,7 +127,7 @@ class Graph(object):
         return self.linkset_.size
 
     @property
-    def m_weighted(self):
+    def wm(self):
         """Extract the weighted number of links.
         
         Parameters
@@ -162,7 +162,7 @@ class Graph(object):
             return 0.
 
     @property
-    def total_coverage_weighted(self):
+    def weighted_total_coverage(self):
         """Extract the weighted total coverage of the graph.
         
         Parameters
@@ -176,7 +176,7 @@ class Graph(object):
 
         """
         if bool(self):
-            return self.m_weighted/float(self.n ** 2)
+            return self.wm/float(self.n ** 2)
         else:
             return 0.
 

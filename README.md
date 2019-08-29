@@ -52,7 +52,7 @@ pip install -r requirements.txt
 Please add `sudo` if `pip` does not have superuser privileges.
 
 
-### Installing the Master Version
+### Installing the `master` Version
 
 
 ```shell
