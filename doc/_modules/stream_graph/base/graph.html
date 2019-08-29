@@ -186,10 +186,13 @@
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">nodeset</span><span class="p">,</span> <span class="n">ABC</span><span class="o">.</span><span class="n">NodeSet</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">nodeset_</span> <span class="o">=</span> <span class="n">nodeset</span>
             <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># If the nodeset is not an instance of the ABC, cast it.</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">nodeset_</span> <span class="o">=</span> <span class="n">NodeSetS</span><span class="p">(</span><span class="n">nodeset</span><span class="p">)</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">linkset</span><span class="p">,</span> <span class="n">ABC</span><span class="o">.</span><span class="n">LinkSet</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">linkset_</span> <span class="o">=</span> <span class="n">linkset</span>
             <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># If the linkset is not an instance of the ABC, cast it.</span>
+                <span class="c1"># `weighted` is only applied here.</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">linkset_</span> <span class="o">=</span> <span class="n">LinkSetDF</span><span class="p">(</span><span class="n">linkset</span><span class="p">,</span> <span class="n">weighted</span><span class="o">=</span><span class="n">weighted</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">__bool__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
