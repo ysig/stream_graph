@@ -22,8 +22,10 @@ class ITimeSetS(ABC.ITimeSet):
             if isinstance(times, ABC.ITimeSet):
                 discrete = times.discrete
             elif discrete is None:
+                # default assign
                 if all(isinstance(t, int) for t in self.times_):
-                    discrete=True
+                    # Check if time signature can be considered discrete
+                    discrete = True
                 else:
                     discrete = False
             self.discrete_ = discrete
@@ -57,17 +59,22 @@ class ITimeSetS(ABC.ITimeSet):
 
     def __and__(self, ts):
         if isinstance(ts, ABC.ITimeSet):
+            # If instantaneous
             if bool(self) and bool(ts):
                 assert self.discrete == ts.discrete
                 if not isinstance(ts, self.__class__):
+                    # If not of the same class
                     try:
+                        # check if the other class has a method for it
                         return ts & self
                     except NotImplementedError:
+                        # Else cast to class (through iterator)
                         ts = self.__class__(ts, discrete=self.discrete)
                 return self.__class__(self.times_ & ts.times_, discrete=self.discrete)
         elif isinstance(ts, ABC.TimeSet):
             times = list(self.times_)
             assert self.discrete == ts.discrete
+            # Cast to TimeSetDF, apply the operation and keep only the instants.
             return self.__class__((a for a, _ in (self.timeset_df & ts)), discrete=self.discrete)
         else:
             raise UnrecognizedTimeSet('right operand')
@@ -75,14 +82,18 @@ class ITimeSetS(ABC.ITimeSet):
 
     def __or__(self, ts):
         if isinstance(ts, ABC.ITimeSet):
+            # If instantaneous
             if not bool(self):
                 return ts.copy()
             if bool(ts):
                 assert self.discrete == ts.discrete
-                if not isinstance(ts, ITimeSetS):
+                if not isinstance(ts, self.__class__):
+                    # If not of the same class
                     try:
+                        # check if the other class has a method for it
                         return ts | self
                     except NotImplementedError:
+                        # Else cast to class (through iterator)
                         ts = self.__class__(ts, discrete=self.discrete)
                 return self.__class__(self.times_ | ts.times_, discrete=self.discrete)
             else:
@@ -90,7 +101,14 @@ class ITimeSetS(ABC.ITimeSet):
         elif isinstance(ts, ABC.TimeSet):
             times = list(self.times_)
             assert self.discrete == ts.discrete
-            return self.__class__((a for a, _ in (self.timeset_df | ts)), discrete=self.discrete)
+            # If our input is not instantaneous, the result will probably be not instantaneous
+            uni = self.timeset_df | ts
+            if any(a != b for a, b in uni):
+                # If so return output as is
+                return uni
+            else:
+                # Else cast to the instantaneous class of `self`
+                return self.__class__((a for a, _ in uni), discrete=self.discrete)
         else:
             raise UnrecognizedTimeSet('right operand')
 
@@ -100,13 +118,17 @@ class ITimeSetS(ABC.ITimeSet):
                 assert self.discrete == ts.discrete
                 if not isinstance(ts, ITimeSetS):
                     try:
+                        # check if the other class has a method for it
+                        # [notice that we search for `__rsub__`]
                         return ts.__rsub__(self)
                     except (AttributeError, NotImplementedError):
+                        # Else cast to class (through iterator)
                         ts = self.__class__(ts, discrete=self.discrete)
                 return self.__class__(self.times_ - ts.times_, discrete=self.discrete)
         elif isinstance(ts, ABC.TimeSet):
             times = list(self.times_)
             assert self.discrete == ts.discrete
+            # Cast to TimeSetDF subtract and then keep the instantaneous part, to get a valid output
             return self.__class__((a for a, _ in (self.timeset_df - ts)), discrete=self.discrete)
         else:
             raise UnrecognizedTimeSet('right operand')
@@ -130,6 +152,7 @@ class ITimeSetS(ABC.ITimeSet):
     @property
     def timeset_df(self):
         times = list(self.times_)
+        # Cast to a TimeSetDF with the same start and finish
         return TimeSetDF(pd.DataFrame({'ts': times, 'tf': times}), discrete=self.discrete)
 
     def _to_discrete(self, bins, bin_size):
