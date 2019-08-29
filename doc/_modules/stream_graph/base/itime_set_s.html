@@ -189,8 +189,10 @@
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">ABC</span><span class="o">.</span><span class="n">ITimeSet</span><span class="p">):</span>
                 <span class="n">discrete</span> <span class="o">=</span> <span class="n">times</span><span class="o">.</span><span class="n">discrete</span>
             <span class="k">elif</span> <span class="n">discrete</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># default assign</span>
                 <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">times_</span><span class="p">):</span>
-                    <span class="n">discrete</span><span class="o">=</span><span class="kc">True</span>
+                    <span class="c1"># Check if time signature can be considered discrete</span>
+                    <span class="n">discrete</span> <span class="o">=</span> <span class="kc">True</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">discrete</span> <span class="o">=</span> <span class="kc">False</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">discrete_</span> <span class="o">=</span> <span class="n">discrete</span>
@@ -224,17 +226,22 @@
 
     <span class="k">def</span> <span class="nf">__and__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">ABC</span><span class="o">.</span><span class="n">ITimeSet</span><span class="p">):</span>
+            <span class="c1"># If instantaneous</span>
             <span class="k">if</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">bool</span><span class="p">(</span><span class="n">ts</span><span class="p">):</span>
                 <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">discrete</span> <span class="o">==</span> <span class="n">ts</span><span class="o">.</span><span class="n">discrete</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">):</span>
+                    <span class="c1"># If not of the same class</span>
                     <span class="k">try</span><span class="p">:</span>
+                        <span class="c1"># check if the other class has a method for it</span>
                         <span class="k">return</span> <span class="n">ts</span> <span class="o">&amp;</span> <span class="bp">self</span>
                     <span class="k">except</span> <span class="ne">NotImplementedError</span><span class="p">:</span>
+                        <span class="c1"># Else cast to class (through iterator)</span>
                         <span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">discrete</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">discrete</span><span class="p">)</span>
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">times_</span> <span class="o">&amp;</span> <span class="n">ts</span><span class="o">.</span><span class="n">times_</span><span class="p">,</span> <span class="n">discrete</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">discrete</span><span class="p">)</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">ABC</span><span class="o">.</span><span class="n">TimeSet</span><span class="p">):</span>
             <span class="n">times</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">times_</span><span class="p">)</span>
             <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">discrete</span> <span class="o">==</span> <span class="n">ts</span><span class="o">.</span><span class="n">discrete</span>
+            <span class="c1"># Cast to TimeSetDF, apply the operation and keep only the instants.</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">((</span><span class="n">a</span> <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">timeset_df</span> <span class="o">&amp;</span> <span class="n">ts</span><span class="p">)),</span> <span class="n">discrete</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">discrete</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">UnrecognizedTimeSet</span><span class="p">(</span><span class="s1">&#39;right operand&#39;</span><span class="p">)</span>
@@ -242,14 +249,18 @@
 
     <span class="k">def</span> <span class="nf">__or__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">ABC</span><span class="o">.</span><span class="n">ITimeSet</span><span class="p">):</span>
+            <span class="c1"># If instantaneous</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
                 <span class="k">return</span> <span class="n">ts</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
             <span class="k">if</span> <span class="nb">bool</span><span class="p">(</span><span class="n">ts</span><span class="p">):</span>
                 <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">discrete</span> <span class="o">==</span> <span class="n">ts</span><span class="o">.</span><span class="n">discrete</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">ITimeSetS</span><span class="p">):</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">):</span>
+                    <span class="c1"># If not of the same class</span>
                     <span class="k">try</span><span class="p">:</span>
+                        <span class="c1"># check if the other class has a method for it</span>
                         <span class="k">return</span> <span class="n">ts</span> <span class="o">|</span> <span class="bp">self</span>
                     <span class="k">except</span> <span class="ne">NotImplementedError</span><span class="p">:</span>
+                        <span class="c1"># Else cast to class (through iterator)</span>
                         <span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">discrete</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">discrete</span><span class="p">)</span>
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">times_</span> <span class="o">|</span> <span class="n">ts</span><span class="o">.</span><span class="n">times_</span><span class="p">,</span> <span class="n">discrete</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">discrete</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
@@ -257,7 +268,14 @@
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">ABC</span><span class="o">.</span><span class="n">TimeSet</span><span class="p">):</span>
             <span class="n">times</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">times_</span><span class="p">)</span>
             <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">discrete</span> <span class="o">==</span> <span class="n">ts</span><span class="o">.</span><span class="n">discrete</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">((</span><span class="n">a</span> <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">timeset_df</span> <span class="o">|</span> <span class="n">ts</span><span class="p">)),</span> <span class="n">discrete</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">discrete</span><span class="p">)</span>
+            <span class="c1"># If our input is not instantaneous, the result will probably be not instantaneous</span>
+            <span class="n">uni</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">timeset_df</span> <span class="o">|</span> <span class="n">ts</span>
+            <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">a</span> <span class="o">!=</span> <span class="n">b</span> <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">uni</span><span class="p">):</span>
+                <span class="c1"># If so return output as is</span>
+                <span class="k">return</span> <span class="n">uni</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Else cast to the instantaneous class of `self`</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">((</span><span class="n">a</span> <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">uni</span><span class="p">),</span> <span class="n">discrete</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">discrete</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">UnrecognizedTimeSet</span><span class="p">(</span><span class="s1">&#39;right operand&#39;</span><span class="p">)</span>
 
@@ -267,13 +285,17 @@
                 <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">discrete</span> <span class="o">==</span> <span class="n">ts</span><span class="o">.</span><span class="n">discrete</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">ITimeSetS</span><span class="p">):</span>
                     <span class="k">try</span><span class="p">:</span>
+                        <span class="c1"># check if the other class has a method for it</span>
+                        <span class="c1"># [notice that we search for `__rsub__`]</span>
                         <span class="k">return</span> <span class="n">ts</span><span class="o">.</span><span class="fm">__rsub__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
                     <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="ne">NotImplementedError</span><span class="p">):</span>
+                        <span class="c1"># Else cast to class (through iterator)</span>
                         <span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">discrete</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">discrete</span><span class="p">)</span>
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">times_</span> <span class="o">-</span> <span class="n">ts</span><span class="o">.</span><span class="n">times_</span><span class="p">,</span> <span class="n">discrete</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">discrete</span><span class="p">)</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">ABC</span><span class="o">.</span><span class="n">TimeSet</span><span class="p">):</span>
             <span class="n">times</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">times_</span><span class="p">)</span>
             <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">discrete</span> <span class="o">==</span> <span class="n">ts</span><span class="o">.</span><span class="n">discrete</span>
+            <span class="c1"># Cast to TimeSetDF subtract and then keep the instantaneous part, to get a valid output</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">((</span><span class="n">a</span> <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">timeset_df</span> <span class="o">-</span> <span class="n">ts</span><span class="p">)),</span> <span class="n">discrete</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">discrete</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">UnrecognizedTimeSet</span><span class="p">(</span><span class="s1">&#39;right operand&#39;</span><span class="p">)</span>
@@ -297,6 +319,7 @@
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">timeset_df</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">times</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">times_</span><span class="p">)</span>
+        <span class="c1"># Cast to a TimeSetDF with the same start and finish</span>
         <span class="k">return</span> <span class="n">TimeSetDF</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;ts&#39;</span><span class="p">:</span> <span class="n">times</span><span class="p">,</span> <span class="s1">&#39;tf&#39;</span><span class="p">:</span> <span class="n">times</span><span class="p">}),</span> <span class="n">discrete</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">discrete</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_to_discrete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bins</span><span class="p">,</span> <span class="n">bin_size</span><span class="p">):</span>
