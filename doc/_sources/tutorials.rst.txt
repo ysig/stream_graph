@@ -18,3 +18,11 @@ Tags: `instantaneous`, `discrete`
 A tutorial of weighted measures of Instantaneous Temporal Link-Sets on a `SNAP <https://snap.stanford.edu/data/soc-sign-bitcoin-alpha.html>`_ dataset of a who-trusts-whom network of people who trade using Bitcoin on a platform called Bitcoin Alpha.
 
 Tags: `instantaneous`, `discrete`, `weighted`
+
+
+3. `MAWI <https://nbviewer.jupyter.org/github/ysig/stream_graph/blob/master/tutorials/MAWI/mawi.ipynb>`_
+-------------------------------------------------------------------------------------------------------------------------------------
+
+A tutorial of Temporal Link-Sets with duration on a small subset of the MAWI dataset of IP-traffic.
+
+Tags: `durational`, `continuous`
