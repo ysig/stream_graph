@@ -41,42 +41,52 @@ class LinkSetDF(ABC.LinkSet):
             self.df_ = pd.DataFrame(df)
             if weighted:
                 if len(self.df_.columns) == 3:
+                    # If weighted with 3 columns 
                     try:
+                        # See if the dataframe already contains the valid columns names.
                         self.df_ = self.df_[['u', 'v', 'w']]
                     except Exception:
+                        # In a different case just set the column names in the expected order
                         self.df_.columns = ['u', 'v', 'w']
                 elif len(self.df_.columns) == 2:
+                    # If weighted, but has only two columns (has not weights)
                     try:
                         self.df_ = self.df_[['u', 'v']]
                     except Exception:
                         self.df_.columns = ['u', 'v']
+                    # Set all weights to 1.
                     self.df_['w'] = 1
                 else:
                     raise ValueError('If weighted is True, input should be an iterable of at least 2 and at most 3 elements.')
             else:
                 if len(self.df_.columns) == 2:
+                    # If not weighted and we have exactly 2 columns
                     try:
                         self.df_ = self.df_[['u', 'v']]
                     except Exception:
+                        # In a different case just set the column names in the expected order
                         self.df_.columns = ['u', 'v']
                 elif len(self.df_.columns) == 3:
+                    # If not weighted and we have more than 2 columns
                     try:
+                        # we have to keep only the column associated with links
                         self.df_ = self.df_[['u', 'v']]
                     except Exception:
                         self.df_.drop(columns=self.df_.columns[2], inplace=True)
                         self.df_.columns = ['u', 'v']
                 else:
-                    print(self.df_)
                     raise ValueError('If weighted is False, input should be an iterable of exactly 2 elements.')
             self.sort_by = sort_by
             self.weighted_ = weighted
             if not no_duplicates:
+                # Handle duplicates in case the user signifies that we may have
                 self.merge_.reindex_
         else:
             self.weighted_ = weighted
 
     @property
     def to_unweighted(self):
+        """Return an unweighted version of this LinkSetDF."""
         if self.weighted:
             return LinkSetDF(self.df.drop(columns=['w']),
                              no_duplicates=True, weighted=False)
@@ -85,21 +95,25 @@ class LinkSetDF(ABC.LinkSet):
 
     @property
     def to_weighted(self):
+        """Return an weighted version of this LinkSetDF."""
         if self.weighted:
             return self.copy()
         else:
             df = self.df.copy()
+            # If there are no weights set them to 1.
             df['w'] = 1
             return LinkSetDF(df.reindex(columns=['u', 'v', 'w']), no_duplicates=True, weighted=True)
 
     @property
     def weighted(self):
+        """Defines if the object is weighted."""
         return self.weighted_
 
     def __bool__(self):
         return hasattr(self, 'df_') and not self.df_.empty
 
     def __eq__(self, obj):
+        """Compare equality in the level of data."""
         if self.weighted == obj.weighted:
             if self.weighted:
                 return self.df_.equals(obj if isinstance(obj, __class__) else pd.DataFrame(list(obj), columns=['u', 'v', 'w']))
@@ -165,7 +179,9 @@ class LinkSetDF(ABC.LinkSet):
 
     def neighbors_of(self, u=None, direction='out'):
         if u is None:
+            # A dictionary containing for its node it's set of neighbors
             neighbors = defaultdict(set)
+            # Define a function for adding for its node it's neighbor.
             if direction == 'out':
                 def add(u, v):
                     neighbors[u].add(v)
@@ -179,50 +195,53 @@ class LinkSetDF(ABC.LinkSet):
             else:
                 raise UnrecognizedDirection()
             for key in iter(self):
+                # Parse all elements.
                 add(key[0], key[1])
+            # Return a node-collection of nodesets.
             return NodeCollection({u: NodeSetS(s) for u, s in iteritems(neighbors)})
         else:
+            # In case we want only one element
             if direction == 'out':
-                s = self.df[self.df.u == u].v.values.flat
+                # Extract the series of elements.
+                s = self.df[self.df.u == u].v
             elif direction == 'in':
-                s = self.df[self.df.v == u].u.values.flat
+                s = self.df[self.df.v == u].u
             elif direction == 'both':
-                s = itertools.chain(self.df[self.df.u == u].v.values.flat,
-                                    self.df[self.df.v == u].u.values.flat)
+                s = itertools.chain(self.df[self.df.u == u].v, self.df[self.df.v == u].u)
             else:
                 raise UnrecognizedDirection()
+            # Return a Nodeset.
             return NodeSetS(s)
 
     def _degree_unweighted(self, u=None, direction='out'):
         if u is None:
-            degrees = Counter()
+            # Initialize iterators
             if direction == 'out':
-                def add(key):
-                    degrees[key[0]] += 1
+                iter_ = (k[0] for k in self)
             elif direction == 'in':
-                def add(key):
-                    degrees[key[1]] += 1
+                iter_ = (k[1] for k in self)
             elif direction == 'both':
-                def add(key):
-                    degrees[key[0]] += 1
-                    degrees[key[1]] += 1
+                # Avoid double occurencies for degree i.e. (2, 1), (1, 2)
+                iter_ = (a[0] for a in set(ks for k in self for ks in [k[:2], (k[1], k[0])]))
             else:
                 raise UnrecognizedDirection()
-            for key in iter(self):
-                add(key)
-            return NodeCollection(degrees)
+            
+            # Count how many times each node appears, as an indicator of how many neighbors it has.
+            return NodeCollection(Counter(iter_))
         else:
             if direction == 'out':
                 return (self.df.u == u).sum()
             elif direction == 'in':
                 return (self.df.v == u).sum()
             elif direction == 'both':
-                return ((self.df.u == u) | (self.df.v == u)).sum()
+                # Avoid double occurencies for degree i.e. (2, 1), (1, 2)
+                return len(set(itertools.chain(self.df[self.df.u == u].v, self.df[self.df.v == u].u)))
             else:
                 raise UnrecognizedDirection()
 
     def _degree_weighted(self, u=None, direction='out'):
         if u is None:
+            # Use a Counter to count the total weight sum.
             degrees = Counter()
             if direction == 'out':
                 def add(key):
@@ -231,6 +250,7 @@ class LinkSetDF(ABC.LinkSet):
                 def add(key):
                     degrees[key[1]] += key[2]
             elif direction == 'both':
+                # Double occorencies do not matter here
                 def add(key):
                     degrees[key[0]] += key[2]
                     degrees[key[1]] += key[2]
@@ -240,6 +260,7 @@ class LinkSetDF(ABC.LinkSet):
                 add(key)
             return NodeCollection(degrees)
         else:
+            # Cast funciton to return the appropriate weigth series.
             def cast(index):
                 return self.df.w[index]
             if direction == 'out':
