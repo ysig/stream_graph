@@ -58,11 +58,12 @@ class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
 
     """
     def __init__(self, df=None, no_duplicates=True, sort_by=None, discrete=None, weighted=None, merge_function=None, operation_functions=None):
-
         if isinstance(df, self.__class__):
+            # If we have an instance of the same class copy its elements.
             self.discrete_ = df.discrete
             self.weighted_ = df.weighted
             if self.weighted_:
+                # Extract the weight algebra (dictionary of functions)
                 algebra = df.algebra
             if bool(df):
                 self.df_ = df.df
@@ -71,16 +72,19 @@ class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
             if df is not None:
                 self.df_ = df
                 self.sort_by = sort_by
-                    
                 if self.df_['ts'].dtype.kind != 'i' and self.df_['tf'].dtype.kind != 'i':
+                    # If time cannot be not discrete
                     if discrete is None:
+                        # Auto-assign to discrete only if not assigned.
                         discrete = (True if self.df_.empty else False)
                     elif discrete:
                         warn('SemanticWarning: For a discrete instance time-instants should be an integers')
                 elif discrete is None:
+                    # Else if it can be discrete auto-assign to discrete if not assigned.
                     discrete = True
                 self.discrete_ = True if discrete is None else discrete
                 if self.weighted_:
+                    # Make the algebra dictionary for weights, from a set of functions.
                     self.algebra = make_algebra(operation_functions)
             else:
                 self.discrete_ = True if discrete is None else discrete
@@ -121,6 +125,7 @@ class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
         return self
 
     def _init_base_class(self, df=None):
+        """Handler for initializing the proper weight class whenever needed."""
         if df is None:
             return self.__class__(weighted=self.weighted, discrete=self.discrete)
         else:
@@ -137,6 +142,7 @@ class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
             return self._init_base_class()
 
     def sort_df(self, sort_by):
+        """Retrieve, store if no-order and produce a sorted version of the df"""
         if self.sort_by is None:
             self.sort_by = sort_by
             return self.sort_df(sort_by)
@@ -179,7 +185,7 @@ class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
 
     @property
     def minimal_temporal_nodeset(self):
-        # All the time intervals that a node belongs to a link
+        # Contain for each node only the union of time intervals that it belongs to a link
         if bool(self):
             mdf = self.df_[['v', 'ts']].rename(columns={'v': 'u'}).append(self.df_[['u', 'ts']])
             return ITemporalNodeSetDF(mdf, discrete=self.discrete)
@@ -228,7 +234,7 @@ class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
             else:
                 return .0
         if l is None:
-            di = True
+            # Count how many times a link appears
             if direction == 'out':
                 def key(u, v):
                     return (u, v)
@@ -236,21 +242,20 @@ class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
                 def key(u, v):
                     return (v, u)
             elif direction == 'both':
+                # As we count both directions, so pairs can be sorted.
                 def key(u, v):
                     return tuple(sorted([u, v]))
-                di = False
             else:
                 raise UnrecognizedDirection()
             return LinkCollection(Counter((key(a[0], a[1]) for a in iter(self))))
         else:
-            di = True
             u, v = l
             if direction == 'out':
                 df = self.df[(self.df.u == u) & (self.df.v == v)]
             elif direction == 'in':
                 df = self.df[(self.df.v == u) & (self.df.u == v)]
             elif direction == 'both':
-                df, di = self.df[self.df.u.isin({u, v}) & self.df.v.isin({u, v})], False
+                df = self.df[self.df.u.isin({u, v}) & self.df.v.isin({u, v})]
             else:
                 raise UnrecognizedDirection()
             return ITimeSetS(df.ts, discrete=True).size
@@ -278,9 +283,11 @@ class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
                             return list((k[0], k[1], v) for k, v in iteritems(ct))
                         prev = None
                         for u, v, ts, w in iter_:
+                            # Iterate in ascending time and collect for its link its weigths in a counter
                             if prev is None:
                                 active_set, prev = Counter(), ts
                             elif ts != prev:
+                                # output a link-set (should we add algebra)
                                 yield (prev, LinkSetDF(dump(active_set), no_duplicates=True, weighted=self.weighted))
                                 active_set, prev = Counter(), ts
                             active_set[(u, v)] += w
@@ -290,16 +297,18 @@ class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
                     def generate(iter_):
                         prev = None
                         for u, v, ts in iter_:
+                            # Iterate in ascending time and collect all its links
                             if prev is None:
                                 active_set, prev = {(u, v)}, ts
                             elif ts != prev:
+                                # output a link-set
                                 yield (prev, LinkSetDF(list(active_set), no_duplicates=True, weighted=self.weighted))
                                 active_set, prev = {(u, v)}, ts
                             else:
                                 active_set.add((u, v))
                         if len(active_set):
                             yield (prev, LinkSetDF(list(active_set), no_duplicates=True, weighted=self.weighted))
-                return TimeGenerator(generate(self.df.sort_values(by='ts').itertuples(name=None, index=False)), discrete=self.discrete, instantaneous=True)
+                return TimeGenerator(generate(self.sort_df('ts').itertuples()), discrete=self.discrete, instantaneous=True)
             else:
                 return LinkSetDF(self.df.df_at(t).drop(columns=['ts']), no_duplicates=False, weighted=self.weighted)
 
@@ -328,19 +337,22 @@ class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
                     raise UnrecognizedDirection()
 
                 prev = None
-                for u, v, ts in self.df[['u', 'v', 'ts']].sort_values(by='ts').itertuples(name=None, index=False):
+                for u, v, ts in self.sort_df('ts').itertuples():
+                    # Iterate in ascending time and at each instant collect for each node the set of its neighbors
                     if prev is None:
-                        cache = defaultdict(set)
-                        prev = ts
+                        prev, cache = ts, defaultdict(set)
                     elif ts != prev:
+                        # For each node 
                         for u, s in iteritems(cache):
                             if u in out:
+                                # Or append it if it exists
                                 out[u].it.append((prev, NodeSetS(s)))
                             else:
+                                # Initialize a time-collection with the time-stamp and the node-set
                                 out[u] = TimeCollection([(prev, NodeSetS(s))], instantaneous=False, discrete=self.discrete)
-                        cache = defaultdict(set)
-                        prev = ts
+                        prev, cache = ts, defaultdict(set)
                     add(cache, u, v)
+                # Add also remaining elements.
                 for u, s in iteritems(cache):
                     if u in out:
                         out[u].it.append((prev, NodeSetS(s)))
@@ -369,6 +381,7 @@ class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
 
     def _m_at_unweighted(self, t):
         if t is None:
+            # Count how many times each time-stamp occurs and sort on time.
             return TimeCollection(sorted(list(iteritems(Counter(iter(self.df.ts))))), instantaneous=True, discrete=self.discrete)
         else:
             return self.links_at(t).size
@@ -376,8 +389,9 @@ class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
     def _m_at_weighted(self, t):
         if t is None:
             ct = Counter()
-            for ts, w in self.df[['ts', 'w']].itertuples(index=False, name=None, weights=True):
+            for ts, w in self.df[['ts', 'w']].itertuples(weights=True):
                 ct[ts] += w
+            # Add up weigths for each time-stamp and sort on time.
             return TimeCollection(sorted(iteritems(ct)), instantaneous=True, discrete=self.discrete)
         else:
             return self.links_at(t).weighted_size
@@ -389,21 +403,22 @@ class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
             elif direction == 'in':
                 iter_ = (v for u, v, ts in self.df.itertuples())
             elif direction == 'both':
-                iter_ = (u for a, b, c in self.df.itertuples() for u in [a, b])
+                # Avoid double occurencies
+                iter_ = (u for u, _, _ in set(p for a, b, c in self.df.itertuples() for p in [(a, b, c), (b, a, c)]))
             else:
                 raise UnrecognizedDirection()
             return NodeCollection(Counter(iter_))
         else:
             if direction == 'out':
-                df = self.df[self.df.u == u].drop(columns=['u']).rename(columns={'v': 'u'})
+                df = self.df[self.df.u == u].drop(columns=['u'], merge=False).rename(columns={'v': 'u'})
             elif direction == 'in':
-                df = self.df[self.df.v == u].drop(columns=['v'])
+                df = self.df[self.df.v == u].drop(columns=['v'], merge=False)
             elif direction == 'both':
-                df = self.df[self.df.u == u].drop(columns=['u']).rename(columns={'v': 'u'})
-                df = df.append(self.df[self.df.v == u].drop(columns=['v']), ignore_index=True)
+                df = self.df[self.df.u == u].drop(columns=['u'], merge=False).rename(columns={'v': 'u'})
+                df = df.append(self.df[self.df.v == u].drop(columns=['v'], merge=False), ignore_index=True, merge=True)
             else:
                 raise UnrecognizedDirection()
-            return ITemporalNodeSetDF(df, disjoint_intervals=False, discrete=self.discrete).number_of_interactions
+            return ITemporalNodeSetDF(df, discrete=self.discrete).number_of_interactions
 
 
     def _degree_of_discrete_weighted(self, u, direction):
@@ -424,16 +439,15 @@ class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
             return NodeCollection(Counter(iter_))
         else:
             if direction == 'out':
-                df = self.df[self.df.u == u].drop(columns=['u']).rename(columns={'v': 'u'})
+                df = self.df[self.df.u == u].drop(columns=['u'], merge=False).rename(columns={'v': 'u'})
             elif direction == 'in':
-                df = self.df[self.df.v == u].drop(columns=['v'])
+                df = self.df[self.df.v == u].drop(columns=['v'], merge=False)
             elif direction == 'both':
-                df = self.df[self.df.u == u].drop(columns=['u']).rename(columns={'v': 'u'})
-                df = df.append(self.df[self.df.v == u].drop(columns=['v']), ignore_index=True)
+                df = self.df[self.df.u == u].drop(columns=['u'], merge=False).rename(columns={'v': 'u'})
+                df = df.append(self.df[self.df.v == u].drop(columns=['v'], merge=False), ignore_index=True, merge=True)
             else:
                 raise UnrecognizedDirection()
             return df.w.sum()
-
 
 
     def _degree_at_unweighted(self, u=None, t=None, direction='out'):
@@ -461,19 +475,23 @@ class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
                     raise UnrecognizedDirection()
 
                 prev = None
-                for u, v, ts in self.df[['u', 'v', 'ts']].sort_values(by='ts').itertuples(name=None, index=False):
+                for u, v, ts in self.sort_df('ts').itertuples():
+                    # Collect neighbors at each time-stamp 
                     if prev is None:
                         cache = defaultdict(set)
                         prev = ts
                     elif ts != prev:
                         for u, s in iteritems(cache):
                             if u in out:
+                                # and calculate their size
                                 out[u].it.append((prev, len(s)))
                             else:
+                                # in a TimeCollection of ascending time for each node
                                 out[u] = TimeCollection([(prev, len(s))], discrete=self.discrete, instantaneous=True)
                         cache = defaultdict(set)
                         prev = ts
                     add(cache, u, v)
+                # Add the remaining, from the cache
                 for u, s in iteritems(cache):
                     if u in out:
                         out[u].it.append((prev, len(s)))
@@ -485,17 +503,18 @@ class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
                 return LinkSetDF(self.df.df_at(t).drop(columns=['ts']), weighted=self.weighted).degree(u=None, direction=direction)
         else:
             if direction == 'out':
-                df = self.df[self.df.u == u].drop(columns=['u']).rename(columns={'v': 'u'})
+                df = self.df[self.df.u == u].drop(columns=['u'], merge=False).rename(columns={'v': 'u'})
             elif direction == 'in':
-                df = self.df[self.df.v == u].drop(columns=['v'])
+                df = self.df[self.df.v == u].drop(columns=['v'], merge=False)
             elif direction == 'both':
-                df = self.df[self.df.u == u].drop(columns=['u']).rename(columns={'v': 'u'})
-                df = df.append(self.df[self.df.v == u].drop(columns=['v']), ignore_index=True, merge=True)
+                df = self.df[self.df.u == u].drop(columns=['u'], merge=False).rename(columns={'v': 'u'})
+                df = df.append(self.df[self.df.v == u].drop(columns=['v'], merge=False), ignore_index=True, merge=True)
             else:
                 raise UnrecognizedDirection()
             if t is None:
                 dt = defaultdict(set)
-                for u, ts in df[['u', 'ts']].itertuples(name=None, index=False):
+                # Collect all nodes for each time-stamp
+                for u, ts in df.itertuples():
                     dt[ts].add(u)
                 return TimeCollection(sorted(list((ts, len(us)) for ts, us in iteritems(dt))), discrete=self.discrete, instantaneous=True)
             else:
@@ -519,20 +538,25 @@ class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
                     raise UnrecognizedDirection()
 
                 prev = None
-                for u, v, ts, w in self.df.sort_values(by='ts')[['u', 'v', 'ts', 'w']].itertuples(name=None, index=False):
+                for u, v, ts, w in self.sort_df('ts').itertuples(weights=True):
+                    # Iterate in ascending time
                     if prev is None:
+                        # For each node add all the weights for all its neighbors
                         cache = Counter()
                         prev = ts
                     elif ts != prev:
                         for u, weight in iteritems(cache):
                             if u in out:
+                                # Append in ascending time inside the TimeCollection
                                 out[u].it.append((prev, weight))
                             else:
+                                # Initialize inside the TimeCollection
                                 out[u] = TimeCollection([(prev, weight)], discrete=self.discrete, instantaneous=True)
                         cache = Counter()
                         prev = ts
                     add(cache, u, v, w)
 
+                # Remove the remaining.
                 for u, weight in iteritems(cache):
                     if u in out:
                         out[u].it.append((prev, weight))
@@ -543,20 +567,19 @@ class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
             else:
                 return LinkSetDF(self.df.df_at(t).drop(columns=['ts']), weighted=self.weighted).degree(u=None, direction=direction)
         else:
-            di = True
             if direction == 'out':
-                df = self.df[self.df.u == u].drop(columns=['u']).rename(columns={'v': 'u'})
+                df = self.df[self.df.u == u].drop(columns=['u'], merge=False).rename(columns={'v': 'u'})
             elif direction == 'in':
-                df = self.df[self.df.v == u].drop(columns=['v'])
+                df = self.df[self.df.v == u].drop(columns=['v'], merge=False)
             elif direction == 'both':
-                df = self.df[self.df.u == u].drop(columns=['u']).rename(columns={'v': 'u'})
-                df = df.append(self.df[self.df.v == u].drop(columns=['v']), ignore_index=True)
-                di = False
+                df = self.df[self.df.u == u].drop(columns=['u'], merge=False).rename(columns={'v': 'u'})
+                df = df.append(self.df[self.df.v == u].drop(columns=['v'], merge=False), ignore_index=True, merge=True)
             else:
                 raise UnrecognizedDirection()
             if t is None:
                 dt = Counter()
-                for ts, w in df[['ts', 'w']].itertuples(weights=True):
+                for u, ts, w in df.itertuples(weights=True):
+                    # collect all the weights for its time-stamp.
                     dt[ts] += w
                 return TimeCollection(sorted(list(iteritems(dt))), discrete=self.discrete, instantaneous=True)
             else:
@@ -583,6 +606,7 @@ class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
                 raise UnrecognizedDirection()
             times = defaultdict(set)
             for u, v, ts in self.df.itertuples(index=False, name=None):
+                # collect the time-stamps for its pair
                 times[key(u, v)].add(ts)
             return LinkCollection({l: ITimeSetS(ts, discrete=self.discrete) for l, ts in iteritems(times)})
         else:
@@ -620,38 +644,41 @@ class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
             else:
                 raise UnrecognizedDirection()
             for u, v, ts in self.df.itertuples():
+                # structure in neighboring relations for its node.
                 add(u, v, ts)
             return NodeCollection({u: ITemporalNodeSetDF(ns) for u, ns in iteritems(neighbors)})
         else:
             if direction == 'out':
-                df = self.df[self.df.u == u].drop(columns=['u']).rename(columns={'v': 'u'})
+                df = self.df[self.df.u == u].drop(columns=['u'], merge=False).rename(columns={'v': 'u'})
             elif direction == 'in':
-                df = self.df[self.df.v == u].drop(columns=['v'])
+                df = self.df[self.df.v == u].drop(columns=['v'], merge=False)
             elif direction=='both':
-                df = self.df[self.df.u == u].drop(columns=['u']).rename(columns={'v': 'u'})
-                df = df.append(self.df[self.df.v == u].drop(columns=['v']), ignore_index=True)
+                df = self.df[self.df.u == u].drop(columns=['u'], merge=False).rename(columns={'v': 'u'})
+                df = df.append(self.df[self.df.v == u].drop(columns=['v'], merge=False), ignore_index=True, merge=True)
             else:
                 raise UnrecognizedDirection()
             return ITemporalNodeSetDF(df, no_duplicates=False, discrete=self.discrete)
 
     def substream(self, nsu=None, nsv=None, ts=None):
         if nsu is not None:
+            # check if we have a valid nodeset or cast
             if not isinstance(nsu, ABC.NodeSet):
                 try:
                     nsu = NodeSetS(nsu)
                 except Exception:
                     raise UnrecognizedNodeSet('nsu')
         if nsv is not None:
+            # check if we have a valid nodeset or cast
             if not isinstance(nsv, ABC.NodeSet):
                 try:
                     nsv = NodeSetS(nsv)
                 except Exception:
                     raise UnrecognizedNodeSet('nsv')
         if ts is not None:
+            # check if we have a valid nodeset or try to cast
             if not isinstance(ts, ABC.TimeSet):
                 try:
                     ts = list(ts)
-                    print(ts)
                     if any(isinstance(t, Iterable) for t in ts):
                         ts = TimeSetDF(ts, discrete=self.discrete)
                     else:
@@ -662,6 +689,7 @@ class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
         if all(o is None for o in [nsu, nsv, ts]):
             return self.copy()
         if bool(self) and all((o is None or bool(o)) for o in [nsu, nsv, ts]):
+            # Extract the valid nodes
             if nsu is not None and nsv is not None:
                 df = self.df[self.df.u.isin(nsu) & self.df.v.isin(nsv)]
             elif nsu is not None:
@@ -673,12 +701,14 @@ class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
 
             if ts is not None:
                 if ts.instantaneous:
+                    # if instantaneous, intersect each key with the same time-stamps.
                     if self.weighted:
                         df = df.intersection(set(ts), by_key=False, on_column=['u', 'v'], intersection_function='unweighted')
                     else:
                         df = df.intersection(set(ts), by_key=False, on_column=['u', 'v'])
                 else:
                     ts = list(ts_to_df(ts).sort_values(by='ts').itertuples(index=False, name=None))
+                    # keep valid instant by doing a binary search on intervals.
                     df = [key for key in iter(self) if t_in(ts, key[2], 0, len(ts) - 1)]
             return self._init_base_class(df)
         else:
@@ -782,6 +812,8 @@ class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
         assert self.discrete == ns.discrete
         cidf_ = class_interval_df(discrete=self.discrete, weighted=self.weighted)
         if isinstance(ns, TemporalNodeSetB):
+            # if all nodes appear at all times
+            # take the neighbors
             if direction == 'out':
                 df = self.df.rename(columns={'v': 'u', 'u': 'v'})
                 df = df[df.v.isin(ns.nodeset_)].drop('v', axis=1)
@@ -799,6 +831,7 @@ class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
                     ts = its_to_idf(ts)
                 else:
                     df, ts = cidf_(self.df), ts_to_df(ts)
+                # and apply intersection for all keys with the same time-set
                 df = df.intersection(df, ts, on_columns=['u', 'v'], by_key=False)
         else:
             if isinstance(ns, ABC.ITemporalNodeSet):
@@ -811,7 +844,7 @@ class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
                 df = df.rename(columns={'u': 'v', 'v': 'u'}).map_intersection(base_df)
             elif direction == 'both':
                 dfo, df = df, df.map_intersection(base_df)
-                df = df.append(dfo.rename(columns={'u': 'v', 'v': 'u'}).map_intersection(base_df), ignore_index=True)
+                df = df.append(dfo.rename(columns={'u': 'v', 'v': 'u'}).map_intersection(base_df), ignore_index=True, merge=True)
             else:
                 derror = True
         if derror:
@@ -826,11 +859,14 @@ class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
                 assert self.discrete == ns.discrete
                 idf_ = class_interval_df(discrete=self.discrete, weighted=self.weighted)
                 if isinstance(ns, TemporalNodeSetB):
+                    # if all nodes appear at all times
+                    # take the nodes that are in the nodeset
                     tdf, ts = self.df_[self.df_['v'].isin(ns.nodeset_) & self.df_['u'].isin(ns.nodeset_)], ns.timeset_
                     if isinstance(ts, ABC.ITimeSet):
                         ts = its_to_idf(ts)
                     else:
                         df, ts = idf_(self.df), ts_to_df(ts)
+                    # and intersect thorugh time with the time-set
                     tdf = tdf.intersection(ts, on_columns=['u', 'v'], by_key=False)
                 else:
                     if isinstance(ns, ABC.ITemporalNodeSet):
@@ -857,8 +893,10 @@ class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
                 min_time, max_time = df.ts.min(), df.ts.max()
             else:
                 min_time, max_time = df.ts.min(), df.tf.max()
+            # apply the delta
             df['ts'] -= delta/2.0
             df['tf'] = df['ts'] + delta
+            # and clip to the start and finish of time
             df['ts'].clip(lower=min_time, inplace=True)
             df['tf'].clip(upper=max_time, inplace=True)
         if self.discrete:
