@@ -1,3 +1,5 @@
+"""This file contains a set of functions for handling multiple DF class, in a unified manner."""
+
 from itertools import tee
 from warnings import warn
 
@@ -18,26 +20,32 @@ from stream_graph.exceptions import UnrecognizedDirection
 
 
 def load_instantaneous_df(df, no_duplicates, weighted, keys=[], merge_function=None):
+    """Transform a bunch of input types to a Instantaneous(W)DF."""
     is_df = isinstance(df, pd.DataFrame)
     if not ((df is None) or (is_df and df.empty) or (not is_df and not bool(df))):
         is_idf, is_iwdf = isinstance(df, InstantaneousDF), isinstance(df, InstantaneousWDF)
         if not (is_idf or is_iwdf):
+            # we don't the same input type as the output
             try:
                 an = True
                 if is_df:
+                    # If it already a pandas dataframe
                     weighted = (weighted in df.columns or len(df.columns) == len(keys) + 2 if weighted is None else weighted)
                     ec = (['ts', 'w'] if weighted else ['ts'])
                     try:
-                        df = df[keys + ec]
-                        an = False
+                        # get the columns you need
+                        df, an = df[keys + ec], False
                     except Exception:
                         pass
                 else:
+                    # else cast
                     df = pd.DataFrame(list(df))
                     weighted = (len(df.columns) == len(keys) + 2 if weighted is None else weighted)
                     ec = (['ts', 'w'] if weighted else ['ts'])
                 if an:
+                    # if needed retrieve the desired columns
                     df = df[df.columns[:len(keys) + len(ec)]]
+                    # and assign names
                     df.columns = keys + ec
             except Exception:
                 raise ValueError('An Iterable input should consist of either 3 or 4 elements')
@@ -54,6 +62,7 @@ def load_instantaneous_df(df, no_duplicates, weighted, keys=[], merge_function=N
 
 
 def load_interval_wdf(df, discrete, weighted, disjoint_intervals, default_closed, keys=[], merge_function=None):
+    """Transform a bunch of input types to a {C,D}Interval(W)DF."""
     if isinstance(df, (CIntervalDF, CIntervalWDF, DIntervalDF, DIntervalWDF)):
         obj = (df if disjoint_intervals else df.merge(inplace=False))
     else:
@@ -66,10 +75,11 @@ def load_interval_wdf(df, discrete, weighted, disjoint_intervals, default_closed
                 obj = init_interval_df(data=df, discrete=True, weighted=weighted, keys=keys)
             else:
                 s, f = ((True, True) if default_closed is None else _closed_to_tuple(default_closed))
-
                 if 'itype' in df.columns:
+                    # Check if itype exists and transform it, to 's', 'f' columns
                     s, f = zip(((s, f) if k in [pd.NaT, np.NaN] else _closed_to_tuple(k)) for k in df['itype'])
                     df['s'], df['f'] = list(s), list(f)
+                    df = df.drop(columns='itype')
                 elif 's' in df.columns:
                     if 'f' not in df.columns:
                         df['f'] = f
@@ -79,6 +89,7 @@ def load_interval_wdf(df, discrete, weighted, disjoint_intervals, default_closed
                     df['s'], df['f'] = s, f
                 obj = init_interval_df(data=df, discrete=False, weighted=weighted, keys=keys, merge_function=merge_function)
         elif hasattr(df, '__iter__'):
+            # Differentiate which case of function we need for parsing intervals
             if discrete:
                 if weighted:
                     obj = _load_dinterval_wdf_iterable(df, keys, disjoint_intervals, merge_function)
@@ -97,6 +108,7 @@ def load_interval_wdf(df, discrete, weighted, disjoint_intervals, default_closed
 
 
 def _load_dinterval_wdf_iterable(df, keys, disjoint_intervals, merge_function):
+    """Store a discrete time-signature iterable with weights to DIntervalWDF."""
     l, lks = list(), len(keys)
     for k in df:
         lk = len(k)
@@ -104,12 +116,14 @@ def _load_dinterval_wdf_iterable(df, keys, disjoint_intervals, merge_function):
         if lk == lks + 3:
             l.append(k)
         elif lk == lks + 2:
+            # Instants
             l.append(k[:-1] + (k[-2], k[-1]))
         else:
             raise ValueError('Invalid input ')
     return DIntervalWDF(l, disjoint_intervals=disjoint_intervals, columns=keys+['ts', 'tf', 'w'], merge_function=merge_function)
 
 def _load_cinterval_wdf_iterable(df, keys, s, f, disjoint_intervals, merge_function):
+    """Store a continuous time-signature iterable to CIntervalWDF."""
     inp = list()
     len_keys = len(keys)
     for k in df:
@@ -133,6 +147,7 @@ def _load_cinterval_wdf_iterable(df, keys, s, f, disjoint_intervals, merge_funct
 
 
 def weighted_iter(df):
+    """Return an iterator of a dataframe that contains also weights if there are."""
     if isinstance(df, (DIntervalDF, CIntervalDF)):
         return df.itertuples()
     else:
@@ -140,6 +155,7 @@ def weighted_iter(df):
 
 
 def idf_to_df(df, discrete=None):
+    """Transforms a instantaneous dataframe to a non-instantaneous."""
     df = pd.DataFrame(df)
     df['tf'] = df['ts']
     discrete = (df.ts.dtype.kind == 'i' if discrete is None else discrete)
@@ -152,6 +168,7 @@ def idf_to_df(df, discrete=None):
 
 
 def load_interval_df(df, discrete, default_closed, disjoint_intervals, keys=[]):
+    """Transform a bunch of input types to a {C,D}IntervalDF."""
     if isinstance(df, DIntervalDF):
         if discrete is False:
             warn('Ignore \'False\' discrete argument as object seems to be discrete')
@@ -174,6 +191,7 @@ def load_interval_df(df, discrete, default_closed, disjoint_intervals, keys=[]):
             s, f = ((True, True) if default_closed is None else _closed_to_tuple(default_closed))
 
             if 'itype' in df.columns:
+                # Check if itype exists and transform, to 's', 'f' columns
                 l = [k[:-1] + ((s, f) if k[-1] in [pd.NaT, np.NaN] else _closed_to_tuple(k[-1])) for k in df[keys + ['ts', 'tf', 'itype']].itertuples(name=None, index=False)]
                 return CIntervalDF(l, disjoint_intervals=disjoint_intervals, columns =keys + ['ts', 'tf', 's', 'f']), False
             elif 's' in df.columns:
@@ -186,6 +204,7 @@ def load_interval_df(df, discrete, default_closed, disjoint_intervals, keys=[]):
                 df['f'] = f
             return CIntervalDF(df, disjoint_intervals=disjoint_intervals, columns=keys + ['ts', 'tf', 's', 'f']), False
     elif hasattr(df, '__iter__'):
+        # Differentiate on interval type
         discrete = (True if discrete is None else discrete)
         if discrete:
             return _load_dinterval_df_iterable(df, keys, disjoint_intervals), True
@@ -198,15 +217,17 @@ def load_interval_df(df, discrete, default_closed, disjoint_intervals, keys=[]):
 
 
 def has_elements(iter):
-  iter, any_check = tee(iter)
-  try:
-    any_check.next()
-    return True, iter
-  except StopIteration:
-    return False, iter
+    """Check if an iterator has elements."""
+    iter, any_check = tee(iter)
+    try:
+        any_check.next()
+        return True, iter
+    except StopIteration:
+        return False, iter
 
 
 def _load_dinterval_df_iterable(df, keys, disjoint_intervals):
+    """Tranform an iterable to a discrete time-signature dataframe."""
     l, lks = list(), len(keys)
     for k in df:
         lk = len(k)
@@ -222,6 +243,7 @@ def _load_dinterval_df_iterable(df, keys, disjoint_intervals):
 
 
 def _load_cinterval_df_iterable(df, keys, s, f, disjoint_intervals):
+    """Transform an iterable to a continuous time-signature dataframe."""
     inp = list()
     len_keys = len(keys)
     for key in df:
@@ -244,6 +266,7 @@ def _load_cinterval_df_iterable(df, keys, s, f, disjoint_intervals):
 
 
 def columns_interval_df(discrete, weighted, keys=[]):
+    """Obtain the columns of dataframe according with the time-signature, the keys and the weighting."""
     cols = ['ts', 'tf']
     if not discrete:
         cols.extend(['s', 'f'])
@@ -253,10 +276,12 @@ def columns_interval_df(discrete, weighted, keys=[]):
 
 
 def class_interval_df(discrete=False, weighted=False):
+    """Obtain the class of interval-dataframe according with the time-signature and the weighting."""
     return ((DIntervalWDF if discrete else CIntervalWDF) if weighted else (DIntervalDF if discrete else CIntervalDF))
 
 
 def init_interval_df(data=[], discrete=False, weighted=False, disjoint_intervals=True, keys=[], merge_function=None):
+    """Initialize a dataframe according with the time-signature and the weighting."""
     cols = columns_interval_df(discrete=discrete, weighted=weighted, keys=keys)
     class_ = class_interval_df(discrete=discrete, weighted=weighted)
     if weighted:
@@ -265,19 +290,21 @@ def init_interval_df(data=[], discrete=False, weighted=False, disjoint_intervals
         return class_(data, columns=cols, disjoint_intervals=disjoint_intervals)
 
 
-
-def class_instantaneous_df(weighted=False):
-    return (InstantaneousWDF if weighted else InstantaneousDF)
-
-
 def columns_instantaneous_df(weighted, keys=[]):
+    """Obtain the columns of dataframe according with the keys and the weighting."""
     cols = ['ts']
     if weighted:
         cols.append('w')
     return keys + cols
 
 
+def class_instantaneous_df(weighted=False):
+    """Obtain the class of instantaneous-dataframe according with the weighting."""
+    return (InstantaneousWDF if weighted else InstantaneousDF)
+
+
 def init_instantaneous_df(data=[], weighted=False, no_duplicates=True, keys=[], merge_function=None):
+    """Obtain the class of interval-dataframe according with the weighting."""
     if weighted:
         return class_instantaneous_df(weighted)(data, columns=columns_instantaneous_df(weighted, keys), no_duplicates=no_duplicates, merge_function=merge_function)
     else:
@@ -285,6 +312,7 @@ def init_instantaneous_df(data=[], weighted=False, no_duplicates=True, keys=[], 
 
 
 def _closed_to_tuple(cl):
+    """Transform a closed identifier for bounds to booleans for left and right bound."""
     if cl == 'both':
         return True, True
     elif cl == 'left':
@@ -298,6 +326,7 @@ def _closed_to_tuple(cl):
 
 
 def _tuple_to_closed(cl):
+    """Transform a boolean for left and right bound of an interval to a closed identifier."""
     if cl == (True, True):
         return 'both'
     elif cl == (True, False):
@@ -311,6 +340,7 @@ def _tuple_to_closed(cl):
 
 
 def itertuples_pretty(df, discrete, weighted=False):
+    """`df.itertuples` convert boolean for left and right closed bound boolean to a `closed` identifier."""
     if discrete:
         if weighted:
             return df.itertuples(weights=True)
@@ -323,6 +353,7 @@ def itertuples_pretty(df, discrete, weighted=False):
 
 
 def itertuples_raw(df, discrete, weighted=False):
+    """`df.itertuples` in a raw form left and right bound."""
     kargs = {}
     if not discrete:
         kargs['bounds'] = True
