@@ -370,7 +370,7 @@
             <span class="n">G</span> <span class="o">=</span> <span class="n">create_using</span><span class="p">()</span>
 
         <span class="n">G</span><span class="o">.</span><span class="n">add_nodes_from</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nodeset_</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">linkset_</span><span class="o">.</span><span class="n">weighted</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">linkset_</span><span class="o">.</span><span class="n">weighted</span><span class="p">:</span>
             <span class="n">G</span><span class="o">.</span><span class="n">add_weighted_edges_from</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">linkset_</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">G</span><span class="o">.</span><span class="n">add_edges_from</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">linkset_</span><span class="p">)</span>    

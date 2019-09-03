@@ -298,6 +298,11 @@
             <span class="k">return</span> <span class="kc">False</span></div>
 
     <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">nodeset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">stream_graph</span> <span class="k">import</span> <span class="n">NodeSetS</span>
+        <span class="k">return</span> <span class="n">NodeSetS</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df_</span><span class="p">[</span><span class="s1">&#39;u&#39;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_</span><span class="p">[</span><span class="s1">&#39;v&#39;</span><span class="p">])))</span>
+
+    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">is_sorted_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">(</span><span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;sort_by_&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;sorted_&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">sorted_</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">sort_by_</span> <span class="ow">is</span> <span class="kc">None</span>
 

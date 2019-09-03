@@ -280,6 +280,10 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">timeset_</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
     <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">linkset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">temporal_linkset_</span><span class="o">.</span><span class="n">linkset</span>    
+
+    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">temporal_nodeset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">temporal_nodeset_</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
@@ -456,7 +460,7 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        link_coverage : Real or TimeCollection</span>
-<span class="sd">            Returns :math:`\\frac{|E_{t}|}{|V|^{2}}`.</span>
+<span class="sd">            Returns :math:`\\frac{|E_{t}|}{|V(t)|^{2}}`.</span>
 <span class="sd">            Returns the time collection for each link at each time-event.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -706,6 +710,12 @@
             <span class="k">return</span> <span class="bp">self</span></div>
 
     <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">aggregated_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">stream_graph</span> <span class="k">import</span> <span class="n">Graph</span>
+        <span class="k">return</span> <span class="n">Graph</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nodeset_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">linkset</span><span class="p">)</span>
+
+
+    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">data_cube</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">DataCube</span><span class="p">()</span>
@@ -722,6 +732,7 @@
             <span class="k">return</span> <span class="n">DataCube</span><span class="p">(</span><span class="n">iter_</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;u&#39;</span><span class="p">,</span> <span class="s1">&#39;v&#39;</span><span class="p">,</span> <span class="s1">&#39;ts&#39;</span><span class="p">],</span> <span class="n">column_sizes</span><span class="o">=</span><span class="n">column_sizes</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Stream-Graph should be discrete to be convertible to a data-cube&#39;</span><span class="p">)</span></div>
+
 </pre></div>
 
            </div>
