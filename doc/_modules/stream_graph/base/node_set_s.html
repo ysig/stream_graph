@@ -215,7 +215,7 @@
                 <span class="k">return</span> <span class="n">NodeSetS</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nodes</span> <span class="o">&amp;</span> <span class="n">ns</span><span class="o">.</span><span class="n">nodes</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">UnrecognizedNodeSet</span><span class="p">(</span><span class="s1">&#39;right operand&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">NodeSetS</span><span class="p">()</span>
+        <span class="k">return</span> <span class="kc">False</span>
         
 
     <span class="k">def</span> <span class="nf">__and__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ns</span><span class="p">):</span>
