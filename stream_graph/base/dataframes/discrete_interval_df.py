@@ -67,6 +67,11 @@ class DIntervalDF(pd.DataFrame):
             self.merge(inplace=True)
         return out
 
+    def sort_values(self, by, axis=0, ascending=True, inplace=False, kind='quicksort', na_position='last'):
+        df = super(self.__class__, self).sort_values(by, axis, ascending, inplace, kind, na_position)
+        if not inplace:
+            return self.__class__(df)
+
     def itertuples(self, index=False, name=None):
         columns = sorted(list(set(self.columns) - {'ts', 'tf'})) + ['ts', 'tf']
         return super(DIntervalDF, self).reindex(columns=columns).itertuples(index=index, name=name)

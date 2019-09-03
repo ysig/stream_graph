@@ -131,13 +131,16 @@ class TemporalLinkSetDF(ABC.TemporalLinkSet):
             return self._empty_base_class()
 
     def sort_df(self, sort_by):
-        if self.sort_by is None:
+        """Retrieve, store if no-order and produce a sorted version of the df"""
+        if sort_by is None:
+            return self.df
+        elif self.sort_by is None:
             self.sort_by = sort_by
             return self.sort_df(sort_by)
         elif self.sort_by == sort_by:
             return self.sorted_df
         else:
-            return self.df_.sort_values(by=self.sort_by, inplace=True)
+            return self.df_.sort_values(by=sort_by)
 
     @property
     def size(self):
@@ -171,7 +174,7 @@ class TemporalLinkSetDF(ABC.TemporalLinkSet):
     def linkset(self):
         if bool(self):
             if self.weighted:
-                return LinkSetDF(self.df[['u', 'v', 'w']], no_duplicates=False, weighted=True)
+                return LinkSetDF(self.df[['u', 'v', 'w']], no_duplicates=False, weighted=True, merge_function=self.df_.merge_function, operation_functions=self.algebra)
             else:
                 return LinkSetDF(self.df[['u', 'v']].drop_duplicates())
         else:
@@ -247,13 +250,14 @@ class TemporalLinkSetDF(ABC.TemporalLinkSet):
                 return iter()
             else:
                 return LinkSetDF()
+        mf = (self.df_.merge_function if self.weighted else None)
         if t is None:
             calculate = (set_weighted_links_ if self.weighted else set_unweighted_links_)
-            return TimeGenerator(((e, LinkSetDF(s, weighted=self.weighted)) for e, s in self._build_time_generator(set, calculate, add_weights=False)), discrete=self.discrete)
+            return TimeGenerator(((e, LinkSetDF(s, weighted=self.weighted, merge_function=mf)) for e, s in self._build_time_generator(set, calculate, add_weights=False)), discrete=self.discrete)
         elif isinstance(t, tuple):
-            return LinkSetDF(self.df.df_at_interval(*t)[['u', 'v'] + self._wc], weighted=self.weighted)
+            return LinkSetDF(self.df.df_at_interval(*t)[['u', 'v'] + self._wc], weighted=self.weighted, merge_function=mf, no_duplicates=False)
         else:
-            return LinkSetDF(self.df.df_at(t)[['u', 'v'] + self._wc], weighted=self.weighted)
+            return LinkSetDF(self.df.df_at(t)[['u', 'v'] + self._wc], weighted=self.weighted, merge_function=mf, no_duplicates=False)
 
     def times_of(self, l=None, direction='out'):
         if not bool(self):
@@ -343,6 +347,7 @@ class TemporalLinkSetDF(ABC.TemporalLinkSet):
                 return TimeCollection()
             return NodeSetS()
 
+        mf = (self.df_.merge_function if self.weighted else None)
         if u is None:
             if t is None:
                 out = dict()
@@ -355,7 +360,7 @@ class TemporalLinkSetDF(ABC.TemporalLinkSet):
 
                 return NodeCollection(out)
             else:
-                return LinkSetDF(self.df.df_at(t)[['u', 'v'] + self._wc]).neighbors_of(u=None, direction=direction)
+                return LinkSetDF(self.df.df_at(t)[['u', 'v'] + self._wc], merge_function=mf, no_duplicates=False).neighbors_of(u=None, direction=direction)
         else:
             if direction == 'out':
                 df = self.df[self.df.u == u].drop(columns=['u']+self._wc, merge=False).rename(columns={'v': 'u'})
@@ -372,6 +377,7 @@ class TemporalLinkSetDF(ABC.TemporalLinkSet):
                 return NodeSetS(df[df.index_at(t)].u.values.flat)
 
     def _degree_at_weighted(self, u, t, direction):
+        mf = self.df_.merge_function
         if u is None:
             if t is None:
                 out = dict()
@@ -383,7 +389,7 @@ class TemporalLinkSetDF(ABC.TemporalLinkSet):
                         d.append(val)
                 return NodeCollection(out)
             else:
-                return LinkSetDF(self.df.df_at(t)[['u', 'v', 'w']], weighted=True).degree(u=None, direction=direction, weights=True)
+                return LinkSetDF(self.df.df_at(t)[['u', 'v', 'w']], weighted=True, merge_function=self.df_.merge_function, no_duplicates=False).degree(u=None, direction=direction, weights=True)
         else:
             if direction == 'out':
                 df = self.df[self.df.u == u].drop(columns=['u'], merge=False).rename(columns={'v': 'u'})
@@ -411,7 +417,7 @@ class TemporalLinkSetDF(ABC.TemporalLinkSet):
                         d.append(val)
                 return NodeCollection(out)
             else:
-                return LinkSetDF(self.df.df_at(t)[['u', 'v'] + self._wc]).degree(u=None, direction=direction)
+                return LinkSetDF(self.df.df_at(t)[['u', 'v'] + self._wc], no_duplicates=False).degree(u=None, direction=direction)
         else:
             df = (self.df.drop(columns='w', merge=False) if self.weighted else self.df)
             if direction == 'out':
@@ -587,11 +593,11 @@ class TemporalLinkSetDF(ABC.TemporalLinkSet):
         if isinstance(tls, ABC.TemporalLinkSet):
             if bool(self) and bool(tls):
                 assert tls.discrete == self.discrete
-                if isinstance(tls, LinkSetDF):
+                if not isinstance(tls, self.__class__):
                     try:
                         return tls.__rsub__(self)
                     except (AttributeError, NotImplementedError):
-                        tls = LinkSetDF(tls, discrete=self.discrete, weighted=self.weighted)
+                        tls = TemporalLinkSetDF(tls, discrete=self.discrete, weighted=self.weighted)
                 out = (self.df.difference(tls.df, difference_function=self.algebra['d']) if self.weighted else self.df.difference(tls.df))
                 return TemporalLinkSetDF(out, discrete=self.discrete, weighted=self.weighted)
         else:

@@ -143,13 +143,15 @@ class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
 
     def sort_df(self, sort_by):
         """Retrieve, store if no-order and produce a sorted version of the df"""
-        if self.sort_by is None:
+        if sort_by is None:
+            return self.df
+        elif self.sort_by is None:
             self.sort_by = sort_by
             return self.sort_df(sort_by)
         elif self.sort_by == sort_by:
             return self.sorted_df
         else:
-            return self.df_.sort_values(by=self.sort_by, inplace=True)
+            return self.df_.sort_values(by=sort_by)
 
     @property
     def df(self):
@@ -161,7 +163,10 @@ class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
     @property
     def linkset(self):
         if bool(self):
-            return LinkSetDF(self.df_.drop(columns=['ts']), no_duplicates=False, weighted=self.weighted)
+            if self.weighted:
+                return LinkSetDF(self.df_.drop(columns=['ts']), no_duplicates=False, weighted=True, merge_function=self.df_.merge_function, operation_functions=self.algebra)
+            else:
+                return LinkSetDF(self.df_.drop(columns=['ts']), no_duplicates=False, weighted=False)
         else:
             return LinkSetDF()
 
@@ -293,6 +298,7 @@ class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
                             active_set[(u, v)] += w
                         if len(active_set):
                             yield (prev, LinkSetDF(dump(active_set), no_duplicates=True, weighted=self.weighted))
+                    return TimeGenerator(generate(self.sort_df('ts').itertuples(weights=True)), discrete=self.discrete, instantaneous=True)
                 else:
                     def generate(iter_):
                         prev = None
@@ -308,7 +314,7 @@ class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
                                 active_set.add((u, v))
                         if len(active_set):
                             yield (prev, LinkSetDF(list(active_set), no_duplicates=True, weighted=self.weighted))
-                return TimeGenerator(generate(self.sort_df('ts').itertuples()), discrete=self.discrete, instantaneous=True)
+                    return TimeGenerator(generate(self.sort_df('ts').itertuples()), discrete=self.discrete, instantaneous=True)
             else:
                 return LinkSetDF(self.df.df_at(t).drop(columns=['ts']), no_duplicates=False, weighted=self.weighted)
 
@@ -565,7 +571,7 @@ class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
 
                 return NodeCollection(out)
             else:
-                return LinkSetDF(self.df.df_at(t).drop(columns=['ts']), weighted=self.weighted).degree(u=None, direction=direction)
+                return LinkSetDF(self.df.df_at(t).drop(columns=['ts']), weighted=self.weighted, merge_function=self.df_.merge_function).degree(u=None, direction=direction, weights=True)
         else:
             if direction == 'out':
                 df = self.df[self.df.u == u].drop(columns=['u'], merge=False).rename(columns={'v': 'u'})
@@ -908,7 +914,7 @@ class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
         return TemporalLinkSetDF(df, disjoint_intervals=di, discrete=self.discrete, weighted=False).get_maximal_cliques(direction=direction)
 
     def ego_betweeness(self, u=None, t=None, direction='both', detailed=False):
-        df = self.sort_df(sort_by=['ts'])
+        df = self.sort_df('ts')
         both = direction == 'both'
         df = (df.rename(columns={'u': 'v', 'v': 'u'}) if direction == 'in' else df)
         lines = list(key for key in df[['u', 'v', 'ts']].itertuples(index=False, name=None))
@@ -927,7 +933,7 @@ class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
     def closeness(self, u=None, t=None, direction='both', detailed=False):
         from stream_graph._c_functions import closeness_c
         assert self.df_['ts'].dtype.kind == 'i'
-        df = self.sort_df(sort_by=['ts'])
+        df = self.sort_df('ts')
         both = direction == 'both'
         df = (df.rename(columns={'u': 'v', 'v': 'u'}) if direction == 'in' else df)
         return closeness_c(u, t, df[['u', 'v', 'ts']], both, detailed, discrete=self.discrete)

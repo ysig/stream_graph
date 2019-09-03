@@ -194,6 +194,11 @@ class TimeGenerator(object):
                         b, fb = cache[1], True
                     if fa and fb:
                         break
+                    if missing_value is not None:
+                        m = measure(b, a)
+                        if m != m_old:
+                            yield (cache[0], m)
+                            m_old = m
 
                 while True:
                     m = measure(b, a)

@@ -255,11 +255,17 @@ class TemporalNodeSetB(ABC.TemporalNodeSet):
                 if bool(tns):
                     assert tns.discrete == self.discrete
                     if isinstance(tns, TemporalNodeSetB):
+                        # If all time-stamps appear at all times also for the second temporal-node-set.
                         ns_in = self.nodeset_ & tns.nodeset_
+                        # For the subset of nodes that are common
                         if bool(ns_in):
+                            # Take the difference in time.
                             ts_diff = self.timeset_ - tns.timeset_
+                            # Calculate their difference in time
                             if bool(ts_diff):
+                                # First take the difference in nodes with all the times.
                                 tnsa_ = TemporalNodeSetB(nodeset=self.nodeset_ - tns.nodeset_, timeset=self.timeset_)
+                                # And append it to the common nodes with their difference in time.
                                 tnsb_ = TemporalNodeSetB(nodeset=ns_in, timeset=ts_diff)
                                 iter_ = chain(iter(tnsa_), iter(tnsb_))
                                 nsa = TemporalNodeSetDF(iter_, disjoint_intervals=True, discrete=self.discrete)

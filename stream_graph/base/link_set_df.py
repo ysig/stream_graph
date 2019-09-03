@@ -2,14 +2,18 @@ from __future__ import absolute_import
 import pandas as pd
 import itertools
 
+
 from stream_graph import ABC
 from stream_graph.exceptions import UnrecognizedLinkSet
 from stream_graph.exceptions import UnrecognizedDirection
+from .utils import make_algebra
 from .node_set_s import NodeSetS
 from stream_graph.collections import NodeCollection
 from collections import Counter
 from collections import defaultdict
 from six import iteritems
+from operator import add
+from .dataframes.algorithms.utils.misc import hinge_loss
 
 class LinkSetDF(ABC.LinkSet):
     """DataFrame implementation of the ABC.LinkSet
@@ -27,7 +31,7 @@ class LinkSetDF(ABC.LinkSet):
         The order of the DataFrame elements by which they will be produced when iterated.
 
     """
-    def __init__(self, df=None, no_duplicates=False, sort_by=None, weighted=False):
+    def __init__(self, df=None, no_duplicates=True, sort_by=None, weighted=False, merge_function=None, operation_functions=None):
         # Add a check for dataframe style
         if df is None:
             not_empty = False
@@ -35,6 +39,10 @@ class LinkSetDF(ABC.LinkSet):
             not_empty = not df.empty
         else:
             not_empty = len(df) > 0
+        if weighted:
+            self.algebra = make_algebra(operation_functions)
+            self.algebra['m'] = (sum if merge_function is None else merge_function)
+            assert callable(self.algebra['m'])
         if not_empty:
             if not isinstance(df, pd.DataFrame):
                 df = list(df)
@@ -154,7 +162,7 @@ class LinkSetDF(ABC.LinkSet):
     @property
     def merge_(self):
         if self.weighted:
-            self.df_ = merge_weights(self.df_)
+            self.df_ = merge_weights(self.df_, merge_function=self.algebra['m'])
         else:
             self.df_.drop_duplicates(inplace=True)
         return self
@@ -286,9 +294,11 @@ class LinkSetDF(ABC.LinkSet):
                     except NotImplementedError:
                         ls = LinkSetDF(ls, weighted=ls.weighted)
                 if self.weighted and ls.weighted:
-                    return LinkSetDF(intersect_weights(self.df, ls.df), weighted=True)
+                    return LinkSetDF(intersect_weights(self.df, ls.df, self.algebra['i']), weighted=True)
                 else:
-                    return LinkSetDF(pd.merge(self.to_unweighted.df, ls.to_unweighted.df, how='inner'))
+                    sa = set(self.to_unweighted.df.itertuples(name=None, index=False))
+                    sb = set(ls.to_unweighted.df.itertuples(name=None, index=False))
+                    return LinkSetDF(sa & sb)
         else:
             raise UnrecognizedLinkSet('ls')
         return LinkSetDF()
@@ -304,9 +314,11 @@ class LinkSetDF(ABC.LinkSet):
                     except NotImplementedError:
                         ls = LinkSetDF(ls, weighted=ls.weighted)
                 if self.weighted and ls.weighted:
-                    return LinkSetDF(merge_weights(self.df.append(ls.df, ignore_index=False, sort=False)), weighted=True, no_duplicates=True)
+                    return LinkSetDF(union_weights(self.df, ls.df, self.algebra['u']), weighted=True, no_duplicates=True)
                 else:
-                    return LinkSetDF(pd.merge(self.to_unweighted.df, ls.to_unweighted.df, how='outer'), no_duplicates=True)
+                    sa = set(self.to_unweighted.df.itertuples(name=None, index=False))
+                    sb = set(ls.to_unweighted.df.itertuples(name=None, index=False))
+                    return LinkSetDF(sa | sb)
             else:
                 return self.copy()
         else:
@@ -322,12 +334,11 @@ class LinkSetDF(ABC.LinkSet):
                         except (AttributeError, NotImplementedError):
                             ls = LinkSetDF(ls, weighted=ls.weighted)
                     if self.weighted and ls.weighted:
-                        return LinkSetDF(difference_weights(self.df, ls.df), weighted=True)
+                        return LinkSetDF(difference_weights(self.df, ls.df, self.algebra['d']), weighted=True)
                     else:
-                        df_uw, ls_uw = self.to_unweighted.df, ls.to_unweighted.df
-                        df_it = pd.merge(df_uw, ls_uw, how='inner')
-                        return LinkSetDF(df_uw.append(df_it, sort=False, ignore_index=True).drop_duplicates(keep=False),
-                                         sort_by=self.sort_by, no_duplicates=True)
+                        sa = set(self.to_unweighted.df.itertuples(name=None, index=False))
+                        sb = set(ls.to_unweighted.df.itertuples(name=None, index=False))
+                        return LinkSetDF(sa - sb)
                 else:
                     return self.copy()
         else:
@@ -340,36 +351,65 @@ class LinkSetDF(ABC.LinkSet):
     def issuperset(self, ls):
         if not isinstance(ls, ABC.LinkSet):
             raise UnrecognizedLinkSet('ls')
-        return self.size >= ls.size and (self & ls).size == ls.size
+        if self.weighted and self.algebra['s'] is not None:
+            assert callable(self.algebra['s'])
+            data = {(u, v): w for u, v, w in iter_df(dfa)}
+            for u, v, wb in iter_df(dfb):
+                wa = data.get((u, v), None)
+                if wa is None or not issuper_function(wa, wb):
+                    return False
+            return True
+        else:
+            sa = set(self.to_unweighted.df.itertuples(name=None, index=False))
+            sb = set(ls.to_unweighted.df.itertuples(name=None, index=False))
+            return sa.issuperset(sb)            
 
 
 def iter_df(df):
     return df.itertuples(index=False, name=None)
 
-def merge_weights(df):
-    data = Counter()
+def merge_weights(df, merge_function):
+    data = defaultdict(list)
     for u, v, w in iter_df(df):
-        data[(u, v)] += w
+        data[(u, v)].append(w)
+    return pd.DataFrame(list((u, v, merge_function(w)) for (u, v), w in iteritems(data)), columns=['u', 'v', 'w'])
+
+def union_weights(dfa, dfb, union_function):
+    union_function = (add if union_function is None else union_function)
+    assert callable(union_function)
+    data = {(u, v): w for u, v, w in iter_df(dfa)}
+    for u, v, wb in iter_df(dfb):
+        wa = data.get((u, v), None)
+        if wa is None:
+            # Add from the second if it not exists in the first
+            data[(u, v)] = wb
+        else:
+            # Take the union in common points
+            data[(u, v)] = union_function(wa, wb)
     return pd.DataFrame(list((u, v, w) for (u, v), w in iteritems(data)), columns=['u', 'v', 'w'])
 
-def intersect_weights(dfa, dfb):
-    data = Counter()
-    for u, v, w in iter_df(dfa):
-        data[(u, v)] += w
-    data_it = Counter()
-    for u, v, w in iter_df(dfb):
-        wb = data[(u, v)]
-        if wb > 0:
-            if (u, v) in data_it:
-                data_it[(u, v)] += w
-            else:
-                data_it[(u, v)] += wb + w
+def intersect_weights(dfa, dfb, intersection_function):
+    intersection_function = (min if intersection_function is None else intersection_function)
+    assert callable(intersection_function)
+    data = {(u, v): w for u, v, w in iter_df(dfa)}
+    data_it = dict()
+    for u, v, wb in iter_df(dfb):
+        wa = data.get((u, v), None)
+        if wa is not None:
+            # Take only the intersection in common points
+            wi = intersection_function(wa, wb)
+            if wi is not None:
+                data_it[(u, v)] = wi
     return pd.DataFrame(list((u, v, w) for (u, v), w in iteritems(data_it)), columns=['u', 'v', 'w'])
 
-def difference_weights(dfa, dfb):
-    b_keys = set((u, v) for u, v, _ in iter_df(dfb))
-    data_diff = Counter()
-    for u, v, w in iter_df(dfa):
-        if (u, v) not in b_keys:
-            data_diff[(u, v)] += w
-    return pd.DataFrame(list((u, v, w) for (u, v), w in iteritems(data_diff)), columns=['u', 'v', 'w'])
+def difference_weights(dfa, dfb, difference_function):
+    difference_function = (hinge_loss if difference_function is None else difference_function)
+    data = {(u, v): w for u, v, w in iter_df(dfa)}
+    for u, v, wb in iter_df(dfb):
+        wa = data.get((u, v), None)
+        if wa is not None:
+            # Calculate the difference function in common points
+            data[(u, v)] = difference_function(wa, wb)
+
+    # if we have Nones they will be omitted
+    return pd.DataFrame(list((u, v, w) for (u, v), w in iteritems(data) if w is not None), columns=['u', 'v', 'w'])

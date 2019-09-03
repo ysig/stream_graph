@@ -362,16 +362,6 @@ def itertuples_raw(df, discrete, weighted=False):
     return df.itertuples(**kargs)
 
 
-def apply_direction_on_iterator_flat(iter_, direction):
-    if direction == 'in':
-        iter_ = ((key[1], key[0]) + key[2:] for key in iter_)
-    elif direction == 'both':
-        iter_ = (it+key[2:] for key in iter_ for it in [(key[0], key[1]), (key[1], key[0])])
-    elif direction != 'out':
-        raise UnrecognizedDirection()
-    return iter_
-
-
 def apply_direction_on_iter(iter_, direction='out'):
     if direction == 'in':
         iter_ = ((key[1], key[0]) + key[2:] for key in iter_)
@@ -382,9 +372,9 @@ def apply_direction_on_iter(iter_, direction='out'):
     return iter_
 
 
-# (start, (time), key, w)
-def itertuples_aw_(df, discrete, weighted, add_weights=True):
-    iter_ = itertuples_raw(df, discrete, weighted)
+def itertuples_aw_(df, discrete, weighted, add_weights=True, direction='out'):
+    """Iterates a dataframe as `(start, (time), key, w)` tuples."""
+    iter_ = apply_direction_on_iter(itertuples_raw(df, discrete, weighted))
     if discrete:
         if weighted:
             return (o for i in iter_ for o in [(True, i[-3], i[:-3], i[-1]), (False, i[-2], i[:-3], i[-1])])
@@ -403,7 +393,7 @@ def itertuples_aw_(df, discrete, weighted, add_weights=True):
 def build_time_generator(df, cache_constructor, calculate, value_inequality_condition=None, add_weights=False, get_key=None, direction='out', sparse=False):
     # Make iterator
     discrete, weighted = isinstance(df, (DIntervalDF, DIntervalWDF)), isinstance(df, (DIntervalWDF, CIntervalWDF))
-    iter_ = itertuples_aw_(df, discrete, weighted, add_weights)
+    iter_ = itertuples_aw_(df, discrete, weighted, add_weights, direction)
 
     # Sort based on discrete and not-discrete
     if discrete:
@@ -462,6 +452,7 @@ def build_time_generator_(iter_, cache_constructor, calculate, time_continuation
         lob = new_lob
     if lob is not None:
         yield lob
+
 
 def generator_step(i, lob, a, time_continuation, valid_instant, value_inequality_condition):
     if i[0]:

@@ -48,7 +48,7 @@ class NodeSetS(ABC.NodeSet):
                 return NodeSetS(self.nodes & ns.nodes)
         else:
             raise UnrecognizedNodeSet('right operand')
-        return NodeSetS()
+        return False
         
 
     def __and__(self, ns):

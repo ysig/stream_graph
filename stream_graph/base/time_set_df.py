@@ -69,13 +69,17 @@ class TimeSetDF(ABC.TimeSet):
             return self._empty_base_class()
 
     def sort_df(self, sort_by):
-        if self.sort_by is None:
+        """Retrieve, store if no-order and produce a sorted version of the df"""
+        if sort_by is None:
+            return self.df
+        elif self.sort_by is None:
             self.sort_by = sort_by
             return self.sort_df(sort_by)
         elif self.sort_by == sort_by:
             return self.sorted_df
         else:
-            return self.df_.sort_values(by=self.sort_by, inplace=True)
+            return self.df_.sort_values(by=self.sort_by)
+
 
     @property
     def df(self):

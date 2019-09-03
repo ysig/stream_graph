@@ -154,6 +154,11 @@ class DIntervalWDF(pd.DataFrame):
         else:
             return (df.copy() if df is self else df)
 
+    def sort_values(self, by, axis=0, ascending=True, inplace=False, kind='quicksort', na_position='last'):
+        df = super(self.__class__, self).sort_values(by, axis, ascending, inplace, kind, na_position)
+        if not inplace:
+            return self.__class__(df, merge_function=self.merge_function)
+
     def merge(self, inplace=False):
         if self.empty:
             return self._save_or_return(self, inplace)

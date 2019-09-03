@@ -68,6 +68,11 @@ class CIntervalDF(pd.DataFrame):
                 out = CIntervalDF(out)
         return out
 
+    def sort_values(self, by, axis=0, ascending=True, inplace=False, kind='quicksort', na_position='last'):
+        df = super(self.__class__, self).sort_values(by, axis, ascending, inplace, kind, na_position)
+        if not inplace:
+            return self.__class__(df)
+
     def get_ni_columns(self, on_column):
         if on_column is None:
             columns = self.columns

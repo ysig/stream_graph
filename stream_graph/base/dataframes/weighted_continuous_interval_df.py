@@ -73,6 +73,11 @@ class CIntervalWDF(pd.DataFrame):
             cols.append('w')
         return super(CIntervalWDF, self).reindex(columns=cols).itertuples(index=index, name=name)
 
+    def sort_values(self, by, axis=0, ascending=True, inplace=False, kind='quicksort', na_position='last'):
+        df = super(CIntervalDF, self).sort_values(by, axis, ascending, inplace, kind, na_position)
+        if not inplace:
+            return self.__class__(out)
+
     def __getitem__(self, index):
         out = super(CIntervalWDF, self).__getitem__(index)
         if isinstance(out, pd.DataFrame):
@@ -113,6 +118,11 @@ class CIntervalWDF(pd.DataFrame):
             return (self.tf - self.ts)*self.w.sum()
         else:
             return (self.tf - self.ts).sum()
+
+    def sort_values(self, by, axis=0, ascending=True, inplace=False, kind='quicksort', na_position='last'):
+        df = super(self.__class__, self).sort_values(by, axis, ascending, inplace, kind, na_position)
+        if not inplace:
+            return self.__class__(df, merge_function=self.merge_function)
 
     def df_at(self, t):
         return self[self.index_at(t)]

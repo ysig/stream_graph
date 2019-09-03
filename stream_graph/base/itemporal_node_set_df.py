@@ -35,7 +35,7 @@ class ITemporalNodeSetDF(ABC.ITemporalNodeSet):
         The order of the DataFrame elements by which they will be produced when iterated.
 
     """
-    def __init__(self, df=None, no_duplicates=True, sort_by=['u', 'ts'], discrete=None):
+    def __init__(self, df=None, no_duplicates=True, sort_by= None, discrete=None):
         if isinstance(df, self.__class__):
             discrete = df.discrete_
             self.df_ = df.df
@@ -82,13 +82,15 @@ class ITemporalNodeSetDF(ABC.ITemporalNodeSet):
 
     def sort_df(self, sort_by):
         """Return a sorted version of the data-frame given an order or retrieves it if already sorted."""
-        if self.sort_by is None:
+        if sort_by is None:
+            return self.df
+        elif self.sort_by is None:
             self.sort_by = sort_by
             return self.sort_df(sort_by)
         elif self.sort_by == sort_by:
             return self.sorted_df
         else:
-            return self.df_.sort_values(by=self.sort_by, inplace=True)
+            return self.df_.sort_values(by=sort_by)
 
     @property
     def sorted_df(self):
@@ -318,7 +320,7 @@ class ITemporalNodeSetDF(ABC.ITemporalNodeSet):
             ct = defaultdict(int)
             if u is None:
                 # If we want the common-time for all nodes
-                for u, ts in self.sorted_df('ts').itertuples():
+                for u, ts in self.sort_df('ts').itertuples():
                     if prev is None:
                         active_set, prev = {u}, ts
                     elif ts != prev:
@@ -329,13 +331,13 @@ class ITemporalNodeSetDF(ABC.ITemporalNodeSet):
                         active_set, prev = {u}, ts
                     else:
                         active_set.add(u)
-                    if len(active_set) > 1:
-                        for v in active_set:
-                            # update their common time to the ammount of all the other coexisting nodes
-                            ct[v] += (len(active_set)-1)
+                if len(active_set) > 1:
+                    for v in active_set:
+                        # update their common time to the ammount of all the other coexisting nodes
+                        ct[v] += (len(active_set)-1)
             else:
-                # If we want the common-time for all nodes
-                for u, ts in self.sorted_df('ts').itertuples():
+                # If we want the common-time for all nodes but only for a list of nodes
+                for u, ts in self.sort_df('ts').itertuples():
                     if prev is None:
                         active_set, prev = {u}, ts
                     elif ts != prev:
@@ -347,11 +349,11 @@ class ITemporalNodeSetDF(ABC.ITemporalNodeSet):
                         active_set, prev = {u}, ts
                     else:
                         active_set.add(u)
-                    if len(active_set) > 1:
-                        for v in active_set:
-                            # update their common time to the ammount of all the other coexisting nodes
-                            if v in valid_nodes:
-                                ct[v] += (len(active_set)-1)
+                if len(active_set) > 1:
+                    for v in active_set:
+                        # update their common time to the ammount of all the other coexisting nodes
+                        if v in valid_nodes:
+                            ct[v] += (len(active_set)-1)
             return NodeCollection(ct)
         else:
             if bool(self):
