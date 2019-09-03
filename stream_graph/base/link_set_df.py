@@ -131,6 +131,11 @@ class LinkSetDF(ABC.LinkSet):
             return False
 
     @property
+    def nodeset(self):
+        from stream_graph import NodeSetS
+        return NodeSetS(set(itertools.chain(self.df_['u'], self.df_['v'])))
+
+    @property
     def is_sorted_(self):
         return (hasattr(self, 'sort_by_') and hasattr(self, 'sorted_') and self.sorted_) or self.sort_by_ is None
 

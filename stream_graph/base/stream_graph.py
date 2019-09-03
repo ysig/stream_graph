@@ -113,6 +113,10 @@ class StreamGraph(object):
         return self.timeset_.copy()
 
     @property
+    def linkset(self):
+        return self.temporal_linkset_.linkset    
+
+    @property
     def temporal_nodeset(self):
         return self.temporal_nodeset_.copy()
 
@@ -289,7 +293,7 @@ class StreamGraph(object):
         Returns
         -------
         link_coverage : Real or TimeCollection
-            Returns :math:`\\frac{|E_{t}|}{|V|^{2}}`.
+            Returns :math:`\\frac{|E_{t}|}{|V(t)|^{2}}`.
             Returns the time collection for each link at each time-event.
 
         """
@@ -539,6 +543,12 @@ class StreamGraph(object):
             return self
 
     @property
+    def aggregated_graph(self):
+        from stream_graph import Graph
+        return Graph(self.nodeset_, self.linkset)
+
+
+    @property
     def data_cube(self):
         if not bool(self):
             return DataCube()
@@ -555,3 +565,4 @@ class StreamGraph(object):
             return DataCube(iter_, columns=['u', 'v', 'ts'], column_sizes=column_sizes)
         else:
             raise ValueError('Stream-Graph should be discrete to be convertible to a data-cube')
+

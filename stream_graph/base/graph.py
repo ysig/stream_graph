@@ -203,7 +203,7 @@ class Graph(object):
             G = create_using()
 
         G.add_nodes_from(self.nodeset_)
-        if linkset_.weighted:
+        if self.linkset_.weighted:
             G.add_weighted_edges_from(self.linkset_)
         else:
             G.add_edges_from(self.linkset_)    

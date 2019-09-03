@@ -80,6 +80,22 @@ class LinkSet(ABC):
     def _weighted_size(self):
         return sum(k[-1] for k in iter(self))
 
+    @property
+    @abc.abstractmethod
+    def nodeset(self):
+        """Return the nodeset that can be derived from the LinkSet.
+
+        Parameters
+        ----------
+        None. Property.
+
+        Returns
+        -------
+        nodeset : NodeSet
+            Returns all the nodes that appear in links.
+
+        """
+        pass
 
     @abc.abstractmethod
     def __bool__(self):
@@ -268,3 +284,20 @@ class LinkSet(ABC):
             return copy.deepcopy(self)
         else:
             return copy.copy(self)
+
+    @property
+    def as_graph(self):
+        """Generate the graph containing this LinkSet.
+
+        Parameters
+        ----------
+        None. Property.
+
+        Returns
+        -------
+        graph : Graph
+            Generates a Graph containing the LinkSet.
+
+        """
+        from stream_graph import Graph
+        return Graph(self.nodeset, self)
