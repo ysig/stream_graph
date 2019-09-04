@@ -511,6 +511,58 @@ class StreamGraph(object):
         tls_ind = self.temporal_linkset_.induced_substream(tns_is)
         return StreamGraph(self.nodeset, self.timeset, tns_is, tls_ind)
 
+    def substream(self, nsu=None, nsv=None, ts=None):
+        if nsu is not None:
+            if not isinstance(nsu, ABC.NodeSet):
+                try:
+                    nsu = NodeSetS(nsu)
+                except Exception:
+                    raise UnrecognizedNodeSet('nsu')
+        if nsv is not None:
+            if not isinstance(nsv, ABC.NodeSet):
+                try:
+                    nsv = NodeSetS(nsv)
+                except Exception:
+                    raise UnrecognizedNodeSet('nsv')
+        if all(o is None for o in [nsu, nsv, ts]):
+            return self.copy()
+
+        if nsu is not None and nsv is not None:                
+            ns = nsu & nsv
+        elif nsu is not None:
+            ns = nsu
+        elif nsv is not None:
+            ns = nsv
+        else:
+            ns = None
+
+        # Build the new nodeset
+        nodeset = (self.nodeset if ns is None else self.nodeset_ & ns)
+
+        # Build the new timeset
+        if ts is None:
+            timeset = self.timeset
+        elif isinstance(ts, ABC.TimeSet):
+            timeset = self.timeset_ & ts
+        elif isinstance(self.timeset_, ABC.ITimeSet):
+            try:
+                from stream_graph import ITimeSetS
+                timeset = self.timeset_ & ITimeSetS(ts, discrete=self.timeset_.discrete)
+            except Exception:
+                from stream_graph import TimeSetDF
+                timeset = self.timeset_ & TimeSetDF(ts, discrete=self.timeset_.discrete)
+        else:
+            from stream_graph import TimeSetDF
+            timeset = self.timeset_ & TimeSetDF(ts, discrete=self.timeset_.discrete)
+
+        # Build the new temporal-nodeset
+        temporal_nodeset = self.temporal_nodeset_.substream(nsu=ns, ts=ts)
+
+        # Build the new temporal-nodeset
+        temporal_linkset = self.temporal_linkset_.substream(nsu=nsu, nsv=nsv, ts=ts)
+
+        return self.__class__(nodeset, timeset, temporal_nodeset, temporal_linkset)
+
     def discretize(self, bins=None, bin_size=None):
         """Returns a discrete version of the current TemporalLinkSet.
 

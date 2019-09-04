@@ -435,7 +435,7 @@ def map_intersection(df, base_df):
 
 def interval_intersection_size(a, b):
     wa, wb, ts, count = 0, 0, None, 0
-    for r, t, s in events(DF([a.ts, a.tf]).T, DF([b.ts, b.tf]).T, key=iis_order, reference=True):
+    for r, t, s in events(a[['ts', 'tf']], b[['ts', 'tf']], key=iis_order, reference=True):
         if ts is not None:
             if s:
                 if t > ts:

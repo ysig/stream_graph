@@ -64,7 +64,7 @@ class DIntervalDF(pd.DataFrame):
         merge = kargs.pop('merge', False)
         out = super(DIntervalDF, self).append(*args, **kargs)
         if merge:
-            self.merge(inplace=True)
+            out.merge(inplace=True)
         return out
 
     def sort_values(self, by, axis=0, ascending=True, inplace=False, kind='quicksort', na_position='last'):

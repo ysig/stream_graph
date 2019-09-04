@@ -19,7 +19,7 @@ from .temporal_node_set_b import TemporalNodeSetB
 from .temporal_link_set_df import TemporalLinkSetDF
 from .itime_set_s import ITimeSetS
 from .time_set_df import TimeSetDF
-from .multi_df_utils import init_instantaneous_df, load_instantaneous_df, class_interval_df
+from .multi_df_utils import init_instantaneous_df, load_instantaneous_df, class_interval_df, weighted_iter
 from stream_graph.collections import NodeCollection
 from stream_graph.collections import LinkCollection
 from stream_graph.collections import TimeGenerator
@@ -715,7 +715,7 @@ class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
                 else:
                     ts = list(ts_to_df(ts).sort_values(by='ts').itertuples(index=False, name=None))
                     # keep valid instant by doing a binary search on intervals.
-                    df = [key for key in iter(self) if t_in(ts, key[2], 0, len(ts) - 1)]
+                    df = [key for key in weighted_iter(df) if t_in(ts, key[2], 0, len(ts) - 1)]
             return self._init_base_class(df)
         else:
             return self._init_base_class()

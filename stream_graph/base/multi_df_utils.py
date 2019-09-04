@@ -69,10 +69,10 @@ def load_interval_wdf(df, discrete, weighted, disjoint_intervals, default_closed
         weighted = (False if weighted is None else weighted)
         discrete = (True if discrete is None else discrete)
         if isinstance(df, (InstantaneousDF, InstantaneousWDF)):
-            obj = init_interval_df(data=df, discrete=discrete, weighted=weighted, keys=keys)
+            obj = init_interval_df(data=df, discrete=discrete, weighted=weighted, keys=keys, disjoint_intervals=disjoint_intervals)
         elif isinstance(df, pd.DataFrame):
             if discrete:
-                obj = init_interval_df(data=df, discrete=True, weighted=weighted, keys=keys)
+                obj = init_interval_df(data=df, discrete=True, weighted=weighted, keys=keys, disjoint_intervals=disjoint_intervals)
             else:
                 s, f = ((True, True) if default_closed is None else _closed_to_tuple(default_closed))
                 if 'itype' in df.columns:
@@ -87,7 +87,7 @@ def load_interval_wdf(df, discrete, weighted, disjoint_intervals, default_closed
                     df['s'] = s
                 else:
                     df['s'], df['f'] = s, f
-                obj = init_interval_df(data=df, discrete=False, weighted=weighted, keys=keys, merge_function=merge_function)
+                obj = init_interval_df(data=df, discrete=False, weighted=weighted, keys=keys, merge_function=merge_function, disjoint_intervals=disjoint_intervals)
         elif hasattr(df, '__iter__'):
             # Differentiate which case of function we need for parsing intervals
             if discrete:
@@ -148,7 +148,7 @@ def _load_cinterval_wdf_iterable(df, keys, s, f, disjoint_intervals, merge_funct
 
 def weighted_iter(df):
     """Return an iterator of a dataframe that contains also weights if there are."""
-    if isinstance(df, (DIntervalDF, CIntervalDF)):
+    if isinstance(df, (DIntervalDF, CIntervalDF, InstantaneousDF)):
         return df.itertuples()
     else:
         return df.itertuples(weights=True)

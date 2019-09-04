@@ -2,12 +2,12 @@ from __future__ import absolute_import
 from numbers import Real
 from warnings import warn
 from collections import defaultdict
-from collections import Counter
+from collections import Counter, Iterable
 from six import iteritems
 from itertools import combinations
 
 from . import utils
-from .utils import time_discretizer_df
+from .utils import time_discretizer_df, ts_to_df, t_in
 from stream_graph import ABC
 from .multi_df_utils import init_instantaneous_df, load_instantaneous_df
 from .node_set_s import NodeSetS
@@ -292,6 +292,46 @@ class ITemporalNodeSetDF(ABC.ITemporalNodeSet):
         else:
             raise UnrecognizedTemporalNodeSet('ns')
         return False
+
+    def substream(self, nsu=None, ts=None):
+        if nsu is not None:
+            if not isinstance(nsu, ABC.NodeSet):
+                try:
+                    nsu = NodeSetS(nsu)
+                except Exception:
+                    raise UnrecognizedNodeSet('nsu')
+        if ts is not None:
+            # check if we have a valid nodeset or try to cast
+            if not isinstance(ts, ABC.TimeSet):
+                try:
+                    ts = list(ts)
+                    if any(isinstance(t, Iterable) for t in ts):
+                        from stream_graph import TimeSetDF
+                        ts = TimeSetDF(ts, discrete=self.discrete)
+                    else:
+                        ts = ITimeSetS(ts, discrete=self.discrete)
+                except Exception as ex:
+                    print(ex)
+                    raise UnrecognizedTimeSet('ts')
+        if all(o is None for o in [nsu, ts]):
+            return self.copy()
+        if bool(self) and all((o is None or bool(o)) for o in [nsu, ts]):
+            if nsu is not None:
+                df = self.df[self.df.u.isin(nsu)]
+            else:
+                df = self.df
+
+            if ts is not None:
+                if ts.instantaneous:
+                    # if instantaneous, intersect each key with the same time-stamps.
+                    df = df.intersection(set(ts), by_key=False, on_column=['u', 'v'])
+                else:
+                    ts = list(ts_to_df(ts).sort_values(by='ts').itertuples(index=False, name=None))
+                    # keep valid instant by doing a binary search on intervals.
+                    df = [key for key in df.itertuples() if t_in(ts, key[1], 0, len(ts) - 1)]
+            return self.__class__(df, discrete=self.discrete)
+        else:
+            return self.__class__()
 
     @property
     def _total_common_time_discrete(self):

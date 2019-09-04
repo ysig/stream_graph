@@ -289,6 +289,28 @@ class TemporalNodeSetB(ABC.TemporalNodeSet):
         return self.__class__(timeset=timeset, nodeset=self.nodeset), bins
 
 
+    def substream(self, nsu=None, nsv=None, ts=None):
+        if nsu is not None:
+            if not isinstance(nsu, ABC.NodeSet):
+                try:
+                    nsu = NodeSetS(nsu)
+                except Exception:
+                    raise UnrecognizedNodeSet('nsu')
+        if ts is not None:
+            if not isinstance(ts, ABC.TimeSet):
+                try:
+                    ts = ts.__class__(ts, discrete=self.discrete)
+                except Exception:
+                    raise UnrecognizedTimeSet('ts')
+        if all(o is None for o in [nsu, nsv, ts]):
+            return self.copy()
+        if bool(self) and all((o is None or bool(o)) for o in [nsu, ts]):
+            nodeset = (self.nodeset if nsu is None else self.nodeset_ & nsu)
+            timeset = (self.timeset if ts is None else self.timeset_ & ts)
+            return self.__class__(nodeset, timeset)
+        else:
+            return self.__class__()
+
 def constant_time_generator(timeset, obj, empty_object, discrete, instantaneous):
     if instantaneous:
         def generate(timeset):

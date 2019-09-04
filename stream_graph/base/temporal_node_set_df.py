@@ -87,7 +87,6 @@ class TemporalNodeSetDF(ABC.TemporalNodeSet):
         else:
             return self.df_.sort_values(by=self.sort_by)
 
-
     @property
     def sort_df_(self):
         if not self.is_sorted_:
@@ -319,7 +318,6 @@ class TemporalNodeSetDF(ABC.TemporalNodeSet):
                                 common_times[(u, v)] += ct
                             if (v, u) in common_times:
                                 common_times[(v, u)] += ct
-                            
 
             dc = (1 if self.discrete else 0)
             for u, t, f in df.itertuples(index=False, name=None):
@@ -407,6 +405,33 @@ class TemporalNodeSetDF(ABC.TemporalNodeSet):
         else:
             raise UnrecognizedTemporalNodeSet('ns')
         return False
+
+    def substream(self, nsu=None, ts=None):
+        if nsu is not None:
+            if not isinstance(nsu, ABC.NodeSet):
+                try:
+                    nsu = NodeSetS(nsu)
+                except Exception:
+                    raise UnrecognizedNodeSet('nsu')
+        if ts is not None:
+            if not isinstance(ts, ABC.TimeSet):
+                try:
+                    ts = TimeSetDF(ts, discrete=self.discrete)
+                except Exception:
+                    raise UnrecognizedTimeSet('ts')
+        if all(o is None for o in [nsu, ts]):
+            return self.copy()
+        if bool(self) and all((o is None or bool(o)) for o in [nsu, ts]):
+            if nsu is not None:
+                df = self.df[self.df.u.isin(nsu)]
+            else:
+                df = self.df
+
+            if ts is not None:
+                df = df.intersection(ts_to_df(ts), by_key=False, on_column=['u'])
+            return self.__class__(df, discrete=self.discrete, weighted=self.weighted)
+        else:
+            return self.__class__()
 
     def _to_discrete(self, bins, bin_size):
         df, bins = time_discretizer_df(self.df, bins, bin_size, columns=['ts', 'tf'])

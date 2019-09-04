@@ -132,7 +132,7 @@ class InstantaneousDF(pd.DataFrame):
                 df = dfa.append(dfb, ignore_index=True, sort=False)
             df = df[df.duplicated(keep='first')]
         else:
-            ts = (set(df.ts) if isinstance(df, pd.DataFrame) else set(df))
+            ts = (set(df['ts']) if isinstance(df, pd.DataFrame) else set(df))
             if not len(ts):
                 self._save_or_return(None, inplace)
 
