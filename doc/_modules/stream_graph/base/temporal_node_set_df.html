@@ -405,7 +405,7 @@
             <span class="k">raise</span> <span class="n">UnrecognizedTemporalNodeSet</span><span class="p">(</span><span class="s1">&#39;second operand&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">TemporalNodeSetDF</span><span class="p">(</span><span class="n">discrete</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">discrete</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">node_duration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">duration_of</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">u</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">obj</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
             <span class="n">dc</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">discrete</span> <span class="k">else</span> <span class="mi">0</span><span class="p">)</span>
