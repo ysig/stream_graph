@@ -238,7 +238,7 @@ class TemporalNodeSetDF(ABC.TemporalNodeSet):
             raise UnrecognizedTemporalNodeSet('second operand')
         return TemporalNodeSetDF(discrete=self.discrete)
 
-    def node_duration(self, u=None):
+    def duration_of(self, u=None):
         if u is None:
             obj = defaultdict(float)
             dc = (1 if self.discrete else 0)

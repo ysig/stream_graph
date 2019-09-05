@@ -345,7 +345,7 @@ class ITemporalNodeSetDF(ABC.ITemporalNodeSet):
     def number_of_instants(self):
         return self.df.shape[0]
 
-    def _node_duration_discrete(self, u=None):
+    def _duration_of_discrete(self, u=None):
         if u is None:
             return NodeCollection(Counter(u for u in self.df.u))
         else:

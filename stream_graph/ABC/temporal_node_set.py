@@ -168,7 +168,7 @@ class TemporalNodeSet(ABC):
         """
         pass
 
-    def node_duration(self, u=None):
+    def duration_of(self, u=None):
         """Returns the duration of a node.
 
         Parameters
@@ -472,9 +472,9 @@ class ITemporalNodeSet(TemporalNodeSet):
         else:
             return 0
 
-    def node_duration(self, u=None):
+    def duration_of(self, u=None):
         if self.discrete:
-            return self._node_duration_discrete(u)
+            return self._duration_of_discrete(u)
         else:
             if u is None:
                 from stream_graph.collections import NodeCollection
@@ -482,7 +482,7 @@ class ITemporalNodeSet(TemporalNodeSet):
             return 0
 
     @abc.abstractmethod
-    def _node_duration_discrete(self, u=None):
+    def _duration_of_discrete(self, u=None):
         pass
 
     def common_time(self, u=None):

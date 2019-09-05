@@ -1,5 +1,6 @@
 from __future__ import absolute_import
 from warnings import warn
+from .node_set_s import NodeSetS
 from stream_graph import ABC
 from stream_graph.exceptions import UnrecognizedStreamGraph
 from stream_graph.collections import DataCube
@@ -217,12 +218,12 @@ class StreamGraph(object):
                     return y/denom
                 else:
                     return .0
-            return self.temporal_nodeset_.node_duration().map(fun)
+            return self.temporal_nodeset_.duration_of().map(fun)
         else:
             if denom == .0:
                 return .0
             else:
-                return self.temporal_nodeset_.node_duration(u) / denom
+                return self.temporal_nodeset_.duration_of(u) / denom
 
     def time_coverage_link(self, l=None, weights=False, direction='out'):
         """Calculate the time coverage of a link inside the stream_graph.
@@ -516,14 +517,14 @@ class StreamGraph(object):
             if not isinstance(nsu, ABC.NodeSet):
                 try:
                     nsu = NodeSetS(nsu)
-                except Exception:
-                    raise UnrecognizedNodeSet('nsu')
+                except Exception as ex:
+                    raise UnrecognizedNodeSet('nsu: ' + str(ex))
         if nsv is not None:
             if not isinstance(nsv, ABC.NodeSet):
                 try:
                     nsv = NodeSetS(nsv)
-                except Exception:
-                    raise UnrecognizedNodeSet('nsv')
+                except Exception as ex:
+                    raise UnrecognizedNodeSet('nsv: ' + str(ex))
         if all(o is None for o in [nsu, nsv, ts]):
             return self.copy()
 

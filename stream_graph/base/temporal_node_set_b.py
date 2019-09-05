@@ -133,7 +133,7 @@ class TemporalNodeSetB(ABC.TemporalNodeSet):
         return ((u[0] is None or u[0] in self.nodeset_) and
                 (u[1] is None or u[1] in self.timeset_))
 
-    def node_duration(self, u=None):
+    def duration_of(self, u=None):
         if u is None:
             return NodeCollection({u: self.total_time for u in self.nodeset_})
         else:
