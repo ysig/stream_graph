@@ -7,7 +7,7 @@ from pandas import DataFrame as DF
 from .utils.no_bounds import events
 from .utils.no_bounds import events_uni
 from .utils.misc import get_key_set
-from .utils.orderings import order_0_1 as merge_order
+from .utils.orderings import order_0_n1 as merge_order
 from .utils.orderings import r_order_1_n2 as intersection_order
 from .utils.orderings import r_order_1_n2_0n2 as difference_order
 from .utils.orderings import r_order_1_n2_0n2 as issuper_order

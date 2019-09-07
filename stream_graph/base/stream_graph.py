@@ -1,6 +1,7 @@
 from __future__ import absolute_import
 from warnings import warn
 from .node_set_s import NodeSetS
+from collections import Iterable
 from stream_graph import ABC
 from stream_graph.exceptions import UnrecognizedStreamGraph
 from stream_graph.collections import DataCube
@@ -525,11 +526,23 @@ class StreamGraph(object):
                     nsv = NodeSetS(nsv)
                 except Exception as ex:
                     raise UnrecognizedNodeSet('nsv: ' + str(ex))
+        if ts is not None:
+            if not isinstance(ts, ABC.TimeSet):
+                try:
+                    ts = list(ts)
+                    if any(isinstance(t, Iterable) for t in ts):
+                        from stream_graph import TimeSetDF
+                        ts = TimeSetDF(ts, discrete=self.timeset_.discrete)
+                    else:
+                        from stream_graph import ITimeSetS
+                        ts = ITimeSetS(ts, discrete=self.timeset_.discrete)
+                except Exception as ex:
+                    raise UnrecognizedTimeSet('ts: ' + ex)
         if all(o is None for o in [nsu, nsv, ts]):
             return self.copy()
 
         if nsu is not None and nsv is not None:                
-            ns = nsu & nsv
+            ns = nsu | nsv
         elif nsu is not None:
             ns = nsu
         elif nsv is not None:
@@ -541,20 +554,7 @@ class StreamGraph(object):
         nodeset = (self.nodeset if ns is None else self.nodeset_ & ns)
 
         # Build the new timeset
-        if ts is None:
-            timeset = self.timeset
-        elif isinstance(ts, ABC.TimeSet):
-            timeset = self.timeset_ & ts
-        elif isinstance(self.timeset_, ABC.ITimeSet):
-            try:
-                from stream_graph import ITimeSetS
-                timeset = self.timeset_ & ITimeSetS(ts, discrete=self.timeset_.discrete)
-            except Exception:
-                from stream_graph import TimeSetDF
-                timeset = self.timeset_ & TimeSetDF(ts, discrete=self.timeset_.discrete)
-        else:
-            from stream_graph import TimeSetDF
-            timeset = self.timeset_ & TimeSetDF(ts, discrete=self.timeset_.discrete)
+        timeset = (self.timeset if ts is None else self.timeset_ & ts)
 
         # Build the new temporal-nodeset
         temporal_nodeset = self.temporal_nodeset_.substream(nsu=ns, ts=ts)

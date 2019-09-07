@@ -294,14 +294,14 @@ class TemporalNodeSetB(ABC.TemporalNodeSet):
             if not isinstance(nsu, ABC.NodeSet):
                 try:
                     nsu = NodeSetS(nsu)
-                except Exception:
-                    raise UnrecognizedNodeSet('nsu')
+                except Exception as ex:
+                    raise UnrecognizedNodeSet('nsu: ' + ex)
         if ts is not None:
             if not isinstance(ts, ABC.TimeSet):
                 try:
                     ts = ts.__class__(ts, discrete=self.discrete)
-                except Exception:
-                    raise UnrecognizedTimeSet('ts')
+                except Exception as ex:
+                    raise UnrecognizedTimeSet('ts: ' + ex)
         if all(o is None for o in [nsu, nsv, ts]):
             return self.copy()
         if bool(self) and all((o is None or bool(o)) for o in [nsu, ts]):

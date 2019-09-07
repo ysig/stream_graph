@@ -71,6 +71,8 @@ def load_interval_wdf(df, discrete, weighted, disjoint_intervals, default_closed
         if isinstance(df, (InstantaneousDF, InstantaneousWDF)):
             obj = init_interval_df(data=df, discrete=discrete, weighted=weighted, keys=keys, disjoint_intervals=disjoint_intervals)
         elif isinstance(df, pd.DataFrame):
+            if 'tf' not in df.columns:
+                df['tf'] = df['ts']
             if discrete:
                 obj = init_interval_df(data=df, discrete=True, weighted=weighted, keys=keys, disjoint_intervals=disjoint_intervals)
             else:
@@ -185,6 +187,8 @@ def load_interval_df(df, discrete, default_closed, disjoint_intervals, keys=[]):
     elif isinstance(df, pd.DataFrame):
         ci, dcN = all(f not in df.columns for f in ['s', 'f', 'itype']), default_closed is None
         discrete = (ci and dcN and df.ts.dtype.kind == 'i' and df.tf.dtype.kind == 'i' if discrete is None else discrete)
+        if 'tf' not in df.columns:
+            df['tf'] = df['ts']
         if discrete:
             return DIntervalDF(df[keys + ['ts', 'tf']], disjoint_intervals=disjoint_intervals), True
         else:

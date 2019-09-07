@@ -49,9 +49,9 @@ def op_(x, cx, y=None, cy=None, oc=1, bk=1, o='u', as_sl=True):
             return x.nonempty_intersection(df, **kargs)
         elif o == 'iis':
             if isinstance(x, (InstantaneousDF, InstantaneousWDF)):
-                return x.instants_intersection_size(df)
+                return x.intersection_size(df)
             else:
-                return x.interval_intersection_size(df)
+                return x.intersection_size(df)
         elif o == 'mi':
             df = x.map_intersection(df)
         elif o == 'ci':
@@ -142,6 +142,7 @@ def test_cinterval_df():
 def test_dinterval_df():
     cx = DIntervalDF
     for k in [[], [1]]:
+        assert_equal(op_([k + [3, 3], k + [4, 4]], o='m', cx=cx, oc=len(k)), [tuple(k) + (3, 4)])
         assert_equal(op_([k + [3, 4], k + [4, 6]], o='m', cx=cx, oc=len(k)), [tuple(k) + (3, 6)])
         assert_equal(op_([k + [3, 4], k + [5, 6]], o='m', cx=cx, oc=len(k)), [tuple(k) + (3, 6)])
         assert_equal(op_([k + [3, 5], k + [4, 6]], o='m', cx=cx, oc=len(k)), [tuple(k) + (3, 6)])
@@ -191,6 +192,8 @@ def test_dinterval_df():
 def test_dinterval_wdf():
     cx = DIntervalWDF
     for k in [[], [1]]:
+        assert_equal(op_([k + [3, 3, 1], k + [4, 4, 1]], o='m', cx=cx, oc=len(k)), [tuple(k) + (3, 4, 1)])
+        assert_equal(op_([k + [3, 3, 1], k + [4, 4, 2]], o='m', cx=cx, oc=len(k)), [tuple(k) + (3, 3, 1), tuple(k) + (4, 4, 2)])
         assert_equal(op_([k + [3, 5, 1], k + [5, 6, 2]], o='m', cx=cx, oc=len(k)), [tuple(k) + (3, 4, 1), tuple(k) + (5, 5, 3), tuple(k) + (6, 6, 2)])
         for bk in [True, False]:
             l = (k if bk else [])
@@ -198,9 +201,9 @@ def test_dinterval_wdf():
             assert_equal(op_([k + [3, 5, 1]], y=[l + [5, 6, 1]], o='u', bk=bk, cx=cx, oc=len(k)), [tuple(k) + (3, 4, 1), tuple(k) + (5, 5, 2), tuple(k) + (6, 6, 1)])
             assert_equal(op_([k + [3, 5, 2], k + [6, 7, 1]], y=[l + [3, 5, 1], l + [6, 7, 2]], o='u', bk=bk, cx=cx, oc=len(k)), [tuple(k) + (3, 7, 3.0)])
             # Intersection
-            assert_equal(op_([k + [3, 6, 1]], y=[l + [4, 7, 4]], o='i', bk=bk, cx=cx, oc=len(k)), [tuple(k) + (4, 6, 4)])
-            assert_equal(op_([k + [4, 7, 1]], y=[l + [3, 6, 3]], o='i', bk=bk, cx=cx, oc=len(k)), [tuple(k) + (4, 6, 3)])
-            assert_equal(op_([k + [1, 7, 2]], y=[l + [3, 6, 1]], o='i', bk=bk, cx=cx, oc=len(k)), [tuple(k) + (3, 6, 2)])
+            assert_equal(op_([k + [3, 6, 4]], y=[l + [4, 7, 1]], o='i', bk=bk, cx=cx, oc=len(k)), [tuple(k) + (4, 6, 1)])
+            assert_equal(op_([k + [4, 7, 1]], y=[l + [3, 6, 3]], o='i', bk=bk, cx=cx, oc=len(k)), [tuple(k) + (4, 6, 1)])
+            assert_equal(op_([k + [1, 7, 2]], y=[l + [3, 6, 1]], o='i', bk=bk, cx=cx, oc=len(k)), [tuple(k) + (3, 6, 1)])
             # Difference
             assert_equal(op_([k + [3, 6, 3]], y=[l + [4, 7, 1]], o='d', bk=bk, cx=cx, oc=len(k)), [tuple(k) + (3, 3, 3), tuple(k) + (4, 6, 2)])
             assert_equal(op_([k + [3, 7, 1]], y=[l + [4, 6, 1]], o='d', bk=bk, cx=cx, oc=len(k)), [tuple(k) + (3, 3, 1), tuple(k) + (7, 7, 1)])
@@ -254,10 +257,10 @@ def test_cinterval_wdf():
                 else:
                     assert_equal(op_([k + [3, 4, a, False, 1]], y=[l + [4, 6, False, b, 1]], o='u', bk=bk, cx=cx, oc=len(k)), [tuple(k) + (3, 4, a, False, 1), tuple(k) + (4, 6, False, b, 1)])
                 # Intersection
-                assert_equal(op_([k + [3, 6, a, b, 2]], y=[l + [4, 7, c, d, 3]], o='i', bk=bk, cx=cx, oc=len(k)), [tuple(k) + (4, 6, c, b, 3)])
-                assert_equal(op_([k + [4, 7, a, b, 1]], y=[l + [3, 6, c, d, 3]], o='i', bk=bk, cx=cx, oc=len(k)), [tuple(k) + (4, 6, a, d, 3)])
-                assert_equal(op_([k + [1, 7, a, b, 3]], y=[l + [3, 6, c, d, 2]], o='i', bk=bk, cx=cx, oc=len(k)), [tuple(k) + (3, 6, c, d, 3)])
-                assert_equal(op_([k + [1, 7, a, b, 1]], y=[l + [1, 7, c, d, 3]], o='i', bk=bk, cx=cx, oc=len(k)), [tuple(k) + (1, 7, a and c, b and d, 3)])
+                assert_equal(op_([k + [3, 6, a, b, 2]], y=[l + [4, 7, c, d, 3]], o='i', bk=bk, cx=cx, oc=len(k)), [tuple(k) + (4, 6, c, b, 2)])
+                assert_equal(op_([k + [4, 7, a, b, 1]], y=[l + [3, 6, c, d, 3]], o='i', bk=bk, cx=cx, oc=len(k)), [tuple(k) + (4, 6, a, d, 1)])
+                assert_equal(op_([k + [1, 7, a, b, 3]], y=[l + [3, 6, c, d, 2]], o='i', bk=bk, cx=cx, oc=len(k)), [tuple(k) + (3, 6, c, d, 2)])
+                assert_equal(op_([k + [1, 7, a, b, 1]], y=[l + [1, 7, c, d, 3]], o='i', bk=bk, cx=cx, oc=len(k)), [tuple(k) + (1, 7, a and c, b and d, 1)])
                 # Difference
                 assert_equal(op_([k + [3, 6, a, b, 3]], y=[l + [4, 7, c, d, 2]], o='d', bk=bk, cx=cx, oc=len(k)), [tuple(k) + (3, 4, a, not c, 3), tuple(k) + (4, 6, c, b, 1)])
                 for e, f in product([False, True], [False, True]):
@@ -288,7 +291,7 @@ def test_cinterval_wdf():
 
     for a, b, c, d in product([False, True], [False, True], [False, True], [False, True]):
         # Cartesian Intersection
-        assert_equal(op_([[1, 2, 1, 10, False, False, 1]], y=[[1, 2, 5, a, b, 3], [2, 3, 7, c, d, 2]], o='ci', cx=cx, oc=len(k)), [(1, 2, 3, 5, c, b, 3)])
+        assert_equal(op_([[1, 2, 1, 10, False, False, 1]], y=[[1, 2, 5, a, b, 3], [2, 3, 7, c, d, 2]], o='ci', cx=cx, oc=len(k)), [(1, 2, 3, 5, c, b, 1)])
 
     # Interval Intersection Size
     assert_equal(op_([[1, 4, 8, False, True, 2]], y=[[1, 8, 10, True, True, 1]], o='iis', cx=cx, oc=len(k)), 0)
@@ -396,12 +399,10 @@ def test_time_generators_builders():
 
 
 if __name__ == "__main__":
-    """
     test_cinterval_df()
     test_cinterval_wdf()
     test_dinterval_df()
     test_dinterval_wdf()
     test_instantaneous_df()
     test_instantaneous_wdf()
-    """
     test_time_generators_builders()

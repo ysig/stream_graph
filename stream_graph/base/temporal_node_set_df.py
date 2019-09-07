@@ -122,7 +122,7 @@ class TemporalNodeSetDF(ABC.TemporalNodeSet):
     def timeset(self):
         if not bool(self):
             return TimeSetDF(discrete=self.discrete)
-        return TimeSetDF(self.df.drop(columns=['u']), disjoint_intervals=False, discrete=self.discrete)
+        return TimeSetDF(self.df.drop(columns=['u']), discrete=self.discrete)
 
     @property
     def nodeset(self):
@@ -412,13 +412,13 @@ class TemporalNodeSetDF(ABC.TemporalNodeSet):
                 try:
                     nsu = NodeSetS(nsu)
                 except Exception:
-                    raise UnrecognizedNodeSet('nsu')
+                    raise UnrecognizedNodeSet('nsu: ' + ex)
         if ts is not None:
             if not isinstance(ts, ABC.TimeSet):
                 try:
                     ts = TimeSetDF(ts, discrete=self.discrete)
-                except Exception:
-                    raise UnrecognizedTimeSet('ts')
+                except Exception as ex:
+                    raise UnrecognizedTimeSet('ts: ' + ex)
         if all(o is None for o in [nsu, ts]):
             return self.copy()
         if bool(self) and all((o is None or bool(o)) for o in [nsu, ts]):
@@ -429,7 +429,7 @@ class TemporalNodeSetDF(ABC.TemporalNodeSet):
 
             if ts is not None:
                 df = df.intersection(ts_to_df(ts), by_key=False, on_column=['u'])
-            return self.__class__(df, discrete=self.discrete, weighted=self.weighted)
+            return self.__class__(df, discrete=self.discrete)
         else:
             return self.__class__()
 

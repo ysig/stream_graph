@@ -298,8 +298,8 @@ class ITemporalNodeSetDF(ABC.ITemporalNodeSet):
             if not isinstance(nsu, ABC.NodeSet):
                 try:
                     nsu = NodeSetS(nsu)
-                except Exception:
-                    raise UnrecognizedNodeSet('nsu')
+                except Exception as ex:
+                    raise UnrecognizedNodeSet('nsu: ' + ex)
         if ts is not None:
             # check if we have a valid nodeset or try to cast
             if not isinstance(ts, ABC.TimeSet):
@@ -311,8 +311,7 @@ class ITemporalNodeSetDF(ABC.ITemporalNodeSet):
                     else:
                         ts = ITimeSetS(ts, discrete=self.discrete)
                 except Exception as ex:
-                    print(ex)
-                    raise UnrecognizedTimeSet('ts')
+                    raise UnrecognizedTimeSet('ts: ' + ex)
         if all(o is None for o in [nsu, ts]):
             return self.copy()
         if bool(self) and all((o is None or bool(o)) for o in [nsu, ts]):

@@ -151,6 +151,7 @@ class ITimeSetS(ABC.ITimeSet):
 
     @property
     def timeset_df(self):
+        from stream_graph import TimeSetDF
         times = list(self.times_)
         # Cast to a TimeSetDF with the same start and finish
         return TimeSetDF(pd.DataFrame({'ts': times, 'tf': times}), discrete=self.discrete)

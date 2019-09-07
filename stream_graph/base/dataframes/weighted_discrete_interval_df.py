@@ -21,15 +21,16 @@ class DIntervalWDF(pd.DataFrame):
         assert merge_function is None or callable(merge_function)
         super(DIntervalWDF, self).__init__(*args, **kargs)
         assert 'ts' in self.columns
-        assert self.ts.dtype.kind == 'i'
-
-        if 'tf' not in self.columns:
-            self['tf'] = self['ts']
-        else:
-            assert self.tf.dtype.kind == 'i'
 
         self.merge_function = (sum if merge_function is None else merge_function)
         if not self.empty:
+            assert self.ts.dtype.kind == 'i'
+
+            if 'tf' not in self.columns:
+                self['tf'] = self['ts']
+            else:
+                assert self.tf.dtype.kind == 'i'
+
             from .discrete_interval_df import DIntervalDF
             if len(args) and isinstance(args[0], DIntervalWDF):
                 self.merge_function = args[0].merge_function
