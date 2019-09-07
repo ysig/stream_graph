@@ -318,6 +318,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">timeset_df</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">stream_graph</span> <span class="k">import</span> <span class="n">TimeSetDF</span>
         <span class="n">times</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">times_</span><span class="p">)</span>
         <span class="c1"># Cast to a TimeSetDF with the same start and finish</span>
         <span class="k">return</span> <span class="n">TimeSetDF</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;ts&#39;</span><span class="p">:</span> <span class="n">times</span><span class="p">,</span> <span class="s1">&#39;tf&#39;</span><span class="p">:</span> <span class="n">times</span><span class="p">}),</span> <span class="n">discrete</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">discrete</span><span class="p">)</span>

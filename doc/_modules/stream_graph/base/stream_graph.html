@@ -168,6 +168,7 @@
 <span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
 <span class="kn">from</span> <span class="nn">warnings</span> <span class="k">import</span> <span class="n">warn</span>
 <span class="kn">from</span> <span class="nn">.node_set_s</span> <span class="k">import</span> <span class="n">NodeSetS</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">Iterable</span>
 <span class="kn">from</span> <span class="nn">stream_graph</span> <span class="k">import</span> <span class="n">ABC</span>
 <span class="kn">from</span> <span class="nn">stream_graph.exceptions</span> <span class="k">import</span> <span class="n">UnrecognizedStreamGraph</span>
 <span class="kn">from</span> <span class="nn">stream_graph.collections</span> <span class="k">import</span> <span class="n">DataCube</span>
@@ -692,11 +693,23 @@
                     <span class="n">nsv</span> <span class="o">=</span> <span class="n">NodeSetS</span><span class="p">(</span><span class="n">nsv</span><span class="p">)</span>
                 <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="n">UnrecognizedNodeSet</span><span class="p">(</span><span class="s1">&#39;nsv: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">ex</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">ts</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">ABC</span><span class="o">.</span><span class="n">TimeSet</span><span class="p">):</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">ts</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">ts</span><span class="p">):</span>
+                        <span class="kn">from</span> <span class="nn">stream_graph</span> <span class="k">import</span> <span class="n">TimeSetDF</span>
+                        <span class="n">ts</span> <span class="o">=</span> <span class="n">TimeSetDF</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">discrete</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">timeset_</span><span class="o">.</span><span class="n">discrete</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="kn">from</span> <span class="nn">stream_graph</span> <span class="k">import</span> <span class="n">ITimeSetS</span>
+                        <span class="n">ts</span> <span class="o">=</span> <span class="n">ITimeSetS</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">discrete</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">timeset_</span><span class="o">.</span><span class="n">discrete</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="n">UnrecognizedTimeSet</span><span class="p">(</span><span class="s1">&#39;ts: &#39;</span> <span class="o">+</span> <span class="n">ex</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">o</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="p">[</span><span class="n">nsu</span><span class="p">,</span> <span class="n">nsv</span><span class="p">,</span> <span class="n">ts</span><span class="p">]):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="n">nsu</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">nsv</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>                
-            <span class="n">ns</span> <span class="o">=</span> <span class="n">nsu</span> <span class="o">&amp;</span> <span class="n">nsv</span>
+            <span class="n">ns</span> <span class="o">=</span> <span class="n">nsu</span> <span class="o">|</span> <span class="n">nsv</span>
         <span class="k">elif</span> <span class="n">nsu</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">ns</span> <span class="o">=</span> <span class="n">nsu</span>
         <span class="k">elif</span> <span class="n">nsv</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -708,20 +721,7 @@
         <span class="n">nodeset</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nodeset</span> <span class="k">if</span> <span class="n">ns</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodeset_</span> <span class="o">&amp;</span> <span class="n">ns</span><span class="p">)</span>
 
         <span class="c1"># Build the new timeset</span>
-        <span class="k">if</span> <span class="n">ts</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">timeset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">timeset</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">ABC</span><span class="o">.</span><span class="n">TimeSet</span><span class="p">):</span>
-            <span class="n">timeset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">timeset_</span> <span class="o">&amp;</span> <span class="n">ts</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">timeset_</span><span class="p">,</span> <span class="n">ABC</span><span class="o">.</span><span class="n">ITimeSet</span><span class="p">):</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="kn">from</span> <span class="nn">stream_graph</span> <span class="k">import</span> <span class="n">ITimeSetS</span>
-                <span class="n">timeset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">timeset_</span> <span class="o">&amp;</span> <span class="n">ITimeSetS</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">discrete</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">timeset_</span><span class="o">.</span><span class="n">discrete</span><span class="p">)</span>
-            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-                <span class="kn">from</span> <span class="nn">stream_graph</span> <span class="k">import</span> <span class="n">TimeSetDF</span>
-                <span class="n">timeset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">timeset_</span> <span class="o">&amp;</span> <span class="n">TimeSetDF</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">discrete</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">timeset_</span><span class="o">.</span><span class="n">discrete</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">stream_graph</span> <span class="k">import</span> <span class="n">TimeSetDF</span>
-            <span class="n">timeset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">timeset_</span> <span class="o">&amp;</span> <span class="n">TimeSetDF</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">discrete</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">timeset_</span><span class="o">.</span><span class="n">discrete</span><span class="p">)</span>
+        <span class="n">timeset</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">timeset</span> <span class="k">if</span> <span class="n">ts</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">timeset_</span> <span class="o">&amp;</span> <span class="n">ts</span><span class="p">)</span>
 
         <span class="c1"># Build the new temporal-nodeset</span>
         <span class="n">temporal_nodeset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">temporal_nodeset_</span><span class="o">.</span><span class="n">substream</span><span class="p">(</span><span class="n">nsu</span><span class="o">=</span><span class="n">ns</span><span class="p">,</span> <span class="n">ts</span><span class="o">=</span><span class="n">ts</span><span class="p">)</span>
