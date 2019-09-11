@@ -171,7 +171,7 @@ class Visualizer(object):
         if self._ext == 'png':
             import os
             from cairosvg import svg2png
-            dfilename = str('dummy_') + filename
+            dfilename = filename + str('_dummy')
             os.rename(filename, dfilename)
             svg2png(url=dfilename, write_to=filename)
             os.remove(dfilename)

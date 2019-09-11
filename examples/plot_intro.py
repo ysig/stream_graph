@@ -23,14 +23,5 @@ temporal_linkset = TemporalLinkSetDF([(1, 2, 2, 4), (1, 2, 3, 5), (1, 2, 6, 8)] 
 stream_graph = StreamGraph(nodeset, timeset, temporal_nodeset, temporal_linkset)
 
 # Visualize svg
-Visualizer(stream_graph, 'plot_intro.svg', image_type='svg').produce()
+Visualizer(stream_graph, '../doc/auto_examples/images/sphx_glr_plot_intro_001.png', image_type='png').produce()
 
-# Convert to PNG
-from cairosvg import svg2png
-from shutil import move
-filename = '../doc/auto_examples/images/sphx_glr_plot_intro_001.png'
-svg2png(url='plot_intro.svg', write_to=filename, parent_height=160, parent_width=453)
-
-# Remove svg
-from os import remove
-remove('plot_intro.svg')
