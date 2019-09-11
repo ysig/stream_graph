@@ -5,6 +5,19 @@ import svgwrite
 import os.path
 import math
 
+try:
+    # for Python2
+    import Tkinter
+except ImportError:
+    # for Python3
+    import tkinter as Tkinter
+
+try:
+    import tkFont
+except ImportError:
+    import tkinter.font as tkFont
+
+
 def drange(start, stop, step):
     """
         Helper function generating a range of numbers.
@@ -85,7 +98,7 @@ class Drawing(object):
     __add_tm = []
     __add_tl = None
 
-    def __init__(self, name=None, alpha=0.0, omega=10.0, time_width=40, discrete=0, directed=False):
+    def __init__(self, name=None, alpha=0.0, omega=10.0, time_width=40, discrete=0, max_node_size=1, directed=False):
         if name is None:
             if str(sys.argv[0].split('.')[-1]) == 'py':
                 heading = '.'.join(sys.argv[0].split('.')[:-1])
@@ -103,7 +116,7 @@ class Drawing(object):
         self._directed = directed
         self._time_unit = time_width
 
-        self._offset_x = self._font_size + self._tick_font_size
+        self._offset_x = self.textwidth(str('A'*max_node_size)) + self._tick_font_size + self.textwidth(('aa'))
         self._offset_y = self._tick_font_size + self._tick_font_size + self._tick_width
         self._link_arrows = []
 
@@ -159,7 +172,8 @@ class Drawing(object):
         nu = self.dwg.add(self.dwg.g(class_= "node_" + str(u)))
         self._nodes_class[u] = nu
         y = (self._node_cpt-1) * (self._node_unit + self._node_sep)
-        nu.add(self.dwg.text(str(u), insert=(self._offset_x - self._font_size, self._node_unit/2 + self._font_size/2 - 2 + y + self._offset_y), font_family=self._font_family, font_size=self._font_size, fill=color))
+        text_size = self.textwidth(str(u)) + self.textwidth('a')
+        nu.add(self.dwg.text(str(u), insert=(self._offset_x - text_size, self._node_unit/2 + self._font_size/2 - 2 + y + self._offset_y), font_family=self._font_family, font_size=self._font_size, fill=color))       
         nu.add(self.dwg.rect(insert=(self._offset_x, y+self._offset_y), size=((self._omega - self._alpha)*self._time_unit, self._node_unit), fill=rectangle_color))
         
         if len(times) == 0:
@@ -182,7 +196,8 @@ class Drawing(object):
         nu = self.dwg.add(self.dwg.g(class_= "node_" + str(u)))
         self._nodes_class[u] = nu
         y = (self._node_cpt-1) * (self._node_unit + self._node_sep)
-        nu.add(self.dwg.text(str(u), insert=(self._offset_x - self._font_size, self._node_unit/2 + self._font_size/2 - 2 + y + self._offset_y), font_family=self._font_family, font_size=self._font_size, fill=color))
+        text_size = self.textwidth(str(u)) + self.textwidth('a')
+        nu.add(self.dwg.text(str(u), insert=(self._offset_x - text_size, self._node_unit/2 + self._font_size/2 - 2 + y + self._offset_y), font_family=self._font_family, font_size=self._font_size, fill=color))
         nu.add(self.dwg.rect(insert=(self._offset_x, y+self._offset_y), size=((self._omega - self._alpha)*self._time_unit, self._node_unit), fill=rectangle_color))
 
         if len(times) == 0:
@@ -191,7 +206,7 @@ class Drawing(object):
             for (i,j) in times:
                 nu.add(self.dwg.line(start=(self._offset_x+(i-self._alpha)*self._time_unit, self._node_unit/2+y+self._offset_y), end=(self._offset_x+(j-self._alpha)*self._time_unit, self._node_unit/2+y+self._offset_y), stroke_width="1", stroke_dasharray="1 5", stroke=color))
 
-    def addLink(self, u, v, b, e, curving=0.0, color='black', height=0.5, width=None, direction='both'):
+    def addLink(self, u, v, b, e, curving=0.4, color='black', height=0.5, width=None, direction='both'):
         """
             Adds a link from time b to time e between nodes u and v.
 
@@ -260,7 +275,7 @@ class Drawing(object):
         def add_la(d):
             self.__add_link_arrow(d, color, 'yellow', tw*0.15)
 
-        for i in drange(b, e, self._discrete):
+        for i in drange(b-self._alpha, e-self._alpha, self._discrete):
             x_off = i*self._time_unit+self._offset_x
             luv.add(self.dwg.circle(center=(x_off, yu), r=self._node_radius, fill=color))
             luv.add(self.dwg.circle(center=(x_off, yv), r=self._node_radius, fill=color))
@@ -636,7 +651,7 @@ class Drawing(object):
 
         vals = []
         i = self._alpha
-        while i < self._omega:
+        while i <= self._omega:
             if (i).is_integer():
                 vals.append((int(i),int(i)))
             else:
@@ -655,20 +670,20 @@ class Drawing(object):
                     vals.append((t,v))
 
         # Time arrow
-        if self._discrete > 0:
-            start, end = self._omega - 0.5, self._omega
-        else:
-            start, end = self._alpha, self._omega
-
         y = (self._node_cpt) * (self._node_unit + self._node_sep) + self._offset_y
-
-        line = self.dwg.add(self.dwg.line(start=(self._offset_x, y), end=((self._omega - self._alpha)*self._time_unit+self._offset_x,  y), stroke_width="1", stroke='black', marker_end=self.time_arrow_marker.get_funciri()))
+        line = self.dwg.add(self.dwg.line(start=(self._offset_x, y), end=((self._omega - self._alpha + 0.3)*self._time_unit+self._offset_x,  y), stroke_width="1", stroke='black', marker_end=self.time_arrow_marker.get_funciri()))
         for t, v in vals:
             x = (t - self._alpha)*self._time_unit + self._offset_x + 0.5
             self.dwg.add(self.dwg.line(start=(x, y), end=(x, y + self._tick_length), stroke_width=str(self._tick_width), stroke='black'))
             self.dwg.add(self.dwg.text(str(v), insert=(x - (self._tick_font_size/4 + 0.2)*len(str(v)), y + self._tick_length + self._tick_font_size - 0.5), font_family=self._tick_font_family, font_size=self._tick_font_size, fill=self._tick_font_color))
-        self.dwg.add(self.dwg.text('time', insert=((self._omega-self._alpha)*self._time_unit + self._offset_x, y + self._tick_length + self._tick_font_size - 0.5), font_family=self._tick_font_family, font_size=self._tick_font_size*0.8, fill=self._tick_font_color))
+        self.dwg.add(self.dwg.text('time', insert=((self._omega - self._alpha)*self._time_unit + 10 + self._offset_x, y + self._tick_length + self._tick_font_size - 0.5), font_family=self._tick_font_family, font_size=self._tick_font_size*0.8, fill=self._tick_font_color))
         # set marker (start, mid and end markers are the same)
+
+    def textwidth(self, text):
+        root= Tkinter.Tk()
+        font = tkFont.Font(root=root, family='serif', size=int(self._font_size))
+        assert font is not None, "font family not recognized"
+        return font.measure(text)
 
     def __del__(self):
         if not (hasattr(self, 'saved_') and self.saved_):
@@ -680,6 +695,9 @@ class Drawing(object):
             self.__addTimeLine(**self.__add_tl)
         for args, kargs in self.__add_tm:
             self.__addTime(*args, **kargs)
+        max_x = (self._omega - self._alpha+1)*self._time_unit + 10 + self._offset_x
+        max_y = (self._node_cpt+0.5) * (self._node_unit + self._node_sep) + self._offset_y + self._tick_length + self._tick_font_size - 0.5
+        self.dwg.viewbox(width=max_x, height=max_y)
         self.dwg.save()
         self.saved_ = True
 
@@ -714,6 +732,7 @@ def bezier_circle_newton(xs, ys, radius, max_iter=1000, top=False, epsilon=float
         assert Dfxn != 0
         t = fix(t, fxn/Dfxn)
     assert False
+
 
 # main
 if __name__ == '__main__':

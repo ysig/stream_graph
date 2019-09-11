@@ -130,7 +130,8 @@ class StreamGraph(object):
     def empty(self):
         return not bool(self)
 
-    def graph_at(t):
+    def graph_at(self, t=None):
+        from .graph import Graph
         if t is None:
             def fun(nodes, links):
                 return Graph(nodes, links)

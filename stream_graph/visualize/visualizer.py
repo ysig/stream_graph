@@ -6,7 +6,7 @@ class Visualizer(object):
     """Visualization objects for a stream-graph."""
     def __init__(self, items=None, filename=None, image_type='fig'):
         self._data = dict(link_streams=[], node_set=None, time_set=None, node_stream=None)
-        if image_type not in ['fig', 'svg']:
+        if image_type not in ['fig', 'svg', 'png']:
             raise ValueError('image_types supported is \'fig\' and \'svg\'')
         else:
             self._ext = image_type
@@ -120,7 +120,6 @@ class Visualizer(object):
                     for k in ls:
                         self.dwg.addLink(k[0], k[1], k[2], k[3], color=color)
 
-
     def _plot_nodes(self, min_time, max_time):
         nodes = dict()
         for n in self._data['node_set']:
@@ -133,8 +132,10 @@ class Visualizer(object):
             for k in self._data['node_stream']:
                 if k[1] != min_time or k[2] != max_time:
                     nodes[k[0]].append(k[1:3])
+
         def takez(a):
             return a[0]
+
         for (u, times) in iteritems(nodes):
             self.dwg.addNode(u, sorted(times, key=takez))
 
@@ -145,22 +146,35 @@ class Visualizer(object):
         else:
             min_time = min(k[0] for k in self._data['time_set'])
             max_time = max(k[1] for k in self._data['time_set'])
+
+        nargs = dict()
         if self._ext == 'fig':
             from .stream_fig import Drawing
         else:
             from .stream_svg import Drawing
+            nargs['max_node_size'] = max(len(str(n)) for n in self._data['node_set'])
 
-        nargs = dict()
         if 'time_width' in nargs:
             nargs['time_width'] = kargs['time_width']
-        self.dwg = Drawing(filename, alpha=min_time, omega=max_time, discrete=self.discrete,**nargs)
+
+        self.dwg = Drawing(filename, alpha=min_time, omega=max_time, discrete=self.discrete, **nargs)
         pallete = self._make_pallete(len(self._data['link_streams']))
         self._plot_nodes(min_time, max_time)
         self._plot_linkstream(pallete)
         margs = dict()
+
         if 'ticks' in kargs:
             margs['ticks'] = kargs['ticks']
         self.dwg.addTimeLine(**margs)
+        if self._ext != 'fig':
+            self.dwg.save()
+        if self._ext == 'png':
+            import os
+            from cairosvg import svg2png
+            dfilename = str('dummy_') + filename
+            os.rename(filename, dfilename)
+            svg2png(url=dfilename, write_to=filename)
+            os.remove(dfilename)
 
     def produce(self, filename=None, **kargs):
         if filename is None:
