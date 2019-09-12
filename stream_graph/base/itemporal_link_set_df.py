@@ -891,7 +891,7 @@ class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
             raise UnrecognizedTemporalNodeSet('ns')
         return self.__class__(discrete=self.discrete, weighted=self.weighted)
 
-    def get_maximal_cliques(self, delta, direction='both'):
+    def get_maximal_cliques(self, delta=0, direction='both'):
         df = DF((self.df.drop(columns='w') if self.weighted else self.df.copy()))
         di = (delta == .0)
         if not di:
@@ -905,13 +905,16 @@ class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
             # and clip to the start and finish of time
             df['ts'].clip(lower=min_time, inplace=True)
             df['tf'].clip(upper=max_time, inplace=True)
+        else:
+            df['tf'] = df['ts']
+
         if self.discrete:
             df = df.astype({'ts': int, 'tf': int})
         else:
             df['s'] = True
             df['f'] = True
-
-        return TemporalLinkSetDF(df, disjoint_intervals=di, discrete=self.discrete, weighted=False).get_maximal_cliques(direction=direction)
+      
+        return TemporalLinkSetDF(df, disjoint_intervals=(di and not self.discrete), discrete=self.discrete, weighted=False).get_maximal_cliques(direction=direction)
 
     def ego_betweeness(self, u=None, t=None, direction='both', detailed=False):
         df = self.sort_df('ts')

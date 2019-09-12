@@ -1,20 +1,81 @@
 from stream_graph import ABC
 from stream_graph import StreamGraph
+from bokeh.plotting import figure, show
 from six import iteritems
 
-class Visualizer(object):
+class NewVisualizer(object):
     """Visualization objects for a stream-graph."""
-    def __init__(self, items=None, filename=None, image_type='fig'):
+    def __init__(self):
         self._data = dict(link_streams=[], node_set=None, time_set=None, node_stream=None)
-        if image_type not in ['fig', 'svg', 'png']:
-            raise ValueError('image_types supported is \'fig\' and \'svg\' and \'png\'')
-        else:
-            self._ext = image_type
+
+    def fit(items):
         if items is not None:
             self.__iadd__(items)
-        if filename is not None:
-            self.save_address = filename
 
+    def draw(self):
+        # draw
+        pass
+
+        if self._data['time_set'].instantaneous:
+            min_time = min(self._data['time_set'])
+            max_time = max(self._data['time_set'])
+        else:
+            min_time = min(k[0] for k in self._data['time_set'])
+            max_time = max(k[1] for k in self._data['time_set'])
+
+        nodes = dict()
+        for n in self._data['node_set']:
+            nodes[n] = []
+
+        
+        # pallete = self._make_pallete(len(self._data['link_streams']))
+        
+        
+        # plot nodes
+        node_points, time_points = [], []
+        if self._data['node_stream'].instantaneous:
+            for (u, ts) in self._data['node_stream']:
+                if ts >= min_time and ts <= max_time:
+                    # add circular points
+                    node_points.append(u)
+                    
+                    .append((u, ts))
+        else:
+            # division
+            division = 0.1
+            for k in self._data['node_stream']:
+                for numpy.arange(range(max(k[1], min_time), min(k[2], max_time), division))
+                    node_points.append((u, ts))
+                    nodes[k[0]].append(k[1:3]) 
+                  
+
+
+        # plot links
+        data = self._data['link_streams']
+        if len(data):
+            for ls, color in zip(data, pallete):
+                if ls.instantaneous:
+                    for (u, v, ts) in ls:
+                        self.dwg.addLink(u, v, ts, ts, color=color)
+                else:
+                    for k in ls:
+                        self.dwg.addLink(k[0], k[1], k[2], k[3], color=color)
+
+        p = figure(y_range=nodes.keys())
+        p.circle([1, 2, 3, 4, 5], [6, 7, 2, 4, 5], size=20, color="navy", alpha=0.5)
+
+
+
+    def display(self):
+        # show
+        # get drawing
+        pass
+
+    def save(self, filename=None, **kargs):
+        if filename is None:
+            filename = self.save_address
+        #plot
+        
     @property
     def save_address(self):
         if hasattr(self, 'save_address_'):
@@ -108,75 +169,3 @@ class Visualizer(object):
             return clabels
         else:
             return colors
-
-    def _plot_linkstream(self, pallete):
-        data = self._data['link_streams']
-        if len(data):
-            for ls, color in zip(data, pallete):
-                if ls.instantaneous:
-                    for (u, v, ts) in ls:
-                        self.dwg.addLink(u, v, ts, ts, color=color)
-                else:
-                    for k in ls:
-                        self.dwg.addLink(k[0], k[1], k[2], k[3], color=color)
-
-    def _plot_nodes(self, min_time, max_time):
-        nodes = dict()
-        for n in self._data['node_set']:
-            nodes[n] = []
-        if self._data['node_stream'].instantaneous:
-            for (u, ts) in self._data['node_stream']:
-                if ts >= min_time and ts <= max_time:
-                    nodes[u].append((ts, ts))
-        else:
-            for k in self._data['node_stream']:
-                if k[1] != min_time or k[2] != max_time:
-                    nodes[k[0]].append(k[1:3])
-
-        def takez(a):
-            return a[0]
-
-        for (u, times) in iteritems(nodes):
-            self.dwg.addNode(u, sorted(times, key=takez))
-
-    def _plot(self, filename, **kargs):
-        if self._data['time_set'].instantaneous:
-            min_time = min(self._data['time_set'])
-            max_time = max(self._data['time_set'])
-        else:
-            min_time = min(k[0] for k in self._data['time_set'])
-            max_time = max(k[1] for k in self._data['time_set'])
-
-        nargs = dict()
-        if self._ext == 'fig':
-            from .stream_fig import Drawing
-        else:
-            from .stream_svg import Drawing
-            nargs['max_node_size'] = max(len(str(n)) for n in self._data['node_set'])
-
-        if 'time_width' in nargs:
-            nargs['time_width'] = kargs['time_width']
-
-        self.dwg = Drawing(filename, alpha=min_time, omega=max_time, discrete=self.discrete, **nargs)
-        pallete = self._make_pallete(len(self._data['link_streams']))
-        self._plot_nodes(min_time, max_time)
-        self._plot_linkstream(pallete)
-        margs = dict()
-
-        if 'ticks' in kargs:
-            margs['ticks'] = kargs['ticks']
-        self.dwg.addTimeLine(**margs)
-        if self._ext != 'fig':
-            self.dwg.save()
-        if self._ext == 'png':
-            import os
-            from cairosvg import svg2png
-            dfilename = filename + str('_dummy')
-            os.rename(filename, dfilename)
-            svg2png(url=dfilename, write_to=filename)
-            os.remove(dfilename)
-
-    def produce(self, filename=None, **kargs):
-        if filename is None:
-            filename = self.save_address
-        self._plot(filename, **kargs)
