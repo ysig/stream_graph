@@ -51,22 +51,12 @@ using the :class:`stream_graph.Visualizer`.
     stream_graph = StreamGraph(nodeset, timeset, temporal_nodeset, temporal_linkset)
 
     # Visualize svg
-    Visualizer(stream_graph, 'plot_intro.svg', image_type='svg').produce()
-
-    # Convert to PNG
-    from cairosvg import svg2png
-    from shutil import move
-    filename = '../doc/auto_examples/images/sphx_glr_plot_intro_001.png'
-    svg2png(url='plot_intro.svg', write_to=filename, parent_height=160, parent_width=453)
-
-    # Remove svg
-    from os import remove
-    remove('plot_intro.svg')
+    Visualizer().fit(stream_graph).save('../doc/auto_examples/images/sphx_glr_plot_intro_001.png', 'png')
 
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  0.140 seconds)
+   **Total running time of the script:** ( 0 minutes  1.717 seconds)
 
 
 .. _sphx_glr_download_auto_examples_plot_intro.py:

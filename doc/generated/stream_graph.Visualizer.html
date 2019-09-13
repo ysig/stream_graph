@@ -38,7 +38,7 @@
   <link rel="stylesheet" href="../_static/_static/css/supplementary.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="stream_graph.visualize.stream_fig.Drawing" href="stream_graph.visualize.stream_fig.Drawing.html" />
+    <link rel="next" title="stream_graph.exceptions.UnrecognizedNodeSet" href="stream_graph.exceptions.UnrecognizedNodeSet.html" />
     <link rel="prev" title="stream_graph.base.dataframes.InstantaneousWDF" href="stream_graph.base.dataframes.InstantaneousWDF.html" /> 
 </head>
 
@@ -107,7 +107,6 @@
 <li class="toctree-l3"><a class="reference internal" href="#examples-using-stream-graph-visualizer">Examples using <code class="docutils literal notranslate"><span class="pre">stream_graph.Visualizer</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../api.html#utilities">Utilities</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../api.html#exceptions">Exceptions</a></li>
@@ -181,7 +180,7 @@
 <h1><code class="xref py py-mod docutils literal notranslate"><span class="pre">stream_graph</span></code>.Visualizer<a class="headerlink" href="#stream-graph-visualizer" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="stream_graph.Visualizer">
-<em class="property">class </em><code class="sig-prename descclassname">stream_graph.</code><code class="sig-name descname">Visualizer</code><span class="sig-paren">(</span><em class="sig-param">items=None</em>, <em class="sig-param">filename=None</em>, <em class="sig-param">image_type='fig'</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/ea5adc2/stream_graph/visualize/visualizer.py#L5"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/visualize/visualizer.html#Visualizer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.Visualizer" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">stream_graph.</code><code class="sig-name descname">Visualizer</code><span class="sig-paren">(</span><em class="sig-param">x_axis_label=None</em>, <em class="sig-param">y_axis_label=None</em>, <em class="sig-param">date_map=None</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/9485077/stream_graph/visualize/visualizer.py#L8"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/visualize/visualizer.html#Visualizer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.Visualizer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Visualization objects for a stream-graph.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Attributes</dt>
@@ -194,11 +193,66 @@
 <p class="rubric">Methods</p>
 <table class="docutils align-default">
 <colgroup>
-<col style="width: 52%" />
-<col style="width: 48%" />
+<col style="width: 62%" />
+<col style="width: 38%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><strong>produce</strong></p></td>
+<tr class="row-odd"><td><p><strong>draw</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>fit</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>map_datetime</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>map_time</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>save</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>show</strong></p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<dl class="simple">
+<dt>date_map<span class="classifier">dict or callable or True, default=None</span></dt><dd><p>A map that transforms time elements to date-time-objects.
+If time-elements are already unix-epoch-timestamps set to True.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Attributes</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>discrete</strong></dt><dd></dd>
+<dt><strong>save_address</strong></dt><dd></dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 62%" />
+<col style="width: 38%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><strong>draw</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>fit</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>map_datetime</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>map_time</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>save</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>show</strong></p></td>
 <td></td>
 </tr>
 </tbody>
@@ -249,6 +303,16 @@
 <dt id="stream_graph.Visualizer.__hash__">
 <code class="sig-name descname">__hash__</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.Visualizer.__hash__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return hash(self).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="stream_graph.Visualizer.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">x_axis_label=None</em>, <em class="sig-param">y_axis_label=None</em>, <em class="sig-param">date_map=None</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/9485077/stream_graph/visualize/visualizer.py#L10"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/visualize/visualizer.html#Visualizer.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.Visualizer.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>date_map<span class="classifier">dict or callable or True, default=None</span></dt><dd><p>A map that transforms time elements to date-time-objects.
+If time-elements are already unix-epoch-timestamps set to True.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
@@ -354,7 +418,7 @@ overrides the normal algorithm (and the outcome is cached).</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="stream_graph.visualize.stream_fig.Drawing.html" class="btn btn-neutral float-right" title="stream_graph.visualize.stream_fig.Drawing" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="stream_graph.exceptions.UnrecognizedNodeSet.html" class="btn btn-neutral float-right" title="stream_graph.exceptions.UnrecognizedNodeSet" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="stream_graph.base.dataframes.InstantaneousWDF.html" class="btn btn-neutral float-left" title="stream_graph.base.dataframes.InstantaneousWDF" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

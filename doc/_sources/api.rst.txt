@@ -158,17 +158,6 @@ Visualizer
 
    Visualizer
 
-Utilities
----------
-
-.. currentmodule:: stream_graph.visualize
-
-.. autosummary::
-   :toctree: generated/
-   :template: api.rst
-
-   stream_fig.Drawing
-   stream_svg.Drawing
 
 ==========
 Exceptions

@@ -297,7 +297,8 @@
     <span class="k">def</span> <span class="nf">empty</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="ow">not</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">graph_at</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">graph_at</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">.graph</span> <span class="k">import</span> <span class="n">Graph</span>
         <span class="k">if</span> <span class="n">t</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">def</span> <span class="nf">fun</span><span class="p">(</span><span class="n">nodes</span><span class="p">,</span> <span class="n">links</span><span class="p">):</span>
                 <span class="k">return</span> <span class="n">Graph</span><span class="p">(</span><span class="n">nodes</span><span class="p">,</span> <span class="n">links</span><span class="p">)</span>
@@ -306,8 +307,8 @@
             <span class="k">return</span> <span class="n">Graph</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">temporal_nodeset_</span><span class="o">.</span><span class="n">nodes_at</span><span class="p">(</span><span class="n">t</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">temporal_linkset_</span><span class="o">.</span><span class="n">links_at</span><span class="p">(</span><span class="n">t</span><span class="p">))</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">temporal_linkset_coverage</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Calculate the coverage of the temporal-link-set.</span>
+    <span class="k">def</span> <span class="nf">density</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Calculate the density of the temporal-link-set.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -316,18 +317,18 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        ns_coverage : Real</span>
-<span class="sd">            Returns :math:`\\frac{|E|}{\sum_{uv \\in V\\times V}|T_{u} \\cap T_{v}|}`</span>
+<span class="sd">            Returns :math:`\\delta(S) = \\frac{|E|}{\sum_{uv \\in V\\times V}|T_{u} \\cap T_{v}|}`</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">denom</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">temporal_nodeset_</span><span class="o">.</span><span class="n">total_common_time</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">denom</span> <span class="o">&gt;</span> <span class="o">.</span><span class="mi">0</span><span class="p">:</span>
-            <span class="k">return</span> <span class="mi">2</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">temporal_linkset_</span><span class="o">.</span><span class="n">size</span> <span class="o">/</span> <span class="n">denom</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">temporal_linkset_</span><span class="o">.</span><span class="n">size</span> <span class="o">/</span> <span class="n">denom</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="o">.</span><span class="mi">0</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">weighted_temporal_linkset_coverage</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Calculate the weighted coverage of the temporal-link-set.</span>
+    <span class="k">def</span> <span class="nf">weighted_density</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Calculate the weighted density of the temporal-link-set.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -336,18 +337,18 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        ns_coverage : Real</span>
-<span class="sd">            Returns :math:`\\frac{|E_{w}|}{\sum_{uv \\in V\\times V}|T_{u} \\cap T_{v}|}`</span>
+<span class="sd">            Returns :math:`\\delta_{w}(S)\\frac{|E_{w}|}{\sum_{uv \\in V\\times V}|T_{u} \\cap T_{v}|}`</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">denom</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">temporal_nodeset_</span><span class="o">.</span><span class="n">total_common_time</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">denom</span> <span class="o">&gt;</span> <span class="o">.</span><span class="mi">0</span><span class="p">:</span>
-            <span class="k">return</span> <span class="mi">2</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">temporal_linkset_</span><span class="o">.</span><span class="n">weighted_size</span> <span class="o">/</span> <span class="n">denom</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">temporal_linkset_</span><span class="o">.</span><span class="n">weighted_size</span> <span class="o">/</span> <span class="n">denom</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="o">.</span><span class="mi">0</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">temporal_nodeset_coverage</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Calculate the coverage of the temporal-node-set.</span>
+    <span class="k">def</span> <span class="nf">coverage</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Calculate the coverage of the stream-graph.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -356,7 +357,7 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        ns_coverage : Real</span>
-<span class="sd">            Returns :math:`\\frac{|W|}{|V\\times T|}`</span>
+<span class="sd">            Returns :math:`c(S)=\\frac{|W|}{|V\\times T|}`</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">denom</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">timeset_</span><span class="o">.</span><span class="n">size</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodeset_</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
@@ -365,8 +366,8 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="o">.</span><span class="mi">0</span>
 
-<div class="viewcode-block" id="StreamGraph.time_coverage_node"><a class="viewcode-back" href="../../../generated/stream_graph.StreamGraph.html#stream_graph.StreamGraph.time_coverage_node">[docs]</a>    <span class="k">def</span> <span class="nf">time_coverage_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Calculate the time coverage of a node inside the stream_graph.</span>
+<div class="viewcode-block" id="StreamGraph.node_contribution_of"><a class="viewcode-back" href="../../../generated/stream_graph.StreamGraph.html#stream_graph.StreamGraph.node_contribution_of">[docs]</a>    <span class="k">def</span> <span class="nf">node_contribution_of</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Calculate the contibution of a node inside the stream_graph.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -375,7 +376,7 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        time_coverage_node : Real or NodeCollection(Real)</span>
-<span class="sd">            Returns :math:`\\frac{|T_{u}|}{|T|}`.</span>
+<span class="sd">            Returns :math:`n_{u}=\\frac{|T_{u}|}{|T|}`.</span>
 <span class="sd">            If u is None, returns a dictionary of all nodes and their coverages.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -393,8 +394,65 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">temporal_nodeset_</span><span class="o">.</span><span class="n">duration_of</span><span class="p">(</span><span class="n">u</span><span class="p">)</span> <span class="o">/</span> <span class="n">denom</span></div>
 
-<div class="viewcode-block" id="StreamGraph.time_coverage_link"><a class="viewcode-back" href="../../../generated/stream_graph.StreamGraph.html#stream_graph.StreamGraph.time_coverage_link">[docs]</a>    <span class="k">def</span> <span class="nf">time_coverage_link</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">l</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="s1">&#39;out&#39;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Calculate the time coverage of a link inside the stream_graph.</span>
+<div class="viewcode-block" id="StreamGraph.node_contribution_at"><a class="viewcode-back" href="../../../generated/stream_graph.StreamGraph.html#stream_graph.StreamGraph.node_contribution_at">[docs]</a>    <span class="k">def</span> <span class="nf">node_contribution_at</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Calculate the node contribution at a time instant inside the stream_graph.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        t: time or None</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        node_coverage : Real or TimeCollection</span>
+<span class="sd">            Returns :math:`k_{t}=\\frac{|V_{t}|}{|V|}`.</span>
+<span class="sd">            If None returns the time coverage for each node at each time-event.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">denom</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nodeset_</span><span class="o">.</span><span class="n">size</span> <span class="p">)</span>
+        <span class="k">if</span> <span class="n">t</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">denom</span> <span class="o">&gt;</span> <span class="o">.</span><span class="mi">0</span><span class="p">:</span>
+                <span class="k">def</span> <span class="nf">fun</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+                    <span class="k">return</span> <span class="n">v</span><span class="o">/</span><span class="n">denom</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">temporal_nodeset_</span><span class="o">.</span><span class="n">n_at</span><span class="p">()</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">fun</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">TimeCollection</span><span class="p">(</span><span class="n">instants</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">temporal_nodeset_</span><span class="o">.</span><span class="n">instantaneous</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">denom</span> <span class="o">&gt;</span> <span class="o">.</span><span class="mi">0</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">temporal_nodeset_</span><span class="o">.</span><span class="n">n_at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">/</span> <span class="n">denom</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="o">.</span><span class="mi">0</span></div>
+
+<div class="viewcode-block" id="StreamGraph.link_contribution_at"><a class="viewcode-back" href="../../../generated/stream_graph.StreamGraph.html#stream_graph.StreamGraph.link_contribution_at">[docs]</a>    <span class="k">def</span> <span class="nf">link_contribution_at</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Calculate the contribution of a link inside the stream_graph.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        t: time or None</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        node_coverage : Real or TimeCollection</span>
+<span class="sd">            Returns :math:`l_{t}=\\frac{|E_{t}|}{|V*(V-1)|}`.</span>
+<span class="sd">            If None returns the time coverage for each node at each time-event.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">denom</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nodeset_</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+        <span class="n">denom</span> <span class="o">=</span> <span class="n">denom</span> <span class="o">*</span> <span class="p">(</span><span class="n">denom</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">t</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">denom</span> <span class="o">&gt;</span> <span class="o">.</span><span class="mi">0</span><span class="p">:</span>
+                <span class="k">def</span> <span class="nf">fun</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+                    <span class="k">return</span> <span class="n">v</span><span class="o">/</span><span class="n">denom</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">temporal_linkset_</span><span class="o">.</span><span class="n">m_at</span><span class="p">()</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">fun</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">TimeCollection</span><span class="p">(</span><span class="n">instants</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">temporal_linkset_</span><span class="o">.</span><span class="n">instantaneous</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">denom</span> <span class="o">&gt;</span> <span class="o">.</span><span class="mi">0</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">temporal_linkset_</span><span class="o">.</span><span class="n">m_at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">/</span> <span class="n">denom</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="o">.</span><span class="mi">0</span></div>
+
+<div class="viewcode-block" id="StreamGraph.link_density_of"><a class="viewcode-back" href="../../../generated/stream_graph.StreamGraph.html#stream_graph.StreamGraph.link_density_of">[docs]</a>    <span class="k">def</span> <span class="nf">link_density_of</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">l</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="s1">&#39;out&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Calculate the density of a link inside the stream_graph.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -423,37 +481,8 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">temporal_linkset_</span><span class="o">.</span><span class="n">duration_of</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="n">direction</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">)</span> <span class="o">/</span> <span class="n">denom</span></div>
 
-<div class="viewcode-block" id="StreamGraph.node_coverage_at"><a class="viewcode-back" href="../../../generated/stream_graph.StreamGraph.html#stream_graph.StreamGraph.node_coverage_at">[docs]</a>    <span class="k">def</span> <span class="nf">node_coverage_at</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Calculate the node coverage of a time instant inside the stream_graph.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        t: time or None</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        node_coverage : Real or TimeCollection</span>
-<span class="sd">            Returns :math:`\\frac{|V_{t}|}{|V|}`.</span>
-<span class="sd">            If None returns the time coverage for each node at each time-event.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">denom</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nodeset_</span><span class="o">.</span><span class="n">size</span> <span class="p">)</span>
-        <span class="k">if</span> <span class="n">t</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">denom</span> <span class="o">&gt;</span> <span class="o">.</span><span class="mi">0</span><span class="p">:</span>
-                <span class="k">def</span> <span class="nf">fun</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
-                    <span class="k">return</span> <span class="n">v</span><span class="o">/</span><span class="n">denom</span>
-                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">temporal_nodeset_</span><span class="o">.</span><span class="n">n_at</span><span class="p">()</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">fun</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">TimeCollection</span><span class="p">(</span><span class="n">instants</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">nodeset_</span><span class="o">.</span><span class="n">nodes_at</span><span class="p">()</span><span class="o">.</span><span class="n">instants</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">denom</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nodeset_</span><span class="o">.</span><span class="n">size</span> <span class="p">)</span>
-            <span class="k">if</span> <span class="n">denom</span> <span class="o">&gt;</span> <span class="o">.</span><span class="mi">0</span><span class="p">:</span>
-                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">temporal_nodeset_</span><span class="o">.</span><span class="n">n_at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">/</span> <span class="n">denom</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">return</span> <span class="o">.</span><span class="mi">0</span></div>
-
-<div class="viewcode-block" id="StreamGraph.link_coverage_at"><a class="viewcode-back" href="../../../generated/stream_graph.StreamGraph.html#stream_graph.StreamGraph.link_coverage_at">[docs]</a>    <span class="k">def</span> <span class="nf">link_coverage_at</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Calculate the link coverage of a time instant inside the stream_graph.</span>
+<div class="viewcode-block" id="StreamGraph.density_at"><a class="viewcode-back" href="../../../generated/stream_graph.StreamGraph.html#stream_graph.StreamGraph.density_at">[docs]</a>    <span class="k">def</span> <span class="nf">density_at</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Calculate the density at a time instant inside the stream_graph.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -462,24 +491,26 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        link_coverage : Real or TimeCollection</span>
-<span class="sd">            Returns :math:`\\frac{|E_{t}|}{|V(t)|^{2}}`.</span>
+<span class="sd">            Returns :math:`l_{t}=\\frac{|E_{t}|}{V(t)*(V(t)-1)}`.</span>
 <span class="sd">            Returns the time collection for each link at each time-event.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">t</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">ns</span><span class="p">,</span> <span class="n">ms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">temporal_nodeset_</span><span class="o">.</span><span class="n">n_at</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="kc">None</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">temporal_linkset_</span><span class="o">.</span><span class="n">m_at</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">)</span>
             <span class="k">def</span> <span class="nf">fun</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
-                <span class="k">return</span> <span class="p">((</span><span class="mi">2</span><span class="o">*</span><span class="n">y</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span> <span class="k">if</span> <span class="n">x</span> <span class="o">!=</span> <span class="o">.</span><span class="mi">0</span> <span class="k">else</span> <span class="o">.</span><span class="mi">0</span><span class="p">)</span>
+                <span class="n">denom</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="o">*</span><span class="p">(</span><span class="n">x</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+                <span class="k">return</span> <span class="p">((</span><span class="n">y</span> <span class="o">/</span> <span class="n">denom</span><span class="p">)</span> <span class="k">if</span> <span class="n">denom</span> <span class="o">!=</span> <span class="o">.</span><span class="mi">0</span> <span class="k">else</span> <span class="o">.</span><span class="mi">0</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">ns</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">fun</span><span class="p">,</span> <span class="n">missing_value</span><span class="o">=.</span><span class="mi">0</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">denom</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">temporal_nodeset_</span><span class="o">.</span><span class="n">n_at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="n">denom</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">temporal_nodeset_</span><span class="o">.</span><span class="n">n_at</span><span class="p">(</span><span class="n">t</span><span class="p">))</span>
+            <span class="n">denom</span> <span class="o">=</span> <span class="n">denom</span><span class="o">*</span><span class="p">(</span><span class="n">denom</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">denom</span> <span class="o">&gt;</span> <span class="o">.</span><span class="mi">0</span><span class="p">:</span>
-                <span class="k">return</span> <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">temporal_linkset_</span><span class="o">.</span><span class="n">m_at</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">)</span> <span class="o">/</span> <span class="n">denom</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">temporal_linkset_</span><span class="o">.</span><span class="n">m_at</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">)</span> <span class="o">/</span> <span class="n">denom</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">return</span> <span class="o">.</span><span class="mi">0</span></div>
 
-<div class="viewcode-block" id="StreamGraph.neighbor_coverage"><a class="viewcode-back" href="../../../generated/stream_graph.StreamGraph.html#stream_graph.StreamGraph.neighbor_coverage">[docs]</a>    <span class="k">def</span> <span class="nf">neighbor_coverage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="s1">&#39;out&#39;</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Calculate the neighbor coverage of a node inside the stream_graph.</span>
+<div class="viewcode-block" id="StreamGraph.node_density_of"><a class="viewcode-back" href="../../../generated/stream_graph.StreamGraph.html#stream_graph.StreamGraph.node_density_of">[docs]</a>    <span class="k">def</span> <span class="nf">node_density_of</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="s1">&#39;out&#39;</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Calculate the node density of a node inside the stream_graph.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -492,10 +523,11 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        neighbor_coverage : Real or dict</span>
-<span class="sd">            Returns :math:`\\frac{|N(u)|}{\\sum_{v\\in V}{|T_{u}\\cap T_{v}|}}`</span>
+<span class="sd">            Returns :math:`\\frac{\\sum_{u\\in V, u\\neq v}|T_{uv}|}{\\sum_{v\\in V, v\\neq u}{|T_{u}\\cap T_{v}|}}`</span>
 <span class="sd">            If u is None, returns a dictionary of all nodes and their neighbor coverages.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">direction</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;in&#39;</span> <span class="k">if</span> <span class="n">direction</span> <span class="o">==</span> <span class="s1">&#39;out&#39;</span> <span class="k">else</span> <span class="p">(</span><span class="s1">&#39;out&#39;</span> <span class="k">if</span> <span class="n">direction</span> <span class="o">==</span> <span class="s1">&#39;in&#39;</span> <span class="k">else</span> <span class="n">direction</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">u</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">temporal_linkset_</span><span class="o">.</span><span class="n">degree_of</span><span class="p">(</span><span class="n">direction</span><span class="o">=</span><span class="n">direction</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">)</span>
             <span class="n">active_nodes</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">m</span> <span class="k">if</span> <span class="n">v</span> <span class="o">&gt;</span> <span class="o">.</span><span class="mi">0</span><span class="p">)</span>
@@ -528,7 +560,7 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        time_coverage : Real</span>
-<span class="sd">            Returns :math:`\\frac{|N_{t}(u)|}{|V|}`.</span>
+<span class="sd">            Returns :math:`\\frac{|N_{t}(u)|}{|V(t)|}`.</span>
 <span class="sd">            If u is None return the neighbor coverage for each node at time t.</span>
 <span class="sd">            If t is None return the neighbor coverage for node u for all time-events.</span>
 <span class="sd">            If u and t are None return the neighbor coverage for each node at each time-event.</span>
