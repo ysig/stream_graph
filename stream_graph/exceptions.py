@@ -15,7 +15,7 @@ class UnrecognizedNodeSet(ValueError):
             Message to be appended after the end of the exception.
 
         """
-        ValueError.__init__(self, variable_name + " should be an LinkSet instance\n" + extra_message)
+        ValueError.__init__(self, variable_name + " should be a LinkSet instance\n" + extra_message)
 
 
 class UnrecognizedLinkSet(ValueError):
@@ -32,7 +32,7 @@ class UnrecognizedLinkSet(ValueError):
             Message to be appended after the end of the exception.
 
         """
-        ValueError.__init__(self, variable_name + " should be an LinkSet instance\n" + extra_message)
+        ValueError.__init__(self, variable_name + " should be a LinkSet instance\n" + extra_message)
 
 
 class UnrecognizedTimeSet(ValueError):
@@ -49,7 +49,7 @@ class UnrecognizedTimeSet(ValueError):
             Message to be appended after the end of the exception.
 
         """
-        ValueError.__init__(self, variable_name + " should be an TimeSet instance\n" + extra_message)
+        ValueError.__init__(self, variable_name + " should be a TimeSet instance\n" + extra_message)
 
 
 class UnrecognizedTemporalNodeSet(ValueError):
@@ -66,7 +66,7 @@ class UnrecognizedTemporalNodeSet(ValueError):
             Message to be appended after the end of the exception.
 
         """
-        ValueError.__init__(self, variable_name + " should be an NodeStream instance\n" + extra_message)
+        ValueError.__init__(self, variable_name + " should be a TemporalNodeSet instance\n" + extra_message)
 
 
 class UnrecognizedTemporalLinkSet(ValueError):
@@ -83,7 +83,7 @@ class UnrecognizedTemporalLinkSet(ValueError):
             Message to be appended after the end of the exception.
 
         """
-        ValueError.__init__(self, variable_name + " should be an NodeStream instance\n" + extra_message)
+        ValueError.__init__(self, variable_name + " should be a TemporalLinkSet instance\n" + extra_message)
 
 class UnrecognizedStreamGraph(ValueError):
     """Exception raised when a variable is not an instance of ABC.TemporalStreamGraph."""

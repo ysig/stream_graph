@@ -376,6 +376,7 @@ class ITemporalNodeSetDF(ABC.ITemporalNodeSet):
                         ct[v] += (len(active_set)-1)
             else:
                 # If we want the common-time for all nodes but only for a list of nodes
+                valid_nodes = set(u)
                 for u, ts in self.sort_df('ts').itertuples():
                     if prev is None:
                         active_set, prev = {u}, ts

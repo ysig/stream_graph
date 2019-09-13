@@ -140,8 +140,8 @@ class StreamGraph(object):
             return Graph(self.temporal_nodeset_.nodes_at(t), self.temporal_linkset_.links_at(t))
 
     @property
-    def temporal_linkset_coverage(self):
-        """Calculate the coverage of the temporal-link-set.
+    def density(self):
+        """Calculate the density of the temporal-link-set.
 
         Parameters
         ----------
@@ -150,18 +150,18 @@ class StreamGraph(object):
         Returns
         -------
         ns_coverage : Real
-            Returns :math:`\\frac{|E|}{\sum_{uv \\in V\\times V}|T_{u} \\cap T_{v}|}`
+            Returns :math:`\\delta(S) = \\frac{|E|}{\sum_{uv \\in V\\times V}|T_{u} \\cap T_{v}|}`
 
         """
         denom = float(self.temporal_nodeset_.total_common_time)
         if denom > .0:
-            return 2*self.temporal_linkset_.size / denom
+            return self.temporal_linkset_.size / denom
         else:
             return .0
 
     @property
-    def weighted_temporal_linkset_coverage(self):
-        """Calculate the weighted coverage of the temporal-link-set.
+    def weighted_density(self):
+        """Calculate the weighted density of the temporal-link-set.
 
         Parameters
         ----------
@@ -170,18 +170,18 @@ class StreamGraph(object):
         Returns
         -------
         ns_coverage : Real
-            Returns :math:`\\frac{|E_{w}|}{\sum_{uv \\in V\\times V}|T_{u} \\cap T_{v}|}`
+            Returns :math:`\\delta_{w}(S)\\frac{|E_{w}|}{\sum_{uv \\in V\\times V}|T_{u} \\cap T_{v}|}`
 
         """
         denom = float(self.temporal_nodeset_.total_common_time)
         if denom > .0:
-            return 2*self.temporal_linkset_.weighted_size / denom
+            return self.temporal_linkset_.weighted_size / denom
         else:
             return .0
 
     @property
-    def temporal_nodeset_coverage(self):
-        """Calculate the coverage of the temporal-node-set.
+    def coverage(self):
+        """Calculate the coverage of the stream-graph.
 
         Parameters
         ----------
@@ -190,7 +190,7 @@ class StreamGraph(object):
         Returns
         -------
         ns_coverage : Real
-            Returns :math:`\\frac{|W|}{|V\\times T|}`
+            Returns :math:`c(S)=\\frac{|W|}{|V\\times T|}`
 
         """
         denom = float(self.timeset_.size * self.nodeset_.size)
@@ -199,8 +199,8 @@ class StreamGraph(object):
         else:
             return .0
 
-    def time_coverage_node(self, u=None):
-        """Calculate the time coverage of a node inside the stream_graph.
+    def node_contribution_of(self, u=None):
+        """Calculate the contibution of a node inside the stream_graph.
 
         Parameters
         ----------
@@ -209,7 +209,7 @@ class StreamGraph(object):
         Returns
         -------
         time_coverage_node : Real or NodeCollection(Real)
-            Returns :math:`\\frac{|T_{u}|}{|T|}`.
+            Returns :math:`n_{u}=\\frac{|T_{u}|}{|T|}`.
             If u is None, returns a dictionary of all nodes and their coverages.
 
         """
@@ -227,8 +227,65 @@ class StreamGraph(object):
             else:
                 return self.temporal_nodeset_.duration_of(u) / denom
 
-    def time_coverage_link(self, l=None, weights=False, direction='out'):
-        """Calculate the time coverage of a link inside the stream_graph.
+    def node_contribution_at(self, t=None):
+        """Calculate the node contribution at a time instant inside the stream_graph.
+
+        Parameters
+        ----------
+        t: time or None
+
+        Returns
+        -------
+        node_coverage : Real or TimeCollection
+            Returns :math:`k_{t}=\\frac{|V_{t}|}{|V|}`.
+            If None returns the time coverage for each node at each time-event.
+
+        """
+        denom = float(self.nodeset_.size )
+        if t is None:
+            if denom > .0:
+                def fun(t, v):
+                    return v/denom
+                return self.temporal_nodeset_.n_at().map(fun)
+            else:
+                return TimeCollection(instants=self.temporal_nodeset_.instantaneous)
+        else:
+            if denom > .0:
+                return self.temporal_nodeset_.n_at(t) / denom
+            else:
+                return .0
+
+    def link_contribution_at(self, t=None):
+        """Calculate the contribution of a link inside the stream_graph.
+
+        Parameters
+        ----------
+        t: time or None
+
+        Returns
+        -------
+        node_coverage : Real or TimeCollection
+            Returns :math:`l_{t}=\\frac{|E_{t}|}{|V*(V-1)|}`.
+            If None returns the time coverage for each node at each time-event.
+
+        """
+        denom = float(self.nodeset_.size)
+        denom = denom * (denom-1)
+        if t is None:
+            if denom > .0:
+                def fun(t, v):
+                    return v/denom
+                return self.temporal_linkset_.m_at().map(fun)
+            else:
+                return TimeCollection(instants=self.temporal_linkset_.instantaneous)
+        else:
+            if denom > .0:
+                return self.temporal_linkset_.m_at(t) / denom
+            else:
+                return .0
+
+    def link_density_of(self, l=None, weights=False, direction='out'):
+        """Calculate the density of a link inside the stream_graph.
 
         Parameters
         ----------
@@ -257,37 +314,8 @@ class StreamGraph(object):
             else:
                 return self.temporal_linkset_.duration_of(l, direction=direction, weights=weights) / denom
 
-    def node_coverage_at(self, t=None):
-        """Calculate the node coverage of a time instant inside the stream_graph.
-
-        Parameters
-        ----------
-        t: time or None
-
-        Returns
-        -------
-        node_coverage : Real or TimeCollection
-            Returns :math:`\\frac{|V_{t}|}{|V|}`.
-            If None returns the time coverage for each node at each time-event.
-
-        """
-        denom = float(self.nodeset_.size )
-        if t is None:
-            if denom > .0:
-                def fun(t, v):
-                    return v/denom
-                return self.temporal_nodeset_.n_at().map(fun)
-            else:
-                return TimeCollection(instants=self.nodeset_.nodes_at().instants)
-        else:
-            denom = float(self.nodeset_.size )
-            if denom > .0:
-                return self.temporal_nodeset_.n_at(t) / denom
-            else:
-                return .0
-
-    def link_coverage_at(self, t=None, weights=False):
-        """Calculate the link coverage of a time instant inside the stream_graph.
+    def density_at(self, t=None, weights=False):
+        """Calculate the density at a time instant inside the stream_graph.
 
         Parameters
         ----------
@@ -296,24 +324,26 @@ class StreamGraph(object):
         Returns
         -------
         link_coverage : Real or TimeCollection
-            Returns :math:`\\frac{|E_{t}|}{|V(t)|^{2}}`.
+            Returns :math:`l_{t}=\\frac{|E_{t}|}{V(t)*(V(t)-1)}`.
             Returns the time collection for each link at each time-event.
 
         """
         if t is None:
             ns, ms = self.temporal_nodeset_.n_at(t=None), self.temporal_linkset_.m_at(t=None, weights=weights)
             def fun(x, y):
-                return ((2*y / float(x**2)) if x != .0 else .0)
+                denom = float(x*(x-1))
+                return ((y / denom) if denom != .0 else .0)
             return ns.merge(ms, fun, missing_value=.0)
         else:
-            denom = float(self.temporal_nodeset_.n_at(t) ** 2)
+            denom = float(self.temporal_nodeset_.n_at(t))
+            denom = denom*(denom-1)
             if denom > .0:
-                return 2 * self.temporal_linkset_.m_at(t, weights=weights) / denom
+                return self.temporal_linkset_.m_at(t, weights=weights) / denom
             else:
                 return .0
 
-    def neighbor_coverage(self, u=None, direction='out', weights=False):
-        """Calculate the neighbor coverage of a node inside the stream_graph.
+    def node_density_of(self, u=None, direction='out', weights=False):
+        """Calculate the node density of a node inside the stream_graph.
 
         Parameters
         ----------
@@ -326,10 +356,11 @@ class StreamGraph(object):
         Returns
         -------
         neighbor_coverage : Real or dict
-            Returns :math:`\\frac{|N(u)|}{\\sum_{v\\in V}{|T_{u}\\cap T_{v}|}}`
+            Returns :math:`\\frac{\\sum_{u\\in V, u\\neq v}|T_{uv}|}{\\sum_{v\\in V, v\\neq u}{|T_{u}\\cap T_{v}|}}`
             If u is None, returns a dictionary of all nodes and their neighbor coverages.
 
         """
+        direction = ('in' if direction == 'out' else ('out' if direction == 'in' else direction))
         if u is None:
             m = self.temporal_linkset_.degree_of(direction=direction, weights=weights)
             active_nodes = set(k for k, v in m if v > .0)
@@ -362,7 +393,7 @@ class StreamGraph(object):
         Returns
         -------
         time_coverage : Real
-            Returns :math:`\\frac{|N_{t}(u)|}{|V|}`.
+            Returns :math:`\\frac{|N_{t}(u)|}{|V(t)|}`.
             If u is None return the neighbor coverage for each node at time t.
             If t is None return the neighbor coverage for node u for all time-events.
             If u and t are None return the neighbor coverage for each node at each time-event.
