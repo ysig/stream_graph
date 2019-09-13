@@ -25,6 +25,7 @@ sudo -E apt-get -yq --no-install-suggests --no-install-recommends --force-yes in
 sudo apt-get install chrpath libssl-dev libxft-dev -y
 sudo apt-get install libfreetype6 libfreetype6-dev -y
 sudo apt-get install libfontconfig1 libfontconfig1-dev -y
+pwd
 cd ~
 export PHANTOM_JS="phantomjs-2.1.1-linux-x86_64"
 wget https://github.com/Medium/phantomjs/releases/download/v2.1.1/$PHANTOM_JS.tar.bz2
