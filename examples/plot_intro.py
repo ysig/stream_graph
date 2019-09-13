@@ -23,5 +23,4 @@ temporal_linkset = TemporalLinkSetDF([(1, 2, 2, 4), (1, 2, 3, 5), (1, 2, 6, 8)] 
 stream_graph = StreamGraph(nodeset, timeset, temporal_nodeset, temporal_linkset)
 
 # Visualize svg
-Visualizer(stream_graph, '../doc/auto_examples/images/sphx_glr_plot_intro_001.png', image_type='png').produce()
-
+Visualizer().fit(stream_graph).save('../doc/auto_examples/images/sphx_glr_plot_intro_001.png', 'png')
