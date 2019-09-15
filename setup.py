@@ -66,5 +66,8 @@ setup(name='stream_graph',
       packages=find_packages(),
       install_requires=INSTALL_REQUIRES,
       ext_modules=[ext],
+      extras_require={
+        'visualize': ["bokeh"]
+      },
       cmdclass={'build_ext': build_ext},
       )
