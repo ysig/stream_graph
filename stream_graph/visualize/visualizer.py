@@ -1,19 +1,25 @@
 from stream_graph import ABC
 from stream_graph import StreamGraph
-from six import iteritems
 from math import tanh
-from datetime import timedelta
 import numpy as np
 
+
 class Visualizer(object):
-    """Visualization objects for a stream-graph."""
+    """Visualizer object for stream_graph objects.
+
+    Parameters
+    ----------
+    x_axis_label: str, default=None
+        Defines the label of the x-axis. By default is 'time'.
+
+    y_axis_label: str, default=None
+        Defines the label of the y-axis. No label by default.
+
+    date_map : dict or callable or True, default=None
+        A map that transforms time elements to date-time-objects.
+        If time-elements are already unix-epoch-timestamps set to True.
+    """
     def __init__(self, x_axis_label=None, y_axis_label=None, date_map=None):
-        """
-        
-        date_map : dict or callable or True, default=None
-            A map that transforms time elements to date-time-objects.
-            If time-elements are already unix-epoch-timestamps set to True.
-        """
         self.x_axis_label = x_axis_label
         self.y_axis_label = y_axis_label
         self.date_map = date_map
@@ -116,12 +122,10 @@ class Visualizer(object):
                         lp_y += [ym, ym, nan]
                 l.append(((lp_x, lp_y), color))
                 b.append(((x0, y0, x1, y1, cx, cy), color))
-        
-        from bokeh.models.ranges import FactorRange
+
         if self.date_map is None:
             self.p = figure(width=w, height=h)
         else:
-            from bokeh.models.formatters import DatetimeTickFormatter
             assert callable(self.date_map) or isinstance(self.date_map, dict)
             self.p = figure(width=w, height=h, x_axis_type="datetime")
         if self.y_axis_label is not None:
@@ -133,7 +137,7 @@ class Visualizer(object):
         from bokeh.models import ColumnDataSource
         from bokeh.models.glyphs import Quadratic
 
-        self.p.circle(time_points, node_points, size=8, color="black")        
+        self.p.circle(time_points, node_points, size=8, color="black")
         for ((lp_x, lp_y), c) in l:
             self.p.line(lp_x, lp_y, line_width=2, color='black')
 
@@ -141,28 +145,21 @@ class Visualizer(object):
             data = dict(x0=x0, y0=y0, x1=x1, y1=y1, cx=cx, cy=cy)
             self.p.add_glyph(ColumnDataSource(data), Quadratic(x0='x0', y0='y0', x1='x1', y1='y1', cx='cx', cy='cy', line_color=c, line_width=2))
 
-        if self.date_map is not None:
-            self.p.xaxis.formatter=DatetimeTickFormatter(
-                seconds=["%Y-%m-%d %H:%M:%S"],
-                minsec=["%Y-%m-%d %H:%M:%S"],
-                minutes=["%Y-%m-%d %H:%M:%S"],
-                hourmin=["%Y-%m-%d %H:%M:%S"],
-                hours=["%Y-%m-%d %H:%M:%S"],
-                days=["%Y-%m-%d %H:%M:%S"],
-                months=["%Y-%m-%d %H:%M:%S"],
-                years=["%Y-%m-%d %H:%M:%S"],
-                )
-
     def show(self):
         self.draw()
         from bokeh.plotting import show
         show(self.p)
 
-    def save(self, filename=None, file_type='png'):
+    def save(self, filename=None, file_type='html'):
         self.draw()
         if filename is None:
-            filename = self.save_address
-        if file_type == 'png':
+            filename = self.save_address(file_type)
+
+        if file_type == 'html':
+            from bokeh.plotting import output_file, save
+            output_file(filename)
+            save(self.p)
+        elif file_type == 'png':
             from bokeh.io import export_png
             export_png(self.p, filename=filename)
         elif file_type == 'svg':
@@ -181,14 +178,13 @@ class Visualizer(object):
 
     def map_time(self, t):
         if isinstance(self.date_map, dict):
-            return self.date_map[t].timestamp()
+            return self.date_map[t].timestamp()*1000
         elif callable(self.date_map):
-            return self.date_map(t).timestamp()
+            return self.date_map(t).timestamp()*1000
         else:
             return t
-        
-    @property
-    def save_address(self):
+
+    def save_address(self, ext):
         if hasattr(self, 'save_address_'):
             return self.save_address_
         else:
@@ -198,15 +194,11 @@ class Visualizer(object):
                 heading = '.'.join(sys.argv[0].split('.')[:-1])
             else:
                 heading = sys.argv[0]
-            name, cnt = heading + "." + self._ext, 1
+            name, cnt = heading + "." + ext, 1
             while os.path.exists(name):
-                name = heading + "(" + str(cnt) + ")." + self._ext
+                name = heading + "(" + str(cnt) + ")." + ext
                 cnt += 1
             return name
-
-    @save_address.setter
-    def save_address(self, val):
-        self.save_address_ = val
 
     def _add_ls(self, ls):
         self._data['temporal_linkset'].append(ls)
@@ -273,7 +265,7 @@ class Visualizer(object):
         if n == 1:
             return ['black']
         elif n > 256:
-            max_value = 16581375 #255**3
+            max_value = 16581375 # 255**3
             interval = int(max_value / n)
             return ['#' + hex(I)[2:].zfill(6) for I in range(0, max_value, interval)]
         elif n <= 10:
