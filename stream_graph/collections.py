@@ -1,13 +1,10 @@
 from __future__ import absolute_import
 import warnings
-from datetime import datetime, timedelta
 import pandas as pd
 import operator
 from collections import defaultdict
-from functools import reduce
-from operator import mul
-from copy import deepcopy
 from six import iteritems
+
 
 class NodeCollection(object):
     def __init__(self, it={}):
