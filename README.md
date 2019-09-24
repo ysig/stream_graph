@@ -10,7 +10,7 @@ This library is hence designed for the analysis of the temporal dimension of evo
 Stream Graphs were first formally defined by [Matthieu Latapy *et al.*](https://hal.archives-ouvertes.fr/hal-01665084) as the generalization of static graphs.
 They consist of four components: (1) a set of nodes (`NodeSet`) belonging to the graph, (2) a time interval (`TimeSet`) representing the graph's lifespan, (3) a set of temporal nodes (`TemporalNodeSet`) describing instants when nodes are present in the stream, and (4) a set of temporal links (`TemporalLinkSet`) describing the instants when nodes are interacting in the stream.
 
-**Warning:** This library is currently **under development**. Elementary structures and methods may change, without guarantying the support for previous versions.
+**Warning:** This library is currently **under development**. Elementary structures and methods may change, with no support for previous versions.
 
 
 ## Installing the Library
