@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>What are Stream-Graphs? &mdash; Stream Graph 0.2 documentation</title>
+  <title>What is a Stream Graph? &mdash; Stream Graph 0.2 documentation</title>
   
 
   
@@ -38,7 +38,7 @@
   <link rel="stylesheet" href="../_static/_static/css/supplementary.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Measures" href="tb2.html" />
+    <link rel="next" title="Elementary Definition" href="tb2.html" />
     <link rel="prev" title="Package Walkthrough" href="index.html" /> 
 </head>
 
@@ -94,10 +94,9 @@
 <li class="toctree-l1"><a class="reference internal" href="../introduction/installation.html">Installation</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Package Walkthrough</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="index.html#theoretical-background">Theoretical Background</a><ul class="current">
-<li class="toctree-l3 current"><a class="current reference internal" href="#">What are Stream-Graphs?</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#notation">Notation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#terminology">Terminology</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tb2.html">Measures</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">What is a Stream Graph?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tb2.html">Elementary Definition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tb3.html">Complex computations</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="index.html#abstract-base-classes">Abstract Base Classes</a></li>
@@ -162,7 +161,7 @@
         
           <li><a href="index.html">Package Walkthrough</a> &raquo;</li>
         
-      <li>What are Stream-Graphs?</li>
+      <li>What is a Stream Graph?</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -181,15 +180,27 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="what-are-stream-graphs">
-<h1>What are Stream-Graphs?<a class="headerlink" href="#what-are-stream-graphs" title="Permalink to this headline">¶</a></h1>
-<p>Stream-Graphs are defined as</p>
-</div>
-<div class="section" id="notation">
-<h1>Notation<a class="headerlink" href="#notation" title="Permalink to this headline">¶</a></h1>
-</div>
-<div class="section" id="terminology">
-<h1>Terminology<a class="headerlink" href="#terminology" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="what-is-a-stream-graph">
+<h1>What is a Stream Graph?<a class="headerlink" href="#what-is-a-stream-graph" title="Permalink to this headline">¶</a></h1>
+<p>A stream-graph is a generalization of a static graph.
+As we know a static graph, is an object <span class="math notranslate nohighlight">\(G = (V, E)\)</span>, where:</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(V\)</span>, is a set of nodes or the <strong>node-set</strong></p></li>
+<li><p><span class="math notranslate nohighlight">\(E \subseteq V \times V\)</span>, is a set of links or the <strong>link-set</strong></p></li>
+</ul>
+<a class="reference internal image-reference" href="../_images/g_example.png"><img alt="An example of a social-network: Zachary's karate club (1977)" src="../_images/g_example.png" style="width: 400px;" /></a>
+<p>A stream-graph, is an object <span class="math notranslate nohighlight">\(S = (V, T, W, Z)\)</span>, where:</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(V\)</span>, a set of nodes or the <strong>node-set</strong></p></li>
+<li><p><span class="math notranslate nohighlight">\(T\)</span>, a collection of time-objects or the <strong>time-set</strong></p></li>
+<li><p><span class="math notranslate nohighlight">\(W \subseteq V \times T\)</span>, a collection of temporal-nodes or the <strong>temporal-node-set</strong></p></li>
+<li><p><span class="math notranslate nohighlight">\(Z \subseteq (W \times W) \; / \; T \subseteq V \times V \times T\)</span>, a collection of temporal-links or the <strong>temporal-link-set</strong></p></li>
+</ul>
+<a class="reference internal image-reference" href="../_images/sg_example.png"><img alt="An example of a temporal-network with instantaneous and durational interactions." src="../_images/sg_example.png" style="width: 700px;" /></a>
+<p>Notice that in a stream-graph we can have both <strong>instantaneous</strong> and interactions with <strong>duration</strong>.</p>
+<p>Additionally it is important to define a time-signature. Distinction between discrete and continuous time makes a difference on applying operations between temporal-obejects.
+All the differences arise from the fact that only for discrete-time, all interactions with <strong>duration</strong>, can be represented as instantaneous interactions and vice-versa.</p>
+<p>We will refer to the <strong>aggregated graph</strong> <span class="math notranslate nohighlight">\(G_{S} = (V, E_{Z})\)</span> of a stream-graph as the one defined by it’s nodeset <span class="math notranslate nohighlight">\(V\)</span>, and it’s <strong>induced</strong> link-set <span class="math notranslate nohighlight">\(E_{Z} = {(u, v) | (u, v, _) \in E}\)</span> of all the links that appear inside the temporal-link-set.</p>
 </div>
 
 
@@ -200,7 +211,7 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="tb2.html" class="btn btn-neutral float-right" title="Measures" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="tb2.html" class="btn btn-neutral float-right" title="Elementary Definition" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="index.html" class="btn btn-neutral float-left" title="Package Walkthrough" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

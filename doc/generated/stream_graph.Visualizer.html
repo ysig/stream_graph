@@ -180,53 +180,23 @@
 <h1><code class="xref py py-mod docutils literal notranslate"><span class="pre">stream_graph</span></code>.Visualizer<a class="headerlink" href="#stream-graph-visualizer" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="stream_graph.Visualizer">
-<em class="property">class </em><code class="sig-prename descclassname">stream_graph.</code><code class="sig-name descname">Visualizer</code><span class="sig-paren">(</span><em class="sig-param">x_axis_label=None</em>, <em class="sig-param">y_axis_label=None</em>, <em class="sig-param">date_map=None</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/0e57533/stream_graph/visualize/visualizer.py#L8"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/visualize/visualizer.html#Visualizer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.Visualizer" title="Permalink to this definition">¶</a></dt>
-<dd><p>Visualization objects for a stream-graph.</p>
+<em class="property">class </em><code class="sig-prename descclassname">stream_graph.</code><code class="sig-name descname">Visualizer</code><span class="sig-paren">(</span><em class="sig-param">x_axis_label=None</em>, <em class="sig-param">y_axis_label=None</em>, <em class="sig-param">date_map=None</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/0e8a9ea/stream_graph/visualize/visualizer.py#L7"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/visualize/visualizer.html#Visualizer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.Visualizer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Visualizer object for stream_graph objects.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Attributes</dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>discrete</strong></dt><dd></dd>
-<dt><strong>save_address</strong></dt><dd></dd>
-</dl>
+<dt><strong>x_axis_label: str, default=None</strong></dt><dd><p>Defines the label of the x-axis. By default is ‘time’.</p>
 </dd>
-</dl>
-<p class="rubric">Methods</p>
-<table class="docutils align-default">
-<colgroup>
-<col style="width: 62%" />
-<col style="width: 38%" />
-</colgroup>
-<tbody>
-<tr class="row-odd"><td><p><strong>draw</strong></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p><strong>fit</strong></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p><strong>map_datetime</strong></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p><strong>map_time</strong></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p><strong>save</strong></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p><strong>show</strong></p></td>
-<td></td>
-</tr>
-</tbody>
-</table>
-<dl class="simple">
-<dt>date_map<span class="classifier">dict or callable or True, default=None</span></dt><dd><p>A map that transforms time elements to date-time-objects.
+<dt><strong>y_axis_label: str, default=None</strong></dt><dd><p>Defines the label of the y-axis. No label by default.</p>
+</dd>
+<dt><strong>date_map</strong><span class="classifier">dict or callable or True, default=None</span></dt><dd><p>A map that transforms time elements to date-time-objects.
 If time-elements are already unix-epoch-timestamps set to True.</p>
 </dd>
 </dl>
-<dl class="field-list simple">
-<dt class="field-odd">Attributes</dt>
-<dd class="field-odd"><dl class="simple">
+</dd>
+<dt class="field-even">Attributes</dt>
+<dd class="field-even"><dl class="simple">
 <dt><strong>discrete</strong></dt><dd></dd>
-<dt><strong>save_address</strong></dt><dd></dd>
 </dl>
 </dd>
 </dl>
@@ -252,7 +222,10 @@ If time-elements are already unix-epoch-timestamps set to True.</p>
 <tr class="row-odd"><td><p><strong>save</strong></p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p><strong>show</strong></p></td>
+<tr class="row-even"><td><p><strong>save_address</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>show</strong></p></td>
 <td></td>
 </tr>
 </tbody>
@@ -303,16 +276,6 @@ If time-elements are already unix-epoch-timestamps set to True.</p>
 <dt id="stream_graph.Visualizer.__hash__">
 <code class="sig-name descname">__hash__</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">/</em><span class="sig-paren">)</span><a class="headerlink" href="#stream_graph.Visualizer.__hash__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return hash(self).</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="stream_graph.Visualizer.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">x_axis_label=None</em>, <em class="sig-param">y_axis_label=None</em>, <em class="sig-param">date_map=None</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/0e57533/stream_graph/visualize/visualizer.py#L10"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/visualize/visualizer.html#Visualizer.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.Visualizer.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="simple">
-<dt>date_map<span class="classifier">dict or callable or True, default=None</span></dt><dd><p>A map that transforms time elements to date-time-objects.
-If time-elements are already unix-epoch-timestamps set to True.</p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="method">

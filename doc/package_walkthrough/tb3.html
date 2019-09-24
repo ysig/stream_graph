@@ -1,0 +1,298 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Complex computations &mdash; Stream Graph 0.2 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/gallery.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/_static/css/supplementary.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="What are the abstract base classes" href="abc1.html" />
+    <link rel="prev" title="Elementary Definition" href="tb2.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Stream Graph
+          
+
+          
+            
+            <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../introduction/installation.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Package Walkthrough</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#theoretical-background">Theoretical Background</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="tb1.html">What is a Stream Graph?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tb2.html">Elementary Definition</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Complex computations</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#measures-of-centrality">Measures of centrality</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#closeness-centrality">Closeness-Centrality</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#betweeness-centrality">Betweeness-Centrality</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#maximal-cliques">Maximal-Cliques</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#abstract-base-classes">Abstract Base Classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#data-structures">Data Structures</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../auto_examples/index.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../introduction/about.html">General Information</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">ABC Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html#base-classes">Base Classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html#abc-implementations">ABC Implementations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html#temporal-dataframes">Temporal-DataFrames</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html#visualizer">Visualizer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html#exceptions">Exceptions</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Stream Graph</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">Package Walkthrough</a> &raquo;</li>
+        
+      <li>Complex computations</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/package_walkthrough/tb3.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="complex-computations">
+<h1>Complex computations<a class="headerlink" href="#complex-computations" title="Permalink to this headline">¶</a></h1>
+<p>Complex measures and definitions from classical graph-theory have generalized for Stream-Graphs.
+Such include distance and shortest-paths, centrality measures, maximal-cliques, k-cores, trees and connected-components.
+Additional measures are also added, that emphasize on the temporal-properties of each measure or definition.
+Such an example is the jargon shortest-fastest paths as</p>
+<p>Both our package and algorithms and tools in this area are under constant development.
+As so, in this section we will only describe those computations that are currently implemented inside our package.</p>
+<div class="section" id="measures-of-centrality">
+<h2>Measures of centrality<a class="headerlink" href="#measures-of-centrality" title="Permalink to this headline">¶</a></h2>
+<p>Measures of centrality, have an importance when we want a measure of how much <strong>central</strong> a node is.
+A central node is one which can easily reach all others and which we can also easily reach.
+Such a node could optimal, for example when transmiting messages using shortest paths in a cluster of servers, this node will have a huge weight, as most information will try to pass through it.</p>
+</div>
+<div class="section" id="closeness-centrality">
+<h2>Closeness-Centrality<a class="headerlink" href="#closeness-centrality" title="Permalink to this headline">¶</a></h2>
+<p>An introductory measure of centrality is what is defined as closeness centrality (or <em>closeness</em>) of a node.
+In classical graph theory <strong>closeness</strong> was defined by Bavelas (1950) as the reciprocal of the farness that is:</p>
+<div class="math notranslate nohighlight">
+\[C(v) = \frac{1}{\sum_{u \neq v}d(u, v)}\]</div>
+<p>The sum of the length of all shortest paths ending at a certain node, define how far a node is and thus the more central a node is, the closer it is to all other nodes.</p>
+<img alt="Based on the closeness measure of centrality the **black** node is the one, that is the most central to the above graph." src="../_images/cg.png" />
+<p>A <strong>temporal</strong> version of closeness-centrality defined by Matthieu Latapy et al. (2017), is similarly equal to:</p>
+<div class="math notranslate nohighlight">
+\[C_{t}(v) = \frac{1}{\sum_{u \neq v}d_{t}(u, v)}\]</div>
+<p>Where <span class="math notranslate nohighlight">\(d_{t}(u, v)\)</span> represents the distance of <span class="math notranslate nohighlight">\(u\)</span> to <span class="math notranslate nohighlight">\(v\)</span> at time <span class="math notranslate nohighlight">\(t\)</span>.
+As we can observe, this measure of <strong>temporal</strong> closeness-centrality 1) can vary through time and 2) can be different from the value of the <strong>static</strong> closeness-centrality on the aggregated graph.</p>
+<p>The importance of having temporal closeness centrality, can be observed on the following plot:</p>
+<img alt="../_images/closeness_example.png" src="../_images/closeness_example.png" />
+<p>Notice that this measure of temporal-closeness is different from calculating the classic closeness on the snapshot graph (on the graph active at each time-stamp), as paths of the past have an importance for calculating a value at a current time-stamp.</p>
+</div>
+<div class="section" id="betweeness-centrality">
+<h2>Betweeness-Centrality<a class="headerlink" href="#betweeness-centrality" title="Permalink to this headline">¶</a></h2>
+<p>The centrality measure of <strong>betweenness</strong>, is formulated on the basis of shortest paths. For every pair of vertices in a connected graph, there exists at least one shortest path between the vertices such that either the number of edges that the path passes through (for unweighted graphs) or the sum of the weights of the edges (for weighted graphs) is minimized. The betweenness centrality for each vertex is the number of these shortest paths that pass through the vertex.</p>
+<div class="math notranslate nohighlight">
+\[C(v)=\sum_{s \neq v \neq t} \frac{\sigma_{s t}(v)}{\sigma_{s t}}\]</div>
+<p>where <span class="math notranslate nohighlight">\(\sigma _{st}\)</span> is the total number of shortest paths from node <span class="math notranslate nohighlight">\(s\)</span> to node <span class="math notranslate nohighlight">\(t\)</span> and <span class="math notranslate nohighlight">\(\sigma _{st}(v)\)</span> is the number of those paths that pass through <span class="math notranslate nohighlight">\(v\)</span>.</p>
+<p>A difference of this measure of centrality can be illustrated in the following picture:</p>
+<img alt="As we see nodes with maximum-betweeness, are much more rare and (possibly) important." src="../_images/betweeness_centrality.png" />
+<p>In order to reduce it’s computational complexity <strong>betweeness</strong> in stream-graphs is computed only at the <strong>ego</strong>-graph.
+In classical graph theory an <strong>ego</strong>-graph or a <strong>hop-2</strong> graph, is the graph that is induced by our orignal graph, if we keep the neighbors of each node and their neighbors.
+The closeness-measure of <strong>ego-betweenness</strong> at an instant <span class="math notranslate nohighlight">\(t\)</span> is the sum of fractions of the most recent paths between the pairs of neighbors of <span class="math notranslate nohighlight">\(e\)</span> on which <span class="math notranslate nohighlight">\(e\)</span> is located, by considering only the paths contained in the <strong>ego</strong>-stream-graph, i.e. those with length 2.</p>
+<div class="math notranslate nohighlight">
+\[C(e, t)=\sum_{i, j \in \mathcal{N}_{e} \times \mathcal{N}_{e}} \frac{\rho_{i j}(e, t)}{\rho_{i j}(t)}\]</div>
+<p>where <span class="math notranslate nohighlight">\(\rho_{i j}(t)\)</span> is the number of most recent paths of length at most <span class="math notranslate nohighlight">\(2\)</span> from <span class="math notranslate nohighlight">\(i\)</span> to <span class="math notranslate nohighlight">\(j\)</span> at time <span class="math notranslate nohighlight">\(t\)</span> and :math:`
+rho_{i j}(e, t)` is the number of these paths that pass through <span class="math notranslate nohighlight">\(e\)</span>.</p>
+<p>An example of betweeness can be shown in the figure below:</p>
+<img alt="../_images/betweeness_example.png" src="../_images/betweeness_example.png" />
+</div>
+<div class="section" id="maximal-cliques">
+<h2>Maximal-Cliques<a class="headerlink" href="#maximal-cliques" title="Permalink to this headline">¶</a></h2>
+<p>A <strong>clique</strong> in a static graph is defined as a set of nodes, where there exists a link between all pairs of nodes (subgraphs of density 1).
+As so calculating the <strong>maximal</strong>-cliques calculates the cliques of the biggest possible size, following the idea that if we remove a node in clique we will always have a clique (if it’s size is more than <span class="math notranslate nohighlight">\(2\)</span>).</p>
+<img alt="Maximal-cliques on a static graph." src="../_images/graph-clique.png" />
+<p>In a similar fashion with static graphs, a clique in a temporal-link-set is a collection of nodes that are all connected with each other, during a given period of time. In a temporal-context <strong>maximal</strong>-cliques, are cliques of the maximum-duration possible and the biggest number of static-nodes.
+This follows the idea, that if we remove a node or decrease the duration in a temporal-clique we will continue having a clique, except if the number of static nodes is equal to <span class="math notranslate nohighlight">\(2\)</span>.</p>
+<img alt="Maximal-cliques on a stream-graph." src="../_images/link-stream-clique.png" />
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="abc1.html" class="btn btn-neutral float-right" title="What are the abstract base classes" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="tb2.html" class="btn btn-neutral float-left" title="Elementary Definition" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, LIP6
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

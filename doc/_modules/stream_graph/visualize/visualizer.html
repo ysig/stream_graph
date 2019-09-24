@@ -167,24 +167,30 @@
   <h1>Source code for stream_graph.visualize.visualizer</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">stream_graph</span> <span class="k">import</span> <span class="n">ABC</span>
 <span class="kn">from</span> <span class="nn">stream_graph</span> <span class="k">import</span> <span class="n">StreamGraph</span>
-<span class="kn">from</span> <span class="nn">six</span> <span class="k">import</span> <span class="n">iteritems</span>
 <span class="kn">from</span> <span class="nn">math</span> <span class="k">import</span> <span class="n">tanh</span>
-<span class="kn">from</span> <span class="nn">datetime</span> <span class="k">import</span> <span class="n">timedelta</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
+
 <div class="viewcode-block" id="Visualizer"><a class="viewcode-back" href="../../../generated/stream_graph.Visualizer.html#stream_graph.Visualizer">[docs]</a><span class="k">class</span> <span class="nc">Visualizer</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Visualization objects for a stream-graph.&quot;&quot;&quot;</span>
-<div class="viewcode-block" id="Visualizer.__init__"><a class="viewcode-back" href="../../../generated/stream_graph.Visualizer.html#stream_graph.Visualizer.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_axis_label</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">y_axis_label</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">date_map</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        </span>
-<span class="sd">        date_map : dict or callable or True, default=None</span>
-<span class="sd">            A map that transforms time elements to date-time-objects.</span>
-<span class="sd">            If time-elements are already unix-epoch-timestamps set to True.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Visualizer object for stream_graph objects.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x_axis_label: str, default=None</span>
+<span class="sd">        Defines the label of the x-axis. By default is &#39;time&#39;.</span>
+
+<span class="sd">    y_axis_label: str, default=None</span>
+<span class="sd">        Defines the label of the y-axis. No label by default.</span>
+
+<span class="sd">    date_map : dict or callable or True, default=None</span>
+<span class="sd">        A map that transforms time elements to date-time-objects.</span>
+<span class="sd">        If time-elements are already unix-epoch-timestamps set to True.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_axis_label</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">y_axis_label</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">date_map</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">x_axis_label</span> <span class="o">=</span> <span class="n">x_axis_label</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">y_axis_label</span> <span class="o">=</span> <span class="n">y_axis_label</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">date_map</span> <span class="o">=</span> <span class="n">date_map</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">temporal_linkset</span><span class="o">=</span><span class="p">[],</span> <span class="n">node_set</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">time_set</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">temporal_nodeset</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">temporal_linkset</span><span class="o">=</span><span class="p">[],</span> <span class="n">node_set</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">time_set</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">temporal_nodeset</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">items</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">items</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -283,12 +289,10 @@
                         <span class="n">lp_y</span> <span class="o">+=</span> <span class="p">[</span><span class="n">ym</span><span class="p">,</span> <span class="n">ym</span><span class="p">,</span> <span class="n">nan</span><span class="p">]</span>
                 <span class="n">l</span><span class="o">.</span><span class="n">append</span><span class="p">(((</span><span class="n">lp_x</span><span class="p">,</span> <span class="n">lp_y</span><span class="p">),</span> <span class="n">color</span><span class="p">))</span>
                 <span class="n">b</span><span class="o">.</span><span class="n">append</span><span class="p">(((</span><span class="n">x0</span><span class="p">,</span> <span class="n">y0</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">cx</span><span class="p">,</span> <span class="n">cy</span><span class="p">),</span> <span class="n">color</span><span class="p">))</span>
-        
-        <span class="kn">from</span> <span class="nn">bokeh.models.ranges</span> <span class="k">import</span> <span class="n">FactorRange</span>
+
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">date_map</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">p</span> <span class="o">=</span> <span class="n">figure</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="n">w</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">h</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">bokeh.models.formatters</span> <span class="k">import</span> <span class="n">DatetimeTickFormatter</span>
             <span class="k">assert</span> <span class="n">callable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">date_map</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">date_map</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">p</span> <span class="o">=</span> <span class="n">figure</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="n">w</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">h</span><span class="p">,</span> <span class="n">x_axis_type</span><span class="o">=</span><span class="s2">&quot;datetime&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_axis_label</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -300,7 +304,7 @@
         <span class="kn">from</span> <span class="nn">bokeh.models</span> <span class="k">import</span> <span class="n">ColumnDataSource</span>
         <span class="kn">from</span> <span class="nn">bokeh.models.glyphs</span> <span class="k">import</span> <span class="n">Quadratic</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="n">time_points</span><span class="p">,</span> <span class="n">node_points</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">)</span>        
+        <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="n">time_points</span><span class="p">,</span> <span class="n">node_points</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">)</span>
         <span class="k">for</span> <span class="p">((</span><span class="n">lp_x</span><span class="p">,</span> <span class="n">lp_y</span><span class="p">),</span> <span class="n">c</span><span class="p">)</span> <span class="ow">in</span> <span class="n">l</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">line</span><span class="p">(</span><span class="n">lp_x</span><span class="p">,</span> <span class="n">lp_y</span><span class="p">,</span> <span class="n">line_width</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">)</span>
 
@@ -308,28 +312,21 @@
             <span class="n">data</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">x0</span><span class="o">=</span><span class="n">x0</span><span class="p">,</span> <span class="n">y0</span><span class="o">=</span><span class="n">y0</span><span class="p">,</span> <span class="n">x1</span><span class="o">=</span><span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="o">=</span><span class="n">y1</span><span class="p">,</span> <span class="n">cx</span><span class="o">=</span><span class="n">cx</span><span class="p">,</span> <span class="n">cy</span><span class="o">=</span><span class="n">cy</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">add_glyph</span><span class="p">(</span><span class="n">ColumnDataSource</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="n">Quadratic</span><span class="p">(</span><span class="n">x0</span><span class="o">=</span><span class="s1">&#39;x0&#39;</span><span class="p">,</span> <span class="n">y0</span><span class="o">=</span><span class="s1">&#39;y0&#39;</span><span class="p">,</span> <span class="n">x1</span><span class="o">=</span><span class="s1">&#39;x1&#39;</span><span class="p">,</span> <span class="n">y1</span><span class="o">=</span><span class="s1">&#39;y1&#39;</span><span class="p">,</span> <span class="n">cx</span><span class="o">=</span><span class="s1">&#39;cx&#39;</span><span class="p">,</span> <span class="n">cy</span><span class="o">=</span><span class="s1">&#39;cy&#39;</span><span class="p">,</span> <span class="n">line_color</span><span class="o">=</span><span class="n">c</span><span class="p">,</span> <span class="n">line_width</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">date_map</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">formatter</span><span class="o">=</span><span class="n">DatetimeTickFormatter</span><span class="p">(</span>
-                <span class="n">seconds</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S&quot;</span><span class="p">],</span>
-                <span class="n">minsec</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S&quot;</span><span class="p">],</span>
-                <span class="n">minutes</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S&quot;</span><span class="p">],</span>
-                <span class="n">hourmin</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S&quot;</span><span class="p">],</span>
-                <span class="n">hours</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S&quot;</span><span class="p">],</span>
-                <span class="n">days</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S&quot;</span><span class="p">],</span>
-                <span class="n">months</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S&quot;</span><span class="p">],</span>
-                <span class="n">years</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S&quot;</span><span class="p">],</span>
-                <span class="p">)</span>
-
     <span class="k">def</span> <span class="nf">show</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
         <span class="kn">from</span> <span class="nn">bokeh.plotting</span> <span class="k">import</span> <span class="n">show</span>
         <span class="n">show</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">file_type</span><span class="o">=</span><span class="s1">&#39;png&#39;</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">file_type</span><span class="o">=</span><span class="s1">&#39;html&#39;</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">filename</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">filename</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_address</span>
-        <span class="k">if</span> <span class="n">file_type</span> <span class="o">==</span> <span class="s1">&#39;png&#39;</span><span class="p">:</span>
+            <span class="n">filename</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_address</span><span class="p">(</span><span class="n">file_type</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">file_type</span> <span class="o">==</span> <span class="s1">&#39;html&#39;</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">bokeh.plotting</span> <span class="k">import</span> <span class="n">output_file</span><span class="p">,</span> <span class="n">save</span>
+            <span class="n">output_file</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+            <span class="n">save</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">file_type</span> <span class="o">==</span> <span class="s1">&#39;png&#39;</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">bokeh.io</span> <span class="k">import</span> <span class="n">export_png</span>
             <span class="n">export_png</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">file_type</span> <span class="o">==</span> <span class="s1">&#39;svg&#39;</span><span class="p">:</span>
@@ -348,14 +345,13 @@
 
     <span class="k">def</span> <span class="nf">map_time</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">date_map</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">date_map</span><span class="p">[</span><span class="n">t</span><span class="p">]</span><span class="o">.</span><span class="n">timestamp</span><span class="p">()</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">date_map</span><span class="p">[</span><span class="n">t</span><span class="p">]</span><span class="o">.</span><span class="n">timestamp</span><span class="p">()</span><span class="o">*</span><span class="mi">1000</span>
         <span class="k">elif</span> <span class="n">callable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">date_map</span><span class="p">):</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">date_map</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">timestamp</span><span class="p">()</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">date_map</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">timestamp</span><span class="p">()</span><span class="o">*</span><span class="mi">1000</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">t</span>
-        
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">save_address</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">save_address</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ext</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;save_address_&#39;</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_address_</span>
         <span class="k">else</span><span class="p">:</span>
@@ -365,15 +361,11 @@
                 <span class="n">heading</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">heading</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="n">name</span><span class="p">,</span> <span class="n">cnt</span> <span class="o">=</span> <span class="n">heading</span> <span class="o">+</span> <span class="s2">&quot;.&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ext</span><span class="p">,</span> <span class="mi">1</span>
+            <span class="n">name</span><span class="p">,</span> <span class="n">cnt</span> <span class="o">=</span> <span class="n">heading</span> <span class="o">+</span> <span class="s2">&quot;.&quot;</span> <span class="o">+</span> <span class="n">ext</span><span class="p">,</span> <span class="mi">1</span>
             <span class="k">while</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
-                <span class="n">name</span> <span class="o">=</span> <span class="n">heading</span> <span class="o">+</span> <span class="s2">&quot;(&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">cnt</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;).&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ext</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="n">heading</span> <span class="o">+</span> <span class="s2">&quot;(&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">cnt</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;).&quot;</span> <span class="o">+</span> <span class="n">ext</span>
                 <span class="n">cnt</span> <span class="o">+=</span> <span class="mi">1</span>
             <span class="k">return</span> <span class="n">name</span>
-
-    <span class="nd">@save_address</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">save_address</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">save_address_</span> <span class="o">=</span> <span class="n">val</span>
 
     <span class="k">def</span> <span class="nf">_add_ls</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ls</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s1">&#39;temporal_linkset&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ls</span><span class="p">)</span>
@@ -440,7 +432,7 @@
         <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">[</span><span class="s1">&#39;black&#39;</span><span class="p">]</span>
         <span class="k">elif</span> <span class="n">n</span> <span class="o">&gt;</span> <span class="mi">256</span><span class="p">:</span>
-            <span class="n">max_value</span> <span class="o">=</span> <span class="mi">16581375</span> <span class="c1">#255**3</span>
+            <span class="n">max_value</span> <span class="o">=</span> <span class="mi">16581375</span> <span class="c1"># 255**3</span>
             <span class="n">interval</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">max_value</span> <span class="o">/</span> <span class="n">n</span><span class="p">)</span>
             <span class="k">return</span> <span class="p">[</span><span class="s1">&#39;#&#39;</span> <span class="o">+</span> <span class="nb">hex</span><span class="p">(</span><span class="n">I</span><span class="p">)[</span><span class="mi">2</span><span class="p">:]</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span> <span class="k">for</span> <span class="n">I</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_value</span><span class="p">,</span> <span class="n">interval</span><span class="p">)]</span>
         <span class="k">elif</span> <span class="n">n</span> <span class="o">&lt;=</span> <span class="mi">10</span><span class="p">:</span>

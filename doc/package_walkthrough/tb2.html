@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Measures &mdash; Stream Graph 0.2 documentation</title>
+  <title>Elementary Definition &mdash; Stream Graph 0.2 documentation</title>
   
 
   
@@ -38,8 +38,8 @@
   <link rel="stylesheet" href="../_static/_static/css/supplementary.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="What are the abstract base classes" href="abc1.html" />
-    <link rel="prev" title="What are Stream-Graphs?" href="tb1.html" /> 
+    <link rel="next" title="Complex computations" href="tb3.html" />
+    <link rel="prev" title="What is a Stream Graph?" href="tb1.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -94,10 +94,15 @@
 <li class="toctree-l1"><a class="reference internal" href="../introduction/installation.html">Installation</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Package Walkthrough</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="index.html#theoretical-background">Theoretical Background</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="tb1.html">What are Stream-Graphs?</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tb1.html#notation">Notation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tb1.html#terminology">Terminology</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">Measures</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tb1.html">What is a Stream Graph?</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Elementary Definition</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#number-of-nodes">Number of Nodes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#coverage">Coverage</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#number-of-edges">Number of edges</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#density">Density</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="tb3.html">Complex computations</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="index.html#abstract-base-classes">Abstract Base Classes</a></li>
@@ -162,7 +167,7 @@
         
           <li><a href="index.html">Package Walkthrough</a> &raquo;</li>
         
-      <li>Measures</li>
+      <li>Elementary Definition</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -181,8 +186,58 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="measures">
-<h1>Measures<a class="headerlink" href="#measures" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="elementary-definition">
+<h1>Elementary Definition<a class="headerlink" href="#elementary-definition" title="Permalink to this headline">¶</a></h1>
+<p>In this section we will walk through some elementary definitions of derived properties or <strong>measures</strong> in a Graphs and proceed to their temporal-generalizations, inside the theoretical framework of Graphs.</p>
+<div class="section" id="number-of-nodes">
+<h2>Number of Nodes<a class="headerlink" href="#number-of-nodes" title="Permalink to this headline">¶</a></h2>
+<p>In a classical graph <span class="math notranslate nohighlight">\(G\)</span>, the <em>number of nodes</em></p>
+<div class="math notranslate nohighlight">
+\[n_{G} = |V|\]</div>
+<p>In a stream-graph <span class="math notranslate nohighlight">\(S\)</span>, this is generalized by defining the <em>number of nodes</em> to be:</p>
+<div class="math notranslate nohighlight">
+\[n_{S} = \sum_{u\in V}n_{u} = \sum_{u\in V}\frac{|T_{u}|}{|T|} = \frac{|W|}{|T|}\]</div>
+<p>where <span class="math notranslate nohighlight">\(n_{u} \leq 1\)</span> is called the <strong>contribution</strong> of a node and is equal to <span class="math notranslate nohighlight">\(1\)</span> <strong>iff</strong> a node exists during the the whole timeset.</p>
+<p>As <span class="math notranslate nohighlight">\(W \subseteq V \times T\)</span>, <span class="math notranslate nohighlight">\(n_{S} = \frac{|W|}{|T|} \leq |V|\)</span> and equality exists <strong>iff</strong> all nodes appear during all the time, defined by the timeset <span class="math notranslate nohighlight">\(T\)</span>.</p>
+</div>
+<div class="section" id="coverage">
+<h2>Coverage<a class="headerlink" href="#coverage" title="Permalink to this headline">¶</a></h2>
+<p>A very simple measure of the stream-graph, that can show us in what amount our temporal-node-set is dynamic, is called
+the <strong>coverage</strong>:</p>
+<div class="math notranslate nohighlight">
+\[c(S)=\frac{|W|}{|V\times T|}\]</div>
+<p>As <span class="math notranslate nohighlight">\(W \subseteq V \times T\)</span>, this measure will always be less or equal to <span class="math notranslate nohighlight">\(1\)</span> and equal <strong>iff</strong> all nodes appear for all the time, that is defined by the timeset <span class="math notranslate nohighlight">\(T\)</span>.
+Notice that:</p>
+<div class="math notranslate nohighlight">
+\[c(S) = \frac{|W|}{|V| |T|} = \frac{\frac{|W|}{|T|}}{|V|} = \frac{n_{S}}{|V|}\]</div>
+<p>So as this ratio goes to 1, the nodes of the graph, can more be conceived as being <strong>static</strong>.</p>
+</div>
+<div class="section" id="number-of-edges">
+<h2>Number of edges<a class="headerlink" href="#number-of-edges" title="Permalink to this headline">¶</a></h2>
+<p>In a classical graph <span class="math notranslate nohighlight">\(G\)</span>, the number of edges:</p>
+<div class="math notranslate nohighlight">
+\[m_{G} = |E|\]</div>
+<p>In a stream-graph <span class="math notranslate nohighlight">\(S\)</span>, this is generalized by defining the number of links to be:</p>
+<div class="math notranslate nohighlight">
+\[m_{S} = \sum_{u,v \in V}m_{uv} = \sum_{u,v\in V}\frac{|T_{uv}|}{|T|} = \frac{|L|}{|T|}\]</div>
+<p>where <span class="math notranslate nohighlight">\(m_{uv} \leq 1\)</span> is called the <strong>contribution</strong> of a link and is equal to <span class="math notranslate nohighlight">\(1\)</span> if the link exists during the the whole timeset.</p>
+</div>
+<div class="section" id="density">
+<h2>Density<a class="headerlink" href="#density" title="Permalink to this headline">¶</a></h2>
+<p>In a classical graph <span class="math notranslate nohighlight">\(G\)</span>, the <em>density</em> is defined as:</p>
+<div class="math notranslate nohighlight">
+\[\delta(G) = \frac{|E|}{|V|(|V|-1)}\]</div>
+<p>In a stream-graph <span class="math notranslate nohighlight">\(S\)</span>, this is generalized by defining the density as:</p>
+<div class="math notranslate nohighlight">
+\[\delta(S) = \frac{\sum_{uv \in V}|T_{uv}|}{\sum_{uv \in V}|T_{u} \cap T_{v}|} = \frac{|L|}{\sum_{uv \in V}|T_{u} \cap T_{v}|}\]</div>
+<p>Similar to that we can define the <em>density</em> of a <strong>node</strong> as:</p>
+<div class="math notranslate nohighlight">
+\[\delta(v) = \frac{\sum_{u \in V, u\neq v}|T_{uv}|}{\sum_{u \in V, u\neq v}|T_{u} \cap T_{v}|}\]</div>
+<p>and the <em>density</em> of a <strong>link</strong> as:</p>
+<div class="math notranslate nohighlight">
+\[\delta(uv) = \frac{|T_{uv}|}{|T_{u} \cap T_{v}|}\]</div>
+<p>Note that in all of the above measures if the denominator is <strong>zero</strong>, the measure is defined as being <strong>zero</strong>.</p>
+</div>
 </div>
 
 
@@ -193,10 +248,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="abc1.html" class="btn btn-neutral float-right" title="What are the abstract base classes" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="tb3.html" class="btn btn-neutral float-right" title="Complex computations" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="tb1.html" class="btn btn-neutral float-left" title="What are Stream-Graphs?" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="tb1.html" class="btn btn-neutral float-left" title="What is a Stream Graph?" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

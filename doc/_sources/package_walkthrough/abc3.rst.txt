@@ -13,7 +13,7 @@ Time collections have as their root the :code:`TimeGenerator`. This object repre
 In order to show by example how this interval looks like, let's take the classic heavy-side function.
 
 
-.. image:: ../_images/heavy-side.svg
+.. image:: ./heavy-side.svg
    :width: 600
 
 If we want to represent this function in the whole span that it is plotted, its representation in the discrete time would be: :code:`(-2, 0), (0, 0.5), (1, 1)`, whereas in continuous :code:`((-2, True), 0), ((0, True), 0.5), ((0, False), 1)`.
