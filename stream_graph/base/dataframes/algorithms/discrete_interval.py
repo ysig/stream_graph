@@ -7,7 +7,7 @@ from pandas import DataFrame as DF
 from .utils.no_bounds import events
 from .utils.no_bounds import events_uni
 from .utils.misc import get_key_set
-from .utils.orderings import order_0_n1 as merge_order
+from .utils.orderings import order_0_1 as merge_order
 from .utils.orderings import r_order_1_n2 as intersection_order
 from .utils.orderings import r_order_1_n2_0n2 as difference_order
 from .utils.orderings import r_order_1_n2_0n2 as issuper_order
@@ -19,41 +19,49 @@ from .utils.orderings import r_order_1_n2_0n2 as iis_order
 # Merge
 def update_cache_merge(d, event):
     t, s = event
-    if len(d) < 2:
+    d[0] += (1 if s else -1)
+    if len(d) < 3:
         if s:
-            if True not in d:
-                d[True] = t
+            if 2 not in d:
+                d[2] = t
         else:
-            d[False] = t
+            d[1] = t
     else:
-        tf = d.pop(False, None)
+        tf = d.get(1, None)
         if s:
             # start
-            if t - tf > 1:
-                ts = d.pop(True, None)
-                d[True] = t
-                return (ts, tf)
+            if t == tf:
+                d[1] = tf
+            elif t - tf == 1:
+                d.pop(1)
+            elif d[0] == 1:
+                ts = d.pop(2, None)
+                d[2] = t
+                return (ts, d.pop(1))
         else:
-            d[s] = max(t, tf)
+            d[1] = max(t, tf)
+
+
+def merge_cache_constructor():
+    return {0: 0}    
 
 
 def merge_no_key(df):
-    out, cache = [], dict()
+    out, cache = [], merge_cache_constructor()
     for event in events_uni(df, merge_order):
         ret = update_cache_merge(cache, event)
         if ret is not None:
             out.append(ret)
 
-    if len(cache) == 2:
-        ts, tf = cache.pop(True, None), cache.pop(False, None)
-        out.append((ts, tf))
+    if len(cache) == 3:
+        out.append((cache[2], cache[1]))
 
     return out
 
 
 def merge_by_key(df):
     # Internal
-    out, cache = [], defaultdict(dict)
+    out, cache = [], defaultdict(merge_cache_constructor)
     for event in events_uni(df, merge_order):
         ev, key = event[:2], event[2:]
         ret = update_cache_merge(cache[key], ev)
@@ -61,9 +69,8 @@ def merge_by_key(df):
             out.append(key + ret)
 
     for key, rem in iteritems(cache):
-        if len(rem) == 2:
-            ts, tf = cache[key].pop(True, None), cache[key].pop(False, None)
-            out.append(key + (ts, tf))
+        if len(rem) == 3:
+            out.append(key + (rem[2], rem[1]))
 
     return out
 
@@ -80,7 +87,7 @@ def union_by_key(dfa, dfb):
 def union_on_key(df, kdf):
     # Extract information and possible keys
     all_keys = get_key_set(df)
-    out, cache = [], defaultdict(dict)
+    out, cache = [], defaultdict(merge_cache_constructor)
     for event in events(df, kdf, merge_order):
         ev, k = event[:2], event[2:]
         keys = ([k] if len(k) > 0 else all_keys)
@@ -90,8 +97,8 @@ def union_on_key(df, kdf):
                 out.append(k + ret)
 
     for key, rem in iteritems(cache):
-        if len(rem) == 2:
-            ts, tf = cache[key].pop(True, None), cache[key].pop(False, None)
+        if len(rem) == 3:
+            ts, tf = cache[key].pop(2, None), cache[key].pop(1, None)
             out.append(key + (ts, tf))
 
     return out

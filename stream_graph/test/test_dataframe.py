@@ -142,10 +142,13 @@ def test_cinterval_df():
 def test_dinterval_df():
     cx = DIntervalDF
     for k in [[], [1]]:
+        assert_equal(op_([tuple(k) + e for e in [(480, 500), (460, 540), (560, 580), (520, 540), (580, 600), (620, 660), (480, 500)]], o='m', cx=cx, oc=len(k)), [tuple(k) + e for e in [(460, 540), (560, 600), (620, 660)]])
         assert_equal(op_([k + [3, 3], k + [4, 4]], o='m', cx=cx, oc=len(k)), [tuple(k) + (3, 4)])
         assert_equal(op_([k + [3, 4], k + [4, 6]], o='m', cx=cx, oc=len(k)), [tuple(k) + (3, 6)])
         assert_equal(op_([k + [3, 4], k + [5, 6]], o='m', cx=cx, oc=len(k)), [tuple(k) + (3, 6)])
         assert_equal(op_([k + [3, 5], k + [4, 6]], o='m', cx=cx, oc=len(k)), [tuple(k) + (3, 6)])
+        assert_equal(op_([k + [3, 10], k + [5, 7]], o='m', cx=cx, oc=len(k)), [tuple(k) + (3, 10)])  
+        assert_equal(op_([k + [5, 5], k + [2, 6], k + [6, 6]], o='m', cx=cx, oc=len(k)), [tuple(k) + (2, 6)])
         assert_equal(op_([k + [2, 3], k + [5, 6]], o='m', cx=cx, oc=len(k)), [tuple(k) + (2, 3), tuple(k) + (5, 6)])
         for bk in [True, False]:
             l = (k if bk else [])
