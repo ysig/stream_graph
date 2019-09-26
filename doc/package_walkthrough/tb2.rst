@@ -56,7 +56,7 @@ In a stream-graph :math:`S`, this is generalized by defining the number of links
 
 .. math::
 
-    m_{S} = \sum_{u,v \in V}m_{uv} = \sum_{u,v\in V}\frac{|T_{uv}|}{|T|} = \frac{|L|}{|T|}
+    m_{S} = \sum_{u,v \in V}m_{uv} = \sum_{u,v\in V}\frac{|T_{uv}|}{|T|} = \frac{|Z|}{|T|}
 
 where :math:`m_{uv} \leq 1` is called the **contribution** of a link and is equal to :math:`1` if the link exists during the the whole timeset.
 
@@ -74,7 +74,7 @@ In a stream-graph :math:`S`, this is generalized by defining the density as:
 
 .. math::
 
-    \delta(S) = \frac{\sum_{uv \in V}|T_{uv}|}{\sum_{uv \in V}|T_{u} \cap T_{v}|} = \frac{|L|}{\sum_{uv \in V}|T_{u} \cap T_{v}|}
+    \delta(S) = \frac{\sum_{uv \in V}|T_{uv}|}{\sum_{uv \in V}|T_{u} \cap T_{v}|} = \frac{|Z|}{\sum_{uv \in V}|T_{u} \cap T_{v}|}
 
 Similar to that we can define the *density* of a **node** as: 
 
