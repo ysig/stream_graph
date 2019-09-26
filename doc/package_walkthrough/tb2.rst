@@ -1,5 +1,5 @@
-Elementary Definition
-=====================
+Elementary Definitions
+======================
 
 In this section we will walk through some elementary definitions of derived properties or **measures** in a Graphs and proceed to their temporal-generalizations, inside the theoretical framework of Graphs.
 
