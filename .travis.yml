@@ -1,0 +1,108 @@
+language: python
+dist: trusty
+
+cache:
+  apt: true
+  # We use three different cache directory
+  # to work around a Travis bug with multi-platform cache
+  directories:
+  - $HOME/.cache/pip
+  - $HOME/download
+
+env:
+  global:
+    # Directory where tests are run from
+    - TEST_DIR=$HOME/tmp/test_dir
+    - MODULE=stream_graph
+    - WHEEL_FOLDER=wheelhouse
+    - TWINE_USERNAME=ysig
+    - DEPLOY_SDIST="false"
+    - COVERAGE="false"
+    - DEPLOY_WHEEL="false"
+    - FLAKE="false"
+
+matrix:
+  include:
+    - sudo: required
+      services:
+        - docker
+      env:
+        - PIP=pip
+        - PYTHON=python
+        - CIBW_BUILD="cp35-*"
+        - FLAKE="true"
+        - DEPLOY_SDIST="true"
+    - sudo: required
+      services:
+        - docker
+      env:
+        - PIP=pip
+        - PYTHON=python
+        - CIBW_BUILD="cp36-*"
+    - sudo: required
+      services:
+        - docker
+      env:
+        - PIP=pip
+        - PYTHON=python
+        - CIBW_BUILD="cp37-*"
+    - sudo: required
+      services:
+        - docker
+      env:
+        - PIP=pip
+        - PYTHON=python
+        - CIBW_BUILD="cp27-manylinux1_x86_64"
+    - sudo: required
+      services:
+        - docker
+      env:
+        - PIP=pip
+        - PYTHON=python
+        - CIBW_BUILD="cp27-manylinux1_i686"
+    - os: osx
+      language: generic
+      sudo: required
+      env:
+        - TOXENV=py35
+        - PIP=pip3
+        - PYTHON=python3
+        - COVERAGE="true"
+        - CIBW_BUILD="cp27-macosx_10_6_intel"
+    - os: osx
+      language: generic
+      sudo: required
+      env:
+        - PIP=pip3
+        - PYTHON=python3
+        - TOXENV=py35
+        - CIBW_BUILD="cp35-macosx_10_6_intel"
+    - os: osx
+      language: generic
+      sudo: required
+      env:
+        - PIP=pip3
+        - PYTHON=python3
+        - TOXENV=py35
+        - CIBW_BUILD="cp36-macosx_10_6_intel"
+    - os: osx
+      language: generic
+      sudo: required
+      env:
+        - PIP=pip3
+        - PYTHON=python3
+        - TOXENV=py35
+        - CIBW_BUILD="cp37-macosx_10_6_intel"
+script:
+  - |
+    if [[ "$FLAKE" == "true" ]]; then
+        $PIP install flake8 --upgrade; flake8 $TRAVIS_BUILD_DIR/$MODULE;
+    fi
+  - $PIP install cibuildwheel
+  - export CIBW_ENVIRONMENT="TEST_DIR=$TEST_DIR MODULE=$MODULE COVERAGE=$COVERAGE";
+  - IFS= ; export CIBW_BEFORE_BUILD="$(cat ci_scripts/travis/install.sh)";
+  - IFS= ; export CIBW_TEST_COMMAND="$(cat ci_scripts/travis/test.sh)";
+  - cibuildwheel --output-dir $WHEEL_FOLDER
+
+after_success:
+  - bash ci_scripts/travis/success.sh

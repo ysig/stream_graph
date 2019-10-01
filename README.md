@@ -1,3 +1,6 @@
+[![Travis Status](https://travis-ci.org/ysig/stream_graph.svg?branch=master)](https://travis-ci.org/ysig/stream_graph)
+[![CircleCI Status](https://circleci.com/gh/ysig/stream_graph/tree/master.svg?style=shield)](https://circleci.com/gh/ysig/stream_graph/tree/master)
+[![Appveyor status](https://ci.appveyor.com/api/projects/status/kqwkk8khh6btkaep?svg=true)](https://ci.appveyor.com/project/ysig/stream-graph)
 
 
 # A Python Library for the Analysis of Stream Graphs
