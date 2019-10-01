@@ -939,8 +939,6 @@ class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
         df = self.sort_df('ts')
         both = direction == 'both'
         df = (df.rename(columns={'u': 'v', 'v': 'u'}) if direction == 'in' else df)
-        print('heeey')
-        print(df)
         return closeness_c(u, t, df[['u', 'v', 'ts']], both, detailed, discrete=self.discrete)
 
     def _to_discrete(self, bins, bin_size):
