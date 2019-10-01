@@ -361,7 +361,7 @@ class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
                                 out[u] = TimeCollection([(prev, NodeSetS(s))], instantaneous=True, discrete=self.discrete)
                         prev, cache = ts, defaultdict(set)
                     add(cache, u, v)
-                    print(u, v, ts)
+                    print(prev, cache)
                 # Add also remaining elements.
                 for u, s in iteritems(cache):
                     if u in out:
