@@ -343,7 +343,10 @@ class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
                     raise UnrecognizedDirection()
 
                 prev = None
+                print('neighbors_at')
+                print('u, v, ts')
                 for u, v, ts in self.sort_df('ts').itertuples():
+                    print(u, v, ts)
                     # Iterate in ascending time and at each instant collect for each node the set of its neighbors
                     if prev is None:
                         prev, cache = ts, defaultdict(set)

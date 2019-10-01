@@ -46,29 +46,6 @@ matrix:
         - PIP=pip
         - PYTHON=python
         - CIBW_BUILD="cp37-*"
-    - sudo: required
-      services:
-        - docker
-      env:
-        - PIP=pip
-        - PYTHON=python
-        - CIBW_BUILD="cp27-manylinux1_x86_64"
-    - sudo: required
-      services:
-        - docker
-      env:
-        - PIP=pip
-        - PYTHON=python
-        - CIBW_BUILD="cp27-manylinux1_i686"
-    - os: osx
-      language: generic
-      sudo: required
-      env:
-        - TOXENV=py35
-        - PIP=pip3
-        - PYTHON=python3
-        - COVERAGE="true"
-        - CIBW_BUILD="cp27-macosx_10_6_intel"
     - os: osx
       language: generic
       sudo: required
