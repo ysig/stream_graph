@@ -602,7 +602,6 @@ def test_itemporal_link_set_df():
 
         assert_equal(set(lsa.neighbors_at(1, 2)), {2})
         assert_equal({i: tuple(na) for i, na in lsa.neighbors_at(None, 2, 'out')}, {1: (2,)})
-        print(lsa)
         assert_equal({i: tuple([(t, set(s)) for t, s in na]) for i, na in lsa.neighbors_at(direction='out')}, {1: ((2, {2}), (3, {2})), 2: ((3, {1}), (6, {1}))})
 
         for w in [False, True]:

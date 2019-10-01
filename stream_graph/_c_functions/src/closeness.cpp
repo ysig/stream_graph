@@ -57,6 +57,7 @@ pair<vector<int>, vector<double>> closeness_times_both(vector<pair<int, pair<int
         t = it->first;
         u = it->second.first;
         v = it->second.second;
+        printf("#1\n");
         printf("(t, u, v): %d, %d, %d \n", t, u, v);
 		if(u == x || v == x){
 			cur_start_time = t;
@@ -76,16 +77,22 @@ pair<vector<int>, vector<double>> closeness_times_both(vector<pair<int, pair<int
 		++it;
 	}
 
+    printf("#2\n");
+
 	for(int i = 0 ; i < cum_closeness.size() ; i++){
 		if(cur_start_time > time_closeness[i]){
-			cum_closeness[i]+= 1.0 / (cur_start_time-time_closeness[i]);
+            cum_closeness[i]+= 1.0 / (cur_start_time-time_closeness[i]);
+		    printf("(cc, cst, tc): %d, %d, %d \n", cum_closeness[i], cur_start_time, time_closeness[i]);		
 		}
 	}
+
+    printf("#3\n");
 
 	for(;it != input.end(); ++it){
         t = it->first;
         u = it->second.first;
         v = it->second.second;
+        printf("(t, u, v): %d, %d, %d \n", t, u, v);
 		if(t != time_closeness.back()){
 			time_closeness.push_back(t);
 			cum_closeness.push_back(0.0);

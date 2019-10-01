@@ -53,10 +53,7 @@ def closeness_c(u, t, df, both, detailed, discrete):
                 return TimeCollection(iter_(vec), instantaneous=f, discrete=True)
         else:
             def tc(vec, f):
-                if f:
-                    return TimeCollection(continuous_tc(iter_(vec)), instantaneous=True, discrete=False)
-                else:    
-                    return TimeCollection(continuous_tc(iter_(vec)), instantaneous=False, discrete=False)
+                return TimeCollection(continuous_tc(iter_(vec)), instantaneous=f, discrete=False)
 
     if u is None:
         if t is None:
