@@ -510,7 +510,10 @@
                     <span class="k">raise</span> <span class="n">UnrecognizedDirection</span><span class="p">()</span>
 
                 <span class="n">prev</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;neighbors_at&#39;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;u, v, ts&#39;</span><span class="p">)</span>
                 <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">ts</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sort_df</span><span class="p">(</span><span class="s1">&#39;ts&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">itertuples</span><span class="p">():</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">ts</span><span class="p">)</span>
                     <span class="c1"># Iterate in ascending time and at each instant collect for each node the set of its neighbors</span>
                     <span class="k">if</span> <span class="n">prev</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                         <span class="n">prev</span><span class="p">,</span> <span class="n">cache</span> <span class="o">=</span> <span class="n">ts</span><span class="p">,</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">set</span><span class="p">)</span>
