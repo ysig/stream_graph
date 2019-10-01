@@ -122,7 +122,9 @@ pair<vector<int>, vector<double>> closeness_times_both(vector<pair<int, pair<int
 			start_time = time_closeness[i];
 			if(time_closeness.size() > 3){
 				while(start_time >= prev_ts){
+				    cout << "cum_closeness.at(" << i <<") before" << cum_closeness.at(i) << endl;
 					cum_closeness.at(i)+= 1.0 / (t - start_time);
+				    cout << "cum_closeness.at(" << i <<") after" << cum_closeness.at(i) << endl;
 					i = i - 1;
 					if(i < 0){
 						break;
@@ -154,7 +156,9 @@ pair<vector<int>, vector<double>> closeness_times_both(vector<pair<int, pair<int
 						long start_time_value = time_closeness[start_time_index];
 						
 						while(start_time_value <= lu.back().first){
+				            cout << "1cum_closeness[start_time_index=" << start_time_index <<") before" << cum_closeness[start_time_index] << endl;
 							cum_closeness[start_time_index]+= 1.0/(t - start_time_value);
+				            cout << "1cum_closeness[start_time_index=" << start_time_index <<") after" << cum_closeness[start_time_index] << endl;
 							start_time_index++;
 							start_time_value = time_closeness[start_time_index];
 						}
@@ -183,7 +187,9 @@ pair<vector<int>, vector<double>> closeness_times_both(vector<pair<int, pair<int
 							int start_time_index = binary_search(time_closeness,it->second.back().first)+1;
 							long start_time_value = time_closeness[start_time_index];
 							while(start_time_value <= lv.back().first){
+	    			            cout << "2cum_closeness[start_time_index=" << start_time_index <<") before" << cum_closeness[start_time_index] << endl;
 								cum_closeness[start_time_index]+= 1.0/(t - start_time_value);
+	    			            cout << "2cum_closeness[start_time_index=" << start_time_index <<") after" << cum_closeness[start_time_index] << endl;
 								start_time_index++;
 								start_time_value = time_closeness[start_time_index];
 							}	
@@ -217,7 +223,9 @@ pair<vector<int>, vector<double>> closeness_times_both(vector<pair<int, pair<int
 						int start_time_index = 0;
 						long start_time_value = time_closeness[start_time_index];
 						while(start_time_value <= lu.back().first){
-							cum_closeness[start_time_index]+= 1.0/(t - start_time_value);
+    			            cout << "3cum_closeness[start_time_index=" << start_time_index <<") before" << cum_closeness[start_time_index] << endl;
+    						cum_closeness[start_time_index]+= 1.0/(t - start_time_value);
+    			            cout << "3cum_closeness[start_time_index=" << start_time_index <<") after" << cum_closeness[start_time_index] << endl;
 							start_time_index++;
 							start_time_value = time_closeness[start_time_index];
 						}
@@ -239,7 +247,9 @@ pair<vector<int>, vector<double>> closeness_times_both(vector<pair<int, pair<int
 							int start_time_index = 0;
 							long start_time_value = time_closeness[start_time_index];
 							while(start_time_value <= lv.back().first){
+        			            cout << "4cum_closeness[start_time_index=" << start_time_index <<") before" << cum_closeness[start_time_index] << endl;
 								cum_closeness[start_time_index]+= 1.0/(t - start_time_value);
+        			            cout << "4cum_closeness[start_time_index=" << start_time_index <<") after" << cum_closeness[start_time_index] << endl;
 								start_time_index++;
 								start_time_value = time_closeness[start_time_index];
 							}
