@@ -32,7 +32,7 @@ from Cython.Build import build_ext
 # Set optimization arguments for compilation
 OS = system()
 if OS == 'Windows':
-    extra_compile_args = ["/std:c++11", "/O2", "/w"]
+    extra_compile_args = ["/std:c++14", "/O2", "/w"]
 elif OS in ['Linux', 'Darwin']:
    extra_compile_args = ["-std=c++11", "-O3", "-w"]
 
