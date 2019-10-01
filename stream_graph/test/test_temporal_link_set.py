@@ -522,12 +522,11 @@ def test_itemporal_link_set_df():
         df = [(1, 2, 4), (1, 2, 8), (2, 3, 4), (1, 3, 6), (3, 4, 2), (2, 4, 3)]
         if d:
             assert_equal(ITemporalLinkSetDF(df, discrete=d).get_maximal_cliques(delta=3),
-                         {(frozenset({1, 2}), (2, 5)),
+                         {(frozenset({1, 2}), (2, 8)),
                           (frozenset({2, 3}), (2, 5)),
                           (frozenset({3, 4}), (2, 3)),
                           (frozenset({1, 2, 3}), (4, 5)),
                           (frozenset({1, 3}), (4, 7)),
-                          (frozenset({1, 2}), (6, 8)),
                           (frozenset({2, 3, 4}), (2, 3)),
                           (frozenset({2, 4}), (2, 4))})
         else:
@@ -649,12 +648,11 @@ def test_itemporal_link_set_df():
         df = [(1, 2, 4, 1), (1, 2, 8, 2), (2, 3, 4, 1), (1, 3, 6, 1), (3, 4, 2, 1), (2, 4, 3, 2)]
         if d:
             assert_equal(ITemporalLinkSetDF(df, weighted=True, discrete=d).get_maximal_cliques(delta=3),
-                         {(frozenset({1, 2}), (2, 5)),
+                         {(frozenset({1, 2}), (2, 8)),
                           (frozenset({2, 3}), (2, 5)),
                           (frozenset({3, 4}), (2, 3)),
                           (frozenset({1, 2, 3}), (4, 5)),
                           (frozenset({1, 3}), (4, 7)),
-                          (frozenset({1, 2}), (6, 8)),
                           (frozenset({2, 3, 4}), (2, 3)),
                           (frozenset({2, 4}), (2, 4))})
         else:

@@ -43,9 +43,9 @@ def test_temporal_node_set_b():
         assert (2, 3.4) in nsa
         assert (2, (3.4, 4)) in nsa
 
-        assert_equal(nsa.node_duration(4), 0)
-        assert_equal(nsa.node_duration(1), 4 + len(timeset)*int(d))
-        assert_equal(dict(nsa.node_duration()), {i: nodeset.size + len(timeset)*int(d) for i in [1, 2, 3, 5]})
+        assert_equal(nsa.duration_of(4), 0)
+        assert_equal(nsa.duration_of(1), 4 + len(timeset)*int(d))
+        assert_equal(dict(nsa.duration_of()), {i: nodeset.size + len(timeset)*int(d) for i in [1, 2, 3, 5]})
 
         assert_equal(nsa.common_time(1), (nodeset.size-1)*(4 + len(timeset)*int(d)))
         assert_equal(nsa.common_time_pair((2, 3)), 4 + len(timeset)*int(d))
@@ -157,9 +157,9 @@ def test_temporal_node_set_df():
         assert (2, 3.4) not in nsa
         assert (2, (3.4, 4)) not in nsa
 
-        assert_equal(nsa.node_duration(1), 5 + 2*int(d))
-        assert_equal(nsa.node_duration(4), 0)
-        assert_equal(dict(nsa.node_duration()), {1: 5.0 + 2*int(d), 2: 2.0 + int(d)})
+        assert_equal(nsa.duration_of(1), 5 + 2*int(d))
+        assert_equal(nsa.duration_of(4), 0)
+        assert_equal(dict(nsa.duration_of()), {1: 5.0 + 2*int(d), 2: 2.0 + int(d)})
 
         assert_equal(nsa.common_time(1), 1 + int(d))
         assert_equal(nsa.common_time_pair((1, 2)), 1 + int(d))
@@ -220,10 +220,10 @@ def test_temporal_node_set_df():
         assert_equal(set(nsb | nsa), set(nsa | nsb))
         assert isinstance(nsa | nsb, TemporalNodeSetDF)
         if d:
-            assert_equal(set((nsb | nsa)), {(1, 1, 3), (1, 6, 8), (2, 1, 3)})
+            assert_equal(set((nsb | nsa)), {(1, 1, 8), (2, 1, 3)})
         else:
             assert_equal(set((nsb | nsa)), {(1, 1, 5, 'both'), (1, 6, 8, 'both'), (2, 1, 3, 'both')})
-        assert_equal((nsb | nsa).size, 8 + int(d))
+        assert_equal((nsb | nsa).size, 8 + 3*int(d))
         assert_equal((nsb | nsa).discrete, d)
 
         if d:
@@ -287,9 +287,9 @@ def test_itemporal_node_set_df():
         assert (2, 3) in nsa
         assert (1, 7) not in nsa
 
-        assert_equal(nsa.node_duration(1), int(d)*3)
-        assert_equal(nsa.node_duration(4), 0)
-        assert_equal(dict(nsa.node_duration()), {1: int(d)*3, 2: int(d)})
+        assert_equal(nsa.duration_of(1), int(d)*3)
+        assert_equal(nsa.duration_of(4), 0)
+        assert_equal(dict(nsa.duration_of()), {1: int(d)*3, 2: int(d)})
 
         assert_equal(nsa.common_time(1), int(d))
         assert_equal(dict(nsa.common_time()), {1: int(d), 2: int(d)})
