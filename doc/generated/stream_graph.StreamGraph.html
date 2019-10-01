@@ -181,7 +181,7 @@
 <h1><code class="xref py py-mod docutils literal notranslate"><span class="pre">stream_graph</span></code>.StreamGraph<a class="headerlink" href="#stream-graph-streamgraph" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="stream_graph.StreamGraph">
-<em class="property">class </em><code class="sig-prename descclassname">stream_graph.</code><code class="sig-name descname">StreamGraph</code><span class="sig-paren">(</span><em class="sig-param">nodeset=None</em>, <em class="sig-param">timeset=None</em>, <em class="sig-param">temporal_nodeset=None</em>, <em class="sig-param">temporal_linkset=None</em>, <em class="sig-param">discrete=None</em>, <em class="sig-param">weighted=False</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/d8c0063/stream_graph/base/stream_graph.py#L10"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/base/stream_graph.html#StreamGraph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.StreamGraph" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">stream_graph.</code><code class="sig-name descname">StreamGraph</code><span class="sig-paren">(</span><em class="sig-param">nodeset=None</em>, <em class="sig-param">timeset=None</em>, <em class="sig-param">temporal_nodeset=None</em>, <em class="sig-param">temporal_linkset=None</em>, <em class="sig-param">discrete=None</em>, <em class="sig-param">weighted=False</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/92fc69b/stream_graph/base/stream_graph.py#L10"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/base/stream_graph.html#StreamGraph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.StreamGraph" title="Permalink to this definition">¶</a></dt>
 <dd><p>A StreamGraph <span class="math notranslate nohighlight">\(S=(T, V, W, E)\)</span> is a collection of four elements:</p>
 <blockquote>
 <div><ul class="simple">
@@ -275,7 +275,7 @@
 </table>
 <dl class="method">
 <dt id="stream_graph.StreamGraph.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">nodeset=None</em>, <em class="sig-param">timeset=None</em>, <em class="sig-param">temporal_nodeset=None</em>, <em class="sig-param">temporal_linkset=None</em>, <em class="sig-param">discrete=None</em>, <em class="sig-param">weighted=False</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/d8c0063/stream_graph/base/stream_graph.py#L32"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/base/stream_graph.html#StreamGraph.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.StreamGraph.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">nodeset=None</em>, <em class="sig-param">timeset=None</em>, <em class="sig-param">temporal_nodeset=None</em>, <em class="sig-param">temporal_linkset=None</em>, <em class="sig-param">discrete=None</em>, <em class="sig-param">weighted=False</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/92fc69b/stream_graph/base/stream_graph.py#L32"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/base/stream_graph.html#StreamGraph.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.StreamGraph.__init__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -318,7 +318,7 @@
 
 <dl class="method">
 <dt id="stream_graph.StreamGraph.density_at">
-<code class="sig-name descname">density_at</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">t=None</em>, <em class="sig-param">weights=False</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/d8c0063/stream_graph/base/stream_graph.py#L317"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/base/stream_graph.html#StreamGraph.density_at"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.StreamGraph.density_at" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">density_at</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">t=None</em>, <em class="sig-param">weights=False</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/92fc69b/stream_graph/base/stream_graph.py#L317"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/base/stream_graph.html#StreamGraph.density_at"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.StreamGraph.density_at" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate the density at a time instant inside the stream_graph.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -338,7 +338,7 @@ Returns the time collection for each link at each time-event.</p>
 
 <dl class="method">
 <dt id="stream_graph.StreamGraph.discretize">
-<code class="sig-name descname">discretize</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">bins=None</em>, <em class="sig-param">bin_size=None</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/d8c0063/stream_graph/base/stream_graph.py#L599"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/base/stream_graph.html#StreamGraph.discretize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.StreamGraph.discretize" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">discretize</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">bins=None</em>, <em class="sig-param">bin_size=None</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/92fc69b/stream_graph/base/stream_graph.py#L599"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/base/stream_graph.html#StreamGraph.discretize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.StreamGraph.discretize" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a discrete version of the current TemporalLinkSet.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -364,7 +364,7 @@ Else declare the size of each bin.</p>
 
 <dl class="method">
 <dt id="stream_graph.StreamGraph.induced_substream">
-<code class="sig-name descname">induced_substream</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">tns</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/d8c0063/stream_graph/base/stream_graph.py#L530"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/base/stream_graph.html#StreamGraph.induced_substream"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.StreamGraph.induced_substream" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">induced_substream</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">tns</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/92fc69b/stream_graph/base/stream_graph.py#L530"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/base/stream_graph.html#StreamGraph.induced_substream"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.StreamGraph.induced_substream" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate the induced substream of the stream-graph from a TemporalNodeSet.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -383,7 +383,7 @@ Else declare the size of each bin.</p>
 
 <dl class="method">
 <dt id="stream_graph.StreamGraph.link_contribution_at">
-<code class="sig-name descname">link_contribution_at</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">t=None</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/d8c0063/stream_graph/base/stream_graph.py#L258"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/base/stream_graph.html#StreamGraph.link_contribution_at"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.StreamGraph.link_contribution_at" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">link_contribution_at</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">t=None</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/92fc69b/stream_graph/base/stream_graph.py#L258"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/base/stream_graph.html#StreamGraph.link_contribution_at"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.StreamGraph.link_contribution_at" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate the contribution of a link inside the stream_graph.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -403,7 +403,7 @@ If None returns the time coverage for each node at each time-event.</p>
 
 <dl class="method">
 <dt id="stream_graph.StreamGraph.link_density_of">
-<code class="sig-name descname">link_density_of</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">l=None</em>, <em class="sig-param">weights=False</em>, <em class="sig-param">direction='out'</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/d8c0063/stream_graph/base/stream_graph.py#L287"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/base/stream_graph.html#StreamGraph.link_density_of"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.StreamGraph.link_density_of" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">link_density_of</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">l=None</em>, <em class="sig-param">weights=False</em>, <em class="sig-param">direction='out'</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/92fc69b/stream_graph/base/stream_graph.py#L287"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/base/stream_graph.html#StreamGraph.link_density_of"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.StreamGraph.link_density_of" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate the density of a link inside the stream_graph.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -443,7 +443,7 @@ If l is None, returns a dictionary of all links and their coverages.</p>
 
 <dl class="method">
 <dt id="stream_graph.StreamGraph.mean_degree_at">
-<code class="sig-name descname">mean_degree_at</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">t=None</em>, <em class="sig-param">weights=False</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/d8c0063/stream_graph/base/stream_graph.py#L425"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/base/stream_graph.html#StreamGraph.mean_degree_at"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.StreamGraph.mean_degree_at" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">mean_degree_at</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">t=None</em>, <em class="sig-param">weights=False</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/92fc69b/stream_graph/base/stream_graph.py#L425"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/base/stream_graph.html#StreamGraph.mean_degree_at"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.StreamGraph.mean_degree_at" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate the mean degree at a give time.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -482,7 +482,7 @@ Returns mean degree at each time t.</p>
 
 <dl class="method">
 <dt id="stream_graph.StreamGraph.neighbor_coverage_at">
-<code class="sig-name descname">neighbor_coverage_at</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">u=None</em>, <em class="sig-param">t=None</em>, <em class="sig-param">direction='out'</em>, <em class="sig-param">weights=False</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/d8c0063/stream_graph/base/stream_graph.py#L382"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/base/stream_graph.html#StreamGraph.neighbor_coverage_at"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.StreamGraph.neighbor_coverage_at" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">neighbor_coverage_at</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">u=None</em>, <em class="sig-param">t=None</em>, <em class="sig-param">direction='out'</em>, <em class="sig-param">weights=False</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/92fc69b/stream_graph/base/stream_graph.py#L382"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/base/stream_graph.html#StreamGraph.neighbor_coverage_at"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.StreamGraph.neighbor_coverage_at" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate the coverage of a node inside the stream_graph.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -506,7 +506,7 @@ If u and t are None return the neighbor coverage for each node at each time-even
 
 <dl class="method">
 <dt id="stream_graph.StreamGraph.node_contribution_at">
-<code class="sig-name descname">node_contribution_at</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">t=None</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/d8c0063/stream_graph/base/stream_graph.py#L230"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/base/stream_graph.html#StreamGraph.node_contribution_at"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.StreamGraph.node_contribution_at" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">node_contribution_at</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">t=None</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/92fc69b/stream_graph/base/stream_graph.py#L230"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/base/stream_graph.html#StreamGraph.node_contribution_at"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.StreamGraph.node_contribution_at" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate the node contribution at a time instant inside the stream_graph.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -526,7 +526,7 @@ If None returns the time coverage for each node at each time-event.</p>
 
 <dl class="method">
 <dt id="stream_graph.StreamGraph.node_contribution_of">
-<code class="sig-name descname">node_contribution_of</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">u=None</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/d8c0063/stream_graph/base/stream_graph.py#L202"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/base/stream_graph.html#StreamGraph.node_contribution_of"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.StreamGraph.node_contribution_of" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">node_contribution_of</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">u=None</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/92fc69b/stream_graph/base/stream_graph.py#L202"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/base/stream_graph.html#StreamGraph.node_contribution_of"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.StreamGraph.node_contribution_of" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate the contibution of a node inside the stream_graph.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -546,7 +546,7 @@ If u is None, returns a dictionary of all nodes and their coverages.</p>
 
 <dl class="method">
 <dt id="stream_graph.StreamGraph.node_density_of">
-<code class="sig-name descname">node_density_of</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">u=None</em>, <em class="sig-param">direction='out'</em>, <em class="sig-param">weights=False</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/d8c0063/stream_graph/base/stream_graph.py#L345"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/base/stream_graph.html#StreamGraph.node_density_of"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.StreamGraph.node_density_of" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">node_density_of</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">u=None</em>, <em class="sig-param">direction='out'</em>, <em class="sig-param">weights=False</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/92fc69b/stream_graph/base/stream_graph.py#L345"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/base/stream_graph.html#StreamGraph.node_density_of"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.StreamGraph.node_density_of" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate the node density of a node inside the stream_graph.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
