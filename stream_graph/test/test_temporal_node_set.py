@@ -187,9 +187,9 @@ def test_temporal_node_set_df():
         assert_equal(set(nsa.times_of(1)), ({(2, 8)} if d else {(2, 5, 'both'), (6, 8, 'both')}))
         assert_equal(set(nsa.times_of(10)), set())
         if d:
-            assert_equal([(t, list(ts)) for t, ts in nsa.times_of()], [(2, [(1, 3)]), (1, [(2, 8)])])
+            assert_equal({(t, tuple(ts)) for t, ts in nsa.times_of()}, {(2, ((1, 3),)), (1, ((2, 8),))})
         else:
-            assert_equal([(t, list(ts)) for t, ts in nsa.times_of()], [(1, [(2, 5, 'both'), (6, 8, 'both')]), (2, [(1, 3, 'both')])])
+            assert_equal({(t, tuple(ts)) for t, ts in nsa.times_of()}, {(1, ((2, 5, 'both'), (6, 8, 'both'))), (2, ((1, 3, 'both'),))})
 
         assert_equal(nsa.n_at(2), 2)
         assert_equal(nsa.n_at(10), 0)
