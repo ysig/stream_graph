@@ -551,13 +551,13 @@ class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
                         cache = Counter()
                         prev = ts
                     elif ts != prev:
-                        for u, weight in iteritems(cache):
-                            if u in out:
+                        for z, weight in iteritems(cache):
+                            if z in out:
                                 # Append in ascending time inside the TimeCollection
-                                out[u].it.append((prev, weight))
+                                out[z].it.append((prev, weight))
                             else:
                                 # Initialize inside the TimeCollection
-                                out[u] = TimeCollection([(prev, weight)], discrete=self.discrete, instantaneous=True)
+                                out[z] = TimeCollection([(prev, weight)], discrete=self.discrete, instantaneous=True)
                         cache = Counter()
                         prev = ts
                     add(cache, u, v, w)
