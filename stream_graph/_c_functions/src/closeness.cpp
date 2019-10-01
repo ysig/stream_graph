@@ -26,12 +26,23 @@
 
 using namespace std;
 
+void print(vector<int> const &input)
+{
+	for (int i = 0; i < input.size(); i++) {
+		cout << input.at(i) << ' ';
+	}
+	cout << "\n";
+}
+
 int binary_search(vector<int> list,int value){
+    cout << "binary-search\nlist";
 	int min,m = 0;
 	int max =  list.size() - 1;
+    print(list);
 
 	while (true){
 		if(max < min)
+		    cout << "value:" << value << ":-1";
 			return -1;
 		m = (min+max) / 2;
 		if(list[m] < value)
@@ -39,6 +50,7 @@ int binary_search(vector<int> list,int value){
 		else if(list[m] > value)
 			max = m - 1;
 		else
+		    cout << "value:" << value << ":" << m;
 			return m;
 	}
 }
@@ -153,11 +165,9 @@ pair<vector<int>, vector<double>> closeness_times_both(vector<pair<int, pair<int
 
 					if(lu.size() > 0){
 						int start_time_index = binary_search(time_closeness,it2->second.back().first)+1;
-						cout << start_time_index
 						long start_time_value = time_closeness[start_time_index];
 						
 						while(start_time_value <= lu.back().first){
-						    cout << "hehehe"
 				            cout << "1. cum_closeness[start_time_index=" << start_time_index << "] before" << cum_closeness[start_time_index] << endl;
 							cum_closeness[start_time_index]+= 1.0/(t - start_time_value);
 				            cout << "1. cum_closeness[start_time_index=" << start_time_index << "] after" << cum_closeness[start_time_index] << endl;
