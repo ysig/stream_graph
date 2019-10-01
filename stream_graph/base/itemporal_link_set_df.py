@@ -343,10 +343,7 @@ class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
                     raise UnrecognizedDirection()
 
                 prev = None
-                print('neighbors_at')
-                print('u, v, ts')
                 for u, v, ts in self.sort_df('ts').itertuples():
-                    print(u, v, ts)
                     # Iterate in ascending time and at each instant collect for each node the set of its neighbors
                     if prev is None:
                         prev, cache = ts, defaultdict(set)
@@ -360,9 +357,7 @@ class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
                                 # Initialize a time-collection with the time-stamp and the node-set
                                 out[z] = TimeCollection([(prev, NodeSetS(s))], instantaneous=True, discrete=self.discrete)
                         prev, cache = ts, defaultdict(set)
-                    print(cache, u, v)
                     add(cache, u, v)
-                    print(prev, cache)
                 # Add also remaining elements.
                 for u, s in iteritems(cache):
                     if u in out:
@@ -492,13 +487,13 @@ class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
                         cache = defaultdict(set)
                         prev = ts
                     elif ts != prev:
-                        for u, s in iteritems(cache):
-                            if u in out:
+                        for z, s in iteritems(cache):
+                            if z in out:
                                 # and calculate their size
-                                out[u].it.append((prev, len(s)))
+                                out[z].it.append((prev, len(s)))
                             else:
                                 # in a TimeCollection of ascending time for each node
-                                out[u] = TimeCollection([(prev, len(s))], discrete=self.discrete, instantaneous=True)
+                                out[z] = TimeCollection([(prev, len(s))], discrete=self.discrete, instantaneous=True)
                         cache = defaultdict(set)
                         prev = ts
                     add(cache, u, v)

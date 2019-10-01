@@ -57,7 +57,7 @@ pair<vector<int>, vector<double>> closeness_times_both(vector<pair<int, pair<int
         t = it->first;
         u = it->second.first;
         v = it->second.second;
-        
+        printf("(t, u, v): %d, %d, %d \n", t, u, v);
 		if(u == x || v == x){
 			cur_start_time = t;
 			vector<pair<long,long > > list = vector<pair <long,long> >();
