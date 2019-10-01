@@ -309,7 +309,7 @@ def test_itemporal_node_set_df():
 
         assert_equal(set(nsa.times_of(1)), {2, 3, 6})
         assert_equal(set(nsa.times_of(10)), set())
-        assert_equal([(n, set(ts)) for n, ts in nsa.times_of()], [(1, {2, 3, 6}), (2, {3})])
+        assert_equal({(n, frozenset(ts)) for n, ts in nsa.times_of()}, {(1, frozenset({2, 3, 6})), (2, frozenset({3}))])
 
         assert_equal(nsa.n_at(2), 1)
         assert_equal(nsa.n_at(10), 0)
