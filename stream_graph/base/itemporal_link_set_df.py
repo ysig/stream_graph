@@ -360,7 +360,7 @@ class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
                                 # Initialize a time-collection with the time-stamp and the node-set
                                 out[u] = TimeCollection([(prev, NodeSetS(s))], instantaneous=True, discrete=self.discrete)
                         prev, cache = ts, defaultdict(set)
-                    print(cache, u)
+                    print(cache, u, v)
                     add(cache, u, v)
                     print(prev, cache)
                 # Add also remaining elements.
