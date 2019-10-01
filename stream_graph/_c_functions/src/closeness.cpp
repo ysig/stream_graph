@@ -34,19 +34,23 @@ int binary_search(vector<int> v,int value){
 	}    
     cout << '\n';
 
+    cout << "value: " << value << "\n";
+
 	while (true){
 		if(max < min){
+		    cout << "1. m: " << m << "\n";
 			return -1;
 	    }
 
 		m = (min+max) / 2;
-		if(v[m] < value){
+		if(v.at(m) < value){
 			min = m + 1;
 		}
 		else{
-		    if(v[m] > value){
+		    if(v.at(m) > value){
 			    max = m - 1;
 			}else{
+			    cout << "2. m: " << m << "\n";
 			    return m;
 			}
 	    }
