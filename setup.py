@@ -31,11 +31,10 @@ from Cython.Build import build_ext
 
 # Set optimization arguments for compilation
 OS = system()
-extra_compile_args = ['-std=c++11']
 if OS == 'Windows':
-    extra_compile_args += ["/O2", "/w"]
+    extra_compile_args = ["std=c++11", "/O2", "/w"]
 elif OS in ['Linux', 'Darwin']:
-   extra_compile_args += ["-O3", "-w"]
+   extra_compile_args = ["-std=c++11", "-O3", "-w"]
 
 # Remove the "-Wstrict-prototypes" compiler option, which isn't valid for C++.
 import distutils.sysconfig

@@ -596,13 +596,14 @@ def test_itemporal_link_set_df():
 
         la = lsa.neighbors_at(1)
         assert isinstance(la, TimeGenerator)
-        assert_equal({(t, tuple(s)) for t, s in la}, {(2, (2,)), (3, (2,))})
+        assert_equal([(t, tuple(s)) for t, s in la], [(2, (2,)), (3, (2,))])
         assert la.instants
         assert not len([a for a in la])
 
         assert_equal(set(lsa.neighbors_at(1, 2)), {2})
-        assert_equal({i: tuple(nsa) for i, nsa in lsa.neighbors_at(None, 2, 'out')}, {1: (2,)})
-        assert_equal({i: set((t, tuple(s)) for t, s in nsa)for i, nsa in lsa.neighbors_at()}, {1: {(3, (2,)), (2, (2,))}, 2: {(3, (1,)), (6, (1,))}})
+        assert_equal({i: tuple(na) for i, na in lsa.neighbors_at(None, 2, 'out')}, {1: (2,)})
+        print(lsa)
+        assert_equal({i: tuple([(t, set(s)) for t, s in na]) for i, na in lsa.neighbors_at(direction='out')}, {1: ((2, {2}), (3, {2})), 2: ((3, {1}), (6, {1}))})
 
         for w in [False, True]:
             assert_equal(lsa.m_at(3, weights=w), 2)
@@ -617,7 +618,7 @@ def test_itemporal_link_set_df():
 
             assert_equal(lsa.degree_at(1, 2, weights=w), 1)
             assert_equal({i: n for i, n in lsa.degree_at(None, 2, 'out', weights=w)}, {1: 1})
-            assert_equal({i: [(t, ts) for t, ts in nsa] for i, nsa in lsa.degree_at(weights=w)}, {1: [(2, 1), (3, 1)], 2: [(3, 1), (6, 1)]})
+            assert_equal({i: [(t, ts) for t, ts in dg] for i, dg in lsa.degree_at(weights=w)}, {1: [(2, 1), (3, 1)], 2: [(3, 1), (6, 1)]})
 
         nsa = NodeSetS({1})
         nsb = NodeSetS({2})
