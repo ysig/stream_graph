@@ -34,7 +34,7 @@ OS = system()
 if OS == 'Windows':
     extra_compile_args = ["/std:c++14", "/O2", "/W3"]
 elif OS in ['Linux', 'Darwin']:
-   extra_compile_args = ["-std=c++14", "-O3", "-w"]
+   extra_compile_args = ["-std=c++11", "-O3", "-w"]
 
 # Remove the "-Wstrict-prototypes" compiler option, which isn't valid for C++.
 import distutils.sysconfig
