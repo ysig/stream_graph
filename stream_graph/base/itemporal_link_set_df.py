@@ -352,13 +352,13 @@ class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
                         prev, cache = ts, defaultdict(set)
                     elif ts != prev:
                         # For each node 
-                        for u, s in iteritems(cache):
-                            if u in out:
+                        for z, s in iteritems(cache):
+                            if z in out:
                                 # Or append it if it exists
-                                out[u].it.append((prev, NodeSetS(s)))
+                                out[z].it.append((prev, NodeSetS(s)))
                             else:
                                 # Initialize a time-collection with the time-stamp and the node-set
-                                out[u] = TimeCollection([(prev, NodeSetS(s))], instantaneous=True, discrete=self.discrete)
+                                out[z] = TimeCollection([(prev, NodeSetS(s))], instantaneous=True, discrete=self.discrete)
                         prev, cache = ts, defaultdict(set)
                     print(cache, u, v)
                     add(cache, u, v)
