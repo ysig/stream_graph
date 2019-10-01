@@ -35,31 +35,31 @@ void print(vector<int> const &input)
 }
 
 int binary_search(vector<int> list,int value){
-    cout << "binary-search\nlist";
+    //cout << "binary-search\nlist";
 	int min,m = 0;
 	int max =  list.size() - 1;
-    print(list);
-    cout << "m" << m << "min" << min <<"\n";
+    //print(list);
+    //cout << "m" << m << "min" << min <<"\n";
 	while (true){
-	    cout << "hierarchy\n";
+	    //cout << "hierarchy\n";
 		if(max < min){
-		    cout << "1.value:";
-		    cout << value << ":-1\n";
+		    //cout << "1.value:";
+		    //cout << value << ":-1\n";
 			return -1;
 	    }
 	    cout << "aaa\n";
 		m = (min+max) / 2;
 		if(list[m] < value){
-    		cout << "bbb\n";
+    		//cout << "bbb\n";
 			min = m + 1;
 		}
 		else{
 		    if(list[m] > value){
-	    		cout << "ccc\n";
+	    		//cout << "ccc\n";
 			    max = m - 1;
 			}else{
-		        cout << "2.value:";
-		        cout << value << ":" << m << "\n";
+		        //cout << "2.value:";
+		        //cout << value << ":" << m << "\n";
 			    return m;
 			}
 	    }
