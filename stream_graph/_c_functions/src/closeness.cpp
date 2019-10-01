@@ -26,6 +26,7 @@
 
 using namespace std;
 
+/*
 void print(vector<int> const &input)
 {
 	for (int i = 0; i < input.size(); i++) {
@@ -33,6 +34,7 @@ void print(vector<int> const &input)
 	}
 	cout << "\n";
 }
+*/
 
 int binary_search(vector<int> list,int value){
 	int min,m = 0;
