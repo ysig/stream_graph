@@ -30,7 +30,7 @@ matrix:
         - PIP=pip
         - PYTHON=python
         - CIBW_BUILD="cp35-*"
-        - FLAKE="true"
+        - FLAKE="false"
         - DEPLOY_SDIST="true"
     - sudo: required
       services:

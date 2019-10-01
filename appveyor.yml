@@ -43,7 +43,7 @@ install:
   # Make venv and install dependencies
   - "conda create -q -n stream_graph python=%PYTHON_VERSION%"
   - "conda install -n stream_graph pip \"pandas\" \"future>=0.16.0\" \"six>=1.11.0\" \"numpy>=1.14.0\" \"cython>=0.27.3\" \"nose>=1.1.2\" setuptools wheel"
-  - "conda update -n grakel setuptools wheel"
+  - "conda update -n stream_graph setuptools wheel"
   - "activate stream_graph"
   - "pip install wheelhouse_uploader nose-timer --upgrade"
 
