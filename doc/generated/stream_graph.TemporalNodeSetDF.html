@@ -191,7 +191,7 @@
 <h1><code class="xref py py-mod docutils literal notranslate"><span class="pre">stream_graph</span></code>.TemporalNodeSetDF<a class="headerlink" href="#stream-graph-temporalnodesetdf" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="stream_graph.TemporalNodeSetDF">
-<em class="property">class </em><code class="sig-prename descclassname">stream_graph.</code><code class="sig-name descname">TemporalNodeSetDF</code><span class="sig-paren">(</span><em class="sig-param">df=None</em>, <em class="sig-param">disjoint_intervals=True</em>, <em class="sig-param">sort_by=None</em>, <em class="sig-param">discrete=None</em>, <em class="sig-param">default_closed='both'</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/6fc89e0/stream_graph/base/temporal_node_set_df.py#L24"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/base/temporal_node_set_df.html#TemporalNodeSetDF"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.TemporalNodeSetDF" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">stream_graph.</code><code class="sig-name descname">TemporalNodeSetDF</code><span class="sig-paren">(</span><em class="sig-param">df=None</em>, <em class="sig-param">disjoint_intervals=True</em>, <em class="sig-param">sort_by=None</em>, <em class="sig-param">discrete=None</em>, <em class="sig-param">default_closed='both'</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/79427f5/stream_graph/base/temporal_node_set_df.py#L24"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/base/temporal_node_set_df.html#TemporalNodeSetDF"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.TemporalNodeSetDF" title="Permalink to this definition">¶</a></dt>
 <dd><p>DataFrame implementation of ABC.TemporalNodeSet</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -283,7 +283,7 @@ If an Iterable it should produce <code class="code docutils literal notranslate"
 </table>
 <dl class="attribute">
 <dt id="stream_graph.TemporalNodeSetDF.__class__">
-<code class="sig-name descname">__class__</code><a class="reference external" href="https://github.com/ysig/stream_graph/blob/6fc89e0/stream_graph/../../../../usr/local/lib/python3.6/abc.py#L109"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.TemporalNodeSetDF.__class__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__class__</code><a class="reference external" href="https://github.com/ysig/stream_graph/blob/79427f5/stream_graph/../../../../usr/local/lib/python3.6/abc.py#L109"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.TemporalNodeSetDF.__class__" title="Permalink to this definition">¶</a></dt>
 <dd><p>alias of <a class="reference external" href="https://docs.python.org/3/library/abc.html#abc.ABCMeta" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABCMeta</span></code></a></p>
 </dd></dl>
 
@@ -415,7 +415,7 @@ overrides the normal algorithm (and the outcome is cached).</p>
 
 <dl class="method">
 <dt id="stream_graph.TemporalNodeSetDF.copy">
-<code class="sig-name descname">copy</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">deep=True</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/6fc89e0/stream_graph/ABC/temporal_node_set.py#L393"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.TemporalNodeSetDF.copy" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">copy</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">deep=True</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/79427f5/stream_graph/ABC/temporal_node_set.py#L393"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.TemporalNodeSetDF.copy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a deep or shallow copy of the current TemporalNodeSet.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -434,7 +434,7 @@ overrides the normal algorithm (and the outcome is cached).</p>
 
 <dl class="method">
 <dt id="stream_graph.TemporalNodeSetDF.discretize">
-<code class="sig-name descname">discretize</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">bins=None</em>, <em class="sig-param">bin_size=None</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/6fc89e0/stream_graph/ABC/temporal_node_set.py#L411"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.TemporalNodeSetDF.discretize" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">discretize</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">bins=None</em>, <em class="sig-param">bin_size=None</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/79427f5/stream_graph/ABC/temporal_node_set.py#L411"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.TemporalNodeSetDF.discretize" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a discrete version of the current TemporalNodeSet.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -466,7 +466,7 @@ Else declare the size of each bin.</p>
 
 <dl class="method">
 <dt id="stream_graph.TemporalNodeSetDF.sort_df">
-<code class="sig-name descname">sort_df</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">sort_by</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/6fc89e0/stream_graph/base/temporal_node_set_df.py#L78"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/base/temporal_node_set_df.html#TemporalNodeSetDF.sort_df"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.TemporalNodeSetDF.sort_df" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">sort_df</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">sort_by</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/79427f5/stream_graph/base/temporal_node_set_df.py#L78"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/base/temporal_node_set_df.html#TemporalNodeSetDF.sort_df"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.TemporalNodeSetDF.sort_df" title="Permalink to this definition">¶</a></dt>
 <dd><p>Retrieve, store if no-order and produce a sorted version of the df</p>
 </dd></dl>
 
