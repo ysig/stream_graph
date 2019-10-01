@@ -5,6 +5,6 @@
 
 Computation times
 =================
-**00:01.770** total execution time for **auto_examples** files:
+**00:01.992** total execution time for **auto_examples** files:
 
-- **00:01.770**: :ref:`sphx_glr_auto_examples_plot_intro.py` (``plot_intro.py``)
+- **00:01.992**: :ref:`sphx_glr_auto_examples_plot_intro.py` (``plot_intro.py``)
