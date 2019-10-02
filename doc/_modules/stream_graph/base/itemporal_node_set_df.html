@@ -179,7 +179,7 @@
 <span class="kn">from</span> <span class="nn">.multi_df_utils</span> <span class="k">import</span> <span class="n">init_instantaneous_df</span><span class="p">,</span> <span class="n">load_instantaneous_df</span>
 <span class="kn">from</span> <span class="nn">.node_set_s</span> <span class="k">import</span> <span class="n">NodeSetS</span>
 <span class="kn">from</span> <span class="nn">.itime_set_s</span> <span class="k">import</span> <span class="n">ITimeSetS</span>
-<span class="kn">from</span> <span class="nn">stream_graph.exceptions</span> <span class="k">import</span> <span class="n">UnrecognizedTemporalNodeSet</span>
+<span class="kn">from</span> <span class="nn">stream_graph.exceptions</span> <span class="k">import</span> <span class="n">UnrecognizedTemporalNodeSet</span><span class="p">,</span> <span class="n">UnrecognizedNodeSet</span><span class="p">,</span> <span class="n">UnrecognizedTimeSet</span>
 <span class="kn">from</span> <span class="nn">stream_graph.collections</span> <span class="k">import</span> <span class="n">TimeCollection</span>
 <span class="kn">from</span> <span class="nn">stream_graph.collections</span> <span class="k">import</span> <span class="n">TimeGenerator</span>
 <span class="kn">from</span> <span class="nn">stream_graph.collections</span> <span class="k">import</span> <span class="n">NodeCollection</span>
@@ -202,7 +202,7 @@
 <span class="sd">        The order of the DataFrame elements by which they will be produced when iterated.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">no_duplicates</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sort_by</span><span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">discrete</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">no_duplicates</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sort_by</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">discrete</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">):</span>
             <span class="n">discrete</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">discrete_</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">df_</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">df</span>
@@ -374,6 +374,7 @@
                         <span class="c1"># subtract and then by converting back to our to our original type, we will have our valid result.</span>
                         <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span>
                         <span class="n">df</span><span class="p">[</span><span class="s1">&#39;tf&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;ts&#39;</span><span class="p">]</span>
+                        <span class="kn">from</span> <span class="nn">.temporal_node_set_df</span> <span class="k">import</span> <span class="n">TemporalNodeSetDF</span>
                         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">((</span><span class="n">TemporalNodeSetDF</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">discrete</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">discrete</span><span class="p">)</span> <span class="o">-</span> <span class="n">ns</span><span class="p">)</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;tf&#39;</span><span class="p">]),</span> <span class="n">discrete</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">discrete</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
@@ -384,7 +385,7 @@
     <span class="k">def</span> <span class="nf">n_at</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">t</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="c1"># Count how many times its time-step occurs, for each key and return a sorted list </span>
+                <span class="c1"># Count how many times its time-step occurs, for each key and return a sorted list</span>
                 <span class="k">return</span> <span class="n">TimeCollection</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">iteritems</span><span class="p">(</span><span class="n">Counter</span><span class="p">(</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">ts</span><span class="p">)))),</span> <span class="n">instantaneous</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">discrete</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">discrete</span><span class="p">)</span>
             <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">Real</span><span class="p">):</span>
                 <span class="c1"># Count for only one time-stamp</span>
@@ -415,7 +416,7 @@
                 <span class="c1"># Iterate in ascending time and yield the NodeSet at each time-instant in a generator fashion</span>
                 <span class="k">return</span> <span class="n">TimeGenerator</span><span class="p">(</span><span class="n">generate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sort_df</span><span class="p">(</span><span class="s1">&#39;ts&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">itertuples</span><span class="p">()),</span> <span class="n">instantaneous</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">discrete</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">discrete</span><span class="p">)</span>
             <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">Real</span><span class="p">):</span>
-                <span class="c1"># Count how many times its time-step occurs, for each key and return a sorted list </span>
+                <span class="c1"># Count how many times its time-step occurs, for each key and return a sorted list</span>
                 <span class="k">return</span> <span class="n">NodeSetS</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">df_at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">u</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Input can either be a real number or an ascending interval of two real numbers&#39;</span><span class="p">)</span>
@@ -504,7 +505,7 @@
         <span class="n">ct</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">if</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
             <span class="n">counter</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">ts</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">ts</span> <span class="ow">in</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
-            <span class="n">ct</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(((</span><span class="n">val</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">val</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">iteritems</span><span class="p">(</span><span class="n">counter</span><span class="p">)</span> <span class="k">if</span> <span class="n">val</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">ct</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(((</span><span class="n">val</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">val</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">iteritems</span><span class="p">(</span><span class="n">counter</span><span class="p">)</span> <span class="k">if</span> <span class="n">val</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">ct</span>
 
     <span class="nd">@property</span>
@@ -533,14 +534,14 @@
                         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">active_set</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
                             <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">active_set</span><span class="p">:</span>
                                 <span class="c1"># update their common time to the ammount of all the other coexisting nodes</span>
-                                <span class="n">ct</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">+=</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">active_set</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+                                <span class="n">ct</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">+=</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">active_set</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
                         <span class="n">active_set</span><span class="p">,</span> <span class="n">prev</span> <span class="o">=</span> <span class="p">{</span><span class="n">u</span><span class="p">},</span> <span class="n">ts</span>
                     <span class="k">else</span><span class="p">:</span>
                         <span class="n">active_set</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">active_set</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
                     <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">active_set</span><span class="p">:</span>
                         <span class="c1"># update their common time to the ammount of all the other coexisting nodes</span>
-                        <span class="n">ct</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">+=</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">active_set</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+                        <span class="n">ct</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">+=</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">active_set</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="c1"># If we want the common-time for all nodes but only for a list of nodes</span>
                 <span class="n">valid_nodes</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
@@ -552,7 +553,7 @@
                             <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">active_set</span><span class="p">:</span>
                                 <span class="c1"># update their common time to the ammount of all the other coexisting nodes</span>
                                 <span class="k">if</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">valid_nodes</span><span class="p">:</span>
-                                    <span class="n">ct</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">+=</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">active_set</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+                                    <span class="n">ct</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">+=</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">active_set</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
                         <span class="n">active_set</span><span class="p">,</span> <span class="n">prev</span> <span class="o">=</span> <span class="p">{</span><span class="n">u</span><span class="p">},</span> <span class="n">ts</span>
                     <span class="k">else</span><span class="p">:</span>
                         <span class="n">active_set</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
@@ -560,7 +561,7 @@
                     <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">active_set</span><span class="p">:</span>
                         <span class="c1"># update their common time to the ammount of all the other coexisting nodes</span>
                         <span class="k">if</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">valid_nodes</span><span class="p">:</span>
-                            <span class="n">ct</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">+=</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">active_set</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+                            <span class="n">ct</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">+=</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">active_set</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">NodeCollection</span><span class="p">(</span><span class="n">ct</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -578,7 +579,7 @@
             <span class="c1"># For each node take the set of time-stamps.</span>
             <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">ts</span> <span class="ow">in</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
                 <span class="n">carrier</span><span class="p">[</span><span class="n">u</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
-    
+
             <span class="c1"># Take all the valid pairs of nodes.</span>
             <span class="n">valid_links</span> <span class="o">=</span> <span class="p">(</span><span class="n">combinations</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">carrier</span><span class="o">.</span><span class="n">keys</span><span class="p">()),</span> <span class="mi">2</span><span class="p">)</span> <span class="k">if</span> <span class="n">l</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">set</span><span class="p">(</span><span class="n">l</span><span class="p">))</span>
             <span class="c1"># And for all of them take the size of the intersection between all their time-sets.</span>

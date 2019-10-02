@@ -177,6 +177,7 @@
 <span class="c1"># 2/3 Cross Compatibility</span>
 <span class="n">ABC</span> <span class="o">=</span> <span class="n">abc</span><span class="o">.</span><span class="n">ABCMeta</span><span class="p">(</span><span class="s1">&#39;ABC&#39;</span><span class="p">,</span> <span class="p">(</span><span class="nb">object</span><span class="p">,),</span> <span class="p">{</span><span class="s1">&#39;__slots__&#39;</span><span class="p">:</span> <span class="p">()})</span>
 
+
 <div class="viewcode-block" id="TemporalLinkSet"><a class="viewcode-back" href="../../../generated/stream_graph.ABC.TemporalLinkSet.html#stream_graph.ABC.TemporalLinkSet">[docs]</a><span class="k">class</span> <span class="nc">TemporalLinkSet</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;TemporalLinkSet Object API Specification.</span>
 
@@ -499,9 +500,10 @@
     <span class="k">def</span> <span class="nf">_degree_at_weighted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">direction</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
-    <span class="k">def</span> <span class="nf">_degree_at_unweighted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">direction</span><span class="p">):</span>    
+    <span class="k">def</span> <span class="nf">_degree_at_unweighted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">direction</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">u</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">neighbors_at</span><span class="p">(</span><span class="n">u</span><span class="o">=</span><span class="n">u</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="n">t</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="n">direction</span><span class="p">)</span>
+
             <span class="k">def</span> <span class="nf">size</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
                 <span class="k">return</span> <span class="n">y</span><span class="o">.</span><span class="n">size</span>
             <span class="k">if</span> <span class="n">t</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -777,8 +779,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">links_at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">size</span>
 
-
-<div class="viewcode-block" id="TemporalLinkSet.duration_of"><a class="viewcode-back" href="../../../generated/stream_graph.ABC.TemporalLinkSet.html#stream_graph.ABC.TemporalLinkSet.duration_of">[docs]</a>    <span class="k">def</span> <span class="nf">duration_of</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">l</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="s1">&#39;out&#39;</span><span class="p">,</span> <span class="n">weigths</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="TemporalLinkSet.duration_of"><a class="viewcode-back" href="../../../generated/stream_graph.ABC.TemporalLinkSet.html#stream_graph.ABC.TemporalLinkSet.duration_of">[docs]</a>    <span class="k">def</span> <span class="nf">duration_of</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">l</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="s1">&#39;out&#39;</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Returns the total duration of a link.</span>
 
 <span class="sd">        Parameters</span>
@@ -898,6 +899,7 @@
     <span class="k">def</span> <span class="nf">_to_discrete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bins</span><span class="p">,</span> <span class="n">bin_size</span><span class="p">):</span>
         <span class="k">pass</span></div>
 
+
 <div class="viewcode-block" id="ITemporalLinkSet"><a class="viewcode-back" href="../../../generated/stream_graph.ABC.ITemporalLinkSet.html#stream_graph.ABC.ITemporalLinkSet">[docs]</a><span class="k">class</span> <span class="nc">ITemporalLinkSet</span><span class="p">(</span><span class="n">TemporalLinkSet</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Instantaneous Temporal LinkSet Object API Specification.</span>
 
@@ -968,7 +970,6 @@
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">weighted_number_of_interactions</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="o">.</span><span class="mi">0</span>
-
 
 <div class="viewcode-block" id="ITemporalLinkSet.duration_of"><a class="viewcode-back" href="../../../generated/stream_graph.ABC.ITemporalLinkSet.html#stream_graph.ABC.ITemporalLinkSet.duration_of">[docs]</a>    <span class="k">def</span> <span class="nf">duration_of</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">l</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="s1">&#39;out&#39;</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Returns the total duration of a link.</span>

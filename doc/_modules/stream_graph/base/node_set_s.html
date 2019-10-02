@@ -216,7 +216,6 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">UnrecognizedNodeSet</span><span class="p">(</span><span class="s1">&#39;right operand&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="kc">False</span>
-        
 
     <span class="k">def</span> <span class="nf">__and__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ns</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ns</span><span class="p">,</span> <span class="n">ABC</span><span class="o">.</span><span class="n">NodeSet</span><span class="p">):</span>
@@ -256,7 +255,6 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">UnrecognizedNodeSet</span><span class="p">(</span><span class="s1">&#39;right operand&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-
 
     <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>

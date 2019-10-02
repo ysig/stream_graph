@@ -373,7 +373,6 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
-
 <div class="viewcode-block" id="TemporalNodeSet.common_time_pair"><a class="viewcode-back" href="../../../generated/stream_graph.ABC.TemporalNodeSet.html#stream_graph.ABC.TemporalNodeSet.common_time_pair">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">common_time_pair</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">l</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Returns the common_time between a pair of nodes.</span>
@@ -440,7 +439,7 @@
 <span class="sd">            If None returns an iterator of tuples containing a timestamp and an Int.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">t</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="c1"># Wrong</span>
+        <span class="k">if</span> <span class="n">t</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">stream_graph.collections</span> <span class="k">import</span> <span class="n">TimeCollection</span>
             <span class="n">time_nodes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes_at</span><span class="p">()</span>
             <span class="k">return</span> <span class="n">TimeCollection</span><span class="p">([(</span><span class="n">ts</span><span class="p">,</span> <span class="n">ns</span><span class="o">.</span><span class="n">size</span><span class="p">)</span> <span class="k">for</span> <span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">ns</span><span class="p">)</span> <span class="ow">in</span> <span class="n">time_nodes</span><span class="p">],</span> <span class="n">time_nodes</span><span class="o">.</span><span class="n">instants</span><span class="p">)</span>
