@@ -28,27 +28,27 @@ int binary_search(vector<int> v,int value){
 	int max =  v.size() - 1;
 	int min = 0;
 	int m = 0;
-    cout << "min: " << min << " m: " << m;
-	cout << " max: " << m << "\n";
+    //cout << "min: " << min << " m: " << m;
+	//cout << " max: " << m << "\n";
 	
-	cout << "list\n";
+	//cout << "list\n";
 
-    for (int i = 0; i <= max; i++) {
-		cout << v.at(i);
-	}    
-    cout << '\n';
+    //for (int i = 0; i <= max; i++) {
+	//	cout << v.at(i);
+	//}
+    //cout << '\n';
 
-    cout << "value: " << value << "\n";
+    //cout << "value: " << value << "\n";
 
 	while (true){
 		if(max < min){
-		    cout << "1. m: " << m << "\n";
+		    //cout << "1. m: " << m << "\n";
 			return -1;
 	    }
 
-        cout << "min: " << min << " max: " << max;
+        //cout << "min: " << min << " max: " << max;
 		m = (min+max) / 2;
-        cout << " m: " << m << "\n";
+        //cout << " m: " << m << "\n";
 		
 		if(v.at(m) < value){
 			min = m + 1;
@@ -57,7 +57,7 @@ int binary_search(vector<int> v,int value){
 		    if(v.at(m) > value){
 			    max = m - 1;
 			}else{
-			    cout << "2. m: " << m << "\n";
+			    //cout << "2. m: " << m << "\n";
 			    return m;
 			}
 	    }
@@ -138,14 +138,14 @@ pair<vector<int>, vector<double>> closeness_times_both(vector<pair<int, pair<int
 				reachable_from_at[v] = list;
 			}
 			/* update closeness */
-			cout << "time size : " << time_closeness.size() << "\n";
+			//cout << "time size : " << time_closeness.size() << "\n";
 			int i = time_closeness.size() - 2;
 			start_time = time_closeness[i];
 			if(time_closeness.size() > 3){
 				while(start_time >= prev_ts){
-				    cout << "cum_closeness.at(" << i <<") before" << cum_closeness.at(i) << "\n";
+				    //cout << "cum_closeness.at(" << i <<") before" << cum_closeness.at(i) << "\n";
 					cum_closeness.at(i)+= 1.0 / (t - start_time);
-				    cout << "cum_closeness.at(" << i <<") after" << cum_closeness.at(i) << "\n";
+				    //cout << "cum_closeness.at(" << i <<") after" << cum_closeness.at(i) << "\n";
 					i = i - 1;
 					if(i < 0){
 						break;
@@ -155,7 +155,7 @@ pair<vector<int>, vector<double>> closeness_times_both(vector<pair<int, pair<int
 			}
 		 /* NEITHER NODES ARE X */
 		 }else{
-			cout << "neither nodes " << "\n";
+			//cout << "neither nodes " << "\n";
 			map<int,vector<pair<long,long > > >::iterator it,it2;
 			it = reachable_from_at.find(u);
 			it2 = reachable_from_at.find(v);
@@ -177,9 +177,9 @@ pair<vector<int>, vector<double>> closeness_times_both(vector<pair<int, pair<int
 						long start_time_value = time_closeness[start_time_index];
 						
 						while(start_time_value <= lu.back().first){
-				            cout << "1. cum_closeness[start_time_index=" << start_time_index << "] before" << cum_closeness[start_time_index] << "\n";
+				            //cout << "1. cum_closeness[start_time_index=" << start_time_index << "] before" << cum_closeness[start_time_index] << "\n";
 							cum_closeness[start_time_index]+= 1.0/(t - start_time_value);
-				            cout << "1. cum_closeness[start_time_index=" << start_time_index << "] after" << cum_closeness[start_time_index] << "\n";
+				            //cout << "1. cum_closeness[start_time_index=" << start_time_index << "] after" << cum_closeness[start_time_index] << "\n";
 							start_time_index++;
 							start_time_value = time_closeness[start_time_index];
 						}
@@ -208,9 +208,9 @@ pair<vector<int>, vector<double>> closeness_times_both(vector<pair<int, pair<int
 							int start_time_index = binary_search(time_closeness,it->second.back().first)+1;
 							long start_time_value = time_closeness[start_time_index];
 							while(start_time_value <= lv.back().first){
-	    			            cout << "2. cum_closeness[start_time_index=" << start_time_index <<"] before" << cum_closeness[start_time_index] << "\n";
+	    			            //cout << "2. cum_closeness[start_time_index=" << start_time_index <<"] before" << cum_closeness[start_time_index] << "\n";
 								cum_closeness[start_time_index]+= 1.0/(t - start_time_value);
-	    			            cout << "2. cum_closeness[start_time_index=" << start_time_index <<"] after" << cum_closeness[start_time_index] << "\n";
+	    			            //cout << "2. cum_closeness[start_time_index=" << start_time_index <<"] after" << cum_closeness[start_time_index] << "\n";
 								start_time_index++;
 								start_time_value = time_closeness[start_time_index];
 							}	
@@ -244,9 +244,9 @@ pair<vector<int>, vector<double>> closeness_times_both(vector<pair<int, pair<int
 						int start_time_index = 0;
 						long start_time_value = time_closeness[start_time_index];
 						while(start_time_value <= lu.back().first){
-    			            cout << "3. cum_closeness[start_time_index=" << start_time_index <<"] before" << cum_closeness[start_time_index] << "\n";
+    			            //cout << "3. cum_closeness[start_time_index=" << start_time_index <<"] before" << cum_closeness[start_time_index] << "\n";
     						cum_closeness[start_time_index]+= 1.0/(t - start_time_value);
-    			            cout << "3. cum_closeness[start_time_index=" << start_time_index <<"] after" << cum_closeness[start_time_index] << "\n";
+    			            //cout << "3. cum_closeness[start_time_index=" << start_time_index <<"] after" << cum_closeness[start_time_index] << "\n";
 							start_time_index++;
 							start_time_value = time_closeness[start_time_index];
 						}
@@ -268,9 +268,9 @@ pair<vector<int>, vector<double>> closeness_times_both(vector<pair<int, pair<int
 							int start_time_index = 0;
 							long start_time_value = time_closeness[start_time_index];
 							while(start_time_value <= lv.back().first){
-        			            cout << "4. cum_closeness[start_time_index=" << start_time_index <<"] before" << cum_closeness[start_time_index] << "\n";
+        			            //cout << "4. cum_closeness[start_time_index=" << start_time_index <<"] before" << cum_closeness[start_time_index] << "\n";
 								cum_closeness[start_time_index]+= 1.0/(t - start_time_value);
-        			            cout << "4. cum_closeness[start_time_index=" << start_time_index <<"] after" << cum_closeness[start_time_index] << "\n";
+        			            //cout << "4. cum_closeness[start_time_index=" << start_time_index <<"] after" << cum_closeness[start_time_index] << "\n";
 								start_time_index++;
 								start_time_value = time_closeness[start_time_index];
 							}
