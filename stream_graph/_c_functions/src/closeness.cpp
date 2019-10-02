@@ -25,10 +25,11 @@ using namespace std;
 
 
 int binary_search(vector<int> v,int value){
-	int min,m = 0;
 	int max =  v.size() - 1;
+	int min = 0;
+	int m = 0;
     cout << "min: " << min << " m: " << m;
-	cout << "max: " << m << "\n";
+	cout << " max: " << m << "\n";
 	
 	cout << "list\n";
 
@@ -47,7 +48,7 @@ int binary_search(vector<int> v,int value){
 
         cout << "min: " << min << " max: " << max;
 		m = (min+max) / 2;
-        cout << "m: " << m << "\n";
+        cout << " m: " << m << "\n";
 		
 		if(v.at(m) < value){
 			min = m + 1;
