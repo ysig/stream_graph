@@ -49,7 +49,6 @@ class NodeSetS(ABC.NodeSet):
         else:
             raise UnrecognizedNodeSet('right operand')
         return False
-        
 
     def __and__(self, ns):
         if isinstance(ns, ABC.NodeSet):
@@ -89,7 +88,6 @@ class NodeSetS(ABC.NodeSet):
         else:
             raise UnrecognizedNodeSet('right operand')
         return self.copy()
-
 
     def __iter__(self):
         if bool(self):

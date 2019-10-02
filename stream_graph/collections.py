@@ -111,7 +111,8 @@ class TimeGenerator(object):
         instants = b.instants and self.instants
         if b.instants and self.instants:
             assert isinstance(b, (TimeCollection, TimeGenerator))
-            def generate(a_iter, b, t_a,  measure, ignore_value, missing_value):
+
+            def generate(a_iter, b, t_a, measure, ignore_value, missing_value):
                 t_a, v_a = next(a_iter, (None, missing_value))
                 for t_b, v_b in b:
                     while t_a is not None and t_a < t_b:
@@ -256,7 +257,6 @@ class TimeCollection(TimeGenerator):
     def append(self, obj):
         self.it.append(obj)
 
-
     def __iter__(self):
         return iter(self.it)
 
@@ -388,8 +388,10 @@ class DataCube(object):
             if weight_column_name is None:
                 self.total_sum = float(self.data_[0])
                 self.cols = self.data_.columns
+
                 def weight(row):
                     return 1
+
                 def dump_row(row):
                     return tuple(row[i] for i in range(len(row)))
                 self.wcn = 'w'
@@ -398,10 +400,12 @@ class DataCube(object):
                 self.total_sum = float(self.data_[weight_column_name].sum())
                 self.wcn = self.weight_column_name
                 wcn_idx = self.data_.columns.get_loc(self.weight_column_name)
+
                 def weight(row):
                     return row[wcn_idx]
+
                 def dump_row(row):
-                    return tuple(row[i] for i in range(len(row)) if i!=wcn_idx)
+                    return tuple(row[i] for i in range(len(row)) if i != wcn_idx)
             self.weight = weight
             self.dump_row = dump_row
 
@@ -410,7 +414,7 @@ class DataCube(object):
             if column_sizes is None:
                 column_sizes = dict()
             elif isinstance(column_sizes, list):
-                column_size = dict(zip(column_sizes, self.cols[:min(len(column_sizes), len(self.cols))]))
+                column_sizes = dict(zip(column_sizes, self.cols[:min(len(column_sizes), len(self.cols))]))
             elif not isinstance(column_sizes, dict):
                 raise ValueError('Column-Sizes must be None, list or dict')
 
@@ -426,7 +430,7 @@ class DataCube(object):
                     self.cs_[len(c)][c] = column_sizes[c]
 
     def __bool__(self):
-        return hasattr(self, 'data_') and not data.empty
+        return hasattr(self, 'data_') and not self.data_.empty
 
     def __str__(self):
         if bool(self):
@@ -472,21 +476,21 @@ class DataCube(object):
                 warnings.simplefilter('error')
                 for row in self.data_.itertuples(index=False):
                     # Calculate expectation
-                    item = const*measures[labeled[0]][_map(row, labeled[0])]
+                    item = const * measures[labeled[0]][_map(row, labeled[0])]
                     for col in labeled[1:]:
-                        item *= measures[col][_map(row, col)]/self.total_sum
+                        item *= measures[col][_map(row, col)] / self.total_sum
 
                     # Log Fish
                     p, pexp = self.weight(row), item
                     if p < pexp:
                         # Xo < pois(Xexp)
                         try:
-                            val = poisson.logcdf(p, pexp) # P(pois(Xexp)<Xo), Xo = pt[v], Xexp = pexp[v]
+                            val = poisson.logcdf(p, pexp)  # P(pois(Xexp)<Xo), Xo = pt[v], Xexp = pexp[v]
                         except RuntimeWarning:
                             val = log_overflow
                     else:
                         try:
-                            val = -poisson.logsf(p, pexp) # P(pois(Xexp)>=Xo), Xo = pt[v], Xexp = pexp[v]
+                            val = -poisson.logsf(p, pexp)  # P(pois(Xexp)>=Xo), Xo = pt[v], Xexp = pexp[v]
                         except RuntimeWarning:
                             val = -log_overflow
 
@@ -501,9 +505,9 @@ class DataCube(object):
             const, measures, labeled = self._measure(op_id)
             out = list()
             for row in self.data_.itertuples(index=False):
-                item = const*measures[labeled[0]][_map(row, labeled[0])]
+                item = const * measures[labeled[0]][_map(row, labeled[0])]
                 for col in labeled[1:]:
-                    item *= measures[col][_map(row, col)]/self.total_sum
+                    item *= measures[col][_map(row, col)] / self.total_sum
                 out.append(self.dump_row(row) + (item,))
 
             return self._weighted_output(out)
@@ -517,7 +521,7 @@ class DataCube(object):
             for row in self.data_.itertuples(index=False):
                 item = const
                 for col in labeled:
-                    item *= measures[col][_map(row, col)]/self.total_sum
+                    item *= measures[col][_map(row, col)] / self.total_sum
                 out.append(self.dump_row(row) + (item,))
 
             return self._weighted_output(out)
@@ -527,7 +531,7 @@ class DataCube(object):
     def _measure(self, op_id):
         ret = _validator(op_id, self.cols, self.data_.columns)
         if ret is None:
-            return data_cube(self.data_.copy(), columns=self.columns, weight_column_name=self.weight_column_name)
+            return DataCube(self.data_.copy(), columns=self.columns, weight_column_name=self.weight_column_name)
 
         labeled, constants = ret
 
@@ -558,7 +562,8 @@ class DataCube(object):
     def _weighted_output(self, out, column_names=None):
         if column_names is None:
             column_names = self.cols
-        return data_cube(out, columns=column_names+[self.wcn], weight_column_name=self.wcn)
+        return DataCube(out, columns=column_names + [self.wcn], weight_column_name=self.wcn)
+
 
 def _validator(op_id, columns, columns_raw):
     out = list()
@@ -587,13 +592,13 @@ def instantize_discrete(it, ignore_value):
     for t, v in it:
         if t_head is None:
             t_head = [t, v, t]
-        elif t_head[0] == t-1 and v == t_prev[1]:
+        elif t_head[0] == t - 1 and v == t_head[1]:
             t_head[2] = t
         else:
             yield (t_head[0], t_head[1])
             yield (t_head[2] + 1, ignore_value)
-            t_head = [t, v, t+1]
-    if t_prev[0] is not None:
+            t_head = [t, v, t + 1]
+    if t_head is not None:
         yield (t_head[0], t_head[1])
         yield (t_head[2] + 1, ignore_value)
 

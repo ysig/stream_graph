@@ -21,7 +21,7 @@ def events_not_sorted(a, b, reference=False, weights=False):
             return chain(make_weights(a), make_weights(b))
     else:
         if reference:
-            return (ev for i, df in enumerate([a, b]) for it in df.itertuples(name=None, index=False) for ev in [(bool(1-i), it[-2], True) + it[:-2], (bool(1-i), it[-1], False) + it[:-2]])
+            return (ev for i, df in enumerate([a, b]) for it in df.itertuples(name=None, index=False) for ev in [(bool(1 - i), it[-2], True) + it[:-2], (bool(1 - i), it[-1], False) + it[:-2]])
         else:
             return (ev for it in chain(*[df.itertuples(name=None, index=False) for df in (a, b)]) for ev in [(it[-2], True) + it[:-2], (it[-1], False) + it[:-2]])
 

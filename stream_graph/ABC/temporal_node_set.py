@@ -206,7 +206,6 @@ class TemporalNodeSet(ABC):
         """
         pass
 
-
     @abc.abstractmethod
     def common_time_pair(self, l=None):
         """Returns the common_time between a pair of nodes.
@@ -273,7 +272,7 @@ class TemporalNodeSet(ABC):
             If None returns an iterator of tuples containing a timestamp and an Int.
 
         """
-        if t is None: # Wrong
+        if t is None:
             from stream_graph.collections import TimeCollection
             time_nodes = self.nodes_at()
             return TimeCollection([(ts, ns.size) for (ts, ns) in time_nodes], time_nodes.instants)

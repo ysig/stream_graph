@@ -7,7 +7,6 @@ import numpy as np
 
 from .dataframes import InstantaneousDF
 from .multi_df_utils import init_interval_df, load_interval_df
-from .dataframes.algorithms.utils.misc import noner
 from stream_graph import ABC
 from datetime import timedelta
 from collections import Iterable
@@ -80,16 +79,6 @@ def t_in(ts, t, L, R):
     return False
 
 
-def nsr_disjoint_union(nodes, min_time, max_time, ba, bb):
-    return TemporalNodeSetDF().set_df(IntervalDF(iter((n, mn, mx)
-                                                 for n in nodes
-                                                 for mn, mx
-                                                 in (ba, bb)),
-                                             columns=["u", "ts", "tf"]),
-                                 min_time=min_time,
-                                 max_time=max_time)
-
-
 def make_discrete_bins(bins, bin_size, time_min, time_max):
     if bins is None:
         assert isinstance(bin_size, (int, timedelta))
@@ -97,7 +86,7 @@ def make_discrete_bins(bins, bin_size, time_min, time_max):
             bin_size = bin_size.total_seconds()
 
         # Make bins
-        bins = np.arange(time_min, time_max, step).tolist()
+        bins = np.arange(time_min, time_max, bin_size).tolist()
 
         if time_max != bins[-1]:
             bins.append(time_max)
@@ -110,9 +99,9 @@ def make_discrete_bins(bins, bin_size, time_min, time_max):
     return bins
 
 
-
 def make_algebra(operation_functions):
     operation_functions = (dict() if operation_functions is None else operation_functions)
+
     def two_choice(d, a, b):
         o = operation_functions.get(b, None)
         d[a] = (operation_functions.get(a, None) if o is None else o)
@@ -122,6 +111,7 @@ def make_algebra(operation_functions):
     two_choice(algebra, 'd', 'difference')
     two_choice(algebra, 's', 'issuperset')
     return algebra
+
 
 def time_discretizer_df(df, bins, bin_size, columns=['ts'], write_protected=True):
     assert isinstance(df, pd.DataFrame)
@@ -141,4 +131,4 @@ def time_discretizer_df(df, bins, bin_size, columns=['ts'], write_protected=True
 
     for c in columns:
         df[c] = pd.cut(df[c], bins, labels=list(range(len(bins) - 1)), include_lowest=True)
-    return df.groupby(df.columns.tolist()).size().reset_index().rename(columns={0:'w'}), bins
+    return df.groupby(df.columns.tolist()).size().reset_index().rename(columns={0: 'w'}), bins

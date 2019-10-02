@@ -15,7 +15,7 @@ class CIntervalWDF(pd.DataFrame):
     def __init__(self, *args, **kargs):
         disjoint_intervals = kargs.pop('disjoint_intervals', None)
         merge_function = kargs.pop('merge_function', None)
-        assert merge_function is None or callable(merge_function)   
+        assert merge_function is None or callable(merge_function)
         super(CIntervalWDF, self).__init__(*args, **kargs)
         assert 'ts' in self.columns
         if 'tf' not in self.columns:
@@ -32,11 +32,11 @@ class CIntervalWDF(pd.DataFrame):
             from .continuous_interval_df import CIntervalDF
             if len(args) and isinstance(args[0], CIntervalWDF):
                 self.merge_function = args[0].merge_function
-                if not disjoint_intervals is False:
+                if disjoint_intervals is not False:
                     self.merge(inplace=True)
             elif isinstance(kargs.get('data', None), CIntervalWDF):
                 self.merge_function = kargs['data'].merge_function
-                if not disjoint_intervals is False:
+                if disjoint_intervals is not False:
                     self.merge(inplace=True)
             elif len(args) and (isinstance(args[0], CIntervalDF) or isinstance(kargs.get('data', None), CIntervalDF)):
                 self.merge(inplace=True)
@@ -73,11 +73,6 @@ class CIntervalWDF(pd.DataFrame):
             cols.append('w')
         return super(CIntervalWDF, self).reindex(columns=cols).itertuples(index=index, name=name)
 
-    def sort_values(self, by, axis=0, ascending=True, inplace=False, kind='quicksort', na_position='last'):
-        df = super(CIntervalDF, self).sort_values(by, axis, ascending, inplace, kind, na_position)
-        if not inplace:
-            return self.__class__(out)
-
     def __getitem__(self, index):
         out = super(CIntervalWDF, self).__getitem__(index)
         if isinstance(out, pd.DataFrame):
@@ -88,11 +83,11 @@ class CIntervalWDF(pd.DataFrame):
                 else:
                     from stream_graph.base.dataframe import CIntervalDF
                     out = CIntervalDF(out, disjoint_intervals=False)
-            #else 'ts' in out.columns:
-            #    if 'w' in out.columns:
-            #        out = InstantaneousWDF(out)
-            #    else:
-            #        out = InstantaneousDF(out)
+            # else 'ts' in out.columns:
+            #     if 'w' in out.columns:
+            #         out = InstantaneousWDF(out)
+            #     else:
+            #         out = InstantaneousDF(out)
 
         return out
 
@@ -110,12 +105,25 @@ class CIntervalWDF(pd.DataFrame):
 
     @property
     def events(self):
-        # Fix that
-        return _events_not_sorted(self, True).sort_values(by=['t', 'start'])
+        columns = sorted(list(set(self.columns) - {'ts', 'tf', 's', 'f'}))
+        dfp = self[columns + ['ts', 'w']].rename(columns={"ts": "t"})
+        dfp['start'] = True
+        dfpv = self[columns + ['tf', 'w']].rename(columns={"tf": "t"})
+        dfpv['start'] = False
+        return dfp.append(dfpv, ignore_index=True, sort=False).sort_values(by=['t', 'start'], ascending=[True, False])
+
+    @property
+    def events_bounds(self):
+        columns = sorted(list(set(self.columns) - {'ts', 'tf', 's', 'f'}))
+        dfp = self[columns + ['ts', 's', 'w']].rename(columns={"ts": "t", 's': 'closed'})
+        dfp['start'] = True
+        dfpv = self[columns + ['tf', 'f', 'w']].rename(columns={"tf": "t", 'f': 'closed'})
+        dfpv['start'] = False
+        return dfp.append(dfpv, ignore_index=True, sort=False).sort_values(by=['t', 'start'])
 
     def measure_time(self, weights=False):
         if weights:
-            return (self.tf - self.ts)*self.w.sum()
+            return (self.tf - self.ts) * self.w.sum()
         else:
             return (self.tf - self.ts).sum()
 

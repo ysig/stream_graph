@@ -12,7 +12,7 @@ from .algorithms.weighted_instantaneous import difference_by_key as difference_b
 from .algorithms.weighted_instantaneous import difference_on_key as difference_on_key_
 from .algorithms.weighted_instantaneous import issuper_by_key, issuper_on_key
 from .algorithms.weighted_instantaneous import nonempty_intersection_by_key, nonempty_intersection_on_key
-from .algorithms.utils.misc import hinge_loss, noner, first, min_sumer
+from .algorithms.utils.misc import hinge_loss, noner, min_sumer
 
 
 class InstantaneousWDF(pd.DataFrame):

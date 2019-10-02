@@ -2,28 +2,29 @@ from collections import deque, defaultdict
 from stream_graph.collections import TimeCollection
 from stream_graph.exceptions import UnrecognizedDirection
 
+
 def ego(e, ne, l, both, detailed, discrete):
     # print >> sys.stderr, "Running node : " + str(e)
     u, v, t, index, times = 0, 0, 0, 0, list()
 
     ce, info = dict(), dict()
     for i in ne:
-        info[(e,i)] = -1
-        for x in ne-{i}:
-            info[(i,x)] = -1
-        info[(i,e)] = -1
+        info[(e, i)] = -1
+        for x in ne - {i}:
+            info[(i, x)] = -1
+        info[(i, e)] = -1
 
     index = 0
-    time = l[index][2] #starting time.
+    time = l[index][2]  # starting time.
     ne_x, lines, paths = ne | {e}, dict(), dict()
 
     if both:
         def add_lines(u, v, t):
-            lines[(u,v)] = t
-            lines[(v,u)] = t
+            lines[(u, v)] = t
+            lines[(v, u)] = t
     else:
         def add_lines(u, v, t):
-            lines[(u,v)] = t
+            lines[(u, v)] = t
 
     if detailed:
         def take(times, prev, val):
@@ -41,23 +42,23 @@ def ego(e, ne, l, both, detailed, discrete):
                     prev[0] = val
 
     prev = [None]
-    while(index < len(l) -1):
+    while(index < len(l) - 1):
         # get all links of time stamp
-        while(index < len(l) -1):
-            u,v,t = l[index]
+        while(index < len(l) - 1):
+            u, v, t = l[index]
             add_lines(u, v, t)
             index += 1
             if(t != time):
                 break
 
         for u in ne:
-            for v in ne-{u}:
+            for v in ne - {u}:
                 # print u,v
-                ce[(u,v)] = 0.0
+                ce[(u, v)] = 0.0
                 Q = set()
-                if (u,v) not in lines:
+                if (u, v) not in lines:
                     # print u,v
-                    news = info[(u,v)]
+                    news = info[(u, v)]
                     for x in ne_x - {u, v}:
                         ux = info[(u, x)]
                         if (x, v) in lines:
@@ -71,20 +72,19 @@ def ego(e, ne, l, both, detailed, discrete):
                                 Q = {x}
                                 news = ux
 
-                    if (u,v) in paths:
-                        old_paths = paths[(u,v)]
+                    if (u, v) in paths:
+                        old_paths = paths[(u, v)]
                         if old_paths[0] == news:
-                            paths[(u, v)] = (news, paths[(u,v)][1] | Q)
+                            paths[(u, v)] = (news, paths[(u, v)][1] | Q)
                         elif old_paths[0] < news:
                             paths[(u, v)] = (news, Q)
                     else:
                         paths[(u, v)] = (news, Q)
 
                     if e in paths[(u, v)][1]:
-                        ce[(u, v)] = 1.0/len(paths[(u, v)][1])
+                        ce[(u, v)] = 1.0 / len(paths[(u, v)][1])
                 else:
                     paths[(u, v)] = (t, {u})
-
 
         val = sum(ce.values())
         take(times, prev, val)
@@ -97,45 +97,45 @@ def ego(e, ne, l, both, detailed, discrete):
 
 def ego_at(e, ne, l, at, both, detailed, discrete):
     # print >> sys.stderr, "Running node : " + str(e)
-    u, v, t, index, times = 0, 0, 0, 0, list()
+    u, v, t, index = 0, 0, 0, 0
 
     ce, info = dict(), dict()
     for i in ne:
-        info[(e,i)] = -1
-        for x in ne-{i}:
-            info[(i,x)] = -1
-        info[(i,e)] = -1
+        info[(e, i)] = -1
+        for x in ne - {i}:
+            info[(i, x)] = -1
+        info[(i, e)] = -1
 
     index = 0
-    time = l[index][2] #starting time.
+    time = l[index][2]  # starting time.
     ne_x, lines, paths = ne | {e}, dict(), dict()
 
     if both:
         def add_lines(u, v, t):
-            lines[(u,v)] = t
-            lines[(v,u)] = t
+            lines[(u, v)] = t
+            lines[(v, u)] = t
     else:
         def add_lines(u, v, t):
-            lines[(u,v)] = t
+            lines[(u, v)] = t
 
     prev = None
-    while(index < len(l) -1):
+    while(index < len(l) - 1):
         # get all links of time stamp
-        while(index < len(l) -1):
-            u,v,t = l[index]
+        while(index < len(l) - 1):
+            u, v, t = l[index]
             add_lines(u, v, t)
             index += 1
             if(t != time):
                 break
 
         for u in ne:
-            for v in ne-{u}:
+            for v in ne - {u}:
                 # print u,v
-                ce[(u,v)] = 0.0
+                ce[(u, v)] = 0.0
                 Q = set()
-                if (u,v) not in lines:
+                if (u, v) not in lines:
                     # print u,v
-                    news = info[(u,v)]
+                    news = info[(u, v)]
                     for x in ne_x - {u, v}:
                         ux = info[(u, x)]
                         if (x, v) in lines:
@@ -149,17 +149,17 @@ def ego_at(e, ne, l, at, both, detailed, discrete):
                                 Q = {x}
                                 news = ux
 
-                    if (u,v) in paths:
-                        old_paths = paths[(u,v)]
+                    if (u, v) in paths:
+                        old_paths = paths[(u, v)]
                         if old_paths[0] == news:
-                            paths[(u, v)] = (news, paths[(u,v)][1] | Q)
+                            paths[(u, v)] = (news, paths[(u, v)][1] | Q)
                         elif old_paths[0] < news:
                             paths[(u, v)] = (news, Q)
                     else:
                         paths[(u, v)] = (news, Q)
 
                     if e in paths[(u, v)][1]:
-                        ce[(u, v)] = 1.0/len(paths[(u, v)][1])
+                        ce[(u, v)] = 1.0 / len(paths[(u, v)][1])
                 else:
                     paths[(u, v)] = (t, {u})
 
@@ -268,8 +268,8 @@ def getTd(can, tb, te, as_link, times):
             if link in times:
                 # Find min time x > te s.t. (b,x,u,v) exists in stream
                 tlist = times[link]
-                first, last = 0, len(tlist)-1
-                middle = int((first+last)/2.0)
+                first, last = 0, len(tlist) - 1
+                middle = int((first + last) / 2.0)
 
                 while first <= last:
                     if tlist[middle][0] > tb:
@@ -302,11 +302,11 @@ def isClique(cnds, node, tb, te, as_link, times):
         else:
             link = as_link(i, node)
             # Check there is a link (b, e, i, node) s.t. b <= tb and e >= te, otherwise not a clique.
-            #tlist is a list of non-overlapping couples (b,e)
+            # tlist is a list of non-overlapping couples (b,e)
             tlist = times[link]
             # start binary search for b in tlist
-            first, last = 0, len(tlist)-1
-            middle = (first+last)//2
+            first, last = 0, len(tlist) - 1
+            middle = (first + last) // 2
             while first <= last:
                 if tlist[middle][0] > tb:
                     last = middle - 1

@@ -1,2 +1,2 @@
 """Dataframe Based Implementations __init__."""
-from .visualizer import Visualizer
+from .visualizer import Visualizer  # noqa

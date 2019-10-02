@@ -19,7 +19,7 @@ from .temporal_node_set_b import TemporalNodeSetB
 from .temporal_link_set_df import TemporalLinkSetDF
 from .itime_set_s import ITimeSetS
 from .time_set_df import TimeSetDF
-from .multi_df_utils import init_instantaneous_df, load_instantaneous_df, class_interval_df, weighted_iter
+from .multi_df_utils import load_instantaneous_df, class_interval_df, weighted_iter
 from stream_graph.collections import NodeCollection
 from stream_graph.collections import LinkCollection
 from stream_graph.collections import TimeGenerator
@@ -29,6 +29,7 @@ from stream_graph.exceptions import UnrecognizedTemporalNodeSet
 from stream_graph.exceptions import UnrecognizedNodeSet
 from stream_graph.exceptions import UnrecognizedTimeSet
 from stream_graph.exceptions import UnrecognizedDirection
+
 
 class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
     """DataFrame implementation of ABC.ITemporalLinkSet.
@@ -64,7 +65,7 @@ class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
             self.weighted_ = df.weighted
             if self.weighted_:
                 # Extract the weight algebra (dictionary of functions)
-                algebra = df.algebra
+                self.algebra = df.algebra
             if bool(df):
                 self.df_ = df.df
         else:
@@ -88,7 +89,6 @@ class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
                     self.algebra = make_algebra(operation_functions)
             else:
                 self.discrete_ = True if discrete is None else discrete
-
 
     def __bool__(self):
         return hasattr(self, 'df_') and not self.df_.empty
@@ -348,7 +348,7 @@ class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
                     if prev is None:
                         prev, cache = ts, defaultdict(set)
                     elif ts != prev:
-                        # For each node 
+                        # For each node
                         for z, s in iteritems(cache):
                             if z in out:
                                 # Or append it if it exists
@@ -426,7 +426,6 @@ class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
                 raise UnrecognizedDirection()
             return ITemporalNodeSetDF(df, discrete=self.discrete).number_of_interactions
 
-
     def _degree_of_discrete_weighted(self, u, direction):
         if u is None:
             out = Counter()
@@ -442,7 +441,7 @@ class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
                     out[v] += w
             else:
                 raise UnrecognizedDirection()
-            return NodeCollection(Counter(iter_))
+            return NodeCollection(Counter(out))
         else:
             if direction == 'out':
                 df = self.df[self.df.u == u].drop(columns=['u'], merge=False).rename(columns={'v': 'u'})
@@ -454,7 +453,6 @@ class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
             else:
                 raise UnrecognizedDirection()
             return df.w.sum()
-
 
     def _degree_at_unweighted(self, u=None, t=None, direction='out'):
         if not bool(self):
@@ -482,7 +480,7 @@ class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
 
                 prev = None
                 for u, v, ts in self.sort_df('ts').itertuples():
-                    # Collect neighbors at each time-stamp 
+                    # Collect neighbors at each time-stamp
                     if prev is None:
                         cache = defaultdict(set)
                         prev = ts
@@ -616,14 +614,13 @@ class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
                 times[key(u, v)].add(ts)
             return LinkCollection({l: ITimeSetS(ts, discrete=self.discrete) for l, ts in iteritems(times)})
         else:
-            di = True
             u, v = l
             if direction == 'out':
                 df = self.df[(self.df.u == u) & (self.df.v == v)]
             elif direction == 'in':
                 df = self.df[(self.df.v == u) & (self.df.u == v)]
             elif direction == 'both':
-                df, di = self.df[self.df.u.isin({u, v}) & self.df.v.isin({u, v})], False
+                df = self.df[self.df.u.isin({u, v}) & self.df.v.isin({u, v})]
             else:
                 raise UnrecognizedDirection()
             return ITimeSetS(df['ts'].values.flat, discrete=self.discrete)
@@ -658,7 +655,7 @@ class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
                 df = self.df[self.df.u == u].drop(columns=['u'], merge=False).rename(columns={'v': 'u'})
             elif direction == 'in':
                 df = self.df[self.df.v == u].drop(columns=['v'], merge=False)
-            elif direction=='both':
+            elif direction == 'both':
                 df = self.df[self.df.u == u].drop(columns=['u'], merge=False).rename(columns={'v': 'u'})
                 df = df.append(self.df[self.df.v == u].drop(columns=['v'], merge=False), ignore_index=True, merge=True)
             else:
@@ -900,7 +897,7 @@ class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
             else:
                 min_time, max_time = df.ts.min(), df.tf.max()
             # apply the delta
-            df['ts'] -= delta/2.0
+            df['ts'] -= delta / 2.0
             df['tf'] = df['ts'] + delta
             # and clip to the start and finish of time
             df['ts'].clip(lower=min_time, inplace=True)
@@ -913,7 +910,7 @@ class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
         else:
             df['s'] = True
             df['f'] = True
-      
+
         return TemporalLinkSetDF(df, disjoint_intervals=(di and not self.discrete), discrete=self.discrete, weighted=False).get_maximal_cliques(direction=direction)
 
     def ego_betweeness(self, u=None, t=None, direction='both', detailed=False):
@@ -931,7 +928,6 @@ class ITemporalLinkSetDF(ABC.ITemporalLinkSet):
             return functions.ego(u, self.linkset.neighbors_of(u, direction=direction).nodes_, lines, both, detailed, self.discrete)
         else:
             return functions.ego_at(u, self.linkset.neighbors_of(u, direction=direction).nodes_, lines, t, both, detailed, self.discrete)
-
 
     def closeness(self, u=None, t=None, direction='both', detailed=False):
         from stream_graph._c_functions import closeness_c

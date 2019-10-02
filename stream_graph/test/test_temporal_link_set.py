@@ -1,10 +1,7 @@
 """Test file for time set."""
-from itertools import product
-from pandas import DataFrame
 from stream_graph import NodeSetS
 from stream_graph import ITimeSetS
 from stream_graph import TimeSetDF
-from stream_graph import TemporalNodeSetB
 from stream_graph import TemporalNodeSetDF
 from stream_graph import ITemporalNodeSetDF
 from stream_graph import TemporalLinkSetDF
@@ -35,7 +32,7 @@ def test_temporal_link_set_df():
             assert_equal(set(lsa), {(1, 2, 2, 5, 'both'), (2, 1, 6, 8, 'both'), (2, 1, 1, 3, 'both')})
 
         assert_equal(lsa.m, 2)
-        assert_equal(lsa.size, 7 + 3*int(d))
+        assert_equal(lsa.size, 7 + 3 * int(d))
 
         assert (1, 2, None) in lsa
         assert (1, None, 3.4) in lsa
@@ -44,11 +41,11 @@ def test_temporal_link_set_df():
         assert (1, 2, (3.4, 4)) in lsa
 
         assert_equal(lsa.duration_of((1, 2)), 3 + int(d))
-        assert_equal(lsa.duration_of((2, 1)), 4 + 2*int(d))
+        assert_equal(lsa.duration_of((2, 1)), 4 + 2 * int(d))
         assert_equal(lsa.duration_of((2, 1)), lsa.duration_of((1, 2), direction='in'))
-        assert_equal(lsa.duration_of((1, 2), direction='both'), 6 + 2*int(d))
+        assert_equal(lsa.duration_of((1, 2), direction='both'), 6 + 2 * int(d))
         assert_equal(lsa.duration_of((5, 1)), 0)
-        assert_equal(dict(lsa.duration_of()), {(1, 2): 3.0 + int(d), (2, 1): 4.0 + 2*int(d)})
+        assert_equal(dict(lsa.duration_of()), {(1, 2): 3.0 + int(d), (2, 1): 4.0 + 2 * int(d)})
 
         assert_equal(set(lsa.links_at(1)), {(2, 1)})
         assert_equal(set(lsa.links_at((2, 2.5))), {(1, 2), (2, 1)})
@@ -90,21 +87,21 @@ def test_temporal_link_set_df():
             assert_equal(set((lsb | lsa)), {(2, 1, 1, 8), (1, 2, 1, 7)})
         else:
             assert_equal(set((lsb | lsa)), {(2, 1, 1, 3, 'both'), (2, 1, 6, 8, 'both'), (1, 2, 1, 5, 'both'), (1, 2, 6, 7, 'both')})
-        assert_equal((lsb | lsa).size, 9 + 6*int(d))
+        assert_equal((lsb | lsa).size, 9 + 6 * int(d))
         assert_equal(set(lsb | lsa), set(lsa | lsb))
 
         if d:
             assert_equal(set(lsb - lsa), {(2, 1, 4, 5), (1, 2, 1, 1), (1, 2, 6, 7)})
         else:
             assert_equal(set(lsb - lsa), {(1, 2, 1, 2, 'left'), (1, 2, 6, 7, 'both')})
-        assert_equal((lsb - lsa).size, 2 + 3*int(d))
+        assert_equal((lsb - lsa).size, 2 + 3 * int(d))
         assert isinstance(lsb - lsa, TemporalLinkSetDF)
         if d:
             assert_equal(set(lsa - lsb), {(2, 1, 1, 2), (2, 1, 6, 8), (1, 2, 5, 5)})
         else:
             assert_equal(set(lsa - lsb), {(1, 2, 4.0, 5.0, 'right'), (2, 1, 1.0, 2.5, 'left'), (2, 1, 6.0, 8.0, 'both'), (2, 1, 2.6, 3.0, 'right')})
         assert isinstance(lsa - lsb, TemporalLinkSetDF)
-        assert_equal((lsa - lsb).size, 4.9 + 1.1*int(d))
+        assert_equal((lsa - lsb).size, 4.9 + 1.1 * int(d))
 
         assert lsa.issuperset(lsa & lsb)
         assert lsb.issuperset(lsa & lsb)
@@ -174,7 +171,6 @@ def test_temporal_link_set_df():
         nsma = TemporalNodeSetDF([(1, 1, 4)], discrete=d)
         assert_equal(set(lsa.temporal_neighborhood(nsma, direction='out')), {(2, 2, 4)} if d else {(2, 2, 4, 'both')})
 
-
         try:
             lsa | 1
         except UnrecognizedTemporalLinkSet:
@@ -200,7 +196,6 @@ def test_temporal_link_set_df():
                       (frozenset({1, 3}), (6, 12)),
                       (frozenset({1, 2}), (2, 10))})
 
-
         # weighted
         df = [(1, 2, 2, 3, 1), (1, 2, 3, 5, 1), (2, 1, 6, 8, 1), (2, 1, 1, 3, 1)]
         lsa = TemporalLinkSetDF(df, disjoint_intervals=False, weighted=True, discrete=d)
@@ -212,8 +207,7 @@ def test_temporal_link_set_df():
             assert_equal(set(lsa), {(2, 1, 6, 8, 'left', 1), (2, 1, 1, 3, 'left', 1), (1, 2, 2, 5, 'left', 1)})
 
         assert_equal(lsa.m, 2)
-        assert_equal(lsa.size, 7 + 3*int(d))
-
+        assert_equal(lsa.size, 7 + 3 * int(d))
 
         assert (1, 2, None) in lsa
         assert (5, None, None) not in lsa
@@ -227,11 +221,11 @@ def test_temporal_link_set_df():
             assert (1, 2, (3.4, 4)) in lsa
 
         assert_equal(lsa.duration_of((1, 2)), 3 + int(d))
-        assert_equal(lsa.duration_of((2, 1)), 4 + 2*int(d))
+        assert_equal(lsa.duration_of((2, 1)), 4 + 2 * int(d))
         assert_equal(lsa.duration_of((2, 1)), lsa.duration_of((1, 2), direction='in'))
-        assert_equal(lsa.duration_of((1, 2), direction='both'), 6 + 2*int(d))
+        assert_equal(lsa.duration_of((1, 2), direction='both'), 6 + 2 * int(d))
         assert_equal(lsa.duration_of((5, 1)), 0)
-        assert_equal(dict(lsa.duration_of()), {(1, 2): 3 + int(d), (2, 1): 4.0 + 2*int(d)})
+        assert_equal(dict(lsa.duration_of()), {(1, 2): 3 + int(d), (2, 1): 4.0 + 2 * int(d)})
 
         assert_equal(set(lsa.links_at(1)), {(2, 1, 1)})
         if d:
@@ -268,14 +262,14 @@ def test_temporal_link_set_df():
             assert_equal(set(lsa & lsb), {(2, 1, 2, 3, 1), (1, 2, 2, 4, 1)})
         else:
             assert_equal(set(lsa & lsb), {(2, 1, 2.5, 2.6, 'left', 1), (1, 2, 2.0, 4.0, 'left', 1)})
-        assert_equal((lsa & lsb).size, 2.1 + 2.9*int(d))
+        assert_equal((lsa & lsb).size, 2.1 + 2.9 * int(d))
 
         assert isinstance(lsa | lsb, TemporalLinkSetDF)
         if d:
             assert_equal(set((lsb | lsa)), {(2, 1, 1, 1, 1), (1, 2, 2, 2, 2), (1, 2, 5, 7, 1), (2, 1, 2, 3, 2), (1, 2, 3, 4, 3), (2, 1, 4, 5, 1), (1, 2, 1, 1, 1), (2, 1, 6, 8, 2)})
         else:
             assert_equal(set((lsb | lsa)), {(1, 2, 4.0, 5.0, 'left', 1), (2, 1, 2.6, 3.0, 'left', 1), (2, 1, 6.0, 8.0, 'left', 1), (1, 2, 2.0, 4.0, 'left', 2), (2, 1, 2.5, 2.6, 'left', 2), (1, 2, 6.0, 7.0, 'left', 1), (1, 2, 1.0, 2.0, 'left', 1), (2, 1, 1.0, 2.5, 'left', 1)})
-        assert_equal((lsb | lsa).size, 6*int(d) + 9)
+        assert_equal((lsb | lsa).size, 6 * int(d) + 9)
         assert_equal(set(lsb | lsa), set(lsa | lsb))
 
         if d:
@@ -289,7 +283,7 @@ def test_temporal_link_set_df():
         else:
             assert_equal(set(lsa - lsb), {(1, 2, 4.0, 5.0, 'left', 1.0), (2, 1, 1.0, 2.5, 'left', 1.0), (2, 1, 6.0, 8.0, 'left', 1.0), (2, 1, 2.6, 3.0, 'left', 1.0)})
         assert isinstance(lsa - lsb, TemporalLinkSetDF)
-        assert_equal((lsa - lsb).size, 4.9 + 1.1*int(d))
+        assert_equal((lsa - lsb).size, 4.9 + 1.1 * int(d))
 
         assert lsa.issuperset(lsa & lsb)
         assert lsb.issuperset(lsa & lsb)
@@ -313,7 +307,7 @@ def test_temporal_link_set_df():
         if d:
             assert_equal([(t, set(ns)) for t, ns in na], [(2, {2}), (6, set())])
         else:
-            assert_equal([(t, set(ns)) for t, ns in na], [((2, True), {2}), ((5,  True), set())])
+            assert_equal([(t, set(ns)) for t, ns in na], [((2, True), {2}), ((5, True), set())])
         assert not tg.instants
         assert not len([a for a in na])
 
@@ -408,7 +402,7 @@ def test_itemporal_link_set_df():
         assert_equal(set(lsa), {(1, 2, 2), (1, 2, 3), (2, 1, 6), (2, 1, 3)})
 
         assert_equal(lsa.m, 2)
-        assert_equal(lsa.size, 4*int(d))
+        assert_equal(lsa.size, 4 * int(d))
 
         assert (1, 2, None) in lsa
         assert (1, None, 2) in lsa
@@ -416,9 +410,9 @@ def test_itemporal_link_set_df():
         assert (1, 3, 1) not in lsa
         assert (1, 2, 2) in lsa
 
-        assert_equal(lsa.duration_of((1, 2)), 2*int(d))
+        assert_equal(lsa.duration_of((1, 2)), 2 * int(d))
         assert_equal(lsa.duration_of((5, 1)), 0)
-        assert_equal(dict(lsa.duration_of()), {(1, 2): 2*int(d), (2, 1): 2*int(d)})
+        assert_equal(dict(lsa.duration_of()), {(1, 2): 2 * int(d), (2, 1): 2 * int(d)})
 
         assert_equal(set(lsa.links_at(6)), {(2, 1)})
         assert_equal(set(lsa.links_at(3)), {(1, 2), (2, 1)})
@@ -542,7 +536,7 @@ def test_itemporal_link_set_df():
         assert_equal(set(lsa), {(1, 2, 2, 1), (1, 2, 3, 1), (2, 1, 6, 1), (2, 1, 3, 1)})
 
         assert_equal(lsa.m, 2)
-        assert_equal(lsa.size, 4*int(d))
+        assert_equal(lsa.size, 4 * int(d))
 
         assert (1, 2, None) in lsa
         assert (1, None, 2) in lsa
@@ -550,9 +544,9 @@ def test_itemporal_link_set_df():
         assert (1, 3, 1) not in lsa
         assert (1, 2, 2) in lsa
 
-        assert_equal(lsa.duration_of((1, 2)), 2*int(d))
+        assert_equal(lsa.duration_of((1, 2)), 2 * int(d))
         assert_equal(lsa.duration_of((5, 1)), 0)
-        assert_equal(dict(lsa.duration_of()), {(1, 2): 2*int(d), (2, 1): 2*int(d)})
+        assert_equal(dict(lsa.duration_of()), {(1, 2): 2 * int(d), (2, 1): 2 * int(d)})
 
         assert_equal(set(lsa.links_at(6)), {(2, 1, 1.0)})
         assert_equal(set(lsa.links_at(3)), {(1, 2, 1.0), (2, 1, 1.0)})
@@ -661,7 +655,6 @@ def test_itemporal_link_set_df():
                               (frozenset([1, 2]), (2.5, 5.5)), (frozenset([1, 2, 3]), (4.5, 5.5)),
                               (frozenset([2, 4]), (2.0, 4.5)), (frozenset([1, 3]), (4.5, 7.5)),
                               (frozenset([2, 3]), (2.5, 5.5)), (frozenset([3, 4]), (2.0, 3.5))]))
-
 
         df = [(1, 2, 2, 1), (1, 2, 3, 1), (2, 3, 2, 1), (1, 3, 4, 1), (3, 4, 3, 1), (2, 4, 5, 1)]
         if d:

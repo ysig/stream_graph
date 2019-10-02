@@ -85,6 +85,7 @@ def print_order_reference(iter_):
 def key_order_reference(key):
     return print_order_reference(events_sorted(LIST, key=key, reference=True))
 
+
 # NI - NR
 def order_0_n1(k):
     return (k[0], not k[1])
@@ -223,10 +224,10 @@ def rb_order_nonempty_intersection(k):
     # Map for now.
     # 1)a < 1)b < [1a < 1]b < [1b < 1]a < (1a < (1b < 2)a < 2)b < [2a < 2]b < [2b < 2]a < (2a < (2b
     crs_order_map = {i: t for t, i in enumerate(
-            [(True, False, False), (False, False, False),
-             (True, True, True), (False, False, True),
-             (False, True, True), (True, False, True),
-             (True, True, False), (False, True, False)])}
+        [(True, False, False), (False, False, False),
+         (True, True, True), (False, False, True),
+         (False, True, True), (True, False, True),
+         (True, True, False), (False, True, False)])}
     # [1b < 1)b < 1)a < 1]a < [1a < (1b < (1a < 1]b
     # crs_order_map = {i: t for t, i in enumerate(
     #     [(False, True, True), (False, False, False),

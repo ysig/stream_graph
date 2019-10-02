@@ -26,7 +26,7 @@ def events_ns(a, b, reference=False, weights=False):
             return chain(make_weights(a), make_weights(b))
     else:
         if reference:
-            return (ev for i, df in enumerate([a, b]) for it in df.itertuples(bounds=True) for ev in [(bool(1-i), it[-4], it[-2], True) + it[:-4], (bool(1-i), it[-3], it[-1], False) + it[:-4]])
+            return (ev for i, df in enumerate([a, b]) for it in df.itertuples(bounds=True) for ev in [(bool(1 - i), it[-4], it[-2], True) + it[:-4], (bool(1 - i), it[-3], it[-1], False) + it[:-4]])
         else:
             return (ev for it in chain(*[df.itertuples(bounds=True) for df in (a, b)]) for ev in [(it[-4], it[-2], True) + it[:-4], (it[-3], it[-1], False) + it[:-4]])
 

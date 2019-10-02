@@ -41,11 +41,11 @@ def test_time_set_df():
         assert_equal(list(tsb - tsa), sorted([(4, 4), (11, 11)] if d else [(3, 4, 'right'), (10, 11, 'right')]))
         assert_equal((tsb - tsa).size, 2)
 
-        #assert tsa.issuperset(tsa & tsb)
-        #assert tsb.issuperset(tsa & tsb)
-        #assert (tsa | tsb).issuperset(tsa)
-        #ssert (tsa | tsb).issuperset(tsb)
-        #assert tsa.issuperset(tsa - tsb)
+        # assert tsa.issuperset(tsa & tsb)
+        # assert tsb.issuperset(tsa & tsb)
+        # assert (tsa | tsb).issuperset(tsa)
+        # assert (tsa | tsb).issuperset(tsb)
+        # assert tsa.issuperset(tsa - tsb)
 
         try:
             tsa | 1

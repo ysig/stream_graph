@@ -228,7 +228,7 @@ class InstantaneousDF(pd.DataFrame):
 
     def intersection_size(self, b=None):
         ca, cb = Counter(self.ts), Counter(b.ts)
-        return sum(v*cb[k] for k, v in iteritems(ca))
+        return sum(v * cb[k] for k, v in iteritems(ca))
 
     @property
     def limits(self):

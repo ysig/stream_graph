@@ -5,7 +5,6 @@ from .utils.misc import counter_to_iter, get_key_set
 from .utils.bounds import valid_interval, events, events_uni
 from .utils.orderings import b_order_0_1n2_2 as merge_order
 from .utils.orderings import rb_order_1_3_0n3 as difference_order
-from .utils.orderings import rb_order_1_n2_2e3_0e2 as cs_order
 from .utils.orderings import rb_order_1_3_2n3_0n3 as issuper_order
 from .utils.orderings import rb_order_1_3_2n3 as intersection_order
 from .utils.orderings import rb_order_nonempty_intersection as nei_order
@@ -18,8 +17,8 @@ def add_prev(key, cache, out, value, id=-1):
     if prev is not None:
         ts_p, tf_p, bs_p, bf_p, w_p = out[prev][-5:]
         if value[0] == tf_p and value[2] != bf_p and w_p == value[4]:
-             out[prev] = key + (ts_p, value[1], bs_p, value[3], w_p)
-             return
+            out[prev] = key + (ts_p, value[1], bs_p, value[3], w_p)
+            return
     cache[id] = len(out)
     out.append(key + value)
 

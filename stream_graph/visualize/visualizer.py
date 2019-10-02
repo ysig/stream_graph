@@ -1,6 +1,7 @@
 from stream_graph import ABC
 from stream_graph import StreamGraph
-from math import tanh
+from math import tanh, sqrt
+from collections import Iterable
 import numpy as np
 
 
@@ -47,7 +48,7 @@ class Visualizer(object):
         pallete = self._make_pallete(len(self._data['temporal_linkset']))
 
         # width height
-        w, h = (max_time-min_time)*70, len(nodes)*50
+        w, h = (max_time - min_time) * 70, len(nodes) * 50
         division = (1 if self._data['temporal_nodeset'].discrete else 0.1)
         division = self.map_time(min_time + division) - self.map_time(min_time)
         min_time, max_time = self.map_time(min_time), self.map_time(max_time)
@@ -78,9 +79,9 @@ class Visualizer(object):
                     for (u, v, ts) in ls:
                         ts = self.map_time(ts)
                         yu, yv = sorted((nl[u], nl[v]))
-                        cr = curving(yu, yv)*division*0.9
+                        cr = curving(yu, yv) * division * 0.9
                         xm = ts + cr
-                        ym = (yu + yv)*height
+                        ym = (yu + yv) * height
                         if cr > 0.:
                             x0.append(ts)
                             x1.append(ts)
@@ -99,9 +100,9 @@ class Visualizer(object):
                         ts = self.map_time(ts)
                         tf = self.map_time(tf)
                         yu, yv = sorted((nl[u], nl[v]))
-                        cr = curving(yu, yv)*division*0.9
+                        cr = curving(yu, yv) * division * 0.9
                         xm = ts + cr
-                        ym = (yu + yv)*height
+                        ym = (yu + yv) * height
                         if cr > 0.:
                             x0.append(ts)
                             x1.append(ts)
@@ -109,12 +110,12 @@ class Visualizer(object):
                             y1.append(yv)
                             cx.append(xm)
                             cy.append(ym)
-                            if yu + yv == 2*ym:
+                            if yu + yv == 2 * ym:
                                 t = 0.5
                             else:
-                                t = (math.sqrt((yu - ym)*(ym - yv)) + yu - ym)/(yu - 2*ym + yv)
+                                t = (sqrt((yu - ym) * (ym - yv)) + yu - ym) / (yu - 2 * ym + yv)
                             assert 0 <= t <= 1
-                            xm = ((1 - t)**2 + t**2) + 2*t*(1-t)*(xm+1)
+                            xm = ((1 - t)**2 + t**2) + 2 * t * (1 - t) * (xm + 1)
                         else:
                             lp_x += [ts, ts, nan]
                             lp_y += [yu, yv, nan]
@@ -178,9 +179,9 @@ class Visualizer(object):
 
     def map_time(self, t):
         if isinstance(self.date_map, dict):
-            return self.date_map[t].timestamp()*1000
+            return self.date_map[t].timestamp() * 1000
         elif callable(self.date_map):
-            return self.date_map(t).timestamp()*1000
+            return self.date_map(t).timestamp() * 1000
         else:
             return t
 
@@ -265,7 +266,7 @@ class Visualizer(object):
         if n == 1:
             return ['black']
         elif n > 256:
-            max_value = 16581375 # 255**3
+            max_value = 16581375  # 255**3
             interval = int(max_value / n)
             return ['#' + hex(I)[2:].zfill(6) for I in range(0, max_value, interval)]
         elif n <= 10:
@@ -280,4 +281,4 @@ class Visualizer(object):
 
 
 def curving(a, b):
-    return tanh(abs(a-b)-1)
+    return tanh(abs(a - b) - 1)

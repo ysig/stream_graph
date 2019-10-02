@@ -122,7 +122,8 @@ def _load_dinterval_wdf_iterable(df, keys, disjoint_intervals, merge_function):
             l.append(k[:-1] + (k[-2], k[-1]))
         else:
             raise ValueError('Invalid input ')
-    return DIntervalWDF(l, disjoint_intervals=disjoint_intervals, columns=keys+['ts', 'tf', 'w'], merge_function=merge_function)
+    return DIntervalWDF(l, disjoint_intervals=disjoint_intervals, columns=keys + ['ts', 'tf', 'w'], merge_function=merge_function)
+
 
 def _load_cinterval_wdf_iterable(df, keys, s, f, disjoint_intervals, merge_function):
     """Store a continuous time-signature iterable to CIntervalWDF."""
@@ -197,7 +198,7 @@ def load_interval_df(df, discrete, default_closed, disjoint_intervals, keys=[]):
             if 'itype' in df.columns:
                 # Check if itype exists and transform, to 's', 'f' columns
                 l = [k[:-1] + ((s, f) if k[-1] in [pd.NaT, np.NaN] else _closed_to_tuple(k[-1])) for k in df[keys + ['ts', 'tf', 'itype']].itertuples(name=None, index=False)]
-                return CIntervalDF(l, disjoint_intervals=disjoint_intervals, columns =keys + ['ts', 'tf', 's', 'f']), False
+                return CIntervalDF(l, disjoint_intervals=disjoint_intervals, columns=keys + ['ts', 'tf', 's', 'f']), False
             elif 's' in df.columns:
                 if 'f' not in df.columns:
                     df['f'] = f
@@ -243,7 +244,7 @@ def _load_dinterval_df_iterable(df, keys, disjoint_intervals):
             l.append(k + (k[-1], ))
         else:
             raise ValueError('Invalid input ')
-    return DIntervalDF(l, disjoint_intervals=disjoint_intervals, columns=keys+['ts', 'tf'])
+    return DIntervalDF(l, disjoint_intervals=disjoint_intervals, columns=keys + ['ts', 'tf'])
 
 
 def _load_cinterval_df_iterable(df, keys, s, f, disjoint_intervals):
@@ -370,7 +371,7 @@ def apply_direction_on_iter(iter_, direction='out'):
     if direction == 'in':
         iter_ = ((key[1], key[0]) + key[2:] for key in iter_)
     elif direction == 'both':
-        iter_ = (it+key[2:] for key in iter_ for it in [(key[0], key[1]), (key[1], key[0])])
+        iter_ = (it + key[2:] for key in iter_ for it in [(key[0], key[1]), (key[1], key[0])])
     elif direction != 'out':
         raise UnrecognizedDirection()
     return iter_
@@ -402,18 +403,19 @@ def build_time_generator(df, cache_constructor, calculate, value_inequality_cond
     # Sort based on discrete and not-discrete
     if discrete:
         def key(k):
-            #start < finish
+            # start < finish
             return (k[1], not k[0])
     else:
         def key(k):
-            #[()]
+            # [()]
             return (k[1][0], k[1][1], k[0] != k[1][1])
 
     sorted_iter_ = sorted(iter_, key=key)
     # Build functions
     if discrete:
         def time_continuation(b, e, f):
-            return e + int(not f), b < e-1
+            return e + int(not f), b < e - 1
+
         def valid_instant(b, e):
             if b == e:
                 return e + 1
@@ -421,6 +423,7 @@ def build_time_generator(df, cache_constructor, calculate, value_inequality_cond
         def time_continuation(b, e, f):
             # []
             return (e[0], f == e[1]), b[0] < e[0] or not (b[1] and e[1])
+
         def valid_instant(b, e):
             if b[0] == e[0] and b[1] and e[1]:
                 return b[0], False
@@ -441,23 +444,6 @@ def build_time_generator(df, cache_constructor, calculate, value_inequality_cond
         assert callable(get_key)
 
 
-
-def build_time_generator_(iter_, cache_constructor, calculate, time_continuation, valid_instant, value_inequality_condition):
-    # calculate should add an element to cache and return the new-value
-    lob, cache, prev = None, cache_constructor(), None
-    for i in iter_:
-        # i : (start, (time), key, w)
-        a = calculate(cache, i)
-        ret, new_lob = generator_step(i, lob, a, time_continuation, valid_instant, value_inequality_condition)
-        if ret and (prev is None or prev[1] != lob[1]):
-            yield lob
-            prev = lob
-
-        lob = new_lob
-    if lob is not None:
-        yield lob
-
-
 def generator_step(i, lob, a, time_continuation, valid_instant, value_inequality_condition):
     if i[0]:
         if lob is None or i[1] == lob[0]:
@@ -475,7 +461,6 @@ def generator_step(i, lob, a, time_continuation, valid_instant, value_inequality
             if t_not_f or value_inequality_condition(lob[1], a):
                 return (t_not != lob[0]), (t_not, a)
     return False, lob
-
 
 
 def generator_step_sparse(i, lob, a, time_continuation, valid_instant, value_inequality_condition):
@@ -513,6 +498,7 @@ def build_time_generator_(iter_, cache_constructor, calculate, time_continuation
         lob = new_lob
     if lob is not None:
         yield lob
+
 
 def build_time_generator_s(iter_, cache_constructor, calculate, time_continuation, valid_instant, value_inequality_condition):
     # calculate should add an element to cache and return the new-value

@@ -7,6 +7,7 @@ from stream_graph import ABC
 from stream_graph.exceptions import UnrecognizedTimeSet
 from .utils import make_discrete_bins
 
+
 class ITimeSetS(ABC.ITimeSet):
     """Set implementation of the ABC.ITimeSet
 
@@ -72,13 +73,12 @@ class ITimeSetS(ABC.ITimeSet):
                         ts = self.__class__(ts, discrete=self.discrete)
                 return self.__class__(self.times_ & ts.times_, discrete=self.discrete)
         elif isinstance(ts, ABC.TimeSet):
-            times = list(self.times_)
             assert self.discrete == ts.discrete
             # Cast to TimeSetDF, apply the operation and keep only the instants.
             return self.__class__((a for a, _ in (self.timeset_df & ts)), discrete=self.discrete)
         else:
             raise UnrecognizedTimeSet('right operand')
-        return TimeSetDF()
+        return self.__class__(discrete=self.discrete)
 
     def __or__(self, ts):
         if isinstance(ts, ABC.ITimeSet):
@@ -99,7 +99,6 @@ class ITimeSetS(ABC.ITimeSet):
             else:
                 return self.copy()
         elif isinstance(ts, ABC.TimeSet):
-            times = list(self.times_)
             assert self.discrete == ts.discrete
             # If our input is not instantaneous, the result will probably be not instantaneous
             uni = self.timeset_df | ts
@@ -126,7 +125,6 @@ class ITimeSetS(ABC.ITimeSet):
                         ts = self.__class__(ts, discrete=self.discrete)
                 return self.__class__(self.times_ - ts.times_, discrete=self.discrete)
         elif isinstance(ts, ABC.TimeSet):
-            times = list(self.times_)
             assert self.discrete == ts.discrete
             # Cast to TimeSetDF subtract and then keep the instantaneous part, to get a valid output
             return self.__class__((a for a, _ in (self.timeset_df - ts)), discrete=self.discrete)

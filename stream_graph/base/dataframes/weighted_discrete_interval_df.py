@@ -34,11 +34,11 @@ class DIntervalWDF(pd.DataFrame):
             from .discrete_interval_df import DIntervalDF
             if len(args) and isinstance(args[0], DIntervalWDF):
                 self.merge_function = args[0].merge_function
-                if not disjoint_intervals is False:
+                if disjoint_intervals is not False:
                     self.merge(inplace=True)
             elif isinstance(kargs.get('data', None), DIntervalWDF):
                 self.merge_function = kargs['data'].merge_function
-                if not disjoint_intervals is False:
+                if disjoint_intervals is not False:
                     self.merge(inplace=True)
             elif len(args) and isinstance(args[0], DIntervalDF) or (isinstance(kargs.get('data', None), DIntervalDF)):
                 self['w'] = 1
@@ -85,11 +85,11 @@ class DIntervalWDF(pd.DataFrame):
                 else:
                     from .discrete_interval_df import DIntervalDF
                     out = DIntervalDF(out, disjoint_intervals=False)
-            #else 'ts' in out.columns:
-            #    if 'w' in out.columns:
-            #        out = InstantaneousWDF(out)
-            #    else:
-            #        out = InstantaneousDF(out)
+            # else 'ts' in out.columns:
+            #     if 'w' in out.columns:
+            #         out = InstantaneousWDF(out)
+            #     else:
+            #         out = InstantaneousDF(out)
 
         return out
 
@@ -107,7 +107,12 @@ class DIntervalWDF(pd.DataFrame):
 
     @property
     def events(self):
-        return _events_not_sorted(self, True).sort_values(by=['t', 'start'])
+        columns = sorted(list(set(self.columns) - {'ts', 'tf'}))
+        dfp = self[columns + ['ts', 'w']].rename(columns={"ts": "t"})
+        dfp['start'] = True
+        dfpv = self[columns + ['tf', 'w']].rename(columns={"tf": "t"})
+        dfpv['start'] = False
+        return dfp.append(dfpv, ignore_index=True, sort=False).sort_values(by=['t', 'start'], ascending=[True, False])
 
     def append(self, *args, **kargs):
         merge = kargs.pop('merge', False)
@@ -118,7 +123,7 @@ class DIntervalWDF(pd.DataFrame):
 
     def measure_time(self, weights=False):
         if weights:
-            return ((self.tf - self.ts + 1)*self.w).sum()
+            return ((self.tf - self.ts + 1) * self.w).sum()
         else:
             return (self.tf - self.ts + 1).sum()
 
@@ -140,7 +145,7 @@ class DIntervalWDF(pd.DataFrame):
         return (self.ts <= t) & (self.tf >= t)
 
     def index_at_interval(self, ts, tf):
-        assert ts <= tf and type(ts) is int and type(tf) is int      
+        assert ts <= tf and type(ts) is int and type(tf) is int
         raise NotImplementedError
 
     def _save_or_return(self, df, inplace, on_column=None, disjoint_intervals=True):

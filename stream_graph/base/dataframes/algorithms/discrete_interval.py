@@ -2,7 +2,6 @@ from __future__ import absolute_import
 from six import iteritems
 from collections import defaultdict
 
-from pandas import DataFrame as DF
 
 from .utils.no_bounds import events
 from .utils.no_bounds import events_uni
@@ -43,7 +42,7 @@ def update_cache_merge(d, event):
 
 
 def merge_cache_constructor():
-    return {0: 0}    
+    return {0: 0}
 
 
 def merge_no_key(df):
@@ -201,7 +200,7 @@ def update_cache_difference(l, event):
             assert l[2] is not None
             e, l[2] = l[2], None
             if e <= t - 1:
-                out = (e, t-1)
+                out = (e, t - 1)
     else:
         if r and not l[0]:
             # finish and reference and the other is not active
@@ -446,9 +445,9 @@ def interval_intersection_size(a, b):
         if ts is not None:
             if s:
                 if t > ts:
-                    count += wa*wb*(t - ts)
+                    count += wa * wb * (t - ts)
             else:
-                count += wa*wb*(t - ts + 1)
+                count += wa * wb * (t - ts + 1)
         if r:
             wa += (1 if s else -1)
         else:

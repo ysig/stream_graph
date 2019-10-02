@@ -3,8 +3,8 @@ from warnings import warn
 from .node_set_s import NodeSetS
 from collections import Iterable
 from stream_graph import ABC
-from stream_graph.exceptions import UnrecognizedStreamGraph
-from stream_graph.collections import DataCube
+from stream_graph.exceptions import UnrecognizedStreamGraph, UnrecognizedNodeSet, UnrecognizedTimeSet
+from stream_graph.collections import DataCube, TimeCollection
 
 
 class StreamGraph(object):
@@ -72,11 +72,11 @@ class StreamGraph(object):
             out += [('Temporal-Node-Set', str(self.temporal_nodeset_))]
             out += [('Temporal-Link-Set', str(self.temporal_linkset_))]
             header = ['Stream-Graph']
-            header += [len(header[0])*'=']
-            return '\n\n'.join(['\n'.join(header)] + ['\n'.join([a, len(a)*'-', b]) for a, b in out])
+            header += [len(header[0]) * '=']
+            return '\n\n'.join(['\n'.join(header)] + ['\n'.join([a, len(a) * '-', b]) for a, b in out])
         else:
             out = ["Empty Stream-Graph"]
-            out = [out[0] + "\n" + len(out[0])*'-']
+            out = [out[0] + "\n" + len(out[0]) * '-']
             if not hasattr(self, 'nodeset_'):
                 out += ['- Node-Set: None']
             elif not bool(self.nodeset_):
@@ -116,7 +116,7 @@ class StreamGraph(object):
 
     @property
     def linkset(self):
-        return self.temporal_linkset_.linkset    
+        return self.temporal_linkset_.linkset
 
     @property
     def temporal_nodeset(self):
@@ -217,7 +217,7 @@ class StreamGraph(object):
         if u is None:
             def fun(x, y):
                 if denom != .0:
-                    return y/denom
+                    return y / denom
                 else:
                     return .0
             return self.temporal_nodeset_.duration_of().map(fun)
@@ -241,11 +241,11 @@ class StreamGraph(object):
             If None returns the time coverage for each node at each time-event.
 
         """
-        denom = float(self.nodeset_.size )
+        denom = float(self.nodeset_.size)
         if t is None:
             if denom > .0:
                 def fun(t, v):
-                    return v/denom
+                    return v / denom
                 return self.temporal_nodeset_.n_at().map(fun)
             else:
                 return TimeCollection(instants=self.temporal_nodeset_.instantaneous)
@@ -270,11 +270,11 @@ class StreamGraph(object):
 
         """
         denom = float(self.nodeset_.size)
-        denom = denom * (denom-1)
+        denom = denom * (denom - 1)
         if t is None:
             if denom > .0:
                 def fun(t, v):
-                    return v/denom
+                    return v / denom
                 return self.temporal_linkset_.m_at().map(fun)
             else:
                 return TimeCollection(instants=self.temporal_linkset_.instantaneous)
@@ -304,8 +304,9 @@ class StreamGraph(object):
             times = self.temporal_linkset_.duration_of(direction=direction, weights=weights)
             active_links = set(k for k, v in times if v > .0)
             common_times = self.temporal_nodeset_.common_time_pair(l=active_links)
+
             def fun(k, v):
-                return (times[k]/float(v) if v > .0 else .0)
+                return (times[k] / float(v) if v > .0 else .0)
             return common_times.map(fun)
         else:
             denom = float(self.temporal_nodeset_.common_time_pair(l))
@@ -330,13 +331,14 @@ class StreamGraph(object):
         """
         if t is None:
             ns, ms = self.temporal_nodeset_.n_at(t=None), self.temporal_linkset_.m_at(t=None, weights=weights)
+
             def fun(x, y):
-                denom = float(x*(x-1))
+                denom = float(x * (x - 1))
                 return ((y / denom) if denom != .0 else .0)
             return ns.merge(ms, fun, missing_value=.0)
         else:
             denom = float(self.temporal_nodeset_.n_at(t))
-            denom = denom*(denom-1)
+            denom = denom * (denom - 1)
             if denom > .0:
                 return self.temporal_linkset_.m_at(t, weights=weights) / denom
             else:
@@ -366,11 +368,12 @@ class StreamGraph(object):
             active_nodes = set(k for k, v in m if v > .0)
             common_times = dict(self.temporal_nodeset_.common_time(u=active_nodes))
             # maybe add a u = nodes argument in temporal_nodeset_common_times
+
             def fun(x, y):
                 ct = common_times.get(x, .0)
                 if y > .0 and ct > .0:
-                    return y/float(ct)
-                return y/common_times[x]
+                    return y / float(ct)
+                return y / common_times[x]
             return m.map(fun)
         else:
             denom = float(self.temporal_nodeset_.common_time(u))
@@ -400,11 +403,12 @@ class StreamGraph(object):
 
         """
         def coverage(x, y):
-            return (x/float(y) if y!=.0 else .0)
+            return (x / float(y) if y != .0 else .0)
         if t is None:
             n = self.temporal_nodeset_.n_at(None)
             if u is None:
                 neighbors = self.temporal_linkset_.degree_at(None, None, direction, weights)
+
                 def fun(x, y):
                     return y.merge(n, coverage)
                 return neighbors.map(fun)
@@ -439,6 +443,7 @@ class StreamGraph(object):
         if t is None:
             if bool(self):
                 ns, ms = self.temporal_nodeset_.n_at(t=None), self.temporal_linkset_.m_at(t=None, weights=weights)
+
                 def fun(x=.0, y=.0):
                     return (y / x if x != .0 and y != .0 else .0)
                 return ns.merge(ms, fun, missing_value=.0)
@@ -503,7 +508,7 @@ class StreamGraph(object):
         """
         denom = float(self.timeset_.size)
         if denom > .0:
-            return self.temporal_nodeset_.size/denom
+            return self.temporal_nodeset_.size / denom
         else:
             return .0
 
@@ -523,7 +528,7 @@ class StreamGraph(object):
         """
         denom = float(self.timeset_.size)
         if denom > .0:
-            return self.temporal_linkset_.size/denom
+            return self.temporal_linkset_.size / denom
         else:
             return .0
 
@@ -540,7 +545,7 @@ class StreamGraph(object):
             Returns the induced substream.
 
         """
-        assert isinstance(ns, ABC.TemporalNodeSet)
+        assert isinstance(tns, ABC.TemporalNodeSet)
         tns_is = self.temporal_nodeset_ & tns
         tls_ind = self.temporal_linkset_.induced_substream(tns_is)
         return StreamGraph(self.nodeset, self.timeset, tns_is, tls_ind)
@@ -573,7 +578,7 @@ class StreamGraph(object):
         if all(o is None for o in [nsu, nsv, ts]):
             return self.copy()
 
-        if nsu is not None and nsv is not None:                
+        if nsu is not None and nsv is not None:
             ns = nsu | nsv
         elif nsu is not None:
             ns = nsu
@@ -632,7 +637,6 @@ class StreamGraph(object):
         from stream_graph import Graph
         return Graph(self.nodeset_, self.linkset)
 
-
     @property
     def data_cube(self):
         if not bool(self):
@@ -644,10 +648,9 @@ class StreamGraph(object):
                             ('u', 'ts'): self.temporal_nodeset_.size,
                             ('v', 'ts'): self.temporal_nodeset_.size}
             if not isinstance(self.temporal_linkset_, ABC.ITemporalLinkSet):
-                iter_ = iter((u, v, t) for (u, v, ts, tf) in self.temporal_linkset_ for t in range(ts, tf+1))
+                iter_ = iter((u, v, t) for (u, v, ts, tf) in self.temporal_linkset_ for t in range(ts, tf + 1))
             else:
                 iter_ = iter(self.temporal_linkset_)
             return DataCube(iter_, columns=['u', 'v', 'ts'], column_sizes=column_sizes)
         else:
             raise ValueError('Stream-Graph should be discrete to be convertible to a data-cube')
-

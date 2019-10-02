@@ -6,8 +6,10 @@ from stream_graph.exceptions import UnrecognizedDirection
 from operator import itemgetter
 from nose.tools import assert_equal
 
+
 def sl(obj):
     return sorted(list(obj))
+
 
 def test_link_set_df():
     links_a = [(1, 2), (2, 3), (3, 1), (1, 2)]
@@ -89,6 +91,7 @@ def test_link_set_df():
         lsa - 1
     except UnrecognizedLinkSet:
         pass
+
 
 def test_link_set_weighted():
     links_a = [(1, 2, 1), (2, 3, 1), (3, 1, 1), (1, 2, 1)]

@@ -1,6 +1,7 @@
 from six import iteritems, viewkeys
 from collections import defaultdict
 
+
 def dict_tuple():
     return (dict(), dict())
 
@@ -59,6 +60,7 @@ def iter_dmerge_(d_a, d_b, function):
 
 def set_tuple():
     return (set(), set())
+
 
 def print_by_key(ks, ds, iter_, map_):
     d = defaultdict(list)

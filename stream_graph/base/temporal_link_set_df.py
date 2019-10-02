@@ -1,17 +1,12 @@
 from __future__ import absolute_import
 import operator
 from functools import reduce
-from warnings import warn
 from numbers import Real
-from collections import deque
 from collections import defaultdict
 from collections import Counter
 from six import iteritems
-from six import itervalues
 
-import pandas as pd
-
-from .utils import ts_to_df, tns_to_df, make_algebra
+from .utils import ts_to_df, tns_to_df, make_algebra, time_discretizer_df
 from .multi_df_utils import load_interval_wdf, init_interval_df, build_time_generator, itertuples_pretty, itertuples_raw
 from .multi_df_utils import set_unweighted_n_sparse, set_weighted_links_, set_unweighted_links_, get_key_first, len_set_n, len_set_, sum_counter_, sum_counter_n
 from .functions import get_maximal_cliques as get_maximal_cliques_
@@ -53,7 +48,7 @@ class TemporalLinkSetDF(ABC.TemporalLinkSet):
 
     weighted : bool, or default=None.
 
-    default_closed : {'left', 'right', 'both', 'neither'}, default=None 
+    default_closed : {'left', 'right', 'both', 'neither'}, default=None
 
     merge_function : A function applied to a list of arguments.
 
@@ -294,7 +289,7 @@ class TemporalLinkSetDF(ABC.TemporalLinkSet):
                 df, mf = self.df[self.df.u.isin({u, v}) & self.df.v.isin({u, v})], True
             else:
                 raise UnrecognizedDirection()
-            return TimeSetDF(df.drop(columns=['u', 'v']+kw, merge=(mf or self.weighted)), discrete=self.discrete)
+            return TimeSetDF(df.drop(columns=['u', 'v'] + kw, merge=(mf or self.weighted)), discrete=self.discrete)
 
     def duration_of(self, l=None, weights=False, direction='out'):
         if not bool(self):
@@ -309,13 +304,13 @@ class TemporalLinkSetDF(ABC.TemporalLinkSet):
             dc = (1 if self.discrete else 0)
             if direction == 'out':
                 def add(u, v, ts, tf, w=1):
-                    times[(u, v)] += (tf - ts + dc)*w
+                    times[(u, v)] += (tf - ts + dc) * w
             elif direction == 'in':
                 def add(u, v, ts, tf, w=1):
-                    times[(v, u)] += (tf - ts + dc)*w
+                    times[(v, u)] += (tf - ts + dc) * w
             elif direction == 'both':
                 def add(u, v, ts, tf, w=1):
-                    times[tuple(sorted([u, v]))] += (tf - ts + dc)*w
+                    times[tuple(sorted([u, v]))] += (tf - ts + dc) * w
             else:
                 raise UnrecognizedDirection()
             for args in itertuples_raw(self.df, discrete=True, weighted=weighted):
@@ -363,12 +358,12 @@ class TemporalLinkSetDF(ABC.TemporalLinkSet):
                 return LinkSetDF(self.df.df_at(t)[['u', 'v'] + self._wc], merge_function=mf, no_duplicates=False).neighbors_of(u=None, direction=direction)
         else:
             if direction == 'out':
-                df = self.df[self.df.u == u].drop(columns=['u']+self._wc, merge=False).rename(columns={'v': 'u'})
+                df = self.df[self.df.u == u].drop(columns=['u'] + self._wc, merge=False).rename(columns={'v': 'u'})
             elif direction == 'in':
-                df = self.df[self.df.v == u].drop(columns=['v']+self._wc, merge=False)
+                df = self.df[self.df.v == u].drop(columns=['v'] + self._wc, merge=False)
             elif direction == 'both':
-                df = self.df[self.df.u == u].drop(columns=['u']+self._wc).rename(columns={'v': 'u'})
-                df = df.append(self.df[self.df.v == u].drop(columns=['v']+self._wc, merge=True), ignore_index=True)
+                df = self.df[self.df.u == u].drop(columns=['u'] + self._wc).rename(columns={'v': 'u'})
+                df = df.append(self.df[self.df.v == u].drop(columns=['v'] + self._wc, merge=True), ignore_index=True)
             else:
                 raise UnrecognizedDirection()
             if t is None:
@@ -377,7 +372,6 @@ class TemporalLinkSetDF(ABC.TemporalLinkSet):
                 return NodeSetS(df[df.index_at(t)].u.values.flat)
 
     def _degree_at_weighted(self, u, t, direction):
-        mf = self.df_.merge_function
         if u is None:
             if t is None:
                 out = dict()
@@ -456,7 +450,7 @@ class TemporalLinkSetDF(ABC.TemporalLinkSet):
                 raise UnrecognizedDirection()
             for key in itertuples_raw(self.df, discrete=self.discrete, weighted=False):
                 add(key)
-            return NodeCollection({u: TemporalNodeSetDF(init_interval_df(data=ns, discrete=self.discrete, weighted=False,  disjoint_intervals=False, keys=['u'])) for u, ns in iteritems(neighbors)})
+            return NodeCollection({u: TemporalNodeSetDF(init_interval_df(data=ns, discrete=self.discrete, weighted=False, disjoint_intervals=False, keys=['u'])) for u, ns in iteritems(neighbors)})
         else:
             if direction == 'out':
                 df = self.df[self.df.u == u].drop(columns=['u'], merge=False).rename(columns={'v': 'u'})
@@ -483,14 +477,14 @@ class TemporalLinkSetDF(ABC.TemporalLinkSet):
             dc = (1 if self.discrete else 0)
             if direction == 'out':
                 def add(u, v, ts, tf, w=1):
-                    degree[u] += (tf - ts + dc)*w
+                    degree[u] += (tf - ts + dc) * w
             elif direction == 'in':
                 def add(u, v, ts, tf, w=1):
-                    degree[v] += (tf - ts + dc)*w
+                    degree[v] += (tf - ts + dc) * w
             elif direction == 'both':
                 def add(u, v, ts, tf, w=1):
-                    degree[u] += (tf - ts + dc)*w
-                    degree[v] += (tf - ts + dc)*w
+                    degree[u] += (tf - ts + dc) * w
+                    degree[v] += (tf - ts + dc) * w
             else:
                 raise UnrecognizedDirection()
 

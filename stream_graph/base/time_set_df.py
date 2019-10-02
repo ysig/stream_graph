@@ -80,7 +80,6 @@ class TimeSetDF(ABC.TimeSet):
         else:
             return self.df_.sort_values(by=self.sort_by)
 
-
     @property
     def df(self):
         if bool(self):

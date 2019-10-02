@@ -5,9 +5,10 @@ from .node_set_s import NodeSetS
 from .link_set_df import LinkSetDF
 from stream_graph.collections import NodeCollection
 
+
 class Graph(object):
-    """Graph
-    
+    """Graph abstract-object implementation.
+
     A Graph :math:`S=(V, E)` is a collection of two elements:
 
         - :math:`V`, a node-set
@@ -34,17 +35,16 @@ class Graph(object):
     # Python2 cross-compatibility
     __nonzero__ = __bool__
 
-
     def __str__(self):
         if bool(self):
             out = [('Node-Set', str(self.nodeset_))]
             out += [('Link-Set', str(self.linkset_))]
             header = ['Graph']
-            header += [len(header[0])*'=']
-            return '\n\n'.join(['\n'.join(header)] + ['\n'.join([a, len(a)*'-', b]) for a, b in out])
+            header += [len(header[0]) * '=']
+            return '\n\n'.join(['\n'.join(header)] + ['\n'.join([a, len(a) * '-', b]) for a, b in out])
         else:
             out = ["Empty Graph"]
-            out = [out[0] + "\n" + len(out[0])*'-']
+            out = [out[0] + "\n" + len(out[0]) * '-']
             if not hasattr(self, 'nodeset_'):
                 out += ['- Node-Set: None']
             elif not bool(self.nodeset_):
@@ -62,11 +62,11 @@ class Graph(object):
     @property
     def nodeset(self):
         """Extract the nodeset.
-        
+
         Parameters
         ----------
         None. Property
-        
+
         Returns
         -------
         nodeset: ABC.NodeSet
@@ -81,11 +81,11 @@ class Graph(object):
     @property
     def linkset(self):
         """Extract the linkset.
-        
+
         Parameters
         ----------
         None. Property
-        
+
         Returns
         -------
         linkset: ABC.LinkSet
@@ -100,11 +100,11 @@ class Graph(object):
     @property
     def n(self):
         """Extract the number of nodes.
-        
+
         Parameters
         ----------
         None. Property.
-        
+
         Returns
         -------
         n: Int
@@ -112,15 +112,15 @@ class Graph(object):
 
         """
         return self.nodeset_.size
-    
+
     @property
     def m(self):
         """Extract the number of links.
-        
+
         Parameters
         ----------
         None. Property
-        
+
         Returns
         -------
         m: Int
@@ -132,11 +132,11 @@ class Graph(object):
     @property
     def wm(self):
         """Extract the weighted number of links.
-        
+
         Parameters
         ----------
         None. Property
-        
+
         Returns
         -------
         m: Int
@@ -148,11 +148,11 @@ class Graph(object):
     @property
     def total_coverage(self):
         """Extract the total coverage of the graph.
-        
+
         Parameters
         ----------
         None. Property.
-        
+
         Returns
         -------
         total_coverage: Real
@@ -160,18 +160,18 @@ class Graph(object):
 
         """
         if bool(self):
-            return self.m/float(self.n ** 2)
+            return self.m / float(self.n ** 2)
         else:
             return 0.
 
     @property
     def weighted_total_coverage(self):
         """Extract the weighted total coverage of the graph.
-        
+
         Parameters
         ----------
         None. Property.
-        
+
         Returns
         -------
         total_coverage: Real
@@ -179,18 +179,18 @@ class Graph(object):
 
         """
         if bool(self):
-            return self.wm/float(self.n ** 2)
+            return self.wm / float(self.n ** 2)
         else:
             return 0.
 
     def to_networkx(self, create_using=None):
         """Convert Graph to a networkx graph.
-        
+
         Parameters
         ----------
         create_using : (NetworkX graph constructor, optional (default=nx.Graph))
             Graph type to create. If graph instance, then cleared before populated.
-        
+
         Returns
         -------
         graph : nx.Graph
@@ -206,13 +206,13 @@ class Graph(object):
         if self.linkset_.weighted:
             G.add_weighted_edges_from(self.linkset_)
         else:
-            G.add_edges_from(self.linkset_)    
-    
+            G.add_edges_from(self.linkset_)
+
         return G
 
     def neighbor_coverage_of(self, u=None, direction='out', weights=False):
         """Extract the neighbor coverage of the graph.
-        
+
         Parameters
         ----------
         u: NodeId or None
@@ -232,10 +232,10 @@ class Graph(object):
             denom = float(self.n ** 2)
             if u is None:
                 def fun(x, y):
-                    return y/denom
+                    return y / denom
                 return self.linkset_.degree(direction=direction, weights=weights).map(fun)
             else:
-                return self.linkset_.degree(u, direction=direction, weights=weights)/denom
+                return self.linkset_.degree(u, direction=direction, weights=weights) / denom
         else:
             if u is None:
                 return NodeCollection()

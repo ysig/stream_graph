@@ -6,6 +6,7 @@ from stream_graph.base.dataframes import DIntervalDF
 from stream_graph.base.dataframes import DIntervalWDF
 from stream_graph.base.dataframes import InstantaneousDF
 from stream_graph.base.dataframes import InstantaneousWDF
+from six import itervalues
 from itertools import product
 
 
@@ -22,7 +23,7 @@ def op_(x, cx, y=None, cy=None, oc=1, bk=1, o='u', as_sl=True):
         twc += ['tf']
     if cx in [InstantaneousWDF, DIntervalWDF, CIntervalWDF]:
         twc += ['w']
-    x = cx(x, columns=oc+twc)
+    x = cx(x, columns=oc + twc)
     kargs = dict(on_column=(oc if len(oc) else []))
     kargs['by_key'] = bool(bk)
     if y is None:
@@ -31,9 +32,9 @@ def op_(x, cx, y=None, cy=None, oc=1, bk=1, o='u', as_sl=True):
     else:
         cy = (cx if cy is None else cy)
         if o in ['ci', 'mi']:
-            df = cy(y, columns=['u']+twc)
+            df = cy(y, columns=['u'] + twc)
         elif bool(bk) and len(oc):
-            df = cy(y, columns=oc+twc)
+            df = cy(y, columns=oc + twc)
         else:
             df = cy(y, columns=twc)
 
@@ -147,7 +148,7 @@ def test_dinterval_df():
         assert_equal(op_([k + [3, 4], k + [4, 6]], o='m', cx=cx, oc=len(k)), [tuple(k) + (3, 6)])
         assert_equal(op_([k + [3, 4], k + [5, 6]], o='m', cx=cx, oc=len(k)), [tuple(k) + (3, 6)])
         assert_equal(op_([k + [3, 5], k + [4, 6]], o='m', cx=cx, oc=len(k)), [tuple(k) + (3, 6)])
-        assert_equal(op_([k + [3, 10], k + [5, 7]], o='m', cx=cx, oc=len(k)), [tuple(k) + (3, 10)])  
+        assert_equal(op_([k + [3, 10], k + [5, 7]], o='m', cx=cx, oc=len(k)), [tuple(k) + (3, 10)])
         assert_equal(op_([k + [5, 5], k + [2, 6], k + [6, 6]], o='m', cx=cx, oc=len(k)), [tuple(k) + (2, 6)])
         assert_equal(op_([k + [2, 3], k + [5, 6]], o='m', cx=cx, oc=len(k)), [tuple(k) + (2, 3), tuple(k) + (5, 6)])
         for bk in [True, False]:
@@ -225,7 +226,6 @@ def test_dinterval_wdf():
             assert_equal(op_([k + [3, 8, 1]], y=[l + [8, 10, 1]], o='nei', bk=bk, cx=cx, oc=len(k)), True)
             assert_equal(op_([k + [3, 8, 1]], y=[l + [4, 5, 1]], o='nei', bk=bk, cx=cx, oc=len(k)), True)
             assert_equal(op_([k + [3, 8, 1]], y=[l + [9, 10, 1]], o='nei', bk=bk, cx=cx, oc=len(k)), False)
-
 
     # Cartesian Intersection
     assert_equal(op_([[1, 2, 1, 10, 2]], y=[[1, 2, 5, 1], [2, 3, 7, 6]], o='ci', cx=cx, oc=len(k)), [(1, 2, 3, 5, 6)])
@@ -335,10 +335,10 @@ def test_instantaneous_wdf():
             assert_equal(op_([k + [3, 1], k + [4, 1]], y=[l + [4, 2], l + [6, 2]], o='u', bk=bk, cx=cx, oc=len(k)), [tuple(k) + (3, 1), tuple(k) + (4, 3), tuple(k) + (6, 2)])
             assert_equal(op_([k + [3, 1], k + [4, 1]], y=[l + [4, 3], l + [6, 2]], o='i', bk=bk, cx=cx, oc=len(k)), [tuple(k) + (4, 3)])
             assert_equal(op_([k + [3, 1], k + [4, 1]], y=[l + [4, 2], l + [6, 2]], o='d', bk=bk, cx=cx, oc=len(k)), [tuple(k) + (3, 1)])
-            assert_equal(op_([k + [4, 1]], y=[l + [4, 2]], o='d',  bk=bk, cx=cx, oc=len(k)), [])
-            assert_equal(op_([k + [1, 1], k + [2, 1], k + [3, 1]], y=[l + [1, 1], l + [2, 1], l + [3, 1]], o='s',  bk=bk, cx=cx, oc=len(k)), True)
-            assert_equal(op_([k + [1, 1], k + [2, 1], k + [3, 1], k + [4, 1]], y=[l + [2, 1], l + [5, 1], l + [4, 2]], o='s',  bk=bk, cx=cx, oc=len(k)), False)
-            assert_equal(op_([k + [1, 1], k + [2, 1], k + [3, 1], k + [4, 1]], y=[l + [2, 1], l + [3, 2]], o='s',  bk=bk, cx=cx, oc=len(k)), False)
+            assert_equal(op_([k + [4, 1]], y=[l + [4, 2]], o='d', bk=bk, cx=cx, oc=len(k)), [])
+            assert_equal(op_([k + [1, 1], k + [2, 1], k + [3, 1]], y=[l + [1, 1], l + [2, 1], l + [3, 1]], o='s', bk=bk, cx=cx, oc=len(k)), True)
+            assert_equal(op_([k + [1, 1], k + [2, 1], k + [3, 1], k + [4, 1]], y=[l + [2, 1], l + [5, 1], l + [4, 2]], o='s', bk=bk, cx=cx, oc=len(k)), False)
+            assert_equal(op_([k + [1, 1], k + [2, 1], k + [3, 1], k + [4, 1]], y=[l + [2, 1], l + [3, 2]], o='s', bk=bk, cx=cx, oc=len(k)), False)
             assert_equal(op_([k + [a, 1] for a in [1, 2, 3, 4]], y=[l + [a, 1] for a in [1, 6, 7]], o='nei', bk=bk, cx=cx, oc=len(k)), True)
             assert_equal(op_([k + [a, 1] for a in [1, 2, 3, 4]], y=[l + [a, 1] for a in [6, 7]], o='nei', bk=bk, cx=cx, oc=len(k)), False)
             assert_equal(op_([k + [a, 2] for a in [1, 2, 3, 4]], y=[l + [a, 1] for a in [1, 6, 7]], o='nei', bk=bk, cx=cx, oc=len(k)), True)
@@ -398,7 +398,6 @@ def test_time_generators_builders():
     assert_equal(list(build_time_generator(df, set, set_nodes)), [(1, {1}), (2, {1, 2}), (3, {2}), (4, {1}), (5, {1, 2}), (7, {2}), (8, set())])
     assert_equal(list(build_time_generator(df, set, set_nodes_sparse, sparse=True)), [(1, {1}, True), (2, {2}, True), (3, {1}, False), (4, {2}, False), (4, {1}, True), (5, {2}, True), (7, {1}, False), (8, {2}, False)])
     assert_equal(list(build_time_generator(df, Counter, sum_counter_)), [(1, 1), (2, 3), (3, 2), (5, 3), (7, 1), (8, 0)])
-
 
 
 if __name__ == "__main__":

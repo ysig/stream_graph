@@ -30,8 +30,8 @@ def test_temporal_node_set_b():
         assert_equal(set(nsa), {(n,) + obj for n in nodeset for obj in timeset})
 
         assert_equal(nsa.n, 4)
-        assert_equal(nsa.size, (4 + len(timeset)*int(d))*nsa.n)
-        assert_equal(nsa.total_time, (4 + len(timeset)*int(d)))
+        assert_equal(nsa.size, (4 + len(timeset) * int(d)) * nsa.n)
+        assert_equal(nsa.total_time, (4 + len(timeset) * int(d)))
         assert_equal(TemporalNodeSetB().size, 0)
         assert_equal(TemporalNodeSetB([], []).size, 0)
         assert_equal(TemporalNodeSetB([], [(1, 2)]).size, 0)
@@ -44,15 +44,15 @@ def test_temporal_node_set_b():
         assert (2, (3.4, 4)) in nsa
 
         assert_equal(nsa.duration_of(4), 0)
-        assert_equal(nsa.duration_of(1), 4 + len(timeset)*int(d))
-        assert_equal(dict(nsa.duration_of()), {i: nodeset.size + len(timeset)*int(d) for i in [1, 2, 3, 5]})
+        assert_equal(nsa.duration_of(1), 4 + len(timeset) * int(d))
+        assert_equal(dict(nsa.duration_of()), {i: nodeset.size + len(timeset) * int(d) for i in [1, 2, 3, 5]})
 
-        assert_equal(nsa.common_time(1), (nodeset.size-1)*(4 + len(timeset)*int(d)))
-        assert_equal(nsa.common_time_pair((2, 3)), 4 + len(timeset)*int(d))
+        assert_equal(nsa.common_time(1), (nodeset.size - 1) * (4 + len(timeset) * int(d)))
+        assert_equal(nsa.common_time_pair((2, 3)), 4 + len(timeset) * int(d))
         assert_equal(nsa.common_time(7), .0)
         assert_equal(nsa.common_time_pair((2, 8)), .0)
-        assert_equal(dict(nsa.common_time()), {i: (nodeset.size-1)*(4 + len(timeset)*int(d)) for i in [1, 2, 3, 5]})
-        assert_equal(dict(nsa.common_time_pair()), {i: 4 + len(timeset)*int(d) for i in [(1, 2), (1, 3), (1, 5), (2, 3), (2, 5), (3, 5)]})
+        assert_equal(dict(nsa.common_time()), {i: (nodeset.size - 1) * (4 + len(timeset) * int(d)) for i in [1, 2, 3, 5]})
+        assert_equal(dict(nsa.common_time_pair()), {i: 4 + len(timeset) * int(d) for i in [(1, 2), (1, 3), (1, 5), (2, 3), (2, 5), (3, 5)]})
 
         assert_equal(set(nsa.nodes_at(1)), {1, 2, 3, 5})
         assert_equal(set(nsa.nodes_at((1, 1.5))), {1, 2, 3, 5})
@@ -70,7 +70,7 @@ def test_temporal_node_set_b():
         it = (tuple() if d else ('both', ))
         assert_equal(set(nsa.times_of(1)), {(1, 2) + it, (3, 5) + it, (6, 7) + it})
         assert_equal(set(nsa.times_of(10)), set())
-        assert_equal({i:list(t) for i, t in nsa.times_of()}, {1: [(1, 2) + it, (3, 5) + it, (6, 7) + it], 2: [(1, 2) + it, (3, 5) + it, (6, 7) + it], 3: [(1, 2) + it, (3, 5) + it, (6, 7) + it], 5: [(1, 2) + it, (3, 5) + it, (6, 7) + it]})
+        assert_equal({i: list(t) for i, t in nsa.times_of()}, {1: [(1, 2) + it, (3, 5) + it, (6, 7) + it], 2: [(1, 2) + it, (3, 5) + it, (6, 7) + it], 3: [(1, 2) + it, (3, 5) + it, (6, 7) + it], 5: [(1, 2) + it, (3, 5) + it, (6, 7) + it]})
 
         assert_equal(nsa.n_at(6), 4)
         assert_equal(nsa.n_at(10), 0)
@@ -85,13 +85,13 @@ def test_temporal_node_set_b():
         assert_equal(set(nsb & nsa), set(nsa & nsb))
         assert isinstance(nsa & nsb, TemporalNodeSetB)
         assert_equal(set(nsa & nsb), {(n, ) + t for n in {2, 3} for t in [(1, 2) + it, (3, 3) + it, (4, 5) + it, (6, 7) + it]})
-        assert_equal((nsb & nsa).size, (nsb & nsa).nodeset_.size*(3 + 4*int(d)))
+        assert_equal((nsb & nsa).size, (nsb & nsa).nodeset_.size * (3 + 4 * int(d)))
         assert_equal((nsa & nsb).discrete, (nsb & nsa).discrete and (nsa & nsb).discrete, d)
 
         assert_equal(set(nsb | nsa), set(nsa | nsb))
         assert isinstance(nsa | nsb, TemporalNodeSetB)
         assert_equal(set((nsb | nsa)), {(n, 1, 8) + it for n in {1, 2, 3, 4, 5}})
-        assert_equal((nsb | nsa).size, (nsb | nsa).nodeset_.size*(7 + int(d)))
+        assert_equal((nsb | nsa).size, (nsb | nsa).nodeset_.size * (7 + int(d)))
         assert (nsa | nsb).discrete == (nsb | nsa).discrete and (nsa | nsb).discrete == d
 
         if d:
@@ -145,8 +145,8 @@ def test_temporal_node_set_df():
             assert_equal(set(nsa), set(a + ('both',) for a in [(1, 2, 5), (1, 6, 8), (2, 1, 3)]))
 
         assert_equal(nsa.n, 2)
-        assert_equal(nsa.size, 7 + 3*int(d))
-        assert_equal(nsa.total_time, 6 + 2*int(d))
+        assert_equal(nsa.size, 7 + 3 * int(d))
+        assert_equal(nsa.total_time, 6 + 2 * int(d))
         assert_equal(TemporalNodeSetDF().size, 0)
         assert_equal(TemporalNodeSetDF([]).size, 0)
         assert_equal(nsa.discrete, d)
@@ -157,9 +157,9 @@ def test_temporal_node_set_df():
         assert (2, 3.4) not in nsa
         assert (2, (3.4, 4)) not in nsa
 
-        assert_equal(nsa.duration_of(1), 5 + 2*int(d))
+        assert_equal(nsa.duration_of(1), 5 + 2 * int(d))
         assert_equal(nsa.duration_of(4), 0)
-        assert_equal(dict(nsa.duration_of()), {1: 5.0 + 2*int(d), 2: 2.0 + int(d)})
+        assert_equal(dict(nsa.duration_of()), {1: 5.0 + 2 * int(d), 2: 2.0 + int(d)})
 
         assert_equal(nsa.common_time(1), 1 + int(d))
         assert_equal(nsa.common_time_pair((1, 2)), 1 + int(d))
@@ -223,7 +223,7 @@ def test_temporal_node_set_df():
             assert_equal(set((nsb | nsa)), {(1, 1, 8), (2, 1, 3)})
         else:
             assert_equal(set((nsb | nsa)), {(1, 1, 5, 'both'), (1, 6, 8, 'both'), (2, 1, 3, 'both')})
-        assert_equal((nsb | nsa).size, 8 + 3*int(d))
+        assert_equal((nsb | nsa).size, 8 + 3 * int(d))
         assert_equal((nsb | nsa).discrete, d)
 
         if d:
@@ -278,8 +278,8 @@ def test_itemporal_node_set_df():
         assert_equal(set(nsa), {(1, 2), (1, 3), (1, 6), (2, 3)})
 
         assert_equal(nsa.n, 2)
-        assert_equal(nsa.size, int(d)*4)
-        assert_equal(nsa.total_time, 3*int(d))
+        assert_equal(nsa.size, int(d) * 4)
+        assert_equal(nsa.total_time, 3 * int(d))
 
         assert (2, None) in nsa
         assert (None, 5) not in nsa
@@ -287,9 +287,9 @@ def test_itemporal_node_set_df():
         assert (2, 3) in nsa
         assert (1, 7) not in nsa
 
-        assert_equal(nsa.duration_of(1), int(d)*3)
+        assert_equal(nsa.duration_of(1), int(d) * 3)
         assert_equal(nsa.duration_of(4), 0)
-        assert_equal(dict(nsa.duration_of()), {1: int(d)*3, 2: int(d)})
+        assert_equal(dict(nsa.duration_of()), {1: int(d) * 3, 2: int(d)})
 
         assert_equal(nsa.common_time(1), int(d))
         assert_equal(dict(nsa.common_time()), {1: int(d), 2: int(d)})
@@ -320,20 +320,20 @@ def test_itemporal_node_set_df():
         assert_equal(set(nsb & nsa), set(nsa & nsb))
         assert isinstance(nsa & nsb, ITemporalNodeSetDF)
         assert_equal(set(nsa & nsb), {(1, 2), (1, 3)})
-        assert_equal((nsa & nsb).size, 2*int(d))
+        assert_equal((nsa & nsb).size, 2 * int(d))
         assert_equal((nsa & nsb).discrete, d)
 
         assert_equal(set(nsb | nsa), set(nsa | nsb))
         assert isinstance(nsa | nsb, ITemporalNodeSetDF)
         assert_equal(set((nsb | nsa)), {(1, 2), (1, 3), (1, 6), (2, 3), (2, 4)})
-        assert_equal((nsa | nsb).size, 5*int(d))
+        assert_equal((nsa | nsb).size, 5 * int(d))
         assert_equal((nsa | nsb).discrete, d)
 
         assert_equal(set(nsb - nsa), {(2, 4)})
         assert_equal((nsb - nsa).size, int(d))
         assert isinstance(nsb - nsa, ITemporalNodeSetDF)
         assert_equal(set(nsa - nsb), {(1, 6), (2, 3)})
-        assert_equal((nsa - nsb).size, 2*int(d))
+        assert_equal((nsa - nsb).size, 2 * int(d))
         assert isinstance(nsa - nsb, ITemporalNodeSetDF)
         assert_equal((nsa - nsb).discrete, d)
         assert_equal((nsb - nsa).discrete, d)
@@ -365,7 +365,7 @@ def test_temporal_node_set_op_b_df():
         nsa = TemporalNodeSetB({1, 2}, [(1, 2), (4, 7)], discrete=d)
         nsb = TemporalNodeSetDF([(1, 2, 5), (1, 6, 8), (2, 1, 3)], discrete=d)
         assert_equal(set(nsb & nsa), set(nsa & nsb))
-        assert type(nsb & nsa) is type(nsa & nsb)
+        assert isinstance(nsb & nsa, type(nsa & nsb))
         assert isinstance(nsa & nsb, TemporalNodeSetDF)
         if d:
             assert_equal(set(nsa & nsb), {(1, 2, 2), (1, 6, 7), (2, 1, 2), (1, 4, 5)})
@@ -374,7 +374,7 @@ def test_temporal_node_set_op_b_df():
         assert_equal((nsb & nsa).size, (7 if d else 3))
 
         assert_equal(set(nsb | nsa), set(nsa | nsb))
-        assert type(nsb | nsa) is type(nsa | nsb)
+        assert isinstance(nsb | nsa, type(nsa | nsb))
         assert isinstance(nsa | nsb, TemporalNodeSetDF)
         if d:
             assert_equal(set((nsb | nsa)), {(1, 1, 8), (2, 1, 7)})
@@ -391,7 +391,7 @@ def test_temporal_node_set_op_b_df():
             assert_equal(set(nsa - nsb), {(1, 1, 1), (2, 4, 7)})
         else:
             assert_equal(set(nsa - nsb), {(1, 5, 6, 'neither'), (1, 1, 2, 'left'), (2, 4, 7, 'both')})
-        assert isinstance(nsb - nsa, TemporalNodeSetDF) and type(nsb - nsa) is type(nsa - nsb)
+        assert isinstance(nsb - nsa, TemporalNodeSetDF) and isinstance(nsb - nsa, type(nsa - nsb))
         assert_equal((nsa - nsb).size, 5)
 
         assert nsa.issuperset(nsa & nsb)

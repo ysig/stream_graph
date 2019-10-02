@@ -14,7 +14,7 @@ from stream_graph.collections import NodeCollection
 from stream_graph.collections import LinkCollection
 from stream_graph.collections import TimeCollection
 from stream_graph.collections import TimeGenerator
-from stream_graph.exceptions import UnrecognizedTemporalNodeSet
+from stream_graph.exceptions import UnrecognizedTemporalNodeSet, UnrecognizedNodeSet, UnrecognizedTimeSet
 
 
 class TemporalNodeSetB(ABC.TemporalNodeSet):
@@ -56,11 +56,11 @@ class TemporalNodeSetB(ABC.TemporalNodeSet):
             out = [('Node-Set', str(self.nodeset_))]
             out += [('Time-Set', str(self.timeset_))]
             header = ['Mixed-TemporalNodeset']
-            header += [len(header[0])*'=']
-            return '\n\n'.join(['\n'.join(header)] + ['\n'.join([a, len(a)*'-', b]) for a, b in out])
+            header += [len(header[0]) * '=']
+            return '\n\n'.join(['\n'.join(header)] + ['\n'.join([a, len(a) * '-', b]) for a, b in out])
         else:
             out = ["Empty Mixed-TemporalNodeset"]
-            out = [out[0] + "\n" + len(out[0])*'-']
+            out = [out[0] + "\n" + len(out[0]) * '-']
             if not hasattr(self, 'nodeset_'):
                 out += ['- Node-Set: None']
             elif not bool(self.nodeset_):
@@ -113,7 +113,7 @@ class TemporalNodeSetB(ABC.TemporalNodeSet):
     @property
     def total_common_time(self):
         n = self.n
-        return n*(n-1)*self.timeset_.size
+        return n * (n - 1) * self.timeset_.size
 
     @property
     def number_of_instants(self):
@@ -144,12 +144,12 @@ class TemporalNodeSetB(ABC.TemporalNodeSet):
 
     def common_time(self, u=None):
         if u is None:
-            return NodeCollection({u: (self.n-1) * self.total_time for u in self.nodeset_})
+            return NodeCollection({u: (self.n - 1) * self.total_time for u in self.nodeset_})
         elif isinstance(u, Iterable):
-            return NodeCollection({u: (self.n-1) * self.total_time for u in set(self.nodeset_) & set(u)})
+            return NodeCollection({u: (self.n - 1) * self.total_time for u in set(self.nodeset_) & set(u)})
 
         if bool(self) and u in self.nodeset_:
-            return (self.n-1) * self.total_time
+            return (self.n - 1) * self.total_time
         return 0.
 
     def common_time_pair(self, l=None):
@@ -288,7 +288,6 @@ class TemporalNodeSetB(ABC.TemporalNodeSet):
         timeset, bins = self.timeset_.discretize(bins, bin_size)
         return self.__class__(timeset=timeset, nodeset=self.nodeset), bins
 
-
     def substream(self, nsu=None, nsv=None, ts=None):
         if nsu is not None:
             if not isinstance(nsu, ABC.NodeSet):
@@ -310,6 +309,7 @@ class TemporalNodeSetB(ABC.TemporalNodeSet):
             return self.__class__(nodeset, timeset)
         else:
             return self.__class__()
+
 
 def constant_time_generator(timeset, obj, empty_object, discrete, instantaneous):
     if instantaneous:

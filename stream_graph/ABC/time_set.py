@@ -8,6 +8,7 @@ from .utils import ABC_to_string
 # 2/3 Cross Compatibility
 ABC = abc.ABCMeta('ABC', (object,), {'__slots__': ()})
 
+
 class TimeSet(ABC):
     """TimeSet Object API Specification.
 

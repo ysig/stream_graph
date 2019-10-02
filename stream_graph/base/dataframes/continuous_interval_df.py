@@ -97,9 +97,9 @@ class CIntervalDF(pd.DataFrame):
     @property
     def events_bounds(self):
         columns = sorted(list(set(self.columns) - {'ts', 'tf', 's', 'f'}))
-        dfp = self[columns + ['ts', 's']].rename(columns={"ts": "t", 's':'closed'})
+        dfp = self[columns + ['ts', 's']].rename(columns={"ts": "t", 's': 'closed'})
         dfp['start'] = True
-        dfpv = self[columns + ['tf', 'f']].rename(columns={"tf": "t", 'f':'closed'})
+        dfpv = self[columns + ['tf', 'f']].rename(columns={"tf": "t", 'f': 'closed'})
         dfpv['start'] = False
         return dfp.append(dfpv, ignore_index=True, sort=False).sort_values(by=['t', 'start'])
 
@@ -127,7 +127,7 @@ class CIntervalDF(pd.DataFrame):
         if df is None:
             df = self.__class__(columns=self.columns)
         else:
-            df = self.__class__(df, columns=on_column+['ts', 'tf', 's', 'f'], disjoint_intervals=disjoint_intervals)
+            df = self.__class__(df, columns=on_column + ['ts', 'tf', 's', 'f'], disjoint_intervals=disjoint_intervals)
 
         if inplace and df is not self:
             return self._update_inplace(df._data)

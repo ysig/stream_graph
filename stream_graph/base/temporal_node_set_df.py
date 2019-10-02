@@ -4,7 +4,6 @@ from collections import defaultdict
 from collections import Counter
 from six import iteritems
 from itertools import combinations
-from itertools import permutations
 
 import stream_graph as sg
 from .utils import ts_to_df, tns_to_df
@@ -14,7 +13,7 @@ from .multi_df_utils import load_interval_df, itertuples_pretty, init_interval_d
 from .multi_df_utils import len_set_nodes, set_nodes
 from .utils import time_discretizer_df
 from stream_graph import ABC
-from stream_graph.exceptions import UnrecognizedTemporalNodeSet
+from stream_graph.exceptions import UnrecognizedTemporalNodeSet, UnrecognizedNodeSet, UnrecognizedTimeSet
 from stream_graph.collections import TimeCollection
 from stream_graph.collections import TimeGenerator
 from stream_graph.collections import NodeCollection
@@ -187,7 +186,7 @@ class TemporalNodeSetDF(ABC.TemporalNodeSet):
                 if not df.empty:
                     if isinstance(tns, ABC.ITemporalNodeSet):
                         from .itemporal_node_set_df import ITemporalNodeSetDF
-                        return ITemporalNodeSetDF(df.drop(columns=['tf'] + ([] if self.discrete else ['s','f'])), discrete=self.discrete)
+                        return ITemporalNodeSetDF(df.drop(columns=['tf'] + ([] if self.discrete else ['s', 'f'])), discrete=self.discrete)
                     else:
                         return TemporalNodeSetDF(df, discrete=self.discrete)
         else:
@@ -264,13 +263,14 @@ class TemporalNodeSetDF(ABC.TemporalNodeSet):
                         common_times[v] += ct
             else:
                 allowed_nodes = set(u)
+
                 def add_item(active_nodes, ct):
                     for v in (active_nodes.intersection(allowed_nodes)):
                         common_times[v] += ct
 
             dc = (1 if self.discrete else 0)
             for u, t, f in df.itertuples(index=False, name=None):
-                ct = (len(active_nodes) - 1)*(t - e + dc)
+                ct = (len(active_nodes) - 1) * (t - e + dc)
                 if ct > .0:
                     add_item(active_nodes, ct)
                 if f:
@@ -299,6 +299,7 @@ class TemporalNodeSetDF(ABC.TemporalNodeSet):
             e = df.t.iloc[0]
             if l is None:
                 common_times = Counter()
+
                 def add_item(active_nodes, ct):
                     for u, v in combinations(active_nodes, 2):
                         common_times[(u, v)] += ct
@@ -306,9 +307,10 @@ class TemporalNodeSetDF(ABC.TemporalNodeSet):
                 links = set(l)
                 common_times = {l: 0 for l in links}
                 allowed_nodes = set(c for a, b in links for c in [a, b])
+
                 def add_item(active_nodes, ct):
                     active_set = active_nodes & allowed_nodes
-                    if len(common_times) <= len(active_set)*(len(active_set) - 1)/2:
+                    if len(common_times) <= (len(active_set) * (len(active_set) - 1)) / 2:
                         for (u, v) in common_times.keys():
                             if u in active_set and v in active_set:
                                 common_times[(u, v)] += ct
@@ -321,7 +323,7 @@ class TemporalNodeSetDF(ABC.TemporalNodeSet):
 
             dc = (1 if self.discrete else 0)
             for u, t, f in df.itertuples(index=False, name=None):
-                ct = (len(active_nodes) - 1)*(t - e + dc)
+                ct = (len(active_nodes) - 1) * (t - e + dc)
                 if ct > .0:
                     add_item(active_nodes, ct)
                 if f:
@@ -362,7 +364,7 @@ class TemporalNodeSetDF(ABC.TemporalNodeSet):
             if t is None:
                 return self._build_time_generator(set, set_nodes, TimeGenerator)
 
-            elif isinstance(t, tuple) and len(t) in [2, 3] and isinstance(t[0], Real) and isinstance(t[1], Real) and t[0]<=t[1]:
+            elif isinstance(t, tuple) and len(t) in [2, 3] and isinstance(t[0], Real) and isinstance(t[1], Real) and t[0] <= t[1]:
                 assert len(t) == 2 or t[2] in ['neither', 'both', 'left', 'right']
                 return NodeSetS(self.df.df_at_interval(*t).u.values.flat)
             elif isinstance(t, Real):
@@ -411,7 +413,7 @@ class TemporalNodeSetDF(ABC.TemporalNodeSet):
             if not isinstance(nsu, ABC.NodeSet):
                 try:
                     nsu = NodeSetS(nsu)
-                except Exception:
+                except Exception as ex:
                     raise UnrecognizedNodeSet('nsu: ' + ex)
         if ts is not None:
             if not isinstance(ts, ABC.TimeSet):

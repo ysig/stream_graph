@@ -10,6 +10,7 @@ from .utils import ABC_to_string
 # 2/3 Cross Compatibility
 ABC = abc.ABCMeta('ABC', (object,), {'__slots__': ()})
 
+
 class TemporalLinkSet(ABC):
     """TemporalLinkSet Object API Specification.
 
@@ -332,9 +333,10 @@ class TemporalLinkSet(ABC):
     def _degree_at_weighted(self, u, t, direction):
         raise NotImplementedError
 
-    def _degree_at_unweighted(self, u, t, direction):    
+    def _degree_at_unweighted(self, u, t, direction):
         if u is None:
             n = self.neighbors_at(u=u, t=t, direction=direction)
+
             def size(x, y):
                 return y.size
             if t is None:
@@ -610,8 +612,7 @@ class TemporalLinkSet(ABC):
         else:
             return self.links_at(t).size
 
-
-    def duration_of(self, l=None, direction='out', weigths=False):
+    def duration_of(self, l=None, direction='out', weights=False):
         """Returns the total duration of a link.
 
         Parameters
@@ -731,6 +732,7 @@ class TemporalLinkSet(ABC):
     def _to_discrete(self, bins, bin_size):
         pass
 
+
 class ITemporalLinkSet(TemporalLinkSet):
     """Instantaneous Temporal LinkSet Object API Specification.
 
@@ -801,7 +803,6 @@ class ITemporalLinkSet(TemporalLinkSet):
             return self.weighted_number_of_interactions
         else:
             return .0
-
 
     def duration_of(self, l=None, direction='out', weights=False):
         """Returns the total duration of a link.

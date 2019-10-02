@@ -12,7 +12,7 @@ from stream_graph import ABC
 from .multi_df_utils import init_instantaneous_df, load_instantaneous_df
 from .node_set_s import NodeSetS
 from .itime_set_s import ITimeSetS
-from stream_graph.exceptions import UnrecognizedTemporalNodeSet
+from stream_graph.exceptions import UnrecognizedTemporalNodeSet, UnrecognizedNodeSet, UnrecognizedTimeSet
 from stream_graph.collections import TimeCollection
 from stream_graph.collections import TimeGenerator
 from stream_graph.collections import NodeCollection
@@ -35,7 +35,7 @@ class ITemporalNodeSetDF(ABC.ITemporalNodeSet):
         The order of the DataFrame elements by which they will be produced when iterated.
 
     """
-    def __init__(self, df=None, no_duplicates=True, sort_by= None, discrete=None):
+    def __init__(self, df=None, no_duplicates=True, sort_by=None, discrete=None):
         if isinstance(df, self.__class__):
             discrete = df.discrete_
             self.df_ = df.df
@@ -207,6 +207,7 @@ class ITemporalNodeSetDF(ABC.ITemporalNodeSet):
                         # subtract and then by converting back to our to our original type, we will have our valid result.
                         df = self.df
                         df['tf'] = df['ts']
+                        from .temporal_node_set_df import TemporalNodeSetDF
                         return self.__class__((TemporalNodeSetDF(df, discrete=self.discrete) - ns).df.drop(columns=['tf']), discrete=self.discrete)
                 else:
                     return self.copy()
@@ -217,7 +218,7 @@ class ITemporalNodeSetDF(ABC.ITemporalNodeSet):
     def n_at(self, t=None):
         if bool(self):
             if t is None:
-                # Count how many times its time-step occurs, for each key and return a sorted list 
+                # Count how many times its time-step occurs, for each key and return a sorted list
                 return TimeCollection(sorted(list(iteritems(Counter(t for t in self.df.ts)))), instantaneous=True, discrete=self.discrete)
             elif isinstance(t, Real):
                 # Count for only one time-stamp
@@ -248,7 +249,7 @@ class ITemporalNodeSetDF(ABC.ITemporalNodeSet):
                 # Iterate in ascending time and yield the NodeSet at each time-instant in a generator fashion
                 return TimeGenerator(generate(self.sort_df('ts').itertuples()), instantaneous=True, discrete=self.discrete)
             elif isinstance(t, Real):
-                # Count how many times its time-step occurs, for each key and return a sorted list 
+                # Count how many times its time-step occurs, for each key and return a sorted list
                 return NodeSetS(self.df.df_at(t).u)
             else:
                 raise ValueError('Input can either be a real number or an ascending interval of two real numbers')
@@ -337,7 +338,7 @@ class ITemporalNodeSetDF(ABC.ITemporalNodeSet):
         ct = 0
         if bool(self):
             counter = Counter(ts for _, ts in iter(self))
-            ct = sum(((val-1)*val)/2 for _, val in iteritems(counter) if val > 1)
+            ct = sum(((val - 1) * val) / 2 for _, val in iteritems(counter) if val > 1)
         return ct
 
     @property
@@ -366,14 +367,14 @@ class ITemporalNodeSetDF(ABC.ITemporalNodeSet):
                         if len(active_set) > 1:
                             for v in active_set:
                                 # update their common time to the ammount of all the other coexisting nodes
-                                ct[v] += (len(active_set)-1)
+                                ct[v] += (len(active_set) - 1)
                         active_set, prev = {u}, ts
                     else:
                         active_set.add(u)
                 if len(active_set) > 1:
                     for v in active_set:
                         # update their common time to the ammount of all the other coexisting nodes
-                        ct[v] += (len(active_set)-1)
+                        ct[v] += (len(active_set) - 1)
             else:
                 # If we want the common-time for all nodes but only for a list of nodes
                 valid_nodes = set(u)
@@ -385,7 +386,7 @@ class ITemporalNodeSetDF(ABC.ITemporalNodeSet):
                             for v in active_set:
                                 # update their common time to the ammount of all the other coexisting nodes
                                 if v in valid_nodes:
-                                    ct[v] += (len(active_set)-1)
+                                    ct[v] += (len(active_set) - 1)
                         active_set, prev = {u}, ts
                     else:
                         active_set.add(u)
@@ -393,7 +394,7 @@ class ITemporalNodeSetDF(ABC.ITemporalNodeSet):
                     for v in active_set:
                         # update their common time to the ammount of all the other coexisting nodes
                         if v in valid_nodes:
-                            ct[v] += (len(active_set)-1)
+                            ct[v] += (len(active_set) - 1)
             return NodeCollection(ct)
         else:
             if bool(self):
@@ -411,7 +412,7 @@ class ITemporalNodeSetDF(ABC.ITemporalNodeSet):
             # For each node take the set of time-stamps.
             for u, ts in iter(self):
                 carrier[u].add(ts)
-    
+
             # Take all the valid pairs of nodes.
             valid_links = (combinations(set(carrier.keys()), 2) if l is None else set(l))
             # And for all of them take the size of the intersection between all their time-sets.

@@ -5,11 +5,12 @@ import abc
 from .utils import ABC_to_string
 
 # 2/3 Cross Compatibility
-ABC = abc.ABCMeta('ABC', (object,), {'__slots__': ()}) 
+ABC = abc.ABCMeta('ABC', (object,), {'__slots__': ()})
+
 
 class NodeSet(ABC):
     """NodeSet Object API Specification.
-    
+
     A NodeSet can be abstractly be defined as a set of node :code:`u`.
 
     """
@@ -25,20 +26,20 @@ class NodeSet(ABC):
         Parameters
         ----------
         None. Property.
-        
+
 
         Returns
         -------
         size : Real
             The number of node.
-        
+
         """
         pass
-    
+
     @abc.abstractmethod
     def __contains__(self, n):
         """Implementation of the :code:`in` operator for NodeSet.
-        
+
         Parameters
         ----------
         u : Node_Id
@@ -47,18 +48,18 @@ class NodeSet(ABC):
         -------
         contains : Bool
             Returns True if the u appears inside the NodeSet.
-        
+
         """
         pass
 
     @abc.abstractmethod
     def __bool__(self):
         """Implementation of the :code:`bool` casting of a NodeSet object.
-        
+
         Parameters
         ----------
         None.
-        
+
         Returns
         -------
         out : Bool
@@ -74,11 +75,11 @@ class NodeSet(ABC):
     @abc.abstractmethod
     def __and__(self, ns):
         """Implementation of the :code:`&` operator for a NodeSet object.
-        
+
         Parameters
         ----------
         ns : NodeSet
-        
+
         Returns
         -------
         out : NodeSet
@@ -86,15 +87,15 @@ class NodeSet(ABC):
 
         """
         pass
-        
+
     @abc.abstractmethod
     def __or__(self, ns):
         """Implementation of the :code:`|` operator for a NodeSet object.
-        
+
         Parameters
         ----------
         ns : NodeSet
-        
+
         Returns
         -------
         out : NodeSet
@@ -102,7 +103,7 @@ class NodeSet(ABC):
 
         """
         pass
-        
+
     @abc.abstractmethod
     def __sub__(self, ns):
         """Implementation of the :code:`-` operator for a NodeSet object.
@@ -110,7 +111,7 @@ class NodeSet(ABC):
         Parameters
         ----------
         ns : NodeSet
-        
+
         Returns
         -------
         out : NodeSet
@@ -122,11 +123,11 @@ class NodeSet(ABC):
     @abc.abstractmethod
     def __iter__(self):
         """Implementation of the :code:`iter` function for a NodeSet object.
-        
+
         Parameters
         ----------
         None
-        
+
         Returns
         -------
         out : Iterator of Node_Id
@@ -137,11 +138,11 @@ class NodeSet(ABC):
     @abc.abstractmethod
     def issuperset(self, ns):
         """Check if a NodeSet contains another NodeSet.
-        
+
         Parameters
         ----------
         ns : NodeSet
-        
+
         Returns
         -------
         issuperset_f : Bool
@@ -149,14 +150,14 @@ class NodeSet(ABC):
 
         """
         pass
-    
+
     def copy(self, deep=True):
         """Returns a deep or shallow copy of the current NodeSet.
-        
+
         Parameters
         ----------
         deep : Bool
-        
+
         Returns
         -------
         nodeset_copy : NodeSet

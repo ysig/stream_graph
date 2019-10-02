@@ -10,7 +10,6 @@ from .utils.orderings import b_order_0_1n2_n2 as union_order
 from .utils.orderings import rb_order_1_n3_2n3 as intersection_order
 from .utils.orderings import rb_order_1_n3_0n3_2n3 as difference_order
 from .utils.orderings import rb_order_1_n3_2n3_0n3 as issuper_order
-from .utils.orderings import rb_order_1_n2_2e3_0e2 as cs_order
 from .utils.orderings import rb_order_1_n2_2e3_0e3 as mi_order
 from .utils.orderings import rb_order_nonempty_intersection as nei_order
 from .utils.orderings import r_order_1_2_0 as iis_order
@@ -518,7 +517,7 @@ def interval_intersection_size(a, b):
     wa, wb, ts, count = 0, 0, None, 0
     for r, t, s in events_nb(a[['ts', 'tf']], b[['ts', 'tf']], key=iis_order, reference=True):
         if ts is not None:
-            count += wa*wb*(t-ts)
+            count += wa * wb * (t - ts)
         if r:
             wa += (1 if s else -1)
         else:

@@ -9,7 +9,6 @@ from .utils.orderings import r_order_1_0n2_n2 as nonempty_intersection_order
 from .utils.orderings import r_order_1_n2 as intersection_order
 from .utils.orderings import r_order_1_n2_0n2 as difference_order
 from .utils.orderings import r_order_1_n2_0n2 as issuper_order
-from .utils.orderings import r_order_1_n0_n2 as cs_order
 
 
 def add_prev(key, cache, out, value, id=-1):

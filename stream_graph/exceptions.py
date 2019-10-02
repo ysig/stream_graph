@@ -85,6 +85,7 @@ class UnrecognizedTemporalLinkSet(ValueError):
         """
         ValueError.__init__(self, variable_name + " should be a TemporalLinkSet instance\n" + extra_message)
 
+
 class UnrecognizedStreamGraph(ValueError):
     """Exception raised when a variable is not an instance of ABC.TemporalStreamGraph."""
     def __init__(self, variable_name, extra_message=""):
