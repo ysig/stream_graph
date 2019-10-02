@@ -541,5 +541,5 @@ def interval_intersection_size(dfa, dfb, interval_intersection_function):
     for event in events(dfa, dfb, iis_order, reference=True, weights=True):
         interval_intersection_cache(cache, event[:5], interval_intersection_function)
         if event[1] > t_max:
-                break
+            break
     return cache[3]

@@ -75,5 +75,6 @@ def test_stream_graph():
             else:
                 assert_equal(list(sga.mean_degree_at(weights=w)), [((1, True), 0.5), ((2, True), 1.0), ((3, w), 0.5), ((5, w), 0.0), ((6, True), 0.5), ((8, False), 0.0)])
 
+
 if __name__ == "__main__":
     test_stream_graph()

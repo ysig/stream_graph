@@ -137,7 +137,7 @@ class ITemporalNodeSetDF(ABC.ITemporalNodeSet):
         return hasattr(self, 'df_') and not self.df_.empty
 
     def __contains__(self, u):
-        assert type(u) is tuple and len(u) is 2
+        assert type(u) is tuple and len(u) == 2
         if (not bool(self)) or (u[0] is None and u[1] is None):
             return False
         if u[0] is None:

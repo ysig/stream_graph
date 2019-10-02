@@ -4,3 +4,4 @@
 stream_graph.egg-info/
 build/
 dist
+stream_graph/_c_functions/functions.cpp

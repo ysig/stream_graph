@@ -664,6 +664,7 @@ def test_itemporal_link_set_df():
             assert_equal(list(ITemporalLinkSetDF(df, discrete=d).ego_betweeness(3, direction='both')), [((2, True), 0.0), ((3, True), 1.0)])
             assert_equal(list(ITemporalLinkSetDF(df, discrete=d).closeness(2, direction='both')), [((2, True), 1.3333333333333333), ((3, True), 1.5), ((4, True), 1.0), ((5, True), 0.0)])
 
+
 if __name__ == "__main__":
     test_temporal_link_set_df()
     test_itemporal_link_set_df()

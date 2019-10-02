@@ -127,7 +127,7 @@ class TemporalNodeSetB(ABC.TemporalNodeSet):
         return self.timeset_.instantaneous
 
     def __contains__(self, u):
-        assert type(u) is tuple and len(u) is 2
+        assert type(u) is tuple and len(u) == 2
         if (not bool(self)) or (u[0] is None and u[1] is None):
             return False
         return ((u[0] is None or u[0] in self.nodeset_) and

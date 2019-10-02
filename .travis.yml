@@ -73,7 +73,7 @@ matrix:
 script:
   - |
     if [[ "$FLAKE" == "true" ]]; then
-        $PIP install flake8 --upgrade; flake8 --ignore E501 $TRAVIS_BUILD_DIR/$MODULE;
+        $PIP install flake8 --upgrade; flake8 $TRAVIS_BUILD_DIR/$MODULE;
     fi
   - $PIP install cibuildwheel
   - export CIBW_ENVIRONMENT="TEST_DIR=$TEST_DIR MODULE=$MODULE COVERAGE=$COVERAGE";

@@ -25,5 +25,6 @@ def test_graph():
             assert_equal(set(g.neighbor_coverage_of(weights=ww)), {(1, 0.0625), (2, 0.0625), (3, 0.0625)})
             assert_equal(set(g.neighbor_coverage_of(direction='both', weights=ww)), {(1, 0.125), (2, 0.125), (3, 0.125)})
 
+
 if __name__ == "__main__":
     test_graph()
