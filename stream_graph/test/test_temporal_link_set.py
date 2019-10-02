@@ -514,10 +514,10 @@ def test_itemporal_link_set_df():
         df = [(1, 2, 2), (1, 2, 3), (2, 3, 2), (1, 3, 4), (3, 4, 3), (2, 4, 5)]
         if d:
             assert_equal(list(ITemporalLinkSetDF(df, discrete=d).ego_betweeness(3, direction='both')), [(2, 0.0), (3, 1.0)])
-            assert_equal(list(ITemporalLinkSetDF(df, discrete=d).closeness(2, direction='both')), [(2, 1.8333333333333333), (3, 1.5), (4, 1.0), (5, 0.0)])
+            assert_equal(list(ITemporalLinkSetDF(df, discrete=d).closeness(2, direction='both')), [(2, 1.3333333333333333), (3, 1.5), (4, 1.0), (5, 0.0)])
         else:
             assert_equal(list(ITemporalLinkSetDF(df, discrete=d).ego_betweeness(3, direction='both')), [((2, True), 0.0), ((3, True), 1.0)])
-            assert_equal(list(ITemporalLinkSetDF(df, discrete=d).closeness(2, direction='both')), [((2, True), 1.8333333333333333), ((3, True), 1.5), ((4, True), 1.0), ((5, True), 0.0)])
+            assert_equal(list(ITemporalLinkSetDF(df, discrete=d).closeness(2, direction='both')), [((2, True), 1.3333333333333333), ((3, True), 1.5), ((4, True), 1.0), ((5, True), 0.0)])
 
         df = [(1, 2, 4), (1, 2, 8), (2, 3, 4), (1, 3, 6), (3, 4, 2), (2, 4, 3)]
         if d:
@@ -666,10 +666,10 @@ def test_itemporal_link_set_df():
         df = [(1, 2, 2, 1), (1, 2, 3, 1), (2, 3, 2, 1), (1, 3, 4, 1), (3, 4, 3, 1), (2, 4, 5, 1)]
         if d:
             assert_equal(list(ITemporalLinkSetDF(df, discrete=d).ego_betweeness(3, direction='both')), [(2, 0.0), (3, 1.0)])
-            assert_equal(list(ITemporalLinkSetDF(df, discrete=d).closeness(2, direction='both')), [(2, 1.8333333333333333), (3, 1.5), (4, 1.0), (5, 0.0)])
+            assert_equal(list(ITemporalLinkSetDF(df, discrete=d).closeness(2, direction='both')), [(2, 1.3333333333333333), (3, 1.5), (4, 1.0), (5, 0.0)])
         else:
             assert_equal(list(ITemporalLinkSetDF(df, discrete=d).ego_betweeness(3, direction='both')), [((2, True), 0.0), ((3, True), 1.0)])
-            assert_equal(list(ITemporalLinkSetDF(df, discrete=d).closeness(2, direction='both')), [((2, True), 1.8333333333333333), ((3, True), 1.5), ((4, True), 1.0), ((5, True), 0.0)])
+            assert_equal(list(ITemporalLinkSetDF(df, discrete=d).closeness(2, direction='both')), [((2, True), 1.3333333333333333), ((3, True), 1.5), ((4, True), 1.0), ((5, True), 0.0)])
 
 if __name__ == "__main__":
     test_temporal_link_set_df()
