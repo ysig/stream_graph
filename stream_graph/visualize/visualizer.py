@@ -36,12 +36,13 @@ class Visualizer(object):
         if self._data['time_set'].instantaneous:
             min_time = min(self._data['time_set'])
             max_time = max(self._data['time_set'])
+            
         else:
             min_time = min(k[0] for k in self._data['time_set'])
             max_time = max(k[1] for k in self._data['time_set'])
 
         # get nodes
-        nodes = sorted(list(str(n) for n in self._data['node_set']))
+        nodes = sorted([str(n) for n in self._data['node_set']])
         # map them to numbers
         ln = dict(enumerate(nodes))
         nl = {n: i for i, n in enumerate(nodes)}
@@ -77,9 +78,10 @@ class Visualizer(object):
                 x0, y0, x1, y1, cx, cy = [], [], [], [], [], []
                 if ls.instantaneous:
                     for (u, v, ts) in ls:
+                        u, v = str(u), str(v)
                         ts = self.map_time(ts)
                         yu, yv = sorted((nl[u], nl[v]))
-                        cr = curving(yu, yv) * division * 0.9
+                        cr = curving(yu, yv) * division * 0.7
                         xm = ts + cr
                         ym = (yu + yv) * height
                         if cr > 0.:
@@ -100,7 +102,7 @@ class Visualizer(object):
                         ts = self.map_time(ts)
                         tf = self.map_time(tf)
                         yu, yv = sorted((nl[u], nl[v]))
-                        cr = curving(yu, yv) * division * 0.9
+                        cr = curving(yu, yv) * division * 0.7
                         xm = ts + cr
                         ym = (yu + yv) * height
                         if cr > 0.:
@@ -124,11 +126,16 @@ class Visualizer(object):
                 l.append(((lp_x, lp_y), color))
                 b.append(((x0, y0, x1, y1, cx, cy), color))
 
+        aspect_scale = w/float(h)
         if self.date_map is None:
-            self.p = figure(width=w, height=h)
+            self.p = figure(aspect_scale=aspect_scale)
+            if self._data['time_set'].instantaneous:
+                self.p.xaxis.ticker = list(self._data['time_set'])
+            elif self._data['time_set'].discrete:
+                self.p.xaxis.ticker = [t for ts, tf in self._data['time_set'] for t in range(ts, tf+1)]
         else:
             assert callable(self.date_map) or isinstance(self.date_map, dict)
-            self.p = figure(width=w, height=h, x_axis_type="datetime")
+            self.p = figure(aspect_scale=aspect_scale, x_axis_type="datetime")
         if self.y_axis_label is not None:
             self.p.yaxis.axis_label = str(self.y_axis_label)
         self.p.xaxis.axis_label = (str(self.x_axis_label) if self.x_axis_label is not None else 'time')
