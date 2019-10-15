@@ -12,7 +12,7 @@ sudo apt-get install build-essential libffi-dev > /dev/null
 # Setup a python venv and install basics
 source ./venv/bin/activate
 pip install --upgrade pip
-pip install --upgrade bokeh selenium pandas matplotlib setuptools sphinx sphinx-gallery sphinx_rtd_theme sphinxcontrib-bibtex nb2plots numpydoc pillow > /dev/null
+pip install --upgrade cython bokeh selenium pandas matplotlib setuptools sphinx sphinx-gallery sphinx_rtd_theme sphinxcontrib-bibtex nb2plots numpydoc pillow > /dev/null
 pip install cffi
 pip install -r requirements.txt > /dev/null
 
