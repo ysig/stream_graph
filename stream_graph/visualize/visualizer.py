@@ -36,7 +36,6 @@ class Visualizer(object):
         if self._data['time_set'].instantaneous:
             min_time = min(self._data['time_set'])
             max_time = max(self._data['time_set'])
-            
         else:
             min_time = min(k[0] for k in self._data['time_set'])
             max_time = max(k[1] for k in self._data['time_set'])
@@ -126,13 +125,13 @@ class Visualizer(object):
                 l.append(((lp_x, lp_y), color))
                 b.append(((x0, y0, x1, y1, cx, cy), color))
 
-        aspect_scale = w/float(h)
+        aspect_scale = w / float(h)
         if self.date_map is None:
             self.p = figure(aspect_scale=aspect_scale)
             if self._data['time_set'].instantaneous:
                 self.p.xaxis.ticker = list(self._data['time_set'])
             elif self._data['time_set'].discrete:
-                self.p.xaxis.ticker = [t for ts, tf in self._data['time_set'] for t in range(ts, tf+1)]
+                self.p.xaxis.ticker = [t for ts, tf in self._data['time_set'] for t in range(ts, tf + 1)]
         else:
             assert callable(self.date_map) or isinstance(self.date_map, dict)
             self.p = figure(aspect_scale=aspect_scale, x_axis_type="datetime")
