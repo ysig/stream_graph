@@ -1,8 +1,9 @@
-Minimal flask-api minimal service for stream-graph. 
+Minimal flask-api for the `stream_graph` library
+-------------------------------------------------
 
-Please see 'scripts/examples.sh'.
+For a use-case please see 'scripts/examples.sh'.
 
-To see the API documentation, please visit:
+To see our swaggerhub-API definition, please visit:
 https://app.swaggerhub.com/apis/ysig/REST-stream_graph-basic/1.0.0
 
 
