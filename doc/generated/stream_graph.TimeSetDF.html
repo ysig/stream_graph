@@ -190,7 +190,7 @@
 <h1><code class="xref py py-mod docutils literal notranslate"><span class="pre">stream_graph</span></code>.TimeSetDF<a class="headerlink" href="#stream-graph-timesetdf" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="stream_graph.TimeSetDF">
-<em class="property">class </em><code class="sig-prename descclassname">stream_graph.</code><code class="sig-name descname">TimeSetDF</code><span class="sig-paren">(</span><em class="sig-param">df=None</em>, <em class="sig-param">disjoint_intervals=True</em>, <em class="sig-param">discrete=None</em>, <em class="sig-param">default_closed='both'</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/885de7e/stream_graph/base/time_set_df.py#L11"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/base/time_set_df.html#TimeSetDF"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.TimeSetDF" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">stream_graph.</code><code class="sig-name descname">TimeSetDF</code><span class="sig-paren">(</span><em class="sig-param">df=None</em>, <em class="sig-param">disjoint_intervals=True</em>, <em class="sig-param">discrete=None</em>, <em class="sig-param">default_closed='both'</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/4ea8d00/stream_graph/base/time_set_df.py#L11"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/base/time_set_df.html#TimeSetDF"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.TimeSetDF" title="Permalink to this definition">¶</a></dt>
 <dd><p>A DataFrame implementation of a TimeSet.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -251,7 +251,7 @@ If an Iterable it should produce <code class="code docutils literal notranslate"
 </table>
 <dl class="attribute">
 <dt id="stream_graph.TimeSetDF.__class__">
-<code class="sig-name descname">__class__</code><a class="reference external" href="https://github.com/ysig/stream_graph/blob/885de7e/stream_graph/../../../../usr/local/lib/python3.6/abc.py#L109"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.TimeSetDF.__class__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__class__</code><a class="reference external" href="https://github.com/ysig/stream_graph/blob/4ea8d00/stream_graph/../../../../usr/local/lib/python3.6/abc.py#L109"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.TimeSetDF.__class__" title="Permalink to this definition">¶</a></dt>
 <dd><p>alias of <a class="reference external" href="https://docs.python.org/3/library/abc.html#abc.ABCMeta" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABCMeta</span></code></a></p>
 </dd></dl>
 
@@ -383,7 +383,7 @@ overrides the normal algorithm (and the outcome is cached).</p>
 
 <dl class="method">
 <dt id="stream_graph.TimeSetDF.copy">
-<code class="sig-name descname">copy</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">deep=True</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/885de7e/stream_graph/ABC/time_set.py#L163"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.TimeSetDF.copy" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">copy</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">deep=True</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/4ea8d00/stream_graph/ABC/time_set.py#L163"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.TimeSetDF.copy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a deep or shallow copy of the current TimeSet.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -402,7 +402,7 @@ overrides the normal algorithm (and the outcome is cached).</p>
 
 <dl class="method">
 <dt id="stream_graph.TimeSetDF.discretize">
-<code class="sig-name descname">discretize</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">bins=None</em>, <em class="sig-param">bin_size=None</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/885de7e/stream_graph/ABC/time_set.py#L181"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.TimeSetDF.discretize" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">discretize</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">bins=None</em>, <em class="sig-param">bin_size=None</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/4ea8d00/stream_graph/ABC/time_set.py#L181"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.TimeSetDF.discretize" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a discrete version of the current TimeSet.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -434,7 +434,7 @@ Else declare the size of each bin.</p>
 
 <dl class="method">
 <dt id="stream_graph.TimeSetDF.sort_df">
-<code class="sig-name descname">sort_df</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">sort_by</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/885de7e/stream_graph/base/time_set_df.py#L71"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/base/time_set_df.html#TimeSetDF.sort_df"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.TimeSetDF.sort_df" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">sort_df</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">sort_by</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/4ea8d00/stream_graph/base/time_set_df.py#L71"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/base/time_set_df.html#TimeSetDF.sort_df"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.TimeSetDF.sort_df" title="Permalink to this definition">¶</a></dt>
 <dd><p>Retrieve, store if no-order and produce a sorted version of the df</p>
 </dd></dl>
 
