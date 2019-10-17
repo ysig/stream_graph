@@ -35,8 +35,10 @@ The `stream_graph` library requires:
 * Pandas [>=0.24.0]
 * Cython [>=0.27.3]
 * six [>=1.11.0]
-* svgwrite [>=1.2.1]
+* Nose [>=1.3.0]
+* Cython [>=0.27.3]
 
+In order to allow visualizations, the user should install the latest `bokeh` library.
 
 ### Installing Dependencies
 
