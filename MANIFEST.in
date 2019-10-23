@@ -1,0 +1,20 @@
+include README.md
+include requirements.txt
+include setup.cfg
+
+include stream_graph/_c_functions/*.pxd
+include stream_graph/_c_functions/*.pyx
+recursive-include stream_graph/_c_functions/include *
+recursive-include stream_graph/_c_functions/src *
+
+include doc/*.rst
+include doc/conf.py
+include doc/Makefile
+include doc/make.bat
+recursive-include doc/introduction *
+recursive-include doc/_static *
+recursive-include doc/_templates *
+recursive-include doc/_images *
+recursive-include doc/package_walkthrough *
+recursive-include doc/sphinxext *
+recursive-include examples *

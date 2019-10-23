@@ -57,13 +57,47 @@ ext = Extension(name="stream_graph._c_functions",
                 language="c++",
                 extra_compile_args=extra_compile_args)
 
+# Add readme pypi
+with open("README.md", "r") as fh:
+    long_description = fh.read()
+    long_description = '\n'.join(s for i, s in enumerate(
+            [s for s in long_description.split('\n')
+             if not (len(s) >= 2 and s[:2] == "[!")]) if i != 2)
+
 setup(name='stream_graph',
-      version='0.2',
+      version='0.2.0',
       description='A library for Stream Graphs',
-      author='Ioannis Siglidis [LIP6]',
+      author='Yiannis Siglidis [LIP6]',
       author_email='Yiannis.Siglidis@lip6.fr',
       packages=find_packages(),
       install_requires=INSTALL_REQUIRES,
+      long_description=long_description,
+      long_description_content_type='text/markdown',
+      project_urls={
+        'Documentation': 'https://ysig.github.io/stream_graph/doc',
+        'Lab Website': 'http://www.complexnetworks.fr/',
+        'Source': 'https://github.com/ysig/stream_graph',
+        'Tracker': 'https://github.com/ysig/stream_graph/issues',
+        },
+      url='https://ysig.github.io/GraKeL/dev/',
+      license="GPLv3+",
+      classifiers=['Intended Audience :: Science/Research',
+                   'Intended Audience :: Developers',
+                   'License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)',
+                   'Programming Language :: C',
+                   'Programming Language :: Python',
+                   'Topic :: Software Development',
+                   'Topic :: Sociology',
+                   'Topic :: Scientific/Engineering',
+                   'Operating System :: POSIX :: Linux',
+                   'Operating System :: MacOS',
+                   'Operating System :: Microsoft :: Windows',
+                   'Programming Language :: Python :: 2.7',
+                   'Programming Language :: Python :: 3.5',
+                   'Programming Language :: Python :: 3.6',
+                   'Programming Language :: Python :: 3.7',
+                   ],
+      python_requires='>=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*, <4',
       ext_modules=[ext],
       extras_require={
         'visualize': ["bokeh"]
