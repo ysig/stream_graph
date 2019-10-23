@@ -187,7 +187,7 @@
 <h1><code class="xref py py-mod docutils literal notranslate"><span class="pre">stream_graph</span></code>.ITemporalLinkSetDF<a class="headerlink" href="#stream-graph-itemporallinksetdf" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="stream_graph.ITemporalLinkSetDF">
-<em class="property">class </em><code class="sig-prename descclassname">stream_graph.</code><code class="sig-name descname">ITemporalLinkSetDF</code><span class="sig-paren">(</span><em class="sig-param">df=None</em>, <em class="sig-param">no_duplicates=True</em>, <em class="sig-param">sort_by=None</em>, <em class="sig-param">discrete=None</em>, <em class="sig-param">weighted=None</em>, <em class="sig-param">merge_function=None</em>, <em class="sig-param">operation_functions=None</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/e5039af/stream_graph/base/itemporal_link_set_df.py#L34"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/base/itemporal_link_set_df.html#ITemporalLinkSetDF"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.ITemporalLinkSetDF" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">stream_graph.</code><code class="sig-name descname">ITemporalLinkSetDF</code><span class="sig-paren">(</span><em class="sig-param">df=None</em>, <em class="sig-param">no_duplicates=True</em>, <em class="sig-param">sort_by=None</em>, <em class="sig-param">discrete=None</em>, <em class="sig-param">weighted=None</em>, <em class="sig-param">merge_function=None</em>, <em class="sig-param">operation_functions=None</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/d48bf03/stream_graph/base/itemporal_link_set_df.py#L34"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/base/itemporal_link_set_df.html#ITemporalLinkSetDF"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.ITemporalLinkSetDF" title="Permalink to this definition">¶</a></dt>
 <dd><p>DataFrame implementation of ABC.ITemporalLinkSet.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -322,7 +322,7 @@ Default: +, min, hinge_loss (ignoring an interval on zero), operator.ge (ignorin
 </table>
 <dl class="attribute">
 <dt id="stream_graph.ITemporalLinkSetDF.__class__">
-<code class="sig-name descname">__class__</code><a class="reference external" href="https://github.com/ysig/stream_graph/blob/e5039af/stream_graph/../../../../usr/local/lib/python3.6/abc.py#L109"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.ITemporalLinkSetDF.__class__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__class__</code><a class="reference external" href="https://github.com/ysig/stream_graph/blob/d48bf03/stream_graph/../../../../usr/local/lib/python3.6/abc.py#L109"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.ITemporalLinkSetDF.__class__" title="Permalink to this definition">¶</a></dt>
 <dd><p>alias of <a class="reference external" href="https://docs.python.org/3/library/abc.html#abc.ABCMeta" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABCMeta</span></code></a></p>
 </dd></dl>
 
@@ -492,7 +492,7 @@ overrides the normal algorithm (and the outcome is cached).</p>
 
 <dl class="method">
 <dt id="stream_graph.ITemporalLinkSetDF.copy">
-<code class="sig-name descname">copy</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">deep=True</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/e5039af/stream_graph/ABC/temporal_link_set.py#L556"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.ITemporalLinkSetDF.copy" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">copy</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">deep=True</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/d48bf03/stream_graph/ABC/temporal_link_set.py#L556"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.ITemporalLinkSetDF.copy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a deep or shallow copy of the current TemporalLinkSet.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -511,7 +511,7 @@ overrides the normal algorithm (and the outcome is cached).</p>
 
 <dl class="method">
 <dt id="stream_graph.ITemporalLinkSetDF.degree_at">
-<code class="sig-name descname">degree_at</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">u=None</em>, <em class="sig-param">t=None</em>, <em class="sig-param">direction='out'</em>, <em class="sig-param">weights=False</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/e5039af/stream_graph/ABC/temporal_link_set.py#L272"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.ITemporalLinkSetDF.degree_at" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">degree_at</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">u=None</em>, <em class="sig-param">t=None</em>, <em class="sig-param">direction='out'</em>, <em class="sig-param">weights=False</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/d48bf03/stream_graph/ABC/temporal_link_set.py#L272"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.ITemporalLinkSetDF.degree_at" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the degree of a node at a certain time.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -537,7 +537,7 @@ If u and t are None return the degree for each node at its time instant.</p>
 
 <dl class="method">
 <dt id="stream_graph.ITemporalLinkSetDF.degree_of">
-<code class="sig-name descname">degree_of</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">u=None</em>, <em class="sig-param">direction='out'</em>, <em class="sig-param">weights=False</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/e5039af/stream_graph/ABC/temporal_link_set.py#L835"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.ITemporalLinkSetDF.degree_of" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">degree_of</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">u=None</em>, <em class="sig-param">direction='out'</em>, <em class="sig-param">weights=False</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/d48bf03/stream_graph/ABC/temporal_link_set.py#L835"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.ITemporalLinkSetDF.degree_of" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the time-degree of a node at a certain time.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -559,7 +559,7 @@ If u is None return the degree for all node at time t.</p>
 
 <dl class="method">
 <dt id="stream_graph.ITemporalLinkSetDF.discretize">
-<code class="sig-name descname">discretize</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">bins=None</em>, <em class="sig-param">bin_size=None</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/e5039af/stream_graph/ABC/temporal_link_set.py#L703"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.ITemporalLinkSetDF.discretize" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">discretize</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">bins=None</em>, <em class="sig-param">bin_size=None</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/d48bf03/stream_graph/ABC/temporal_link_set.py#L703"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.ITemporalLinkSetDF.discretize" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a discrete version of the current TemporalLinkSet.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -585,7 +585,7 @@ Else declare the size of each bin.</p>
 
 <dl class="method">
 <dt id="stream_graph.ITemporalLinkSetDF.duration_of">
-<code class="sig-name descname">duration_of</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">l=None</em>, <em class="sig-param">direction='out'</em>, <em class="sig-param">weights=False</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/e5039af/stream_graph/ABC/temporal_link_set.py#L807"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.ITemporalLinkSetDF.duration_of" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">duration_of</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">l=None</em>, <em class="sig-param">direction='out'</em>, <em class="sig-param">weights=False</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/d48bf03/stream_graph/ABC/temporal_link_set.py#L807"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.ITemporalLinkSetDF.duration_of" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the total duration of a link.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -606,7 +606,7 @@ If l is None returns a dictionary of all links with their times.</p>
 
 <dl class="method">
 <dt id="stream_graph.ITemporalLinkSetDF.filter">
-<code class="sig-name descname">filter</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">fun</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/e5039af/stream_graph/ABC/temporal_link_set.py#L393"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.ITemporalLinkSetDF.filter" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">filter</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">fun</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/d48bf03/stream_graph/ABC/temporal_link_set.py#L393"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.ITemporalLinkSetDF.filter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Filter the link stream.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -651,7 +651,7 @@ If l is None returns a dictionary of all links with their times.</p>
 
 <dl class="method">
 <dt id="stream_graph.ITemporalLinkSetDF.m_at">
-<code class="sig-name descname">m_at</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">t=None</em>, <em class="sig-param">weights=False</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/e5039af/stream_graph/ABC/temporal_link_set.py#L574"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.ITemporalLinkSetDF.m_at" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">m_at</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">t=None</em>, <em class="sig-param">weights=False</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/d48bf03/stream_graph/ABC/temporal_link_set.py#L574"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.ITemporalLinkSetDF.m_at" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the number of links appearing at a certain time.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -691,7 +691,7 @@ Else returns zero.</p>
 
 <dl class="method">
 <dt id="stream_graph.ITemporalLinkSetDF.sort_df">
-<code class="sig-name descname">sort_df</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">sort_by</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/e5039af/stream_graph/base/itemporal_link_set_df.py#L144"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/base/itemporal_link_set_df.html#ITemporalLinkSetDF.sort_df"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.ITemporalLinkSetDF.sort_df" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">sort_df</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">sort_by</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/ysig/stream_graph/blob/d48bf03/stream_graph/base/itemporal_link_set_df.py#L144"><span class="viewcode-link">[source]</span></a><a class="reference internal" href="../_modules/stream_graph/base/itemporal_link_set_df.html#ITemporalLinkSetDF.sort_df"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stream_graph.ITemporalLinkSetDF.sort_df" title="Permalink to this definition">¶</a></dt>
 <dd><p>Retrieve, store if no-order and produce a sorted version of the df</p>
 </dd></dl>
 

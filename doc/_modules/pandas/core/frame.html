@@ -487,7 +487,7 @@
 
 <span class="sd">        .. versionchanged :: 0.25.0</span>
 <span class="sd">           If data is a list of dicts, column order follows insertion-order</span>
-<span class="sd">           Python 3.6 and later.</span>
+<span class="sd">           for Python 3.6 and later.</span>
 
 <span class="sd">    index : Index or array-like</span>
 <span class="sd">        Index to use for resulting frame. Will default to RangeIndex if</span>
@@ -846,10 +846,25 @@
 
             <span class="n">formatter</span> <span class="o">=</span> <span class="n">fmt</span><span class="o">.</span><span class="n">DataFrameFormatter</span><span class="p">(</span>
                 <span class="bp">self</span><span class="p">,</span>
+                <span class="n">columns</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="n">col_space</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="n">na_rep</span><span class="o">=</span><span class="s2">&quot;NaN&quot;</span><span class="p">,</span>
+                <span class="n">formatters</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="n">float_format</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="n">sparsify</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="n">justify</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="n">index_names</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="n">header</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="n">index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="n">bold_rows</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="n">escape</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                 <span class="n">max_rows</span><span class="o">=</span><span class="n">max_rows</span><span class="p">,</span>
                 <span class="n">min_rows</span><span class="o">=</span><span class="n">min_rows</span><span class="p">,</span>
                 <span class="n">max_cols</span><span class="o">=</span><span class="n">max_cols</span><span class="p">,</span>
                 <span class="n">show_dimensions</span><span class="o">=</span><span class="n">show_dimensions</span><span class="p">,</span>
+                <span class="n">decimal</span><span class="o">=</span><span class="s2">&quot;.&quot;</span><span class="p">,</span>
+                <span class="n">table_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="n">render_links</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="n">formatter</span><span class="o">.</span><span class="n">to_html</span><span class="p">(</span><span class="n">notebook</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">formatter</span><span class="o">.</span><span class="n">buf</span><span class="o">.</span><span class="n">getvalue</span><span class="p">()</span>
