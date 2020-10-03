@@ -6,7 +6,7 @@
 # A Python Library for the Analysis of Stream Graphs
 
 This library is an attempt at modelling Stream Graphs.
-A Stream Graph is a graph which nodes and links appear and disappear through time.
+A Stream Graph is a graph whose nodes and links appear and disappear through time.
 Various methods that facilitate the study of such graphs can be found in this library, both simple (as degree distribution over time) and sophisticated (as maximal temporal-cliques, temporal-centrality measures).
 This library is hence designed for the analysis of the temporal dimension of evolving networks, such as the communication dynamics in social media. 
 
